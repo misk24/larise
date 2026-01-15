@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/layout/header";
+import Navbar from "@/components/landing/navbar";
 import { begum, satoshi } from "./fonts";
 import "./globals.css";
 
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${begum.variable} ${satoshi.variable} antialiased`}>
-        <Header />
+        <Navbar />
         {children}
       </body>
     </html>

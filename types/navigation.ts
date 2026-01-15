@@ -1,4 +1,4 @@
-export interface MenuItem {
+export interface NavLinkProps {
   label: string,
   href: string,
 }
