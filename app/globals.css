@@ -144,7 +144,7 @@ h1, h2, h3 {
   font-family: var(--font-heading);
 }
 
-.hero-bg {
+.hero-gradient {
   background: linear-gradient(
     120deg,
     oklch(0.98 0.015 95),

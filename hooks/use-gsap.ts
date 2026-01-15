@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import { RefObject, useEffect } from "react"
+import { RefObject, useEffect, useRef } from "react"
 
 export function useGsapContext(
   scope: RefObject<HTMLElement | null>, 
@@ -118,25 +118,57 @@ export function useGsapScrollStagger(
 export function useGsapToggleStagger(
   scope: RefObject<HTMLElement | null>,
   selector: string,
-  active: boolean,
-  options: gsap.TweenVars = {}
+  isOpen: boolean,
+  visible: boolean,
+  skipCloseRef: React.MutableRefObject<boolean>,
+  onClose: () => void
 ) {
+  const wasOpen = useRef(isOpen);
+  
   useEffect(() => {
-    if (!active || !scope.current) return;
+    if (!scope.current) {
+      wasOpen.current = isOpen;
+      return;
+    }
 
-    const ctx = gsap.context(() => {
-      gsap.from(scope.current!.querySelectorAll(selector), {
-        opacity: 0,
-        y: 24,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power2.out",
-        ...options,
-      });
-    }, scope);
+    const items = scope.current.querySelectorAll(selector);
+    if (!items.length) {
+      wasOpen.current = isOpen;
+      return;
+    }
 
-    return () => ctx.revert();
-  }, [active]);
+    if (isOpen && visible) {
+      gsap.fromTo(
+        items, 
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y:0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out",
+        }
+      );
+    }
+
+    if (wasOpen.current && !isOpen && visible) {
+      if (skipCloseRef.current) {
+        skipCloseRef.current = false;
+        onClose();
+      } else {
+        gsap.to(items, {
+          opacity: 0,
+          y: -24,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.in",
+          onComplete: onClose,
+        });
+      }
+    }
+
+    wasOpen.current = isOpen;
+  }, [isOpen, visible]);
 }
 
 export function useGsapParallax(
