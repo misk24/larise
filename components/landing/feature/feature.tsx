@@ -6,39 +6,32 @@ import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function FeatureSection() {
-  const sectionRef = useRef<HTMLDivElement>(null)
+export function FeatureSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
   // useGsapRevealUp(sectionRef);
   useGsapScrollStagger(sectionRef, "[data-feature-card]");
 
   return (
-    <section 
-      ref={sectionRef} 
-      className="px-6 py-32 bg-muted"
-    >
+    <section id="feature" ref={sectionRef} className="px-6 py-32 bg-muted">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl mb-16">
-          {FEATURE_SECTION.title}
-        </h2>
+        <h2 className="text-3xl mb-16">{FEATURE_SECTION.title}</h2>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {FEATURE_SECTION.feature.map((item) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {FEATURE_SECTION.feature.map((feature, index) => (
             <div
               data-feature-card
-              key={item.id}
+              key={index}
               className="rounded-2xl bg-background p-6"
             >
-              <h3 className="text-xl font-medium">
-                {item.title}
-              </h3>
-              
+              <h3 className="text-xl font-medium">{feature.title}</h3>
+
               <p className="mt-4 text-sm text-muted-foreground">
-                {item.description}
+                {feature.description}
               </p>
             </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

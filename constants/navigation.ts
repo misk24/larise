@@ -2,7 +2,7 @@ import { NavLinkProps } from "@/types/navigation";
 
 export const navLinks: NavLinkProps[] = [
   { label: "Feature", href: "#feature" },
-  { label: "Template", href: "#template" },
+  { label: "Design", href: "#design" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Contact", href: "#contact" },
+  { label: "Testimoni", href: "#testimoni" },
 ]

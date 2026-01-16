@@ -1,20 +1,20 @@
-import { Button } from "@/components/ui/button"
-import { useGsapRevealUp, useGsapSplitText } from "@/hooks/use-gsap"
-import HeroBackground from "./animation"
-import { HERO_SECTION } from "./constant"
-import Link from "next/link"
-import { useEffect, useRef } from "react"
-import gsap from "gsap"
-import { SplitText } from "gsap/SplitText"
-import { ArrowRight, Sparkles } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { useGsapRevealUp, useGsapSplitText } from "@/hooks/use-gsap";
+import HeroBackground from "./animation";
+import { HERO_SECTION } from "./constant";
+import Link from "next/link";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(SplitText)
+  gsap.registerPlugin(SplitText);
 }
 
-export default function HeroSection() {
-  const titleRef = useRef<HTMLDivElement>(null)
-  useGsapSplitText(titleRef)
+export function HeroSection() {
+  const titleRef = useRef<HTMLDivElement>(null);
+  useGsapSplitText(titleRef);
 
   return (
     // <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -35,18 +35,18 @@ export default function HeroSection() {
 
     //     <div className="mt-12 max-w-xs mx-auto grid grid-cols-2 gap-4">
     //       <Link href={HERO_SECTION.cta.primary.href}>
-    //         <Button 
-    //           size="lg" 
+    //         <Button
+    //           size="lg"
     //           className="w-full rounded-full cursor-pointer"
     //         >
     //           {HERO_SECTION.cta.primary.label}
     //         </Button>
     //       </Link>
-          
+
     //       <Link href={HERO_SECTION.cta.secondary.href}>
-    //         <Button 
-    //           variant="outline" 
-    //           size="lg" 
+    //         <Button
+    //           variant="outline"
+    //           size="lg"
     //           className="w-full hover:text-background rounded-full cursor-pointer"
     //         >
     //           {HERO_SECTION.cta.secondary.label}
@@ -67,7 +67,7 @@ export default function HeroSection() {
 
       <div className="container relative z-10 px-4 py-20 md:py-32">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="text-muted-foreground text-sm tracking-[0.3em] uppercase mb-6 animate-fade-up">
+          <div className="text-muted-foreground text-xs tracking-[0.3em] uppercase mb-6 animate-fade-up">
             {HERO_SECTION.sub}
           </div>
 
@@ -86,22 +86,33 @@ export default function HeroSection() {
                 {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="w-full rounded-full">
+            <Button
+              size="lg"
+              variant="outline"
+              asChild
+              className="w-full rounded-full"
+            >
               <Link href="#template">{HERO_SECTION.cta.secondary.label}</Link>
             </Button>
           </div>
 
           <div className="mt-12 grid grid-cols-3 gap-8 max-w-md mx-auto animate-fade-up">
             <div className="text-center">
-              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">500+</p>
+              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">
+                500+
+              </p>
               <p className="text-sm text-muted-foreground">Pasangan Bahagia</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">50+</p>
+              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">
+                50+
+              </p>
               <p className="text-sm text-muted-foreground">Template Premium</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">4.9</p>
+              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">
+                4.9
+              </p>
               <p className="text-sm text-muted-foreground">Rating Pengguna</p>
             </div>
           </div>
@@ -110,5 +121,5 @@ export default function HeroSection() {
 
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent" />
     </section>
-  )
+  );
 }

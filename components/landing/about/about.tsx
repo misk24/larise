@@ -6,14 +6,14 @@ import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function AboutSection() {
-  const scope = useRef<HTMLDivElement>(null)
+export function AboutSection() {
+  const scope = useRef<HTMLDivElement>(null);
   // useGsapRevealUp(scope, ".data-reveal");
   useGsapSplitText(scope);
 
   return (
     <section className="px-6 py-32">
-      <div 
+      <div
         // ref={scope}
         className="max-w-xl lg:max-w-4xl mx-auto"
       >
@@ -21,12 +21,12 @@ export default function AboutSection() {
           <h2 ref={scope} className="text-3xl">
             {ABOUT_SECTION.title}
           </h2>
-          
+
           <p className="text-muted-foreground leading-relaxed">
             {ABOUT_SECTION.description}
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/landing/navbar";
+import { Navbar } from "@/components/landing/navbar";
 import { begum, satoshi } from "./fonts";
 import "./globals.css";
 

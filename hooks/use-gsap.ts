@@ -225,9 +225,10 @@ export function useGsapSplitText(
 
     gsap.from(split.chars, {
       duration: 2, 
-      y: 48, 
+      x: 24,
+      // y: 24, 
       autoAlpha: 0, 
-      stagger: 0.2,
+      stagger: 0.08,
       ease: "power3.out",
     });
 
