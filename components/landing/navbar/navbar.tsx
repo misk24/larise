@@ -1,10 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { LOGO } from "@/constants/logo";
 import { navLinks } from "@/constants/navigation";
 import { useGsapReveal } from "@/hooks/use-gsap";
 import { useOverlay } from "@/hooks/use-overlay";
-import { LOGIN_BUTTON, LOGO } from "./constant";
+import { LOGIN_BUTTON } from "./constant";
 import MobileHeader from "./mobile-navbar";
 import { Menu } from "lucide-react";
 import Link from "next/link";
@@ -30,7 +31,7 @@ export function Navbar() {
             {navLinks.map((link) => (
               <li
                 key={link.href}
-                className="font-heading hover:text-accent transition-colors"
+                className="text-sm hover:text-accent transition-colors"
               >
                 <Link href={link.href}>{link.label}</Link>
               </li>

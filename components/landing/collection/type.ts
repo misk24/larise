@@ -1,8 +1,8 @@
-export interface TemplateSectionProps {
+export interface ThemeSectionProps {
   title: string
 }
 
-export interface TemplateProps {
+export interface ThemeProps {
   id: number
   name: string
   category: string

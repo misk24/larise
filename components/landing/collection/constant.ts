@@ -1,10 +1,10 @@
-import { TemplateProps, TemplateSectionProps } from "./type";
+import { ThemeProps, ThemeSectionProps } from "./type";
 
-export const TEMPLATE_SECTION: TemplateSectionProps = {
-  title: "Design Collections",
+export const THEME_SECTION: ThemeSectionProps = {
+  title: "Our Collections",
 }
 
-export const TEMPLATES: TemplateProps[] = [
+export const THEMES: ThemeProps[] = [
   {
     id: 1,
     name: "Elegant Rose",

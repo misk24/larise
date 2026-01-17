@@ -41,43 +41,27 @@ export function useGsapReveal(
 
 export function useGsapRevealUp(
   scope: RefObject<HTMLElement | null>, 
-  selector: string,
   options: gsap.TweenVars & { start?: string } = {}
 ) {
   useEffect(() => {
     if (!scope.current) return;
+    const ctx = gsap.context(() => {
+      gsap.from(scope.current!.children, {
+        opacity: 0,
+        y: 24,
+        duration: 2,
+        stagger: 0.4,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: scope.current,
+          start: options.start ?? "top 75%",
+        },
+        ...options
+      });
+    }, scope);
 
-    const parents = scope.current.querySelectorAll(selector);
-    
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          
-          const children = entry.target.querySelectorAll(":scope > *");
-          
-          gsap.fromTo(
-            children,
-            { opacity: 0, y: 24 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 2,
-              stagger: 0.4,
-              ease: "power3.out"
-            }
-          );
-        });
-      },
-    {
-      threshold: 0.25,
-    }
-  );
-
-  parents.forEach((el) => observer.observe(el));
-
-  return () => observer.disconnect();
-  }, [scope, selector]);
+    return () => ctx.revert();
+  }, []);
 }
 
 export function useGsapRevealDown(
@@ -118,7 +102,7 @@ export function useGsapScrollStagger(
         opacity: 0,
         y: 24,
         duration: 2,
-        stagger: 0.4,
+        stagger: 0.2,
         ease: "power3.out",
         scrollTrigger: {
           trigger: scope.current,

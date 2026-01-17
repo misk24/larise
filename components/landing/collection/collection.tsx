@@ -1,5 +1,5 @@
 import { useGsapParallax, useGsapRevealUp } from "@/hooks/use-gsap";
-import { TEMPLATE_SECTION, TEMPLATES } from "./constant";
+import { THEME_SECTION, THEMES } from "./constant";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
@@ -12,39 +12,39 @@ import { Badge } from "@/components/ui/badge";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function TemplateSection() {
-  const templateRef = useRef<HTMLDivElement>(null);
-  // useGsapRevealUp(templateRef);
-  useGsapParallax(templateRef, "[data-template-item]");
+export function ThemeSection() {
+  const themeRef = useRef<HTMLDivElement>(null);
+  useGsapRevealUp(themeRef);
+  useGsapParallax(themeRef, "[data-theme-item]");
 
   return (
-    <section id="design" className="px-6 py-32">
-      <div ref={templateRef} className="max-w-6xl mx-auto">
-        <h2 className="text-3xl mb-16">{TEMPLATE_SECTION.title}</h2>
+    <section id="collections" className="px-6 py-32">
+      <div ref={themeRef} className="max-w-6xl mx-auto">
+        <h2 className="text-3xl md:text-4xl text-center mb-16">{THEME_SECTION.title}</h2>
 
-        <div className=" max-w-2xl mx-auto mb-16">
+        {/* <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-4 text-balance">
-            {TEMPLATE_SECTION.title}
+            {THEME_SECTION.title}
           </h2>
           <p className="text-muted-foreground text-lg">
-            Pilih template yang sesuai dengan tema dan gaya pernikahan Anda
+            Pilih theme yang sesuai dengan tema dan gaya pernikahan Anda
           </p>
-        </div>
+        </div> */}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {TEMPLATES.map((template) => (
+          {THEMES.map((theme) => (
             <Card
-              key={template.id}
+              key={theme.id}
               className="group overflow-hidden bg-card border-border/50 hover:shadow-xl transition-all duration-300"
             >
-              <div className="relative aspect-[2/3] overflow-hidden">
-                <Image
-                  src={template.image || "/placeholder.svg"}
-                  alt={template.name}
+              <div className="relative aspect-2/3 overflow-hidden">
+                {/* <Image
+                  src={theme.image || "/placeholder.svg"}
+                  alt={theme.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                {template.popular && (
+                /> */}
+                {theme.popular && (
                   <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">
                     Populer
                   </Badge>
@@ -52,24 +52,24 @@ export function TemplateSection() {
               </div>
               <CardContent className="p-4">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-                  {template.category}
+                  {theme.category}
                 </p>
                 <h3 className="text-lg font-semibold text-foreground">
-                  {template.name}
+                  {theme.name}
                 </h3>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        {/* <div className="text-center mt-12">
           <Button variant="outline" size="lg" asChild>
             <Link href="/register">
-              Lihat Semua Template
+              Lihat Semua Thema
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

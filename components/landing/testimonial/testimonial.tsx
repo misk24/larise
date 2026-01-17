@@ -55,13 +55,13 @@ export function TestimonialsSection() {
                   &ldquo;{testimonial.content}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
-                  <Image
+                  {/* <Image
                     src={testimonial.image || "/placeholder.svg"}
                     alt={testimonial.name}
                     width={48}
                     height={48}
                     className="rounded-full object-cover"
-                  />
+                  /> */}
                   <div>
                     <p className="font-semibold text-foreground">
                       {testimonial.name}

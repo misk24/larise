@@ -1,6 +1,6 @@
 import { ButtonProps } from "@/types/button";
 
-export interface CtaSectionProps {
+export interface CTASectionProps {
   title: string,
   description: string,
   cta: ButtonProps,

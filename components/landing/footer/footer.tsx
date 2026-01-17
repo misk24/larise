@@ -1,130 +1,40 @@
-import { Heart, Instagram, Mail, Phone } from "lucide-react";
+import { LOGO } from "@/constants/logo";
+import { navLinks } from "@/constants/navigation";
+import { Heart, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
+import { socialLinks } from "./constant";
+import { Icon } from "@iconify/react";
 
 export function Footer() {
   return (
-    <footer className="bg-foreground text-background py-16">
-      <div className="container px-4">
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
-          <div className="md:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <Heart className="h-6 w-6 fill-current" />
-              <span className="text-2xl font-serif font-semibold">Nikahku</span>
-            </Link>
-            <p className="text-background/70 max-w-sm mb-6">
-              Platform undangan pernikahan digital terpercaya di Indonesia.
-              Wujudkan undangan impian Anda dengan mudah dan terjangkau.
-            </p>
-            <div className="flex gap-4">
+    <footer className="bg-foreground text-background pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex flex-col items-center gap-6 mb-8">
+          <Link href="/">
+            <span className="text-2xl font-heading tracking-widest">{LOGO}</span>
+          </Link>
+
+          <div className="flex gap-12">
+            {socialLinks.map((social, index) => (
               <a
-                href="https://instagram.com"
+              key={index}
+                href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-background/70 hover:text-background transition-colors"
-                aria-label="Instagram"
+                className="text-background/60 hover:text-background transition-colors"
+                aria-label={social.label}
               >
-                <Instagram className="h-5 w-5" />
+                <Icon icon={`simple-icons:${social.icon}`} className="h-4 w-4" />
               </a>
-              <a
-                href="mailto:hello@nikahku.id"
-                className="text-background/70 hover:text-background transition-colors"
-                aria-label="Email"
-              >
-                <Mail className="h-5 w-5" />
-              </a>
-              <a
-                href="https://wa.me/6281234567890"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-background/70 hover:text-background transition-colors"
-                aria-label="WhatsApp"
-              >
-                <Phone className="h-5 w-5" />
-              </a>
-            </div>
+            ))}
           </div>
 
-          <div>
-            <h3 className="font-semibold mb-4">Layanan</h3>
-            <ul className="space-y-2 text-background/70">
-              <li>
-                <Link
-                  href="#template"
-                  className="hover:text-background transition-colors"
-                >
-                  Template
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#fitur"
-                  className="hover:text-background transition-colors"
-                >
-                  Fitur
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#harga"
-                  className="hover:text-background transition-colors"
-                >
-                  Harga
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/login"
-                  className="hover:text-background transition-colors"
-                >
-                  Masuk
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-4">Bantuan</h3>
-            <ul className="space-y-2 text-background/70">
-              <li>
-                <Link
-                  href="#"
-                  className="hover:text-background transition-colors"
-                >
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="hover:text-background transition-colors"
-                >
-                  Cara Pemesanan
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="hover:text-background transition-colors"
-                >
-                  Kebijakan Privasi
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="hover:text-background transition-colors"
-                >
-                  Syarat & Ketentuan
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <p className="text-sm text-background/60">Lombok Timur, Nusa Tenggara Barat</p>
         </div>
 
-        <div className="border-t border-background/20 pt-8 text-center text-background/60 text-sm">
-          <p>
-            &copy; {new Date().getFullYear()} Nikahku. Dibuat dengan cinta di
-            Indonesia.
+        <div className="border-t border-background/20 pt-8 text-center text-background/60">
+          <p className="text-sm">
+            &copy; {new Date().getFullYear()} {LOGO}. Crafted with care.
           </p>
         </div>
       </div>

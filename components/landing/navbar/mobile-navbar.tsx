@@ -66,11 +66,11 @@ export default function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
       <Button 
         data-mobile-menu 
         variant="link" 
-        className="mt-24 px-6 font-heading text-3xl text-muted hover:text-accent transition-colors" 
+        className="mt-30 px-6 font-heading text-3xl text-muted hover:text-accent bg-transparent transition-colors" 
         asChild
       >
         <Link href={LOGIN_BUTTON.href}>
-          {LOGIN_BUTTON.label}
+          Login
         </Link>
       </Button>
     </div>
