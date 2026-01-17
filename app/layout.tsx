@@ -1,12 +1,25 @@
-import type { Metadata } from "next";
-import { Navbar } from "@/components/landing/navbar";
+import type { Metadata, Viewport } from "next";
 import { begum, satoshi } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "L A R I S É",
-  description: "Wedding Invitation",
+  title: "LARISÉ",
+  description:
+    "Buat undangan pernikahan digital yang elegan dan personal. Fitur lengkap: RSVP, galeri foto, ucapan & hadiah, countdown, dan musik latar.",
+  keywords: ["undangan pernikahan digital", "wedding invitation", "undangan online", "RSVP online"],
+  authors: [{ name: "LARISÉ" }],
+  openGraph: {
+    title: "LARISÉ - Undangan Pernikahan Digital Premium",
+    description: "Buat undangan pernikahan digital yang elegan dan personal.",
+    type: "website",
+  },
 };
+
+export const viewport: Viewport = {
+  themeColor: "#f7f4ef",
+  width: "device-width",
+  initialScale: 1,
+}
 
 export default function RootLayout({
   children,
@@ -16,7 +29,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${begum.variable} ${satoshi.variable} antialiased`}>
-        <Navbar />
         {children}
       </body>
     </html>
