@@ -14,7 +14,7 @@ export function FeatureSection() {
   return (
     <section id="features" ref={sectionRef} className="px-6 py-32 bg-muted">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl text-center mb-16">{FEATURE_SECTION.title}</h2>
+        <h2 className="text-3xl md:text-4xl mb-16">{FEATURE_SECTION.title}</h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {FEATURE_SECTION.feature.map((feature, index) => (

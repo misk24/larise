@@ -21,7 +21,7 @@ export function Footer() {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-background/60 hover:text-background transition-colors"
+                className="text-background/70 hover:text-background transition-colors"
                 aria-label={social.label}
               >
                 <Icon icon={`simple-icons:${social.icon}`} className="h-4 w-4" />
@@ -29,7 +29,7 @@ export function Footer() {
             ))}
           </div>
 
-          <p className="text-sm text-background/60">Lombok Timur, Nusa Tenggara Barat</p>
+          <p className="text-sm text-background/70">Lombok Timur, Nusa Tenggara Barat</p>
         </div>
 
         <div className="border-t border-background/20 pt-8 text-center text-background/60">

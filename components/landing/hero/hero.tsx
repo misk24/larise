@@ -39,7 +39,7 @@ export function HeroSection() {
 
           <div className="max-w-xs mx-auto grid grid-cols-2 items-center justify-center gap-4 animate-fade-up">
             <Button size="lg" asChild className="w-full rounded-full">
-              <Link href="/register">
+              <Link href={HERO_SECTION.cta.primary.href}>
                 {HERO_SECTION.cta.primary.label}
               </Link>
             </Button>
@@ -49,7 +49,7 @@ export function HeroSection() {
               asChild
               className="w-full rounded-full"
             >
-              <Link href="#template">{HERO_SECTION.cta.secondary.label}</Link>
+              <Link href={HERO_SECTION.cta.secondary.href}>{HERO_SECTION.cta.secondary.label}</Link>
             </Button>
           </div>
 

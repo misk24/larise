@@ -20,7 +20,7 @@ export function CTASection() {
             {CTA_SECTION.title}
           </h2>
 
-          <p className="text-lg opacity-90 mb-8 max-w-xl mx-auto">
+          <p className="text-lg opacity-90 mb-8 max-w-md mx-auto">
             {CTA_SECTION.description}
           </p>
 

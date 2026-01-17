@@ -20,7 +20,7 @@ export function ThemeSection() {
   return (
     <section id="collections" className="px-6 py-32">
       <div ref={themeRef} className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl text-center mb-16">{THEME_SECTION.title}</h2>
+        <h2 className="text-3xl md:text-4xl mb-16">{THEME_SECTION.title}</h2>
 
         {/* <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-4 text-balance">
