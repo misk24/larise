@@ -1,51 +1,31 @@
-import gsap from "gsap";
-import { ABOUT_SECTION } from "./constant";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef } from "react";
-import { useGsapRevealUp } from "@/hooks/use-gsap";
+"use client"
 
-gsap.registerPlugin(ScrollTrigger)
+import { motion } from "framer-motion"
+import { aboutSection } from "./constant"
 
 export function AboutSection() {
-  const aboutRef = useRef<HTMLDivElement>(null);
-  // const contentRef = useRef<HTMLDivElement>(null);
-  useGsapRevealUp(aboutRef);
-
-  // useEffect(() => {
-  //   const element = contentRef.current;
-  //   if (element) {
-  //     gsap.fromTo(element.children,
-  //       { autoAlpha: 0, y: 24 },
-  //       {
-  //         autoAlpha: 1,
-  //         y: 0,
-  //         duration: 1,
-  //         stagger: 0.4,
-  //         ease: "power2.out",
-  //         scrollTrigger: {
-  //           trigger: aboutRef.current,
-  //           start: "center 60%",
-  //           end: "center 20%",
-  //           toggleActions: "play none reverse none",
-  //         }
-  //       }
-  //     );
-  //   }
-  // }, [])
-
   return (
-    <section className="px-6 py-32">
-      <div className="max-w-xl lg:max-w-4xl mx-auto">
-        <div ref={aboutRef} className="grid md:grid-cols-2 gap-12">
-          <h2 className="text-3xl">
-            {ABOUT_SECTION.title}
-          </h2>
+    <section className="px-6 pt-32 pb-20">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 items-center gap-12 mb-16">
+          <motion.h2
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+          >
+            {aboutSection.title}
+          </motion.h2>
 
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            {ABOUT_SECTION.description}
-          </p>
+          <motion.p 
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="text-muted-foreground leading-relaxed"
+          >
+            {aboutSection.description}
+          </motion.p>
         </div>
       </div>
     </section>
-  );
+  )
 }

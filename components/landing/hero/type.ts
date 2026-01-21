@@ -4,9 +4,8 @@ interface ButtonProps {
 }
 
 export interface HeroSectionProps {
-  sub: string,
   title: string,
-  description: string,
+  sub: string,
   cta: {
     primary: ButtonProps,
     secondary: ButtonProps,

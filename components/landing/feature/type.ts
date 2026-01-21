@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { LucideIcon } from "lucide-react"
 
 interface FeatureProps {
   icon: LucideIcon,
@@ -8,5 +8,5 @@ interface FeatureProps {
 
 export interface FeatureSectionProps {
   title: string,
-  feature: FeatureProps[],
+  features: FeatureProps[],
 }

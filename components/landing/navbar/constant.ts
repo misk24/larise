@@ -1,6 +1,6 @@
-import { ButtonProps } from "@/types/button";
+import { ButtonProps } from "@/types/button"
 
-export const LOGIN_BUTTON: ButtonProps = {
+export const loginButton: ButtonProps = {
   label: "Login",
   href: "/login",
-};
+}

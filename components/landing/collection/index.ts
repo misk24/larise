@@ -1,1 +1,1 @@
-export * from "./collection";
+export { ThemeSection } from "./collection"

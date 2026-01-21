@@ -1,6 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Star } from "lucide-react";
-import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card"
+import { Star } from "lucide-react"
+import Image from "next/image"
 
 const testimonials = [
   {
@@ -27,7 +27,7 @@ const testimonials = [
       "Harga terjangkau dengan fitur yang lengkap. Galeri foto dan musik latarnya membuat undangan jadi lebih personal.",
     rating: 5,
   },
-];
+]
 
 export function TestimonialsSection() {
   return (
@@ -77,5 +77,5 @@ export function TestimonialsSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

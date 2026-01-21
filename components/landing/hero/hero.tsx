@@ -1,82 +1,112 @@
-import { Button } from "@/components/ui/button";
-import { HERO_SECTION } from "./constant";
-import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
-import { useGsapRevealUp } from "@/hooks/use-gsap";
+"use client"
 
-gsap.registerPlugin(ScrollTrigger)
+import { Button } from "@/components/ui/button"
+import { motion, stagger } from "framer-motion"
+import Link from "next/link"
+import { heroSection } from "./constant"
 
 export function HeroSection() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  useGsapRevealUp(heroRef)
-
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-      {/* <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2, ease: "easeOut" }}
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/romantic-wedding-flowers-soft-pink-petals-elegant-.jpg')`,
+          backgroundImage: `url('/images/romantic-wedding-flowers-soft-pink-petals-elegant-.jpg')`,
         }}
       >
         <div className="absolute inset-0 bg-background/85" />
-      </div> */}
+      </motion.div>
 
       <div className="container relative z-10 px-4 py-20 md:py-32">
-        <div ref={heroRef} className="max-w-3xl mx-auto text-center">
-          <div className="text-muted-foreground text-xs tracking-[0.3em] uppercase mb-6 animate-fade-up">
-            {HERO_SECTION.sub}
-          </div>
+        <motion.div 
+          initial="hidden"
+          whileInView="show"
+          variants={{
+            hidden: {},
+            show: {
+              transition: {
+                delayChildren: stagger(0.4)
+              }
+            }
+          }}
+          className="max-w-3xl mx-auto text-center"
+        >
+          <motion.h1 
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 1.2,
+                  ease: "easeOut",
+                }
+              }
+            }}
+            className="mb-8 text-balance"
+          >
+            {heroSection.title}
+          </motion.h1>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl leading-tight mb-8 animate-fade-up text-balance change">
-            {HERO_SECTION.title}
-          </h1>
+          <motion.p 
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 1.2,
+                  ease: "easeOut",
+                }
+              }
+            }}
+            className="text-muted-foreground tracking-[0.3em] uppercase mb-12"
+          >
+            {heroSection.sub}
+          </motion.p>
 
-          <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto animate-fade-up text-pretty">
-            {HERO_SECTION.description}
-          </p>
-
-          <div className="max-w-xs mx-auto grid grid-cols-2 items-center justify-center gap-4 animate-fade-up">
-            <Button size="lg" asChild className="w-full rounded-full">
-              <Link href={HERO_SECTION.cta.primary.href}>
-                {HERO_SECTION.cta.primary.label}
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 1.2,
+                  ease: "easeOut",
+                }
+              }
+            }}
+            className="max-w-xs mx-auto grid grid-cols-2 items-center justify-center gap-4"
+          >
+            <Button 
+              size="lg" 
+              className="rounded-full"
+              asChild
+            >
+              <Link href={heroSection.cta.primary.href}>
+                {heroSection.cta.primary.label}
               </Link>
             </Button>
+
             <Button
               size="lg"
               variant="outline"
+              className="border-background hover:border-accent hover:text-primary-foreground rounded-full"
               asChild
-              className="w-full rounded-full"
             >
-              <Link href={HERO_SECTION.cta.secondary.href}>{HERO_SECTION.cta.secondary.label}</Link>
+              <Link href={heroSection.cta.secondary.href}>
+                {heroSection.cta.secondary.label}
+              </Link>
             </Button>
-          </div>
-
-          {/* <div className="mt-12 grid grid-cols-3 gap-8 max-w-md mx-auto animate-fade-up">
-            <div className="text-center">
-              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">
-                500+
-              </p>
-              <p className="text-sm text-muted-foreground">Pasangan Bahagia</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">
-                50+
-              </p>
-              <p className="text-sm text-muted-foreground">Template Premium</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl md:text-3xl font-serif font-semibold text-primary">
-                4.9
-              </p>
-              <p className="text-sm text-muted-foreground">Rating Pengguna</p>
-            </div>
-          </div> */}
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent" />
     </section>
-  );
+  )
 }

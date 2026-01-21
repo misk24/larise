@@ -1,41 +1,87 @@
-import { Button } from "@/components/ui/button";
-import { useGsapReveal } from "@/hooks/use-gsap";
-import { CTA_SECTION } from "./constant";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Link from "next/link";
-import { useRef } from "react";
+"use client"
 
-gsap.registerPlugin(ScrollTrigger);
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { motion, stagger } from "framer-motion"
+import { ctaSection } from "./constant"
 
 export function CTASection() {
-  const ctaRef = useRef<HTMLDivElement>(null)
-  useGsapReveal(ctaRef)
-
   return (
     <section className="py-20 md:py-32 bg-primary text-primary-foreground">
-      <div className="container px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-serif font-semibold mb-4 text-balance">
-            {CTA_SECTION.title}
-          </h2>
-
-          <p className="text-lg opacity-90 mb-8 max-w-md mx-auto">
-            {CTA_SECTION.description}
-          </p>
-
-          <Button
-            size="lg"
-            variant="secondary"
-            asChild
-            className="px-6 rounded-full"
+      <div className="max-w-3xl mx-auto px-4">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          variants={{
+            hidden: {},
+            show: {
+              transition: {
+                delayChildren: stagger(0.4)
+              }
+            }
+          }}
+          className="text-center"
+        >
+          <motion.h2 
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 1.2,
+                  ease: "easeOut",
+                }
+              }
+            }}
+            className="mb-4 text-balance"
           >
-            <Link href={CTA_SECTION.cta.href}>
-              {CTA_SECTION.cta.label}
-            </Link>
-          </Button>
-        </div>
+            {ctaSection.title}
+          </motion.h2>
+
+          <motion.p 
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 1.2,
+                  ease: "easeOut",
+                }
+              }
+            }}
+            className="opacity-90 mb-8 max-w-md mx-auto"
+          >
+            {ctaSection.description}
+          </motion.p>
+
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 1.2,
+                  ease: "easeOut",
+                }
+              }
+            }}
+          >
+            <Button
+              size="lg"
+              variant="secondary"
+              className="px-6 rounded-full"
+              asChild
+            >
+              <Link href={ctaSection.cta.href}>
+                {ctaSection.cta.label}
+              </Link>
+            </Button>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
-  );
+  )
 }

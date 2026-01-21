@@ -61,21 +61,35 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Dashboard Admin</h1>
-        <p className="text-muted-foreground">Selamat datang di panel administrasi Nikahku</p>
+        <h3 className="">
+          Dashboard
+        </h3>
+
+        <p className="text-muted-foreground">
+          Selamat datang di panel administrasi Nikahku
+        </p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <Card key={index} className="border-border/50">
+          <Card 
+            key={index} 
+            className="border-border/50"
+          >
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
                   <stat.icon className={`h-6 w-6 ${stat.color}`} />
                 </div>
+
                 <div>
-                  <p className="text-2xl font-semibold">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.title}</p>
+                  <p className="text-2xl font-semibold">
+                    {stat.value}
+                  </p>
+
+                  <p className="text-sm text-muted-foreground">
+                    {stat.title}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -86,9 +100,15 @@ export default async function AdminDashboardPage() {
       <div className="grid lg:grid-cols-2 gap-6">
         <Card className="border-border/50">
           <CardHeader>
-            <CardTitle className="text-lg">Pengguna Terbaru</CardTitle>
-            <CardDescription>5 pengguna yang baru mendaftar</CardDescription>
+            <CardTitle className="text-lg">
+              Pengguna Terbaru
+            </CardTitle>
+
+            <CardDescription>
+              5 pengguna yang baru mendaftar
+            </CardDescription>
           </CardHeader>
+
           <CardContent>
             {/* {recentUsers && recentUsers.length > 0 ? ( */}
               <div className="space-y-4">
@@ -98,9 +118,9 @@ export default async function AdminDashboardPage() {
                     className="flex items-center justify-between py-2 border-b border-border last:border-0"
                   >
                     <div>
-                      <p className="font-medium">"Tanpa Nama"</p>
+                      <p className="font-medium">Tanpa Nama</p>
                       {/* <p className="font-medium">{user.full_name || "Tanpa Nama"}</p> */}
-                      <p className="text-sm text-muted-foreground">"user.email"</p>
+                      <p className="text-sm text-muted-foreground">user.email</p>
                       {/* <p className="text-sm text-muted-foreground">{user.email}</p> */}
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -110,16 +130,24 @@ export default async function AdminDashboardPage() {
                 {/* ))} */}
               </div>
             {/* ) : ( */}
-              <p className="text-muted-foreground text-center py-8">Belum ada pengguna</p>
+              <p className="text-muted-foreground text-center py-8">
+                Belum ada pengguna
+              </p>
             {/* )} */}
           </CardContent>
         </Card>
 
         <Card className="border-border/50">
           <CardHeader>
-            <CardTitle className="text-lg">Pesanan Terbaru</CardTitle>
-            <CardDescription>5 pesanan terakhir</CardDescription>
+            <CardTitle className="text-lg">
+              Pesanan Terbaru
+            </CardTitle>
+
+            <CardDescription>
+              5 pesanan terakhir
+            </CardDescription>
           </CardHeader>
+
           <CardContent>
             {/* {recentOrders && recentOrders.length > 0 ? ( */}
               <div className="space-y-4">
@@ -129,9 +157,9 @@ export default async function AdminDashboardPage() {
                     className="flex items-center justify-between py-2 border-b border-border last:border-0"
                   >
                     <div>
-                      <p className="font-medium">"Tanpa Nama"</p>
+                      <p className="font-medium">Tanpa Nama</p>
                       {/* <p className="font-medium">{order.profiles?.full_name || "Tanpa Nama"}</p> */}
-                      <p className="text-sm text-muted-foreground">"order.package_name"</p>
+                      <p className="text-sm text-muted-foreground">order.package_name</p>
                       {/* <p className="text-sm text-muted-foreground">{order.package_name}</p> */}
                     </div>
                     <div className="text-right">
@@ -142,7 +170,9 @@ export default async function AdminDashboardPage() {
                 {/* ))} */}
               </div>
             {/* ) : ( */}
-              <p className="text-muted-foreground text-center py-8">Belum ada pesanan</p>
+              <p className="text-muted-foreground text-center py-8">
+                Belum ada pesanan
+              </p>
             {/* )} */}
           </CardContent>
         </Card>

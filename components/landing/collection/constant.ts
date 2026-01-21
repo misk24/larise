@@ -1,36 +1,37 @@
-import { ThemeProps, ThemeSectionProps } from "./type";
+import { ThemeProps, ThemeSectionProps } from "./type"
 
-export const THEME_SECTION: ThemeSectionProps = {
+export const themeSection: ThemeSectionProps = {
   title: "Our Collections",
+  sub: "Pilih tema yang sesuai dengan tema dan gaya pernikahan Anda",
 }
 
-export const THEMES: ThemeProps[] = [
+export const themes: ThemeProps[] = [
   {
     id: 1,
     name: "Elegant Rose",
     category: "Elegant",
-    image: "/elegant-rose-gold-wedding-invitation-template-roma.jpg",
+    image: "/images/elegant-rose-gold-wedding-invitation-template-roma.png",
     popular: true,
   },
   {
     id: 2,
     name: "Modern Minimalist",
     category: "Modern",
-    image: "/modern-minimalist-wedding-invitation-clean-white-d.jpg",
+    image: "/images/modern-minimalist-wedding-invitation-clean-white-d.png",
     popular: false,
   },
   {
     id: 3,
     name: "Rustic Garden",
     category: "Rustic",
-    image: "/rustic-garden-wedding-invitation-greenery-botanica.jpg",
+    image: "/images/rustic-garden-wedding-invitation-greenery-botanica.png",
     popular: true,
   },
   {
     id: 4,
     name: "Royal Gold",
     category: "Luxury",
-    image: "/royal-gold-luxury-wedding-invitation-ornate-elegan.jpg",
+    image: "/images/royal-gold-luxury-wedding-invitation-ornate-elegan.jpg",
     popular: false,
   },
 ]

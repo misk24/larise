@@ -1,1 +1,1 @@
-export const LOGO: string = "LARISÉ"
+export const logo: string = "LARISÉ"

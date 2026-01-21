@@ -1,4 +1,6 @@
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata, Viewport } from "next";
+import type React from "react";
 import { begum, satoshi } from "./fonts";
 import "./globals.css";
 
@@ -30,6 +32,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${begum.variable} ${satoshi.variable} antialiased`}>
         {children}
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

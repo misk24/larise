@@ -1,13 +1,13 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
-import { Check } from "lucide-react";
-import Link from "next/link";
+} from "@/components/ui/card"
+import { Check } from "lucide-react"
+import Link from "next/link"
 
 const plans = [
   {
@@ -56,7 +56,7 @@ const plans = [
     ],
     popular: false,
   },
-];
+]
 
 export function PricingSection() {
   return (
@@ -121,5 +121,5 @@ export function PricingSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

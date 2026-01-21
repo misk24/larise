@@ -1,13 +1,12 @@
-"use client";
-
 import { AboutSection } from "@/components/landing/about";
+import { ThemeSection } from "@/components/landing/collection";
 import { CTASection } from "@/components/landing/cta";
 import { FeatureSection } from "@/components/landing/feature";
 import { Footer } from "@/components/landing/footer";
 import { HeroSection } from "@/components/landing/hero";
 import { Navbar } from "@/components/landing/navbar";
 import { PricingSection } from "@/components/landing/pricing";
-import { ThemeSection } from "@/components/landing/collection";
+import { StatSection } from "@/components/landing/stat";
 import { TestimonialsSection } from "@/components/landing/testimonial";
 
 export default function Home() {
@@ -16,6 +15,7 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <AboutSection />
+      <StatSection />
       <FeatureSection />
       <ThemeSection />
       {/* <PricingSection /> */}

@@ -1,1 +1,1 @@
-export * from "./testimonial"
+export { TestimonialsSection } from "./testimonial"

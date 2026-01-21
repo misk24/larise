@@ -1,20 +1,22 @@
-import { Instagram, Mail, Phone } from "lucide-react";
-import { SocialLinkProps } from "./type";
+import { SocialLinkProps } from "./type"
 
 export const socialLinks: SocialLinkProps[] = [
   {
     icon: "whatsapp",
-    label: "Whatsapp",
+    label: "0877-3976-0490",
     href: "https://wa.me/6281234567890",
   },
   {
     icon: "gmail",
-    label: "Email",
-    href: "mailto:hello@larise.id",
+    label: "admin@larise.id",
+    href: "mailto:admin@larise.id",
   },
   {
     icon: "instagram",
-    label: "Instagram",
+    label: "@larise",
     href: "https://instagram.com",
   },
 ]
+
+export const location: string = "Lombok Timur, NTB"
+export const copy: string = "Crafted with care."

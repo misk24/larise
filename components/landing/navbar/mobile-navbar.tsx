@@ -1,14 +1,20 @@
 import { Button } from "@/components/ui/button"
 import { navLinks } from "@/constants/navigation"
 import { useGsapToggleStagger } from "@/hooks/use-gsap"
-import { ArrowUpRight, X } from "lucide-react"
+import { X } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
-import { LOGIN_BUTTON } from "./constant"
+import { loginButton } from "./constant"
 
-interface MobileHeaderProps { isOpen: boolean, onClose: () => void }
+interface MobileHeaderProps { 
+  isOpen: boolean, 
+  onClose: () => void,
+}
 
-export default function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
+export default function MobileHeader({ 
+  isOpen, 
+  onClose, 
+}: MobileHeaderProps) {
   const mobileRef = useRef<HTMLDivElement>(null)
   const skipCloseAnimRef = useRef(false)
   const [visible, setVisible] = useState(isOpen)
@@ -35,10 +41,10 @@ export default function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
     >
       <button 
         onClick={onClose} 
-        className="absolute top-5 right-6 hover:text-accent transition-colors focus:outline-none" 
+        className="absolute top-6 right-8 hover:text-accent transition-colors focus:outline-none" 
         aria-label="Close Menu"
       >
-        <X />
+        <X className="w-4 h-4" />
       </button>
       
       <nav className="mt-24 px-6">
@@ -69,8 +75,8 @@ export default function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
         className="mt-30 px-6 font-heading text-3xl text-muted hover:text-accent bg-transparent transition-colors" 
         asChild
       >
-        <Link href={LOGIN_BUTTON.href}>
-          Login
+        <Link href={loginButton.href}>
+          {loginButton.label}
         </Link>
       </Button>
     </div>
