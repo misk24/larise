@@ -1,16 +1,16 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { createClient } from "@/lib/supabase/client"
 import type { Wish } from "@/types/database"
 import { motion } from "framer-motion"
+import { Loader2, MessageSquareHeart, Send } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Card, CardContent } from "../ui/card"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import { Loader2, MessageSquareHeart, Send } from "lucide-react"
-import { Textarea } from "../ui/textarea"
 
 interface InvitationWishesProps {
   invitationId: string

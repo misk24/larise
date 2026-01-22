@@ -15,25 +15,25 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 
-// interface AdminHeaderProps {
-//   user: User
-//   profile: Profile | null
-// }
+interface AdminHeaderProps {
+  user: User
+  profile: Profile | null
+}
 
-export function AdminHeader() {
-// export function AdminHeader({ user, profile }: AdminHeaderProps) {
+// export function AdminHeader() {
+export function AdminHeader({ user, profile }: AdminHeaderProps) {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
 
-  // const initials =
-  //   profile?.full_name
-  //     ?.split(" ")
-  //     .map((n) => n[0])
-  //     .join("")
-  //     .toUpperCase()
-  //     .slice(0, 2) ||
-  //   user.email?.[0].toUpperCase() ||
-  //   "A"
+  const initials =
+    profile?.full_name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) ||
+    user.email?.[0].toUpperCase() ||
+    "A"
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card">
@@ -112,8 +112,8 @@ export function AdminHeader() {
               className="relative h-10 w-10 rounded-full"
             >
               <Avatar className="h-10 w-10">
-                <AvatarFallback className="bg-primary text-primary-foreground">A</AvatarFallback>
-                {/* <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback> */}
+                {/* <AvatarFallback className="bg-primary text-primary-foreground">A</AvatarFallback> */}
+                <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -127,9 +127,9 @@ export function AdminHeader() {
                 <p className="font-medium">
                   Admin
                 </p>
-                {/* <p className="font-medium">{profile?.full_name || "Admin"}</p> */}
-                <p className="text-sm text-muted-foreground">admin@email.com</p>
-                {/* <p className="text-sm text-muted-foreground">{user.email}</p> */}
+                <p className="font-medium">{profile?.full_name || "Admin"}</p>
+                {/* <p className="text-sm text-muted-foreground">admin@email.com</p> */}
+                <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>
             </div>
 

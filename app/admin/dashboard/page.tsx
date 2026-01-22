@@ -3,48 +3,48 @@ import { createClient } from "@/lib/supabase/server"
 import { FileText, ShoppingCart, TrendingUp, Users } from "lucide-react"
 
 export default async function AdminDashboardPage() {
-  // const supabase = await createClient()
+  const supabase = await createClient()
 
   // Get stats
-  // const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true })
+  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true })
 
-  // const { count: invitationsCount } = await supabase.from("invitations").select("*", { count: "exact", head: true })
+  const { count: invitationsCount } = await supabase.from("invitations").select("*", { count: "exact", head: true })
 
-  // const { count: ordersCount } = await supabase.from("orders").select("*", { count: "exact", head: true })
+  const { count: ordersCount } = await supabase.from("orders").select("*", { count: "exact", head: true })
 
-  // const { data: recentOrders } = await supabase
-  //   .from("orders")
-  //   .select("*, profiles(full_name, email)")
-  //   .order("created_at", { ascending: false })
-  //   .limit(5)
+  const { data: recentOrders } = await supabase
+    .from("orders")
+    .select("*, profiles(full_name, email)")
+    .order("created_at", { ascending: false })
+    .limit(5)
 
-  // const { data: recentUsers } = await supabase
-  //   .from("profiles")
-  //   .select("*")
-  //   .order("created_at", { ascending: false })
-  //   .limit(5)
+  const { data: recentUsers } = await supabase
+    .from("profiles")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(5)
 
   const stats = [
     {
       title: "Total Pengguna",
-      value: 0,
-      // value: usersCount || 0,
+      // value: 0,
+      value: usersCount || 0,
       icon: Users,
       color: "text-primary",
       bgColor: "bg-primary/10",
     },
     {
       title: "Total Undangan",
-      value: 0,
-      // value: invitationsCount || 0,
+      // value: 0,
+      value: invitationsCount || 0,
       icon: FileText,
       color: "text-chart-2",
       bgColor: "bg-chart-2/10",
     },
     {
       title: "Total Pesanan",
-      value: 0,
-      // value: ordersCount || 0,
+      // value: 0,
+      value: ordersCount || 0,
       icon: ShoppingCart,
       color: "text-chart-3",
       bgColor: "bg-chart-3/10",
@@ -110,30 +110,30 @@ export default async function AdminDashboardPage() {
           </CardHeader>
 
           <CardContent>
-            {/* {recentUsers && recentUsers.length > 0 ? ( */}
+            {recentUsers && recentUsers.length > 0 ? (
               <div className="space-y-4">
-                {/* {recentUsers.map((user) => ( */}
+                {recentUsers.map((user) => (
                   <div
-                    // key={user.id}
+                    key={user.id}
                     className="flex items-center justify-between py-2 border-b border-border last:border-0"
                   >
                     <div>
-                      <p className="font-medium">Tanpa Nama</p>
-                      {/* <p className="font-medium">{user.full_name || "Tanpa Nama"}</p> */}
-                      <p className="text-sm text-muted-foreground">user.email</p>
-                      {/* <p className="text-sm text-muted-foreground">{user.email}</p> */}
+                      {/* <p className="font-medium">Tanpa Nama</p> */}
+                      <p className="font-medium">{user.full_name || "Tanpa Nama"}</p>
+                      {/* <p className="text-sm text-muted-foreground">user.email</p> */}
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {/* {new Date(user.created_at).toLocaleDateString("id-ID")} */}
+                      {new Date(user.created_at).toLocaleDateString("id-ID")}
                     </p>
                   </div>
-                {/* ))} */}
+                ))}
               </div>
-            {/* ) : ( */}
+            ) : (
               <p className="text-muted-foreground text-center py-8">
                 Belum ada pengguna
               </p>
-            {/* )} */}
+            )}
           </CardContent>
         </Card>
 
@@ -149,31 +149,31 @@ export default async function AdminDashboardPage() {
           </CardHeader>
 
           <CardContent>
-            {/* {recentOrders && recentOrders.length > 0 ? ( */}
+            {recentOrders && recentOrders.length > 0 ? (
               <div className="space-y-4">
-                {/* {recentOrders.map((order) => ( */}
+                {recentOrders.map((order) => (
                   <div
                     // key={order.id}
                     className="flex items-center justify-between py-2 border-b border-border last:border-0"
                   >
                     <div>
-                      <p className="font-medium">Tanpa Nama</p>
-                      {/* <p className="font-medium">{order.profiles?.full_name || "Tanpa Nama"}</p> */}
-                      <p className="text-sm text-muted-foreground">order.package_name</p>
-                      {/* <p className="text-sm text-muted-foreground">{order.package_name}</p> */}
+                      {/* <p className="font-medium">Tanpa Nama</p> */}
+                      <p className="font-medium">{order.profiles?.full_name || "Tanpa Nama"}</p>
+                      {/* <p className="text-sm text-muted-foreground">order.package_name</p> */}
+                      <p className="text-sm text-muted-foreground">{order.package_name}</p>
                     </div>
                     <div className="text-right">
-                      {/* <p className="font-medium">Rp {order.amount?.toLocaleString("id-ID")}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{order.status}</p> */}
+                      <p className="font-medium">Rp {order.amount?.toLocaleString("id-ID")}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{order.status}</p>
                     </div>
                   </div>
-                {/* ))} */}
+                ))}
               </div>
-            {/* ) : ( */}
+            ) : (
               <p className="text-muted-foreground text-center py-8">
                 Belum ada pesanan
               </p>
-            {/* )} */}
+            )}
           </CardContent>
         </Card>
       </div>

@@ -6,9 +6,9 @@ import { createClient } from "@/lib/supabase/server"
 import { Palette, Plus } from "lucide-react"
 
 export default async function AdminTemplatesPage() {
-  // const supabase = await createClient()
+  const supabase = await createClient()
 
-  // const { data: templates } = await supabase.from("templates").select("*").order("name")
+  const { data: templates } = await supabase.from("templates").select("*").order("name")
 
   return (
     <div className="space-y-6">
@@ -26,11 +26,11 @@ export default async function AdminTemplatesPage() {
       <Card className="border-border/50">
         <CardHeader>
           <CardTitle>Daftar Tema</CardTitle>
-          <CardDescription>Total 0 tema tersedia</CardDescription>
-          {/* <CardDescription>Total {templates?.length || 0} template tersedia</CardDescription> */}
+          {/* <CardDescription>Total 0 tema tersedia</CardDescription> */}
+          <CardDescription>Total {templates?.length || 0} template tersedia</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* {templates && templates.length > 0 ? ( */}
+          {templates && templates.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
                 <TableHeader>
@@ -43,7 +43,7 @@ export default async function AdminTemplatesPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {/* {templates.map((template) => (
+                  {templates.map((template) => (
                     <TableRow key={template.id}>
                       <TableCell className="font-medium">{template.name}</TableCell>
                       <TableCell>{template.category}</TableCell>
@@ -61,16 +61,16 @@ export default async function AdminTemplatesPage() {
                         </Button>
                       </TableCell>
                     </TableRow>
-                  ))} */}
+                  ))}
                 </TableBody>
               </Table>
             </div>
-          {/* ) : ( */}
+          ) : (
             <div className="text-center py-12">
               <Palette className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">Belum ada template</p>
             </div>
-          {/* )} */}
+          )}
         </CardContent>
       </Card>
     </div>

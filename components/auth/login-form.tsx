@@ -63,7 +63,7 @@ export function LoginForm() {
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4">        
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
 

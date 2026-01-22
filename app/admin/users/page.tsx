@@ -5,12 +5,12 @@ import { createClient } from "@/lib/supabase/server"
 import { Users } from "lucide-react"
 
 export default async function AdminUsersPage() {
-  // const supabase = await createClient()
+  const supabase = await createClient()
 
-  // const { data: users } = await supabase
-  //   .from("profiles")
-  //   .select("*, invitations(count)")
-  //   .order("created_at", { ascending: false })
+  const { data: users } = await supabase
+    .from("profiles")
+    .select("*, invitations(count)")
+    .order("created_at", { ascending: false })
 
   return (
     <div className="space-y-6">
@@ -27,11 +27,11 @@ export default async function AdminUsersPage() {
       <Card className="border-border/50">
         <CardHeader>
           <CardTitle>Daftar Pengguna</CardTitle>
-          <CardDescription>Total 0 pengguna terdaftar</CardDescription>
-          {/* <CardDescription>Total {users?.length || 0} pengguna terdaftar</CardDescription> */}
+          {/* <CardDescription>Total 0 pengguna terdaftar</CardDescription> */}
+          <CardDescription>Total {users?.length || 0} pengguna terdaftar</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* {users && users.length > 0 ? ( */}
+          {users && users.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
                 <TableHeader className="bg-primary">
@@ -44,7 +44,7 @@ export default async function AdminUsersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {/* {users.map((user) => (
+                  {users.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.full_name || "-"}</TableCell>
                       <TableCell>{user.email}</TableCell>
@@ -56,16 +56,16 @@ export default async function AdminUsersPage() {
                       <TableCell>{user.invitations?.[0]?.count || 0}</TableCell>
                       <TableCell>{new Date(user.created_at).toLocaleDateString("id-ID")}</TableCell>
                     </TableRow>
-                  ))} */}
+                  ))}
                 </TableBody>
               </Table>
             </div>
-          {/* ) : ( */}
+          ) : (
             <div className="text-center py-12">
               <Users className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">Belum ada pengguna terdaftar</p>
             </div>
-          {/* )} */}
+          )}
         </CardContent>
       </Card>
     </div>

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function AdminSettingsPage() {
   return (
@@ -23,7 +24,7 @@ export default function AdminSettingsPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="siteDescription">Deskripsi</Label>
-            {/* <Textarea id="siteDescription" defaultValue="Platform undangan pernikahan digital terpercaya" rows={3} /> */}
+            <Textarea id="siteDescription" defaultValue="Platform undangan pernikahan digital terpercaya" rows={3} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="contactEmail">Email Kontak</Label>

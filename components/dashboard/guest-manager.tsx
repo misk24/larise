@@ -1,27 +1,27 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { createClient } from "@/lib/supabase/client"
 import type { Guest, RSVP } from "@/types/database"
+import { Check, Copy, Loader2, Plus, Search, Trash2, UserCheck, Users, UserX } from "lucide-react"
 import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Badge } from "../ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Check, Copy, Loader2, Plus, Search, Trash2, UserCheck, Users, UserX } from "lucide-react"
-import { Button } from "../ui/button"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 
 interface GuestManagerProps {
   invitationId: string
   initialGuests: (Guest & { rsvp: RSVP[] })[]
 }
 
-export function GuestManager() {
-// export function GuestManager({ invitationId, initialGuests }: GuestManagerProps) {
-  // const [guests, setGuests] = useState(initialGuests)
+// export function GuestManager() {
+export function GuestManager({ invitationId, initialGuests }: GuestManagerProps) {
+  const [guests, setGuests] = useState(initialGuests)
   const [isLoading, setIsLoading] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -34,11 +34,11 @@ export function GuestManager() {
 
   const supabase = createClient()
 
-  // const filteredGuests = guests.filter(
-  //   (guest) =>
-  //     guest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     guest.phone?.toLowerCase().includes(searchQuery.toLowerCase()),
-  // )
+  const filteredGuests = guests.filter(
+    (guest) =>
+      guest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      guest.phone?.toLowerCase().includes(searchQuery.toLowerCase()),
+  )
 
   // const stats = {
   //   total: guests.length,
@@ -47,72 +47,72 @@ export function GuestManager() {
   //   pending: guests.filter((g) => !g.rsvp?.[0] || g.rsvp[0].status === "pending").length,
   // }
 
-  // async function handleAddGuest(e: React.FormEvent) {
-  //   e.preventDefault()
-  //   setIsLoading(true)
+  async function handleAddGuest(e: React.FormEvent) {
+    e.preventDefault()
+    setIsLoading(true)
 
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("guests")
-  //       .insert({
-  //         invitation_id: invitationId,
-  //         name: newGuest.name,
-  //         phone: newGuest.phone || null,
-  //         email: newGuest.email || null,
-  //       })
-  //       .select("*, rsvp(*)")
-  //       .single()
+    try {
+      const { data, error } = await supabase
+        .from("guests")
+        .insert({
+          invitation_id: invitationId,
+          name: newGuest.name,
+          phone: newGuest.phone || null,
+          email: newGuest.email || null,
+        })
+        .select("*, rsvp(*)")
+        .single()
 
-  //     if (error) {
-  //       toast.error(error.message)
-  //       return
-  //     }
+      if (error) {
+        toast.error(error.message)
+        return
+      }
 
-  //     setGuests((prev) => [...prev, data])
-  //     setNewGuest({ name: "", phone: "", email: "" })
-  //     setIsDialogOpen(false)
-  //     toast.success("Tamu berhasil ditambahkan!")
-  //   } catch {
-  //     toast.error("Terjadi kesalahan")
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+      setGuests((prev) => [...prev, data])
+      setNewGuest({ name: "", phone: "", email: "" })
+      setIsDialogOpen(false)
+      toast.success("Tamu berhasil ditambahkan!")
+    } catch {
+      toast.error("Terjadi kesalahan")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-  // async function handleDeleteGuest(guestId: string) {
-  //   try {
-  //     const { error } = await supabase.from("guests").delete().eq("id", guestId)
+  async function handleDeleteGuest(guestId: string) {
+    try {
+      const { error } = await supabase.from("guests").delete().eq("id", guestId)
 
-  //     if (error) {
-  //       toast.error(error.message)
-  //       return
-  //     }
+      if (error) {
+        toast.error(error.message)
+        return
+      }
 
-  //     setGuests((prev) => prev.filter((g) => g.id !== guestId))
-  //     toast.success("Tamu berhasil dihapus!")
-  //   } catch {
-  //     toast.error("Terjadi kesalahan")
-  //   }
-  // }
+      setGuests((prev) => prev.filter((g) => g.id !== guestId))
+      toast.success("Tamu berhasil dihapus!")
+    } catch {
+      toast.error("Terjadi kesalahan")
+    }
+  }
 
-  // function copyInvitationLink(guestSlug: string) {
-  //   const link = `${window.location.origin}/undangan/${guestSlug}`
-  //   navigator.clipboard.writeText(link)
-  //   setCopiedId(guestSlug)
-  //   toast.success("Link undangan disalin!")
-  //   setTimeout(() => setCopiedId(null), 2000)
-  // }
+  function copyInvitationLink(guestSlug: string) {
+    const link = `${window.location.origin}/undangan/${guestSlug}`
+    navigator.clipboard.writeText(link)
+    setCopiedId(guestSlug)
+    toast.success("Link undangan disalin!")
+    setTimeout(() => setCopiedId(null), 2000)
+  }
 
-  // function getRsvpBadge(rsvp: RSVP[] | undefined) {
-  //   const status = rsvp?.[0]?.status
-  //   if (status === "attending") {
-  //     return <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">Hadir</Badge>
-  //   }
-  //   if (status === "not_attending") {
-  //     return <Badge variant="destructive">Tidak Hadir</Badge>
-  //   }
-  //   return <Badge variant="secondary">Menunggu</Badge>
-  // }
+  function getRsvpBadge(rsvp: RSVP[] | undefined) {
+    // const status = rsvp?.[0]?.status
+    if (status === "attending") {
+      return <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">Hadir</Badge>
+    }
+    if (status === "not_attending") {
+      return <Badge variant="destructive">Tidak Hadir</Badge>
+    }
+    return <Badge variant="secondary">Menunggu</Badge>
+  }
 
   return (
     <div className="space-y-6">
@@ -178,8 +178,8 @@ export function GuestManager() {
                 </Button>
               </DialogTrigger>
               <DialogContent>
-                <form>
-                {/* <form onSubmit={handleAddGuest}> */}
+                {/* <form> */}
+                <form onSubmit={handleAddGuest}>
                   <DialogHeader>
                     <DialogTitle>Tambah Tamu Baru</DialogTitle>
                     <DialogDescription>Masukkan data tamu undangan baru</DialogDescription>
@@ -242,7 +242,7 @@ export function GuestManager() {
             </div>
           </div>
 
-          {/* {filteredGuests.length > 0 ? ( */}
+          {filteredGuests.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
                 <TableHeader>
@@ -255,31 +255,31 @@ export function GuestManager() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {/* {filteredGuests.map((guest) => ( */}
-                    <TableRow>
-                    {/* <TableRow key={guest.id}> */}
-                      {/* <TableCell className="font-medium">{guest.name}</TableCell> */}
-                      {/* <TableCell className="hidden md:table-cell">{guest.phone || "-"}</TableCell> */}
-                      {/* <TableCell>{getRsvpBadge(guest.rsvp)}</TableCell> */}
+                  {filteredGuests.map((guest) => (
+                    // <TableRow>
+                    <TableRow key={guest.id}>
+                      <TableCell className="font-medium">{guest.name}</TableCell>
+                      <TableCell className="hidden md:table-cell">{guest.phone || "-"}</TableCell>
+                      <TableCell>{getRsvpBadge(guest.rsvp)}</TableCell>
                       {/* <TableCell className="hidden md:table-cell">{guest.rsvp?.[0]?.guest_count || "-"}</TableCell> */}
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Button
                             variant="ghost"
                             size="icon"
-                            // onClick={() => copyInvitationLink(guest.slug)}
+                            onClick={() => copyInvitationLink(guest.slug)}
                             title="Salin link undangan"
                           >
-                            {/* {copiedId === guest.slug ? ( */}
+                            {copiedId === guest.slug ? (
                               <Check className="h-4 w-4 text-chart-3" />
-                            {/* ) : ( */}
+                            ) : (
                               <Copy className="h-4 w-4" />
-                            {/* )} */}
+                            )}
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
-                            // onClick={() => handleDeleteGuest(guest.id)}
+                            onClick={() => handleDeleteGuest(guest.id)}
                             className="text-destructive hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -287,18 +287,18 @@ export function GuestManager() {
                         </div>
                       </TableCell>
                     </TableRow>
-                  {/* ))} */}
+                  ))}
                 </TableBody>
               </Table>
             </div>
-          {/* ) : ( */}
+          ) : (
             <div className="text-center py-12">
               <Users className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">
                 {searchQuery ? "Tidak ada tamu yang ditemukan" : "Belum ada tamu. Tambahkan tamu pertama Anda."}
               </p>
             </div>
-          {/* )} */}
+          )}
         </CardContent>
       </Card>
     </div>

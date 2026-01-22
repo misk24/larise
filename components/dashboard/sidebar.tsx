@@ -1,15 +1,15 @@
 "use client"
 
-import type { Profile } from "@/types/database"
-import type { User } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { logo } from "@/constants/logo"
 import { cn } from "@/lib/utils"
+import type { Profile } from "@/types/database"
+import type { User } from "@supabase/supabase-js"
 import { FileText, Heart, ImageIcon, LayoutDashboard, MessageSquareHeart, Settings, Users } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { logo } from "@/constants/logo"
 
 interface DashboardSidebarProps {
   user: User
@@ -25,8 +25,8 @@ const navItems = [
   { href: "/dashboard/pengaturan", icon: Settings, label: "Pengaturan" },
 ]
 
-function SidebarContent() {
-// function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
+// function SidebarContent() {
+function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname()
 
   return (
@@ -46,7 +46,7 @@ function SidebarContent() {
             <Link
               key={item.href}
               href={item.href}
-              // onClick={onItemClick}
+              onClick={onItemClick}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                 isActive
@@ -64,8 +64,8 @@ function SidebarContent() {
   )
 }
 
-export function DashboardSidebar() {
-// export function DashboardSidebar({ user, profile }: DashboardSidebarProps) {
+// export function DashboardSidebar() {
+export function DashboardSidebar({ user, profile }: DashboardSidebarProps) {
   // const isMobile = useMobile()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -92,7 +92,7 @@ export function MobileSidebar() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-64">
-        {/* <SidebarContent onItemClick={() => setIsOpen(false)} /> */}
+        <SidebarContent onItemClick={() => setIsOpen(false)} />
       </SheetContent>
     </Sheet>
   )

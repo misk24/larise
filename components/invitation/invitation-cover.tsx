@@ -1,8 +1,8 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { Heart, Mail } from "lucide-react"
-import { Button } from "../ui/button"
 
 interface InvitationCoverProps {
   groomName: string

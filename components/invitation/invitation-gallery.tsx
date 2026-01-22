@@ -1,9 +1,9 @@
 "use client"
 
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { useState } from "react"
-import { Dialog, DialogContent } from "../ui/dialog"
 
 interface InvitationGalleryProps {
   images: string[]

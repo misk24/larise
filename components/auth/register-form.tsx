@@ -6,17 +6,22 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { logo } from "@/constants/logo"
 import { createClient } from "@/lib/supabase/client"
-import { Loader2 } from "lucide-react"
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { Separator } from "../ui/separator"
+import { Icon } from "@iconify/react"
 
 export function RegisterForm() {
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
@@ -70,27 +75,14 @@ export function RegisterForm() {
   }
 
   return (
-    <Card className="w-full max-w-md border-border/50">
+    <Card className="w-full max-w-md border-none bg-background">
       <CardHeader className="mb-4 text-center">
         <CardTitle className="text-2xl font-heading font-normal tracking-widest">{logo}</CardTitle>
         <CardDescription>Mulai buat undangan pernikahan digital Anda</CardDescription>
       </CardHeader>
 
-        {/* <form> */}
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Nama Lengkap</Label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="Nama lengkap Anda"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-                disabled={isLoading}
-              />
-            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -105,43 +97,77 @@ export function RegisterForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => setIsPasswordVisible(prevState => !prevState)}
+                  className='text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent'
+                >
+                  {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                  <span className='sr-only'>{isPasswordVisible ? 'Hide password' : 'Show password'}</span>
+                </Button>
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => setIsPasswordVisible(prevState => !prevState)}
+                  className='text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent'
+                >
+                  {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                  <span className='sr-only'>{isPasswordVisible ? 'Hide password' : 'Show password'}</span>
+                </Button>
+              </div>
             </div>
           </CardContent>
 
           <CardFooter className="mt-8 flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Daftar
             </Button>
+            
+              <p className="text-sm text-muted-foreground text-center">
+                Sudah punya akun?{" "}
+                <Link href="/login" className="text-primary hover:underline">
+                  Masuk di sini
+                </Link>
+              </p>
+              
+              <div className="w-full space-y-4">
+                <div className='flex items-center gap-4'>
+                  <Separator className='flex-1' />
+                  <p>or</p>
+                  <Separator className='flex-1' />
+                </div>
 
-            <p className="text-sm text-muted-foreground text-center">
-              Sudah punya akun?{" "}
-              <Link href="/login" className="text-primary hover:underline">
-                Masuk di sini
-              </Link>
-            </p>
+                <Button variant='outline' size="lg" className='w-full'>
+                  <Icon icon="simple-icons:google" className="w-4 h-4" />
+                  <span>Sign in with google</span>
+                </Button>
+              </div>
           </CardFooter>
         </form>
     </Card>

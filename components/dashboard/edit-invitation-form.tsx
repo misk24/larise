@@ -1,21 +1,21 @@
 "use client"
 
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 import { createClient } from "@/lib/supabase/client"
 import type { Invitation, Template } from "@/types/database"
+import { ExternalLink, Loader2, Save, Trash2 } from "lucide-react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Label } from "../ui/label"
-import { Button } from "../ui/button"
-import Link from "next/link"
-import { ExternalLink, Loader2, Save, Trash2 } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Input } from "../ui/input"
-import { Switch } from "../ui/switch"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
-import { Textarea } from "../ui/textarea"
 
 interface EditInvitationFormProps {
   invitation: Invitation & { templates: Template | null }
@@ -25,81 +25,81 @@ interface EditInvitationFormProps {
 export function EditInvitationForm({ invitation, templates }: EditInvitationFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  // const [formData, setFormData] = useState({
-  //   templateId: invitation.template_id || "",
-  //   groomName: invitation.groom_name || "",
-  //   brideName: invitation.bride_name || "",
-  //   groomParents: invitation.groom_parents || "",
-  //   brideParents: invitation.bride_parents || "",
-  //   eventDate: invitation.event_date || "",
-  //   eventTime: invitation.event_time || "",
-  //   akadTime: invitation.akad_time || "",
-  //   venue: invitation.venue_name || "",
-  //   venueAddress: invitation.venue_address || "",
-  //   akadVenue: invitation.akad_venue || "",
-  //   akadVenueAddress: invitation.akad_address || "",
-  //   slug: invitation.slug || "",
-  //   loveStory: invitation.love_story || "",
-  //   bankName: invitation.bank_name || "",
-  //   bankAccount: invitation.bank_account || "",
-  //   bankHolder: invitation.bank_holder || "",
-  //   isPublished: invitation.is_published || false,
-  // })
+  const [formData, setFormData] = useState({
+    templateId: invitation.template_id || "",
+    groomName: invitation.groom_name || "",
+    brideName: invitation.bride_name || "",
+    // groomParents: invitation.groom_parents || "",
+    // brideParents: invitation.bride_parents || "",
+    // eventDate: invitation.event_date || "",
+    // eventTime: invitation.event_time || "",
+    akadTime: invitation.akad_time || "",
+    // venue: invitation.venue_name || "",
+    // venueAddress: invitation.venue_address || "",
+    // akadVenue: invitation.akad_venue || "",
+    akadVenueAddress: invitation.akad_address || "",
+    slug: invitation.slug || "",
+    loveStory: invitation.love_story || "",
+    // bankName: invitation.bank_name || "",
+    // bankAccount: invitation.bank_account || "",
+    // bankHolder: invitation.bank_holder || "",
+    isPublished: invitation.is_published || false,
+  })
 
   const router = useRouter()
   const supabase = createClient()
 
-  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-  //   const { name, value } = e.target
-  //   setFormData((prev) => ({ ...prev, [name]: value }))
-  // }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
-  // async function handleSubmit(e: React.FormEvent) {
-  //   e.preventDefault()
-  //   setIsLoading(true)
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setIsLoading(true)
 
-  //   try {
-  //     const { error } = await supabase
-  //       .from("invitations")
-  //       .update({
-  //         template_id: formData.templateId,
-  //         slug: formData.slug,
-  //         groom_name: formData.groomName,
-  //         bride_name: formData.brideName,
-  //         groom_parents: formData.groomParents,
-  //         bride_parents: formData.brideParents,
-  //         event_date: formData.eventDate,
-  //         event_time: formData.eventTime,
-  //         akad_time: formData.akadTime,
-  //         venue_name: formData.venue,
-  //         venue_address: formData.venueAddress,
-  //         akad_venue: formData.akadVenue,
-  //         akad_address: formData.akadVenueAddress,
-  //         love_story: formData.loveStory,
-  //         bank_name: formData.bankName,
-  //         bank_account: formData.bankAccount,
-  //         bank_holder: formData.bankHolder,
-  //         is_published: formData.isPublished,
-  //       })
-  //       .eq("id", invitation.id)
+    try {
+      const { error } = await supabase
+        .from("invitations")
+        .update({
+          template_id: formData.templateId,
+          slug: formData.slug,
+          groom_name: formData.groomName,
+          bride_name: formData.brideName,
+          // groom_parents: formData.groomParents,
+          // bride_parents: formData.brideParents,
+          // event_date: formData.eventDate,
+          // event_time: formData.eventTime,
+          akad_time: formData.akadTime,
+          // venue_name: formData.venue,
+          // venue_address: formData.venueAddress,
+          // akad_venue: formData.akadVenue,
+          akad_address: formData.akadVenueAddress,
+          love_story: formData.loveStory,
+          // bank_name: formData.bankName,
+          // bank_account: formData.bankAccount,
+          // bank_holder: formData.bankHolder,
+          is_published: formData.isPublished,
+        })
+        .eq("id", invitation.id)
 
-  //     if (error) {
-  //       if (error.code === "23505") {
-  //         toast.error("URL undangan sudah digunakan. Silakan ubah.")
-  //       } else {
-  //         toast.error(error.message)
-  //       }
-  //       return
-  //     }
+      if (error) {
+        if (error.code === "23505") {
+          toast.error("URL undangan sudah digunakan. Silakan ubah.")
+        } else {
+          toast.error(error.message)
+        }
+        return
+      }
 
-  //     toast.success("Undangan berhasil diperbarui!")
-  //     router.refresh()
-  //   } catch {
-  //     toast.error("Terjadi kesalahan. Silakan coba lagi.")
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+      toast.success("Undangan berhasil diperbarui!")
+      router.refresh()
+    } catch {
+      toast.error("Terjadi kesalahan. Silakan coba lagi.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   async function handleDelete() {
     setIsDeleting(true)
@@ -122,30 +122,30 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
   }
 
   return (
-    <form>
-    {/* <form onSubmit={handleSubmit}> */}
+    // <form>
+    <form onSubmit={handleSubmit}>
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex items-center gap-3">
           <Switch
             id="published"
-            // checked={formData.isPublished}
-            // onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isPublished: checked }))}
+            checked={formData.isPublished}
+            onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isPublished: checked }))}
           />
           <Label htmlFor="published" className="cursor-pointer">
-            Draft
-            {/* {formData.isPublished ? "Dipublikasi" : "Draft"} */}
+            {/* Draft */}
+            {formData.isPublished ? "Dipublikasi" : "Draft"}
           </Label>
         </div>
         <div className="flex-1" />
-        {/* {formData.isPublished && ( */}
+        {formData.isPublished && (
           <Button type="button" variant="outline" asChild>
-            <Link href="" target="_blank">
-            {/* <Link href={`/undangan/${formData.slug}`} target="_blank"> */}
+            {/* <Link href="" target="_blank"> */}
+            <Link href={`/undangan/${formData.slug}`} target="_blank">
               <ExternalLink className="mr-2 h-4 w-4" />
               Lihat Undangan
             </Link>
           </Button>
-        {/* )} */}
+        )}
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button type="button" variant="destructive">
@@ -202,8 +202,8 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                   <Input
                     id="groomName"
                     name="groomName"
-                    // value={formData.groomName}
-                    // onChange={handleInputChange}
+                    value={formData.groomName}
+                    onChange={handleInputChange}
                     placeholder="Nama lengkap"
                   />
                 </div>
@@ -213,7 +213,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                     id="groomParents"
                     name="groomParents"
                     // value={formData.groomParents}
-                    // onChange={handleInputChange}
+                    onChange={handleInputChange}
                     placeholder="Putra dari Bapak ... dan Ibu ..."
                     rows={2}
                   />
@@ -225,8 +225,8 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                   <Input
                     id="brideName"
                     name="brideName"
-                    // value={formData.brideName}
-                    // onChange={handleInputChange}
+                    value={formData.brideName}
+                    onChange={handleInputChange}
                     placeholder="Nama lengkap"
                   />
                 </div>
@@ -236,7 +236,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                     id="brideParents"
                     name="brideParents"
                     // value={formData.brideParents}
-                    // onChange={handleInputChange}
+                    onChange={handleInputChange}
                     placeholder="Putri dari Bapak ... dan Ibu ..."
                     rows={2}
                   />
@@ -261,7 +261,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                     name="eventDate"
                     type="date"
                     // value={formData.eventDate}
-                    // onChange={handleInputChange}
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div className="space-y-2">
@@ -270,8 +270,8 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                     id="akadTime"
                     name="akadTime"
                     type="time"
-                    // value={formData.akadTime}
-                    // onChange={handleInputChange}
+                    value={formData.akadTime}
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div className="space-y-2">
@@ -281,7 +281,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                     name="eventTime"
                     type="time"
                     // value={formData.eventTime}
-                    // onChange={handleInputChange}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -294,7 +294,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                       id="akadVenue"
                       name="akadVenue"
                       // value={formData.akadVenue}
-                      // onChange={handleInputChange}
+                      onChange={handleInputChange}
                       placeholder="Nama gedung/tempat akad"
                     />
                   </div>
@@ -303,8 +303,8 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                     <Textarea
                       id="akadVenueAddress"
                       name="akadVenueAddress"
-                      // value={formData.akadVenueAddress}
-                      // onChange={handleInputChange}
+                      value={formData.akadVenueAddress}
+                      onChange={handleInputChange}
                       placeholder="Alamat lengkap"
                       rows={2}
                     />
@@ -317,7 +317,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                       id="venue"
                       name="venue"
                       // value={formData.venue}
-                      // onChange={handleInputChange}
+                      onChange={handleInputChange}
                       placeholder="Nama gedung/tempat resepsi"
                     />
                   </div>
@@ -327,7 +327,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                       id="venueAddress"
                       name="venueAddress"
                       // value={formData.venueAddress}
-                      // onChange={handleInputChange}
+                      onChange={handleInputChange}
                       placeholder="Alamat lengkap"
                       rows={2}
                     />
@@ -342,8 +342,8 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                   <Input
                     id="slug"
                     name="slug"
-                    // value={formData.slug}
-                    // onChange={handleInputChange}
+                    value={formData.slug}
+                    onChange={handleInputChange}
                     placeholder="nama-url"
                     className="flex-1"
                   />
@@ -365,8 +365,8 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                 <Textarea
                   id="loveStory"
                   name="loveStory"
-                  // value={formData.loveStory}
-                  // onChange={handleInputChange}
+                  value={formData.loveStory}
+                  onChange={handleInputChange}
                   placeholder="Ceritakan bagaimana kalian bertemu dan jatuh cinta..."
                   rows={8}
                 />
@@ -388,7 +388,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                   id="bankName"
                   name="bankName"
                   // value={formData.bankName}
-                  // onChange={handleInputChange}
+                  onChange={handleInputChange}
                   placeholder="BCA, Mandiri, BNI, dll"
                 />
               </div>
@@ -398,7 +398,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                   id="bankAccount"
                   name="bankAccount"
                   // value={formData.bankAccount}
-                  // onChange={handleInputChange}
+                  onChange={handleInputChange}
                   placeholder="1234567890"
                 />
               </div>
@@ -408,7 +408,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
                   id="bankHolder"
                   name="bankHolder"
                   // value={formData.bankHolder}
-                  // onChange={handleInputChange}
+                  onChange={handleInputChange}
                   placeholder="Nama sesuai rekening"
                 />
               </div>

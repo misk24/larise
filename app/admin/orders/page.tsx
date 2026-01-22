@@ -5,12 +5,12 @@ import { createClient } from "@/lib/supabase/server"
 import { ShoppingCart } from "lucide-react"
 
 export default async function AdminOrdersPage() {
-  // const supabase = await createClient()
+  const supabase = await createClient()
 
-  // const { data: orders } = await supabase
-  //   .from("orders")
-  //   .select("*, profiles(full_name, email)")
-  //   .order("created_at", { ascending: false })
+  const { data: orders } = await supabase
+    .from("orders")
+    .select("*, profiles(full_name, email)")
+    .order("created_at", { ascending: false })
 
   function getStatusBadge(status: string) {
     switch (status) {
@@ -35,11 +35,11 @@ export default async function AdminOrdersPage() {
       <Card className="border-border/50">
         <CardHeader>
           <CardTitle>Daftar Pesanan</CardTitle>
-          <CardDescription>Total 0 pesanan</CardDescription>
-          {/* <CardDescription>Total {orders?.length || 0} pesanan</CardDescription> */}
+          {/* <CardDescription>Total 0 pesanan</CardDescription> */}
+          <CardDescription>Total {orders?.length || 0} pesanan</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* {orders && orders.length > 0 ? ( */}
+          {orders && orders.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
                 <TableHeader>
@@ -53,7 +53,7 @@ export default async function AdminOrdersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {/* {orders.map((order) => (
+                  {orders.map((order) => (
                     <TableRow key={order.id}>
                       <TableCell className="font-mono text-xs">{order.id.slice(0, 8)}...</TableCell>
                       <TableCell>
@@ -67,16 +67,16 @@ export default async function AdminOrdersPage() {
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
                       <TableCell>{new Date(order.created_at).toLocaleDateString("id-ID")}</TableCell>
                     </TableRow>
-                  ))} */}
+                  ))}
                 </TableBody>
               </Table>
             </div>
-          {/* ) : (
+          ) : (
             <div className="text-center py-12">
               <ShoppingCart className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">Belum ada pesanan</p>
             </div>
-          )} */}
+          )}
         </CardContent>
       </Card>
     </div>

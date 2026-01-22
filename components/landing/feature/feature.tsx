@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, stagger } from "framer-motion"
+import { motion } from "framer-motion"
 import { featureSection } from "./constant"
 
 export function FeatureSection() {
