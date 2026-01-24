@@ -18,11 +18,11 @@ export function Footer() {
           transition={{ duration: 1.2, ease: "easeOut" }}
           className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8"
         >
-          <Link href="/">
+          {/* <Link href="/"> */}
             <span className="text-2xl font-logo tracking-widest">
               {logo}
             </span>
-          </Link>
+          {/* </Link> */}
 
           <div>
             <h4 className="mb-4">

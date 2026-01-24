@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { logo } from "@/constants/logo"
-import { signInWithEmail, signInWithGoogle } from "@/lib/actions/auth"
+import { signInWithEmail } from "@/lib/actions/auth"
+import { createClient } from "@/lib/supabase/client"
 import { Icon } from "@iconify/react"
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"
 import Link from "next/link"
@@ -20,6 +21,7 @@ export function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isSubmitLoading, setIsSubmitLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const supabase = createClient()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -40,26 +42,20 @@ export function LoginForm() {
   }
 
   async function handleGoogle() {
-    setIsGoogleLoading(true)
+  setIsGoogleLoading(true)
 
-    try {
-      const result = await signInWithGoogle()
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${location.origin}/auth/callback`,
+    },
+  })
 
-      if (!result) {
-        throw new Error("No response from authentication service")
-      }
-
-      if ("error" in result) {
-        toast.error(result.error)
-        setIsGoogleLoading(false)
-        return
-      }
-    } catch (error) {
-      console.error("Google sign in error:", error)
-      toast.error("Gagal login dengan Google.")
-      setIsGoogleLoading(false)
-    }
+  if (error) {
+    toast.error(error.message)
+    setIsGoogleLoading(false)
   }
+}
 
   return (
     <Card className="w-full max-w-md border-none bg-primary-foreground">

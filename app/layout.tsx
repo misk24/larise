@@ -1,8 +1,8 @@
-import { Toaster } from "@/components/ui/sonner";
-import type { Metadata, Viewport } from "next";
-import type React from "react";
-import { begum, rosehot, satoshi } from "./fonts";
-import "./globals.css";
+import { Toaster } from "@/components/ui/sonner"
+import type { Metadata, Viewport } from "next"
+import type React from "react"
+import { begum, rosehot, satoshi } from "./fonts"
+import "./globals.css"
 
 export const metadata: Metadata = {
   title: "LARISÉ",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     description: "Buat undangan pernikahan digital yang elegan dan personal.",
     type: "website",
   },
-};
+}
 
 export const viewport: Viewport = {
   themeColor: "#f7f4ef",
@@ -26,7 +26,7 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
@@ -35,5 +35,5 @@ export default function RootLayout({
         <Toaster position="top-center" richColors />
       </body>
     </html>
-  );
+  )
 }

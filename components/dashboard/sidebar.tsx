@@ -25,7 +25,6 @@ const navItems = [
   { href: "/dashboard/settings", icon: Settings, label: "Pengaturan" },
 ]
 
-// function SidebarContent() {
 function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname()
 
@@ -33,7 +32,7 @@ function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-heading font-normal tracking-widest">
+          <span className="text-xl font-logo font-normal tracking-widest">
             {logo}
           </span>
         </Link>
@@ -64,7 +63,6 @@ function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
   )
 }
 
-// export function DashboardSidebar() {
 export function DashboardSidebar({ user, profile }: DashboardSidebarProps) {
   // const isMobile = useMobile()
   const [isOpen, setIsOpen] = useState(false)

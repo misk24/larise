@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { logo } from "@/constants/logo"
-import { signInWithGoogle, signUpWithEmail } from "@/lib/actions/auth"
+import { signUpWithEmail } from "@/lib/actions/auth"
 import { createClient } from "@/lib/supabase/client"
 import { Icon } from "@iconify/react"
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"
@@ -61,22 +61,16 @@ export function RegisterForm() {
 
   async function handleGoogle() {
     setIsGoogleLoading(true)
-
-    try {
-      const result = await signInWithGoogle()
-
-      if (!result) {
-        throw new Error("No response from authentication service")
-      }
-
-      if ("error" in result) {
-        toast.error(result.error)
-        setIsGoogleLoading(false)
-        return
-      }
-    } catch (error) {
-      console.error("Google sign in error:", error)
-      toast.error("Gagal login dengan Google.")
+  
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    })
+  
+    if (error) {
+      toast.error(error.message)
       setIsGoogleLoading(false)
     }
   }
@@ -206,7 +200,7 @@ export function RegisterForm() {
             )}
   
             <span>
-              {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
+              {isGoogleLoading ? "Redirecting..." : "Sign up with Google"}
             </span>
           </Button>
         </div>
