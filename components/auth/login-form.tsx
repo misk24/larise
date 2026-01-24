@@ -4,85 +4,62 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
 import { logo } from "@/constants/logo"
-import { createClient } from "@/lib/supabase/client"
+import { signInWithEmail, signInWithGoogle } from "@/lib/actions/auth"
+import { Icon } from "@iconify/react"
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Separator } from "../ui/separator"
-import { Icon } from "@iconify/react"
-// import { signInWithEmail, signInWithGoogle } from "@/lib/actions/auth"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const router = useRouter()
-  const supabase = createClient()
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setIsLoading(true)
+    setIsSubmitLoading(true)
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      const result = await signInWithEmail(email, password)
 
-      if (error) {
-        toast.error(error.message)
+      if (result?.error) {
+        toast.error(result.error)
+        setIsSubmitLoading(false)
         return
-      }
-
-      if (data.user) {
-        // Check if user is admin
-        const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).single()
-
-        toast.success("Berhasil masuk!")
-
-        if (profile?.role === "admin") {
-          router.push("/admin/dashboard")
-        } else {
-          router.push("/dashboard")
-        }
-        router.refresh()
       }
     } catch {
       toast.error("Terjadi kesalahan. Silakan coba lagi.")
-    } finally {
-      setIsLoading(false)
+      setIsSubmitLoading(false)
     }
   }
 
+  async function handleGoogle() {
+    setIsGoogleLoading(true)
 
-  // async function handleGoogle() {
-  //   setIsLoading(true)
+    try {
+      const result = await signInWithGoogle()
 
-  //   try {
-  //     const result = await signInWithGoogle()
+      if (!result) {
+        throw new Error("No response from authentication service")
+      }
 
-  //     if (!result) {
-  //       throw new Error("No response from authentication service")
-  //     }
-
-  //     if ("error" in result) {
-  //       toast.error(result.error)
-  //       setIsLoading(false)
-  //       return
-  //     }
-
-  //     // redirect ke Google terjadi di server
-  //   } catch (error) {
-  //     console.error("Google sign in error:", error)
-  //     toast.error("Gagal login dengan Google.")
-  //     setIsLoading(false)
-  //   }
-  // }
+      if ("error" in result) {
+        toast.error(result.error)
+        setIsGoogleLoading(false)
+        return
+      }
+    } catch (error) {
+      console.error("Google sign in error:", error)
+      toast.error("Gagal login dengan Google.")
+      setIsGoogleLoading(false)
+    }
+  }
 
   return (
     <Card className="w-full max-w-md border-none bg-primary-foreground">
@@ -102,7 +79,7 @@ export function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={isLoading}
+              disabled={isSubmitLoading}
             />
           </div>
 
@@ -116,7 +93,7 @@ export function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                disabled={isLoading}
+                disabled={isSubmitLoading}
               />
               <Button
                 type="button"
@@ -126,35 +103,66 @@ export function LoginForm() {
                 className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
               >
                 {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
-                <span className="sr-only">{isPasswordVisible ? "Hide password" : "Show password"}</span>
+                <span className="sr-only">
+                  {isPasswordVisible ? "Hide password" : "Show password"}
+                </span>
               </Button>
             </div>
           </div>
-        
-          <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        </CardContent>
+
+        <CardFooter className="mt-4">
+          <Button 
+            type="submit" 
+            size="lg" 
+            className="w-full" 
+            disabled={isSubmitLoading}
+          >
+            {isSubmitLoading && 
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            }
             Masuk
           </Button>
-
-          <p className="text-sm text-muted-foreground text-center">
-            Belum punya akun?{" "}
-            <Link href="/register" className="text-primary hover:underline">
-              Daftar sekarang
-            </Link>
-          </p>
-        </CardContent>
+        </CardFooter>
       </form>
 
       <div className="w-full px-6 space-y-4">
+        <p className="text-sm text-muted-foreground text-center">
+          Belum punya akun?{" "}
+          <Link 
+            href="/register" 
+            className="text-primary hover:underline"
+          >
+            Daftar sekarang
+          </Link>
+        </p>
+
         <div className="flex items-center gap-4">
           <Separator className="flex-1" />
           <p>or</p>
           <Separator className="flex-1" />
         </div>
 
-        <Button type="button" variant="outline" size="lg" className="w-full gap-2">
-          <Icon icon="logos:google-icon" className="w-4 h-4" />
-          <span>Continue with google</span>
+        <Button 
+          type="button" 
+          variant="outline" 
+          size="lg" 
+          className="w-full gap-2 hover:text-primary-foreground"
+          onClick={handleGoogle}
+          disabled={isGoogleLoading}
+        >
+          {isGoogleLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Icon
+              icon="logos:google-icon"
+              className="h-4 w-4"
+            />
+          )}
+
+          <span>
+            {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
+          </span>
         </Button>
       </div>
     </Card>

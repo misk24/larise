@@ -4,16 +4,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
 import { logo } from "@/constants/logo"
+import { signInWithGoogle, signUpWithEmail } from "@/lib/actions/auth"
 import { createClient } from "@/lib/supabase/client"
+import { Icon } from "@iconify/react"
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Separator } from "../ui/separator"
-import { Icon } from "@iconify/react"
 
 export function RegisterForm() {
   const [email, setEmail] = useState("")
@@ -21,7 +22,8 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false)
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -38,35 +40,44 @@ export function RegisterForm() {
       return
     }
 
-    setIsLoading(true)
+    setIsSubmitLoading(true)
 
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/dashboard`,
-        },
-      })
+      const result = await signUpWithEmail(email, password)
 
-      if (error) {
-        toast.error(error.message)
+      if (result?.error) {
+        toast.error(result.error)
+        setIsSubmitLoading(false)
         return
       }
 
-      if (data.user) {
-        if (data.user.identities?.length === 0) {
-          toast.error("Email sudah terdaftar. Silakan masuk.")
-          return
-        }
-
-        toast.success("Registrasi berhasil! Silakan cek email untuk verifikasi.")
-        router.push("/login")
-      }
+      toast.success("Registrasi berhasil. Mengalihkan...")
     } catch {
       toast.error("Terjadi kesalahan. Silakan coba lagi.")
     } finally {
-      setIsLoading(false)
+      setIsSubmitLoading(false)
+    }
+  }
+
+  async function handleGoogle() {
+    setIsGoogleLoading(true)
+
+    try {
+      const result = await signInWithGoogle()
+
+      if (!result) {
+        throw new Error("No response from authentication service")
+      }
+
+      if ("error" in result) {
+        toast.error(result.error)
+        setIsGoogleLoading(false)
+        return
+      }
+    } catch (error) {
+      console.error("Google sign in error:", error)
+      toast.error("Gagal login dengan Google.")
+      setIsGoogleLoading(false)
     }
   }
 
@@ -88,7 +99,7 @@ export function RegisterForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                disabled={isLoading}
+                disabled={isSubmitLoading}
               />
             </div>
             <div className="space-y-2">
@@ -101,7 +112,7 @@ export function RegisterForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  disabled={isLoading}
+                  disabled={isSubmitLoading}
                 />
                 <Button
                   type="button"
@@ -111,7 +122,9 @@ export function RegisterForm() {
                   className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                 >
                   {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
-                  <span className="sr-only">{isPasswordVisible ? "Hide password" : "Show password"}</span>
+                  <span className="sr-only">
+                    {isPasswordVisible ? "Hide password" : "Show password"}
+                  </span>
                 </Button>
               </div>
             </div>
@@ -125,7 +138,7 @@ export function RegisterForm() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  disabled={isLoading}
+                  disabled={isSubmitLoading}
                 />
                 <Button
                   type="button"
@@ -135,15 +148,24 @@ export function RegisterForm() {
                   className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                 >
                   {isConfirmPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
-                  <span className="sr-only">{isConfirmPasswordVisible ? "Hide password" : "Show password"}</span>
+                  <span className="sr-only">
+                    {isConfirmPasswordVisible ? "Hide password" : "Show password"}
+                  </span>
                 </Button>
               </div>
             </div>
           </CardContent>
 
-          <CardFooter className="mt-8 flex flex-col gap-4">
-            <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <CardFooter className="mt-4">
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="w-full" 
+              disabled={isSubmitLoading}
+            >
+              {isSubmitLoading && 
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              }
               Daftar
             </Button>
           </CardFooter>
@@ -152,7 +174,10 @@ export function RegisterForm() {
         <div className="w-full px-6 space-y-4">
           <p className="text-sm text-muted-foreground text-center">
             Sudah punya akun?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link 
+              href="/login" 
+              className="text-primary hover:underline"
+            >
               Masuk di sini
             </Link>
           </p>
@@ -163,9 +188,26 @@ export function RegisterForm() {
             <Separator className="flex-1" />
           </div>
 
-          <Button variant="outline" size="lg" className="w-full">
-            <Icon icon="logos:google-icon" className="w-4 h-4" />
-            <span>Sign up with google</span>
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="lg" 
+            className="w-full gap-2 hover:text-primary-foreground"
+            onClick={handleGoogle}
+            disabled={isGoogleLoading}
+          >
+            {isGoogleLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Icon
+                icon="logos:google-icon"
+                className="h-4 w-4"
+              />
+            )}
+  
+            <span>
+              {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
+            </span>
           </Button>
         </div>
     </Card>
