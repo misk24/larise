@@ -11,7 +11,7 @@ export function AboutSection() {
           <motion.h2
             initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 2, ease: "easeOut" }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
           >
             {aboutSection.title}
           </motion.h2>
@@ -19,7 +19,7 @@ export function AboutSection() {
           <motion.p 
             initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 2, ease: "easeOut" }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
             className="text-muted-foreground leading-relaxed"
           >
             {aboutSection.description}

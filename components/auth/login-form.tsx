@@ -6,17 +6,21 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { logo } from "@/constants/logo"
 import { createClient } from "@/lib/supabase/client"
-import { Loader2 } from "lucide-react"
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { Separator } from "../ui/separator"
+import { Icon } from "@iconify/react"
+// import { signInWithEmail, signInWithGoogle } from "@/lib/actions/auth"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -55,10 +59,35 @@ export function LoginForm() {
     }
   }
 
+
+  // async function handleGoogle() {
+  //   setIsLoading(true)
+
+  //   try {
+  //     const result = await signInWithGoogle()
+
+  //     if (!result) {
+  //       throw new Error("No response from authentication service")
+  //     }
+
+  //     if ("error" in result) {
+  //       toast.error(result.error)
+  //       setIsLoading(false)
+  //       return
+  //     }
+
+  //     // redirect ke Google terjadi di server
+  //   } catch (error) {
+  //     console.error("Google sign in error:", error)
+  //     toast.error("Gagal login dengan Google.")
+  //     setIsLoading(false)
+  //   }
+  // }
+
   return (
-    <Card className="w-full max-w-md border-border/50">
+    <Card className="w-full max-w-md border-none bg-primary-foreground">
       <CardHeader className="mb-4 text-center">
-        <CardTitle className="text-2xl font-heading font-normal tracking-widest">{logo}</CardTitle>
+        <CardTitle className="text-2xl font-logo font-normal tracking-widest">{logo}</CardTitle>
         <CardDescription>Masuk ke akun Anda untuk melanjutkan</CardDescription>
       </CardHeader>
 
@@ -66,7 +95,6 @@ export function LoginForm() {
         <CardContent className="space-y-4">        
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-
             <Input
               id="email"
               type="email"
@@ -80,21 +108,30 @@ export function LoginForm() {
 
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isLoading}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsPasswordVisible(prevState => !prevState)}
+                className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
+              >
+                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                <span className="sr-only">{isPasswordVisible ? "Hide password" : "Show password"}</span>
+              </Button>
+            </div>
           </div>
-        </CardContent>
-
-        <CardFooter className="mt-8 flex flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
+        
+          <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Masuk
           </Button>
@@ -105,8 +142,21 @@ export function LoginForm() {
               Daftar sekarang
             </Link>
           </p>
-        </CardFooter>
+        </CardContent>
       </form>
+
+      <div className="w-full px-6 space-y-4">
+        <div className="flex items-center gap-4">
+          <Separator className="flex-1" />
+          <p>or</p>
+          <Separator className="flex-1" />
+        </div>
+
+        <Button type="button" variant="outline" size="lg" className="w-full gap-2">
+          <Icon icon="logos:google-icon" className="w-4 h-4" />
+          <span>Continue with google</span>
+        </Button>
+      </div>
     </Card>
   )
 }

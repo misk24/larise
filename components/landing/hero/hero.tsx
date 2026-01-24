@@ -11,7 +11,7 @@ export function HeroSection() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 2, ease: "easeOut" }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url('/images/romantic-wedding-flowers-soft-pink-petals-elegant-.jpg')`,
@@ -28,7 +28,7 @@ export function HeroSection() {
             hidden: {},
             show: {
               transition: {
-                delayChildren: stagger(0.4)
+                delayChildren: stagger(0.6)
               }
             }
           }}

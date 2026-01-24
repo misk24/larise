@@ -25,7 +25,7 @@ export default async function UndanganPage() {
           <p className="text-muted-foreground">Kelola semua undangan pernikahan Anda</p>
         </div>
         <Button asChild>
-          <Link href="/dashboard/undangan/buat">
+          <Link href="/dashboard/invitations/create">
             <Plus className="mr-2 h-4 w-4" />
             Buat Undangan
           </Link>
@@ -94,7 +94,7 @@ export default async function UndanganPage() {
             <h3 className="text-xl font-semibold mb-2">Belum Ada Undangan</h3>
             <p className="text-muted-foreground mb-6">Buat undangan pernikahan digital pertama Anda</p>
             <Button asChild>
-              <Link href="/dashboard/undangan/buat">
+              <Link href="/dashboard/invitations/create">
                 <Plus className="mr-2 h-4 w-4" />
                 Buat Undangan
               </Link>

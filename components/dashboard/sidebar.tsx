@@ -18,11 +18,11 @@ interface DashboardSidebarProps {
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/dashboard/undangan", icon: FileText, label: "Undangan" },
-  { href: "/dashboard/tamu", icon: Users, label: "Daftar Tamu" },
-  { href: "/dashboard/ucapan", icon: MessageSquareHeart, label: "Ucapan" },
-  { href: "/dashboard/galeri", icon: ImageIcon, label: "Galeri" },
-  { href: "/dashboard/pengaturan", icon: Settings, label: "Pengaturan" },
+  { href: "/dashboard/invitations", icon: FileText, label: "Undangan" },
+  { href: "/dashboard/guests", icon: Users, label: "Daftar Tamu" },
+  { href: "/dashboard/wishes", icon: MessageSquareHeart, label: "Ucapan" },
+  { href: "/dashboard/gallery", icon: ImageIcon, label: "Galeri" },
+  { href: "/dashboard/settings", icon: Settings, label: "Pengaturan" },
 ]
 
 // function SidebarContent() {

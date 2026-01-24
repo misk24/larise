@@ -27,11 +27,11 @@ export function Navbar() {
       <motion.div 
         initial={{opacity:0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 2, ease: "easeOut" }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
         className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6"
       >
         <Link href="/">
-          <span className="text-2xl font-heading tracking-widest">
+          <span className="text-2xl font-logo tracking-widest">
             {logo}
           </span>
         </Link>

@@ -16,7 +16,7 @@ export function CTASection() {
             hidden: {},
             show: {
               transition: {
-                delayChildren: stagger(0.4)
+                delayChildren: stagger(0.6)
               }
             }
           }}

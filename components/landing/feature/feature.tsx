@@ -13,7 +13,7 @@ export function FeatureSection() {
         <motion.h2 
           initial={{ opacity: 0, x: 24 }}
           whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 2, ease: "easeOut" }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
           className="mb-16"
         >
           {featureSection.title}
@@ -25,7 +25,7 @@ export function FeatureSection() {
               key={index}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: index * 0.2, ease: "easeOut" }}
+              transition={{ duration: 1.2, delay: index * 0.4, ease: "easeOut" }}
               className="rounded-2xl bg-background p-6"
             >
               <h3>

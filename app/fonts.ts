@@ -8,9 +8,21 @@ export const begum = localFont({
       style: "normal"
     }
   ],
+  variable: "--font-logo",
+  display: "swap",
+})
+
+export const rosehot = localFont({
+  src: [
+    {
+      path: "../public/fonts/rosehot/Rosehot.ttf",
+      weight: "400",
+      style: "normal"
+    }
+  ],
   variable: "--font-heading",
   display: "swap",
-});
+})
 
 export const satoshi = localFont({
   src: [
@@ -22,4 +34,4 @@ export const satoshi = localFont({
   ],
   variable: "--font-body",
   display: "swap",
-});
+})

@@ -12,35 +12,27 @@ export function Footer() {
   return (
     <footer className="bg-foreground text-background pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
-          <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 2, ease: "easeOut" }}
-          >
-            <Link href="/">
-              <span className="text-2xl font-heading tracking-widest">
-                {logo}
-              </span>
-            </Link>
-          </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8"
+        >
+          <Link href="/">
+            <span className="text-2xl font-logo tracking-widest">
+              {logo}
+            </span>
+          </Link>
 
           <div>
-            <motion.h4 
-              initial={{ opacity: 0, x: 24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 2, ease: "easeOut" }}
-              className="mb-4"
-            >
+            <h4 className="mb-4">
               Links
-            </motion.h4>
+            </h4>
+
             <ul className="space-y-4 opacity-90">
               {navLinks.map((link, index) => (
-                <motion.li 
+                <li 
                   key={index} 
-                  initial={{ opacity: 0, x: 24 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 1.2, delay: index * 0.2, ease: "easeOut" }}
                   className="text-sm"
                 >
                   <Link
@@ -52,27 +44,20 @@ export function Footer() {
                       {link.label}
                     </div>
                   </Link>
-                </motion.li>
+                </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <motion.h4 
-              initial={{ opacity: 0, x: 24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 2, ease: "easeOut" }}
-              className="mb-4"
-            >
+            <h4 className="mb-4">
               Contacts
-            </motion.h4>
+            </h4>
+
             <ul className="space-y-4 opacity-90">
               {socialLinks.map((social, index) => (
-                <motion.li 
+                <li 
                   key={index}
-                  initial={{ opacity: 0, x: 24 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 1.2, delay: index * 0.2, ease: "easeOut" }} 
                   className="text-sm"
                 >
                   <a
@@ -88,29 +73,24 @@ export function Footer() {
 
                     {social.label}
                   </a>
-                </motion.li>
+                </li>
               ))}
-              <motion.li 
-                initial={{ opacity: 0, x: 24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1.2, delay: 0.8, ease: "easeOut" }}
-                className="text-sm"
-              >
+              <li className="text-sm">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
                   <span>
                     {location}
                   </span>
                 </div>
-              </motion.li>
+              </li>
             </ul>
           </div>
-        </div>
+        </motion.div>
 
         <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 2, ease: "easeOut" }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
           className="border-t border-background/20 pt-8 text-center opacity-90"
         >
           <span className="text-sm">

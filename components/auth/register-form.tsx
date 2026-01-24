@@ -16,7 +16,6 @@ import { Separator } from "../ui/separator"
 import { Icon } from "@iconify/react"
 
 export function RegisterForm() {
-  const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -47,9 +46,6 @@ export function RegisterForm() {
         password,
         options: {
           emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/dashboard`,
-          data: {
-            full_name: fullName,
-          },
         },
       })
 
@@ -77,7 +73,7 @@ export function RegisterForm() {
   return (
     <Card className="w-full max-w-md border-none bg-background">
       <CardHeader className="mb-4 text-center">
-        <CardTitle className="text-2xl font-heading font-normal tracking-widest">{logo}</CardTitle>
+        <CardTitle className="text-2xl font-logo font-normal tracking-widest">{logo}</CardTitle>
         <CardDescription>Mulai buat undangan pernikahan digital Anda</CardDescription>
       </CardHeader>
 
@@ -100,7 +96,7 @@ export function RegisterForm() {
               <div className="relative">
                 <Input
                   id="password"
-                  type="password"
+                  type={isPasswordVisible ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -108,13 +104,14 @@ export function RegisterForm() {
                   disabled={isLoading}
                 />
                 <Button
-                  variant='ghost'
-                  size='icon'
+                  type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setIsPasswordVisible(prevState => !prevState)}
-                  className='text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent'
+                  className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                 >
                   {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
-                  <span className='sr-only'>{isPasswordVisible ? 'Hide password' : 'Show password'}</span>
+                  <span className="sr-only">{isPasswordVisible ? "Hide password" : "Show password"}</span>
                 </Button>
               </div>
             </div>
@@ -123,7 +120,7 @@ export function RegisterForm() {
               <div className="relative">
                 <Input
                   id="confirmPassword"
-                  type="password"
+                  type={isConfirmPasswordVisible ? "text" : "password"}
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -131,13 +128,14 @@ export function RegisterForm() {
                   disabled={isLoading}
                 />
                 <Button
-                  variant='ghost'
-                  size='icon'
-                  onClick={() => setIsPasswordVisible(prevState => !prevState)}
-                  className='text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent'
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsConfirmPasswordVisible(prevState => !prevState)}
+                  className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                 >
-                  {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
-                  <span className='sr-only'>{isPasswordVisible ? 'Hide password' : 'Show password'}</span>
+                  {isConfirmPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                  <span className="sr-only">{isConfirmPasswordVisible ? "Hide password" : "Show password"}</span>
                 </Button>
               </div>
             </div>
@@ -148,28 +146,28 @@ export function RegisterForm() {
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Daftar
             </Button>
-            
-              <p className="text-sm text-muted-foreground text-center">
-                Sudah punya akun?{" "}
-                <Link href="/login" className="text-primary hover:underline">
-                  Masuk di sini
-                </Link>
-              </p>
-              
-              <div className="w-full space-y-4">
-                <div className='flex items-center gap-4'>
-                  <Separator className='flex-1' />
-                  <p>or</p>
-                  <Separator className='flex-1' />
-                </div>
-
-                <Button variant='outline' size="lg" className='w-full'>
-                  <Icon icon="simple-icons:google" className="w-4 h-4" />
-                  <span>Sign in with google</span>
-                </Button>
-              </div>
           </CardFooter>
         </form>
+
+        <div className="w-full px-6 space-y-4">
+          <p className="text-sm text-muted-foreground text-center">
+            Sudah punya akun?{" "}
+            <Link href="/login" className="text-primary hover:underline">
+              Masuk di sini
+            </Link>
+          </p>
+
+          <div className="flex items-center gap-4">
+            <Separator className="flex-1" />
+            <p>or</p>
+            <Separator className="flex-1" />
+          </div>
+
+          <Button variant="outline" size="lg" className="w-full">
+            <Icon icon="logos:google-icon" className="w-4 h-4" />
+            <span>Sign up with google</span>
+          </Button>
+        </div>
     </Card>
   )
 }

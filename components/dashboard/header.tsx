@@ -14,7 +14,6 @@ interface DashboardHeaderProps {
   profile: Profile | null
 }
 
-// export function DashboardHeader() {
 export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
   const initials =
     profile?.full_name
@@ -38,7 +37,6 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">
               <Avatar className="h-10 w-10">
-                {/* <AvatarFallback className="bg-primary text-primary-foreground">E</AvatarFallback> */}
                 <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
               </Avatar>
             </Button>
@@ -46,15 +44,13 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
           <DropdownMenuContent align="end" className="w-56">
             <div className="flex items-center justify-start gap-2 p-2">
               <div className="flex flex-col space-y-1 leading-none">
-                <p className="font-medium">"User"</p>
                 <p className="font-medium">{profile?.full_name || "User"}</p>
-                {/* <p className="text-sm text-muted-foreground">"user.email"</p> */}
                 <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <a href="/dashboard/pengaturan" className="cursor-pointer">
+              <a href="/dashboard/settings" className="cursor-pointer">
                 <UserIcon className="mr-2 h-4 w-4" />
                 Pengaturan
               </a>

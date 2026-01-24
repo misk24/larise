@@ -20,7 +20,6 @@ interface AdminHeaderProps {
   profile: Profile | null
 }
 
-// export function AdminHeader() {
 export function AdminHeader({ user, profile }: AdminHeaderProps) {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
@@ -56,6 +55,7 @@ export function AdminHeader({ user, profile }: AdminHeaderProps) {
                 </span>
               </Button>
             </SheetTrigger>
+            
             <SheetContent 
               side="left" 
               className="p-0 w-64"
@@ -112,7 +112,6 @@ export function AdminHeader({ user, profile }: AdminHeaderProps) {
               className="relative h-10 w-10 rounded-full"
             >
               <Avatar className="h-10 w-10">
-                {/* <AvatarFallback className="bg-primary text-primary-foreground">A</AvatarFallback> */}
                 <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
               </Avatar>
             </Button>
@@ -128,7 +127,6 @@ export function AdminHeader({ user, profile }: AdminHeaderProps) {
                   Admin
                 </p>
                 <p className="font-medium">{profile?.full_name || "Admin"}</p>
-                {/* <p className="text-sm text-muted-foreground">admin@email.com</p> */}
                 <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>
             </div>
