@@ -1,21 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { createClient } from '@/lib/supabase/server'
 import { MailIcon } from 'lucide-react'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
 export default async function VerifyEmailPage() {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) redirect('/login')
-
-  if (user.email_confirmed_at) redirect('/dashboard')
-
   return (
     <div className="flex min-h-screen bg-card items-center justify-center px-4">
       <Card className="w-full max-w-md border-none bg-primary-foreground text-center">

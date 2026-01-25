@@ -51,9 +51,12 @@ export function RegisterForm() {
         return
       }
 
-      toast.success("Registrasi berhasil. Mengalihkan...")
-    } catch {
-      toast.error("Terjadi kesalahan. Silakan coba lagi.")
+      if (result?.needsVerification) {
+        router.push("/auth/verify")
+        return
+      }
+    } catch (err) {
+      console.error(err)
     } finally {
       setIsSubmitLoading(false)
     }

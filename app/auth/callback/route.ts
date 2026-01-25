@@ -15,6 +15,7 @@ export async function GET(request: Request) {
 
   if (error) {
     console.error("OAuth callback error:", error)
+    await supabase.auth.signOut()
     return NextResponse.redirect(`${origin}/login`)
   }
 
