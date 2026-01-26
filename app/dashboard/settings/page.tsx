@@ -16,7 +16,7 @@ export default async function SettingsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Pengaturan Akun</h1>
+        <span className="text-2xl md:text-3xl font-heading">Pengaturan Akun</span>
         <p className="text-muted-foreground">Kelola informasi akun Anda</p>
       </div>
 

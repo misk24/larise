@@ -11,8 +11,9 @@ import { createClient } from "@/lib/supabase/client"
 import { Icon } from "@iconify/react"
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import type React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 export function LoginForm() {
@@ -22,6 +23,21 @@ export function LoginForm() {
   const [isSubmitLoading, setIsSubmitLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const supabase = createClient()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    // Handle error dari query params
+    const error = searchParams.get("error")
+    const provider = searchParams.get("provider")
+
+    if (error === "provider_mismatch") {
+      toast.error(`Email ini sudah terdaftar dengan ${provider === "google" ? "Google" : "Email"}. Silakan login dengan metode tersebut.`)
+    } else if (error === "oauth") {
+      toast.error("Terjadi kesalahan saat login. Silakan coba lagi.")
+    } else if (error === "profile_creation") {
+      toast.error("Terjadi kesalahan saat membuat profil. Silakan coba lagi.")
+    }
+  }, [searchParams])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -35,27 +51,28 @@ export function LoginForm() {
         setIsSubmitLoading(false)
         return
       }
-    } catch {
+    } catch (err) {
+      console.error(err)
       toast.error("Terjadi kesalahan. Silakan coba lagi.")
       setIsSubmitLoading(false)
     }
   }
 
   async function handleGoogle() {
-  setIsGoogleLoading(true)
+    setIsGoogleLoading(true)
 
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${location.origin}/auth/callback`,
-    },
-  })
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    })
 
-  if (error) {
-    toast.error(error.message)
-    setIsGoogleLoading(false)
+    if (error) {
+      toast.error(error.message)
+      setIsGoogleLoading(false)
+    }
   }
-}
 
   return (
     <Card className="w-full max-w-md border-none bg-primary-foreground">
@@ -135,7 +152,7 @@ export function LoginForm() {
 
         <div className="flex items-center gap-4">
           <Separator className="flex-1" />
-          <p>or</p>
+          <p className="text-xs">atau</p>
           <Separator className="flex-1" />
         </div>
 
@@ -157,7 +174,7 @@ export function LoginForm() {
           )}
 
           <span>
-            {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
+            {isGoogleLoading ? "Redirecting..." : "Login dengan Google"}
           </span>
         </Button>
       </div>

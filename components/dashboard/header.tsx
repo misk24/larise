@@ -26,11 +26,10 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
     "U"
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-card">
+    <header className="sticky top-0 z-40 border-b border-border bg-background">
       <div className="flex h-15 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-3">
           <MobileSidebar />
-          <h3>Dashboard</h3>
         </div>
 
         <DropdownMenu>

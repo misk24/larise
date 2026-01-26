@@ -13,29 +13,51 @@ export async function signUpWithEmail(email: string, password: string) {
     return { error: "Terjadi kesalahan sistem." }
   }
 
-  if (profile) {
-    if (profile.provider !== "email") {
-      return {
-        error: `Email ini sudah terdaftar menggunakan metode lain. Silakan login dengan metode tersebut.`,
-      }
+  // Email sudah terdaftar dengan metode lain
+  if (profile && profile.provider !== "email") {
+    return {
+      error: `Email ini sudah terdaftar menggunakan ${profile.provider === "google" ? "Google" : "metode lain"}. Silakan login dengan metode tersebut.`,
     }
+  }
 
+  // Email sudah terdaftar dengan metode email
+  if (profile && profile.provider === "email") {
     return {
       error: "Email ini sudah terdaftar. Silakan login.",
     }
   }
 
   const supabase = await createClient()
-  const { data, error: profileError } = await supabase.auth.signUp({
+  const { data, error: authError } = await supabase.auth.signUp({
     email, 
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=verify`,
     },
   })
 
-  if (profileError) {
-    return { error: profileError.message }
+  if (authError) {
+    return { error: authError.message }
+  }
+
+  if (!data.user) {
+    return { error: "Terjadi kesalahan saat membuat akun." }
+  }
+
+  // Buat atau perbarui profile dengan provider "email" (upsert supaya idempoten)
+  const { error: profileCreateError } = await admin.from("profiles").upsert({
+    id: data.user.id,
+    email: email,
+    provider: "email",
+    role: "user",
+  },
+  { 
+    onConflict: "id" 
+  })
+
+  if (profileCreateError) {
+    // Log error, tapi jangan batalkan alur verifikasi — user sudah dibuat di Supabase
+    console.error("Profile upsert failed:", profileCreateError)
   }
 
   return {
@@ -44,14 +66,48 @@ export async function signUpWithEmail(email: string, password: string) {
 }
 
 export async function signInWithEmail(email: string, password: string) {
+  const admin = createAdminClient()
+  
+  // Cek apakah email sudah terdaftar
+  const { data: profile, error: profileError } = await admin.from("profiles").select("provider").eq("email", email).maybeSingle()
+
+  if (profileError) {
+    console.error("Profile check failed:", profileError)
+    return { error: "Terjadi kesalahan sistem." }
+  }
+
+  // Email belum terdaftar
+  if (!profile) {
+    return {
+      error: "Email belum terdaftar. Silakan daftar terlebih dahulu.",
+    }
+  }
+
+  // Email terdaftar dengan metode lain
+  if (profile.provider !== "email") {
+    return {
+      error: `Email ini terdaftar menggunakan ${profile.provider === "google" ? "Google" : "metode lain"}. Silakan login dengan metode tersebut.`,
+    }
+  }
+
   const supabase = await createClient()
-  const { error } = await supabase.auth.signInWithPassword({email, password})
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
     return { error: error.message }
   }
 
-  redirect("/auth/redirect")
+  // Get user role untuk final redirect
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+
+    if (profile?.role === "admin") {
+      redirect("/admin/dashboard")
+    }
+  }
+
+  redirect("/dashboard")
 }
 
 export async function signOut() {

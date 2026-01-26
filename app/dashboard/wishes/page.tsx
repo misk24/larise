@@ -17,7 +17,7 @@ export default async function WishesPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Ucapan & Doa</h1>
+          <span className="text-2xl md:text-3xl font-heading">Ucapan & Doa</span>
           <p className="text-muted-foreground">Lihat ucapan selamat dari tamu undangan</p>
         </div>
         <Card className="border-border/50">

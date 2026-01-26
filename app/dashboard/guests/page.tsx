@@ -18,7 +18,7 @@ export default async function GuestsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Daftar Tamu</h1>
+          <span className="text-2xl md:text-3xl font-heading">Daftar Tamu</span>
           <p className="text-muted-foreground">Kelola daftar tamu undangan Anda</p>
         </div>
         <Card className="border-border/50">

@@ -15,9 +15,9 @@ export default async function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">
+        <span className="text-2xl md:text-3xl font-heading">
           Kelola Pengguna
-        </h1>
+        </span>
 
         <p className="text-muted-foreground">
           Lihat dan kelola semua pengguna terdaftar
@@ -27,7 +27,6 @@ export default async function AdminUsersPage() {
       <Card className="border-border/50">
         <CardHeader>
           <CardTitle>Daftar Pengguna</CardTitle>
-          {/* <CardDescription>Total 0 pengguna terdaftar</CardDescription> */}
           <CardDescription>Total {users?.length || 0} pengguna terdaftar</CardDescription>
         </CardHeader>
         <CardContent>

@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/admin/breadcrumb"
 import { AdminHeader } from "@/components/admin/header"
 import { AdminSidebar } from "@/components/admin/sidebar"
 import { createClient } from "@/lib/supabase/server"
@@ -34,9 +35,16 @@ export default async function AdminLayout({
     <div className="min-h-screen bg-secondary/20">
       <AdminSidebar />
       <div className="lg:pl-64">
-        {/* <AdminHeader /> */}
-        <AdminHeader user={user} profile={profile} />
+        <AdminHeader 
+          user={user} 
+          profile={profile} 
+        />
+
         <main className="p-4 md:p-6 lg:p-8">
+          <div className="mb-6">
+            <Breadcrumbs />
+          </div>
+
           {children}
         </main>
       </div>

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Heart } from "lucide-react"
+import Link from "next/link"
 
 interface InvitationFooterProps {
   groomName: string
@@ -29,9 +30,9 @@ export function InvitationFooter({ groomName, brideName, eventDate }: Invitation
           <div className="border-t border-background/20 pt-8">
             <p className="text-background/50 text-sm">
               Made with love by{" "}
-              <a href="/" className="text-background/70 hover:text-background transition-colors">
+              <Link href="/" className="text-background/70 hover:text-background transition-colors">
                 Nikahku
-              </a>
+              </Link>
             </p>
           </div>
         </motion.div>

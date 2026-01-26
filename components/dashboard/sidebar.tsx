@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { userNavs } from "@/constants/backend"
 import { logo } from "@/constants/logo"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import type { Profile } from "@/types/database"
 import type { User } from "@supabase/supabase-js"
-import { FileText, Heart, ImageIcon, LayoutDashboard, MessageSquareHeart, Settings, Users } from "lucide-react"
+import { LayoutDashboard } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
@@ -16,20 +18,11 @@ interface DashboardSidebarProps {
   profile: Profile | null
 }
 
-const navItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/dashboard/invitations", icon: FileText, label: "Undangan" },
-  { href: "/dashboard/guests", icon: Users, label: "Daftar Tamu" },
-  { href: "/dashboard/wishes", icon: MessageSquareHeart, label: "Ucapan" },
-  { href: "/dashboard/gallery", icon: ImageIcon, label: "Galeri" },
-  { href: "/dashboard/settings", icon: Settings, label: "Pengaturan" },
-]
-
 function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-background">
       <div className="p-4 border-b border-border">
         <Link href="/" className="flex items-center gap-2">
           <span className="text-xl font-logo font-normal tracking-widest">
@@ -39,7 +32,7 @@ function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
-        {navItems.map((item) => {
+        {userNavs.map((item) => {
           const isActive = pathname === item.href
           return (
             <Link
@@ -63,13 +56,12 @@ function SidebarContent({ onItemClick }: { onItemClick?: () => void }) {
   )
 }
 
-export function DashboardSidebar({ user, profile }: DashboardSidebarProps) {
-  // const isMobile = useMobile()
-  const [isOpen, setIsOpen] = useState(false)
+export function DashboardSidebar() {
+  const isMobile = useIsMobile()
 
-  // if (isMobile) {
-  //   return null
-  // }
+  if (isMobile) {
+    return null
+  }
 
   return (
     <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col bg-card border-r border-border">

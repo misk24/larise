@@ -8,7 +8,7 @@ export default function AdminSettingsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Pengaturan</h1>
+        <span className="text-2xl md:text-3xl font-heading">Pengaturan</span>
         <p className="text-muted-foreground">Konfigurasi website dan sistem</p>
       </div>
 

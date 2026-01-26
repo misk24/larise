@@ -21,7 +21,7 @@ export default async function GalleryPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Galeri Foto</h1>
+          <span className="text-2xl md:text-3xl font-heading">Galeri Foto</span>
           <p className="text-muted-foreground">Kelola foto-foto untuk undangan Anda</p>
         </div>
         <Card className="border-border/50">

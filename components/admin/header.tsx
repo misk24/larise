@@ -1,11 +1,11 @@
 "use client"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { adminNavs } from "@/constants/backend"
 import { logo } from "@/constants/logo"
-import { adminNavs } from "@/constants/navigation"
 import { cn } from "@/lib/utils"
 import { signOut } from "@/lib/actions/auth"
 import type { Profile } from "@/types/database"
@@ -62,15 +62,9 @@ export function AdminHeader({ user, profile }: AdminHeaderProps) {
             >
               <div className="flex flex-col h-full">
                 <div className="p-6 border-b border-border">
-                  <Link 
-                    onClick={() => setIsOpen(false)}
-                    href="/admin/dashboard" 
-                    className="flex items-center gap-2" 
-                  >
-                    <span className="text-xl font-heading font-normal tracking-widest">
-                      {logo}
-                    </span>
-                  </Link>
+                  <span className="text-xl font-logo font-normal tracking-widest">
+                    {logo}
+                  </span>
                 </div>
 
                 <nav className="flex-1 p-4 space-y-1">
@@ -112,7 +106,14 @@ export function AdminHeader({ user, profile }: AdminHeaderProps) {
               className="relative h-10 w-10 rounded-full"
             >
               <Avatar className="h-10 w-10">
-                <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
+                <AvatarImage
+                  src={profile?.avatar_url || ""}
+                  alt={profile?.full_name || "User"}
+                />
+                
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  {initials}
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -123,9 +124,6 @@ export function AdminHeader({ user, profile }: AdminHeaderProps) {
           >
             <div className="flex items-center justify-start gap-2 p-2">
               <div className="flex flex-col space-y-1 leading-none">
-                <p className="font-medium">
-                  Admin
-                </p>
                 <p className="font-medium">{profile?.full_name || "Admin"}</p>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>

@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/dashboard/breadcrumb"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { createClient } from "@/lib/supabase/server"
@@ -25,13 +26,24 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-secondary/20">
-      {/* <DashboardSidebar /> */}
-      <DashboardSidebar user={user} profile={profile} />
+    <div className="min-h-screen bg-sidebar">
+      <DashboardSidebar 
+        user={user} 
+        profile={profile} 
+      />
+
       <div className="lg:pl-64">
-        {/* <DashboardHeader /> */}
-        <DashboardHeader user={user} profile={profile} />
-        <main className="p-4 md:p-6 lg:p-8">{children}</main>
+        <DashboardHeader 
+          user={user} 
+          profile={profile} 
+        />
+        <main className="p-4 md:p-6 lg:p-8">
+          <div className="mb-6">
+            <Breadcrumbs />
+          </div>
+
+          {children}
+        </main>
       </div>
     </div>
   )

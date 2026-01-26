@@ -6,11 +6,17 @@ export default async function AdminDashboardPage() {
   const supabase = await createClient()
 
   // Get stats
-  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true })
+  const { count: usersCount } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
 
-  const { count: invitationsCount } = await supabase.from("invitations").select("*", { count: "exact", head: true })
+  const { count: invitationsCount } = await supabase
+    .from("invitations")
+    .select("*", { count: "exact", head: true })
 
-  const { count: ordersCount } = await supabase.from("orders").select("*", { count: "exact", head: true })
+  const { count: ordersCount } = await supabase
+    .from("orders")
+    .select("*", { count: "exact", head: true })
 
   const { data: recentOrders } = await supabase
     .from("orders")
@@ -27,7 +33,6 @@ export default async function AdminDashboardPage() {
   const stats = [
     {
       title: "Total Pengguna",
-      // value: 0,
       value: usersCount || 0,
       icon: Users,
       color: "text-primary",
@@ -35,7 +40,6 @@ export default async function AdminDashboardPage() {
     },
     {
       title: "Total Undangan",
-      // value: 0,
       value: invitationsCount || 0,
       icon: FileText,
       color: "text-chart-2",
@@ -43,7 +47,6 @@ export default async function AdminDashboardPage() {
     },
     {
       title: "Total Pesanan",
-      // value: 0,
       value: ordersCount || 0,
       icon: ShoppingCart,
       color: "text-chart-3",
@@ -61,9 +64,9 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="">
+        <span className="text-2xl md:text-3xl font-heading">
           Dashboard
-        </h3>
+        </span>
 
         <p className="text-muted-foreground">
           Selamat datang di panel administrasi Nikahku
@@ -153,7 +156,7 @@ export default async function AdminDashboardPage() {
               <div className="space-y-4">
                 {recentOrders.map((order) => (
                   <div
-                    // key={order.id}
+                    key={order.id}
                     className="flex items-center justify-between py-2 border-b border-border last:border-0"
                   >
                     <div>

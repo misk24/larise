@@ -14,7 +14,7 @@ export default async function AdminTemplatesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Kelola Template</h1>
+          <span className="text-2xl md:text-3xl font-heading">Kelola Template</span>
           <p className="text-muted-foreground">Kelola template undangan yang tersedia</p>
         </div>
         <Button>

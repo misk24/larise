@@ -64,22 +64,22 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Selamat Datang!</h1>
+          <span className="text-2xl md:text-3xl font-heading">Selamat Datang!</span>
           <p className="text-muted-foreground">Kelola undangan pernikahan digital Anda di sini</p>
         </div>
-        {!invitation && (
-          <Button asChild>
-            <Link href="/dashboard/undangan/buat">
+        {/* {!invitation && (
+          <Button size="lg" asChild>
+            <Link href="/dashboard/invitations/create">
               <Plus className="mr-2 h-4 w-4" />
               Buat Undangan
             </Link>
           </Button>
-        )}
+        )} */}
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <Card key={index} className="border-border/50">
+          <Card key={index} className="bg-sidebar border-border/50">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
@@ -176,7 +176,7 @@ export default async function DashboardPage() {
           </Card>
         </div>
       ) : (
-        <Card className="border-border/50">
+        <Card className="bg-sidebar border-border/50">
           <CardContent className="p-12 text-center">
             <FileText className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Belum Ada Undangan</h3>
@@ -185,7 +185,7 @@ export default async function DashboardPage() {
               tamu undangan.
             </p>
             <Button asChild size="lg">
-              <Link href="/dashboard/undangan/buat">
+              <Link href="/dashboard/invitations/create">
                 <Plus className="mr-2 h-4 w-4" />
                 Buat Undangan Pertama
               </Link>

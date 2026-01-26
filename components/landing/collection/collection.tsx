@@ -1,16 +1,9 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { useGsapParallax, useGsapRevealUp } from "@/hooks/use-gsap"
 import { motion, stagger } from "framer-motion"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { ArrowRight } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
-import { useRef } from "react"
 import { themes, themeSection } from "./constant"
 
 export function ThemeSection() {
@@ -86,19 +79,6 @@ export function ThemeSection() {
             </motion.div>
           ))}
         </motion.div>
-
-        {/* <div className="text-center mt-12">
-          <Button 
-            variant="outline" 
-            size="lg" 
-            asChild
-          >
-            <Link href="/register">
-              Lihat Semua Thema
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div> */}
       </div>
     </section>
   )

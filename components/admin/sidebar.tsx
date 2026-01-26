@@ -1,7 +1,7 @@
 "use client"
 
+import { adminNavs } from "@/constants/backend"
 import { logo } from "@/constants/logo"
-import { adminNavs } from "@/constants/navigation"
 import { cn } from "@/lib/utils"
 import { LayoutDashboard } from "lucide-react"
 import Link from "next/link"
@@ -15,7 +15,7 @@ export function AdminSidebar() {
       <div className="flex flex-col h-full">
         <div className="p-4 border-b border-border">
           <div className="flex items-center justify-between">
-            <span className="text-xl font-heading font-normal tracking-widest">
+            <span className="text-xl font-logo font-normal tracking-widest">
               {logo}
             </span>
 

@@ -7,6 +7,7 @@ export type TemplateCategory = "elegant" | "minimalist" | "traditional" | "moder
 export interface Profile {
   id: string
   email: string
+  provider: "email" | "google"
   full_name: string | null
   phone: string | null
   avatar_url: string | null

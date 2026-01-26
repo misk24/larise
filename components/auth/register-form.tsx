@@ -181,7 +181,7 @@ export function RegisterForm() {
 
           <div className="flex items-center gap-4">
             <Separator className="flex-1" />
-            <p>or</p>
+            <p className="text-xs">atau</p>
             <Separator className="flex-1" />
           </div>
 
@@ -203,7 +203,7 @@ export function RegisterForm() {
             )}
   
             <span>
-              {isGoogleLoading ? "Redirecting..." : "Sign up with Google"}
+              {isGoogleLoading ? "Redirecting..." : "Daftar dengan Google"}
             </span>
           </Button>
         </div>

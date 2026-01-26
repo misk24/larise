@@ -28,7 +28,7 @@ export default async function AdminOrdersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Kelola Pesanan</h1>
+        <span className="text-2xl md:text-3xl font-heading">Kelola Pesanan</span>
         <p className="text-muted-foreground">Lihat dan kelola semua pesanan</p>
       </div>
 
