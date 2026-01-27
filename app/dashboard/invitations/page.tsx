@@ -13,7 +13,7 @@ export default async function UndanganPage() {
 
   const { data: invitations } = await supabase
     .from("invitations")
-    .select("*, templates(name, category)")
+    .select("*, themes(name, category)")
     .eq("user_id", user?.id)
     .order("created_at", { ascending: false })
 
@@ -21,12 +21,13 @@ export default async function UndanganPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-2xl md:text-3xl font-heading">Undangan Saya</span>
+          <span className="text-2xl md:text-3xl font-medium">Undangan Saya</span>
           <p className="text-muted-foreground">Kelola semua undangan pernikahan Anda</p>
         </div>
+
         <Button asChild>
           <Link href="/dashboard/invitations/create">
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             Buat Undangan
           </Link>
         </Button>
@@ -44,6 +45,7 @@ export default async function UndanganPage() {
                     <p className="text-lg font-serif">{invitation.bride_name || "Nama Wanita"}</p>
                   </div>
                 </div>
+
                 <Badge
                   className={`absolute top-3 right-3 ${
                     invitation.is_published ? "bg-chart-3 text-chart-3-foreground" : "bg-muted text-muted-foreground"
@@ -52,11 +54,13 @@ export default async function UndanganPage() {
                   {invitation.is_published ? "Dipublikasi" : "Draft"}
                 </Badge>
               </div>
+
               <CardContent className="p-4">
                 <div className="space-y-2 mb-4">
                   <p className="text-sm text-muted-foreground">
-                    Template: {invitation.templates?.name || "Belum dipilih"}
+                    Tema: {invitation.themes?.name || "Belum dipilih"}
                   </p>
+
                   <p className="text-sm text-muted-foreground">
                     Tanggal:{" "}
                     {invitation.event_date
@@ -68,17 +72,19 @@ export default async function UndanganPage() {
                       : "Belum diatur"}
                   </p>
                 </div>
+
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" className="flex-1 bg-transparent" asChild>
-                    <Link href={`/dashboard/undangan/${invitation.id}`}>
-                      <Edit className="mr-2 h-3 w-3" />
+                    <Link href={`/dashboard/invitations/${invitation.id}`}>
+                      <Edit className="mr-2 size-3" />
                       Edit
                     </Link>
                   </Button>
+                  
                   {invitation.is_published && (
                     <Button variant="outline" size="sm" asChild>
                       <Link href={`/undangan/${invitation.slug}`} target="_blank">
-                        <ExternalLink className="h-3 w-3" />
+                        <ExternalLink className="size-3" />
                       </Link>
                     </Button>
                   )}
@@ -88,17 +94,11 @@ export default async function UndanganPage() {
           ))}
         </div>
       ) : (
-        <Card className="border-border/50">
+        <Card className="border-border bg-sidebar">
           <CardContent className="p-12 text-center">
-            <Plus className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
+            <Plus className="size-16 text-muted-foreground/50 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Belum Ada Undangan</h3>
             <p className="text-muted-foreground mb-6">Buat undangan pernikahan digital pertama Anda</p>
-            <Button asChild>
-              <Link href="/dashboard/invitations/create">
-                <Plus className="mr-2 h-4 w-4" />
-                Buat Undangan
-              </Link>
-            </Button>
           </CardContent>
         </Card>
       )}

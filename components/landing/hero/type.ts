@@ -1,13 +1,13 @@
 interface ButtonProps {
-  label: string,
-  href: string,
+  label: string
+  href: string
 }
 
 export interface HeroSectionProps {
-  title: string,
-  sub: string,
+  title: string
+  sub: string
   cta: {
-    primary: ButtonProps,
-    secondary: ButtonProps,
-  },
+    primary: ButtonProps
+    secondary: ButtonProps
+  }
 }

@@ -1,17 +1,5 @@
 import localFont from "next/font/local"
 
-export const begum = localFont({
-  src: [
-    {
-      path: "../public/fonts/begum/Begum-Regular.otf",
-      weight: "400",
-      style: "normal"
-    }
-  ],
-  variable: "--font-logo",
-  display: "swap",
-})
-
 export const rosehot = localFont({
   src: [
     {

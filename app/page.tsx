@@ -5,7 +5,7 @@ import { FeatureSection } from "@/components/landing/feature";
 import { Footer } from "@/components/landing/footer";
 import { HeroSection } from "@/components/landing/hero";
 import { Navbar } from "@/components/landing/navbar";
-import { PricingSection } from "@/components/landing/pricing";
+// import { PricingSection } from "@/components/landing/pricing";
 import { StatSection } from "@/components/landing/stat";
 import { TestimonialsSection } from "@/components/landing/testimonial";
 

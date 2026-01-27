@@ -2,7 +2,7 @@ export type UserRole = "user" | "admin"
 export type InvitationStatus = "draft" | "pending_payment" | "active" | "expired"
 export type PaymentStatus = "pending" | "paid" | "expired" | "refunded"
 export type AttendanceStatus = "hadir" | "tidak_hadir" | "belum_pasti"
-export type TemplateCategory = "elegant" | "minimalist" | "traditional" | "modern" | "rustic" | "floral"
+export type ThemeCategory = "elegant" | "minimalist" | "traditional" | "modern" | "rustic" | "floral"
 
 export interface Profile {
   id: string
@@ -16,7 +16,7 @@ export interface Profile {
   updated_at: string
 }
 
-export interface Template {
+export interface Theme {
   id: string
   name: string
   slug: string
@@ -24,7 +24,7 @@ export interface Template {
   thumbnail_url: string | null
   preview_url: string | null
   price: number
-  category: TemplateCategory
+  category: ThemeCategory
   features: string[]
   is_active: boolean
   is_premium: boolean
@@ -41,7 +41,7 @@ export interface BankAccount {
 export interface Invitation {
   id: string
   user_id: string
-  template_id: string | null
+  theme_id: string | null
   slug: string
 
   // Couple Information
@@ -97,7 +97,7 @@ export interface Invitation {
   updated_at: string
 
   // Relations
-  template?: Template
+  theme?: Theme
 }
 
 export interface Guest {
@@ -138,7 +138,7 @@ export interface Order {
   id: string
   user_id: string
   invitation_id: string | null
-  template_id: string | null
+  theme_id: string | null
   order_number: string
   amount: number
   payment_status: PaymentStatus
@@ -157,7 +157,7 @@ export interface Order {
 
   // Relations
   invitation?: Invitation
-  template?: Template
+  theme?: Theme
   user?: Profile
 }
 

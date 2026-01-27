@@ -1,4 +1,4 @@
-import { NavProps } from "@/types/navigation"
+import { NavProps } from "@/types/frontend"
 
 export const navLinks: NavProps[] = [
   { label: "Features", href: "#features" },

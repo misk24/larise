@@ -5,10 +5,7 @@ import { featureSection } from "./constant"
 
 export function FeatureSection() {
   return (
-    <section 
-      id="features" 
-      className="px-6 py-32 bg-muted"
-    >
+    <section id="features" className="px-6 py-32 bg-muted">
       <div className="max-w-6xl mx-auto">
         <motion.h2 
           initial={{ opacity: 0, x: 24 }}
@@ -28,13 +25,8 @@ export function FeatureSection() {
               transition={{ duration: 1.2, delay: index * 0.4, ease: "easeOut" }}
               className="rounded-2xl bg-background p-6"
             >
-              <h3>
-                {feature.title}
-              </h3>
-
-              <p className="mt-4 text-muted-foreground">
-                {feature.description}
-              </p>
+              <h3>{feature.title}</h3>
+              <p className="mt-4 text-muted-foreground">{feature.description}</p>
             </motion.div>
           ))}
         </div>

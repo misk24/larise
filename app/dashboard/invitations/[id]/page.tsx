@@ -11,13 +11,13 @@ export default async function EditInvitationPage({ params }: { params: Promise<{
 
   if (!user) redirect("/login")
 
-  const { data: invitation } = await supabase.from("invitations").select("*, templates(*)").eq("id", id).single()
+  const { data: invitation } = await supabase.from("invitations").select("*, themes(*)").eq("id", id).single()
 
   if (!invitation || invitation.user_id !== user.id) {
     notFound()
   }
 
-  const { data: templates } = await supabase.from("templates").select("*").eq("is_active", true).order("name")
+  const { data: themes } = await supabase.from("themes").select("*").eq("is_active", true).order("name")
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -26,7 +26,7 @@ export default async function EditInvitationPage({ params }: { params: Promise<{
         <p className="text-muted-foreground">Perbarui detail undangan pernikahan Anda</p>
       </div>
 
-      <EditInvitationForm invitation={invitation} templates={templates || []} />
+      <EditInvitationForm invitation={invitation} themes={themes || []} />
     </div>
   )
 }

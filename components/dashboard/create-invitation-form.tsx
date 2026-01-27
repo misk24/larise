@@ -1,6 +1,6 @@
 "use client"
 
-import type { Template } from "@/types/database"
+import type { Theme } from "@/types/database"
 import type React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,12 +16,12 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 interface CreateInvitationFormProps {
-  templates: Template[]
+  themes: Theme[]
 }
 
-export function CreateInvitationForm({ templates }: CreateInvitationFormProps) {
+export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
   const [step, setStep] = useState(1)
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("")
+  const [selectedTheme, setSelectedTheme] = useState<string>("")
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     groomName: "",
@@ -74,7 +74,7 @@ export function CreateInvitationForm({ templates }: CreateInvitationFormProps) {
         .from("invitations")
         .insert({
           user_id: user.id,
-          template_id: selectedTemplate,
+          theme_id: selectedTheme,
           slug: formData.slug,
           groom_name: formData.groomName,
           bride_name: formData.brideName,
@@ -115,29 +115,29 @@ export function CreateInvitationForm({ templates }: CreateInvitationFormProps) {
       {step === 1 && (
         <Card className="border-border/50">
           <CardHeader>
-            <CardTitle>Pilih Template</CardTitle>
-            <CardDescription>Pilih desain template yang sesuai dengan tema pernikahan Anda</CardDescription>
+            <CardTitle>Pilih Tema</CardTitle>
+            <CardDescription>Pilih desain tema yang sesuai dengan tema pernikahan Anda</CardDescription>
           </CardHeader>
           <CardContent>
             <RadioGroup
-              value={selectedTemplate}
-              onValueChange={setSelectedTemplate}
+              value={selectedTheme}
+              onValueChange={setSelectedTheme}
               className="grid md:grid-cols-3 gap-4"
             >
-              {templates.map((template) => (
+              {themes.map((theme) => (
                 <Label
-                  key={template.id}
-                  htmlFor={template.id}
+                  key={theme.id}
+                  htmlFor={theme.id}
                   className={`cursor-pointer rounded-lg border-2 overflow-hidden transition-all ${
-                    selectedTemplate === template.id ? "border-primary ring-2 ring-primary/20" : "border-border/50"
+                    selectedTheme === theme.id ? "border-primary ring-2 ring-primary/20" : "border-border/50"
                   }`}
                 >
-                  <RadioGroupItem value={template.id} id={template.id} className="sr-only" />
+                  <RadioGroupItem value={theme.id} id={theme.id} className="sr-only" />
                   <div className="aspect-2/3 bg-secondary/50 relative">
-                    {/* {template.preview_image ? (
+                    {/* {theme.preview_image ? (
                       <Image
-                        src={template.preview_image || "/placeholder.svg"}
-                        alt={template.name}
+                        src={theme.preview_image || "/placeholder.svg"}
+                        alt={theme.name}
                         fill
                         className="object-cover"
                       />
@@ -146,22 +146,22 @@ export function CreateInvitationForm({ templates }: CreateInvitationFormProps) {
                         Preview
                       </div>
                     )} */}
-                    {selectedTemplate === template.id && (
+                    {selectedTheme === theme.id && (
                       <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                         <Check className="h-4 w-4 text-primary-foreground" />
                       </div>
                     )}
                   </div>
                   <div className="p-3">
-                    <p className="font-medium">{template.name}</p>
-                    <p className="text-xs text-muted-foreground">{template.category}</p>
+                    <p className="font-medium">{theme.name}</p>
+                    <p className="text-xs text-muted-foreground">{theme.category}</p>
                   </div>
                 </Label>
               ))}
             </RadioGroup>
 
             <div className="flex justify-end mt-6">
-              <Button type="button" onClick={() => setStep(2)} disabled={!selectedTemplate}>
+              <Button type="button" onClick={() => setStep(2)} disabled={!selectedTheme}>
                 Lanjutkan
               </Button>
             </div>

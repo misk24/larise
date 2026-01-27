@@ -9,22 +9,18 @@ export default async function AdminUsersPage() {
 
   const { data: users } = await supabase
     .from("profiles")
+    .select("*")
     .select("*, invitations(count)")
     .order("created_at", { ascending: false })
 
   return (
     <div className="space-y-6">
       <div>
-        <span className="text-2xl md:text-3xl font-heading">
-          Kelola Pengguna
-        </span>
-
-        <p className="text-muted-foreground">
-          Lihat dan kelola semua pengguna terdaftar
-        </p>
+        <span className="text-2xl md:text-3xl font-medium">Kelola Pengguna</span>
+        <p className="text-muted-foreground">Lihat dan kelola semua pengguna terdaftar</p>
       </div>
 
-      <Card className="border-border/50">
+      <Card className="border-border bg-sidebar">
         <CardHeader>
           <CardTitle>Daftar Pengguna</CardTitle>
           <CardDescription>Total {users?.length || 0} pengguna terdaftar</CardDescription>
@@ -33,15 +29,16 @@ export default async function AdminUsersPage() {
           {users && users.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
-                <TableHeader className="bg-primary">
+                <TableHeader className="bg-secondary">
                   <TableRow>
-                    <TableHead className="text-primary-foreground">Nama</TableHead>
-                    <TableHead className="text-primary-foreground">Email</TableHead>
-                    <TableHead className="text-primary-foreground">Role</TableHead>
-                    <TableHead className="text-primary-foreground">Undangan</TableHead>
-                    <TableHead className="text-primary-foreground">Tanggal Daftar</TableHead>
+                    <TableHead className="text-primary font-semibold">Nama</TableHead>
+                    <TableHead className="text-primary font-semibold">Email</TableHead>
+                    <TableHead className="text-primary font-semibold">Role</TableHead>
+                    <TableHead className="text-primary font-semibold">Undangan</TableHead>
+                    <TableHead className="text-primary font-semibold">Tanggal Daftar</TableHead>
                   </TableRow>
                 </TableHeader>
+                
                 <TableBody>
                   {users.map((user) => (
                     <TableRow key={user.id}>

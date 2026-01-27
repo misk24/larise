@@ -48,7 +48,6 @@ export async function signUpWithEmail(email: string, password: string) {
 
   // Buat atau perbarui profile dengan provider "email" (upsert supaya idempoten)
   const normalizedEmail = email.toLowerCase()
-
   const { error: profileCreateError } = await admin.from("profiles").upsert({
     id: data.user.id,
     email: normalizedEmail,
@@ -71,7 +70,6 @@ export async function signUpWithEmail(email: string, password: string) {
 
 export async function signInWithEmail(email: string, password: string) {
   const admin = createAdminClient()
-  
   const normalizedEmail = email.toLowerCase()
 
   // Cek apakah email sudah terdaftar
@@ -105,11 +103,11 @@ export async function signInWithEmail(email: string, password: string) {
 
   // Get user role untuk final redirect
   const { data: { user } } = await supabase.auth.getUser()
+  
   if (user) {
     const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single()
-
     if (profile?.role === "admin") {
-      redirect("/admin/dashboard")
+      redirect("/admin")
     }
   }
 
@@ -118,16 +116,13 @@ export async function signInWithEmail(email: string, password: string) {
 
 export async function signOut() {
   const supabase = await createClient()
-
   await supabase.auth.signOut()
-
   redirect("/")
 }
 
 export async function getUser() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   return user
 }
 

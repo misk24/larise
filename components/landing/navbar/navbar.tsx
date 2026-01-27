@@ -1,8 +1,8 @@
 "use client"
 
+import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
-import { logo } from "@/constants/logo"
-import { navLinks } from "@/constants/navigation"
+import { navLinks } from "@/constants/frontend"
 import { useOverlay } from "@/hooks/use-overlay"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
@@ -30,35 +30,20 @@ export function Navbar() {
         transition={{ duration: 1.2, ease: "easeOut" }}
         className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6"
       >
-        <Link href="/">
-          <span className="text-2xl font-logo tracking-widest">
-            {logo}
-          </span>
-        </Link>
+        <Link href="/"><Logo /></Link>
 
         <nav className="hidden md:inline-block">
           <ul className="flex items-center gap-12">
             {navLinks.map((link) => (
-              <li
-                key={link.href}
-                className="text-sm hover:text-accent transition-colors"
-              >
-                <Link href={link.href}>
-                  {link.label}
-                </Link>
+              <li key={link.href} className="text-sm hover:text-accent transition-colors">
+                <Link href={link.href}>{link.label}</Link>
               </li>
             ))}
           </ul>
         </nav>
 
-        <Button
-          size="sm"
-          className="hidden md:inline-flex px-4 rounded-full"
-          asChild
-        >
-          <Link href={loginButton.href}>
-            {loginButton.label}
-          </Link>
+        <Button size="sm" className="hidden md:inline-flex px-4 rounded-full" asChild>
+          <Link href={loginButton.href}>{loginButton.label}</Link>
         </Button>
 
         <button
@@ -67,14 +52,11 @@ export function Navbar() {
           aria-expanded={isOpen.isOpen}
           aria-label="Toggle Menu"
         >
-          <Menu className="w-4 h-4" />
+          <Menu className="size-4" />
         </button>
       </motion.div>
 
-      <MobileHeader 
-        isOpen={isOpen.isOpen} 
-        onClose={isOpen.close} 
-      />
+      <MobileHeader isOpen={isOpen.isOpen} onClose={isOpen.close} />
     </header>
   )
 }

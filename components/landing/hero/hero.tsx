@@ -13,9 +13,7 @@ export function HeroSection() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('/images/romantic-wedding-flowers-soft-pink-petals-elegant-.jpg')`,
-        }}
+        style={{ backgroundImage: `url('/images/romantic-wedding-flowers-soft-pink-petals-elegant-.jpg')` }}
       >
         <div className="absolute inset-0 bg-background/85" />
       </motion.div>
@@ -82,24 +80,15 @@ export function HeroSection() {
             }}
             className="max-w-xs mx-auto grid grid-cols-2 items-center justify-center gap-4"
           >
-            <Button 
-              size="lg" 
-              className="rounded-full"
-              asChild
-            >
+            <Button size="lg" className="rounded-full"asChild>
               <Link href={heroSection.cta.primary.href}>
-                {heroSection.cta.primary.label}
+                <span>{heroSection.cta.primary.label}</span>
               </Link>
             </Button>
 
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-background hover:border-accent hover:text-primary-foreground rounded-full"
-              asChild
-            >
+            <Button variant="outline" size="lg" className="border-background hover:border-accent hover:text-primary-foreground rounded-full" asChild>
               <Link href={heroSection.cta.secondary.href}>
-                {heroSection.cta.secondary.label}
+                <span>{heroSection.cta.secondary.label}</span>
               </Link>
             </Button>
           </motion.div>

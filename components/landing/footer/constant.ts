@@ -19,4 +19,4 @@ export const socialLinks: SocialLinkProps[] = [
 ]
 
 export const location: string = "Lombok Timur, NTB"
-export const copy: string = "Crafted with care."
+export const copy: string = "LARISÉ. Crafted with care."

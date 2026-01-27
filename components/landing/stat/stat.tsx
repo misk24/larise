@@ -14,17 +14,9 @@ export function StatSection() {
           className="grid grid-cols-3 gap-12"
         >
           {stats.map((stat, index) => (
-            <div 
-              key={index} 
-              className="text-center"
-            >
-              <h3 className="mb-2">
-                {stat.value}
-              </h3>
-              
-              <p className="text-muted-foreground">
-                {stat.label}
-              </p>
+            <div key={index} className="text-center">
+              <h3 className="mb-2">{stat.value}</h3>
+              <p className="text-muted-foreground">{stat.label}</p>
             </div>
           ))}
         </motion.div>

@@ -1,11 +1,11 @@
 "use client"
 
+import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { logo } from "@/constants/logo"
 import { signUpWithEmail } from "@/lib/actions/auth"
 import { createClient } from "@/lib/supabase/client"
 import { Icon } from "@iconify/react"
@@ -47,11 +47,12 @@ export function RegisterForm() {
 
       if (result?.error) {
         toast.error(result.error)
-        // Jika email sudah terdaftar, arahkan ke login
+        
         if (result?.shouldRedirectToLogin) {
           router.replace("/login")
           return
         }
+
         setIsSubmitLoading(false)
         return
       }
@@ -85,8 +86,8 @@ export function RegisterForm() {
 
   return (
     <Card className="w-full max-w-md border-none bg-background">
-      <CardHeader className="mb-4 text-center">
-        <CardTitle className="text-2xl font-logo font-normal tracking-widest">{logo}</CardTitle>
+      <CardHeader className="flex flex-col items-center gap-4 mb-4">
+        <CardTitle><Logo /></CardTitle>
         <CardDescription>Mulai buat undangan pernikahan digital Anda</CardDescription>
       </CardHeader>
 
@@ -104,6 +105,7 @@ export function RegisterForm() {
                 disabled={isSubmitLoading}
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -116,6 +118,7 @@ export function RegisterForm() {
                   required
                   disabled={isSubmitLoading}
                 />
+
                 <Button
                   type="button"
                   variant="ghost"
@@ -130,6 +133,7 @@ export function RegisterForm() {
                 </Button>
               </div>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
               <div className="relative">
@@ -142,6 +146,7 @@ export function RegisterForm() {
                   required
                   disabled={isSubmitLoading}
                 />
+
                 <Button
                   type="button"
                   variant="ghost"
@@ -165,9 +170,7 @@ export function RegisterForm() {
               className="w-full" 
               disabled={isSubmitLoading}
             >
-              {isSubmitLoading && 
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              }
+              {isSubmitLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
               Daftar
             </Button>
           </CardFooter>
@@ -176,10 +179,7 @@ export function RegisterForm() {
         <div className="w-full px-6 space-y-4">
           <p className="text-sm text-muted-foreground text-center">
             Sudah punya akun?{" "}
-            <Link 
-              href="/login" 
-              className="text-primary hover:underline"
-            >
+            <Link href="/login" className="text-primary hover:underline">
               Masuk di sini
             </Link>
           </p>
@@ -201,12 +201,8 @@ export function RegisterForm() {
             {isGoogleLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Icon
-                icon="logos:google-icon"
-                className="h-4 w-4"
-              />
+              <Icon icon="logos:google-icon" className="size-4"/>
             )}
-  
             <span>
               {isGoogleLoading ? "Redirecting..." : "Daftar dengan Google"}
             </span>

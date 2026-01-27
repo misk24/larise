@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { createClient } from "@/lib/supabase/client"
-import type { Invitation, Template } from "@/types/database"
+import type { Invitation, Theme } from "@/types/database"
 import { ExternalLink, Loader2, Save, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -18,15 +18,15 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 interface EditInvitationFormProps {
-  invitation: Invitation & { templates: Template | null }
-  templates: Template[]
+  invitation: Invitation & { themes: Theme | null }
+  themes: Theme[]
 }
 
-export function EditInvitationForm({ invitation, templates }: EditInvitationFormProps) {
+export function EditInvitationForm({ invitation, themes }: EditInvitationFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [formData, setFormData] = useState({
-    templateId: invitation.template_id || "",
+    themeId: invitation.theme_id || "",
     groomName: invitation.groom_name || "",
     brideName: invitation.bride_name || "",
     // groomParents: invitation.groom_parents || "",
@@ -62,7 +62,7 @@ export function EditInvitationForm({ invitation, templates }: EditInvitationForm
       const { error } = await supabase
         .from("invitations")
         .update({
-          template_id: formData.templateId,
+          theme_id: formData.themeId,
           slug: formData.slug,
           groom_name: formData.groomName,
           bride_name: formData.brideName,

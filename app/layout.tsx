@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner"
 import type { Metadata, Viewport } from "next"
 import type React from "react"
-import { begum, rosehot, satoshi } from "./fonts"
+import { rosehot, satoshi } from "./fonts"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${begum.variable} ${rosehot.variable} ${satoshi.variable} font-sans antialiased`}>
+      <body className={`${rosehot.variable} ${satoshi.variable} font-sans antialiased`}>
         {children}
         <Toaster position="top-center" richColors />
       </body>

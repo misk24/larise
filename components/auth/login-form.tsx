@@ -1,11 +1,11 @@
 "use client"
 
+import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { logo } from "@/constants/logo"
 import { signInWithEmail } from "@/lib/actions/auth"
 import { createClient } from "@/lib/supabase/client"
 import { Icon } from "@iconify/react"
@@ -76,8 +76,8 @@ export function LoginForm() {
 
   return (
     <Card className="w-full max-w-md border-none bg-primary-foreground">
-      <CardHeader className="mb-4 text-center">
-        <CardTitle className="text-2xl font-logo font-normal tracking-widest">{logo}</CardTitle>
+      <CardHeader className="flex flex-col items-center gap-4 mb-4">
+        <CardTitle><Logo /></CardTitle>
         <CardDescription>Masuk ke akun Anda untuk melanjutkan</CardDescription>
       </CardHeader>
 
@@ -108,6 +108,7 @@ export function LoginForm() {
                 required
                 disabled={isSubmitLoading}
               />
+              
               <Button
                 type="button"
                 variant="ghost"
@@ -131,9 +132,7 @@ export function LoginForm() {
             className="w-full" 
             disabled={isSubmitLoading}
           >
-            {isSubmitLoading && 
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            }
+            {isSubmitLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
             Masuk
           </Button>
         </CardFooter>
@@ -142,10 +141,7 @@ export function LoginForm() {
       <div className="w-full px-6 space-y-4">
         <p className="text-sm text-muted-foreground text-center">
           Belum punya akun?{" "}
-          <Link 
-            href="/register" 
-            className="text-primary hover:underline"
-          >
+          <Link href="/register" className="text-primary hover:underline">
             Daftar sekarang
           </Link>
         </p>
@@ -165,14 +161,10 @@ export function LoginForm() {
           disabled={isGoogleLoading}
         >
           {isGoogleLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
           ) : (
-            <Icon
-              icon="logos:google-icon"
-              className="h-4 w-4"
-            />
+            <Icon icon="logos:google-icon" className="size-4" />
           )}
-
           <span>
             {isGoogleLoading ? "Redirecting..." : "Login dengan Google"}
           </span>

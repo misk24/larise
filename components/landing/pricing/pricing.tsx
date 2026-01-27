@@ -15,7 +15,7 @@ const plans = [
     price: "Rp 99.000",
     description: "Untuk pasangan yang ingin undangan sederhana",
     features: [
-      "1 Template Pilihan",
+      "1 Tema Pilihan",
       "Kelola hingga 100 Tamu",
       "RSVP Online",
       "Galeri 10 Foto",
@@ -29,7 +29,7 @@ const plans = [
     price: "Rp 199.000",
     description: "Pilihan terbaik untuk undangan lengkap",
     features: [
-      "Semua Template Premium",
+      "Semua Tema Premium",
       "Kelola hingga 500 Tamu",
       "RSVP Online",
       "Galeri 50 Foto",

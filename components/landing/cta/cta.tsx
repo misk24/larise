@@ -69,14 +69,9 @@ export function CTASection() {
               }
             }}
           >
-            <Button
-              size="lg"
-              variant="secondary"
-              className="px-6 rounded-full"
-              asChild
-            >
+            <Button variant="secondary" size="lg" className="px-6 rounded-full" asChild>
               <Link href={ctaSection.cta.href}>
-                {ctaSection.cta.label}
+                <span>{ctaSection.cta.label}</span>
               </Link>
             </Button>
           </motion.div>

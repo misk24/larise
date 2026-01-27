@@ -28,16 +28,16 @@ export default async function AdminOrdersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <span className="text-2xl md:text-3xl font-heading">Kelola Pesanan</span>
+        <span className="text-2xl md:text-3xl font-medium">Kelola Pesanan</span>
         <p className="text-muted-foreground">Lihat dan kelola semua pesanan</p>
       </div>
 
-      <Card className="border-border/50">
+      <Card className="border-border bg-sidebar">
         <CardHeader>
           <CardTitle>Daftar Pesanan</CardTitle>
-          {/* <CardDescription>Total 0 pesanan</CardDescription> */}
           <CardDescription>Total {orders?.length || 0} pesanan</CardDescription>
         </CardHeader>
+
         <CardContent>
           {orders && orders.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
@@ -52,6 +52,7 @@ export default async function AdminOrdersPage() {
                     <TableHead>Tanggal</TableHead>
                   </TableRow>
                 </TableHeader>
+
                 <TableBody>
                   {orders.map((order) => (
                     <TableRow key={order.id}>

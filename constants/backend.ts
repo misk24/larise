@@ -1,8 +1,8 @@
 import { AdminNavProps, UserNavProps } from "@/types/backend"
-import { FileText, ImageIcon, LayoutDashboard, MessageSquareHeart, Palette, Settings, ShoppingCart, Users } from "lucide-react"
+import { ChartNoAxesCombined, FileText, ImageIcon, LayoutDashboard, MessageSquareHeart, Palette, Settings, ShoppingCart, Users } from "lucide-react"
 
 export const adminNavs: AdminNavProps[] = [
-  { href: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/admin", icon: ChartNoAxesCombined, label: "Dashboard" },
   { href: "/admin/users", icon: Users, label: "Users" },
   { href: "/admin/themes", icon: Palette, label: "Themes" },
   { href: "/admin/orders", icon: ShoppingCart, label: "Orders" },

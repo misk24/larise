@@ -1,7 +1,7 @@
-import { ButtonProps } from "@/types/button"
+import { ButtonProps } from "@/types/frontend"
 
 export interface CTASectionProps {
-  title: string,
-  description: string,
-  cta: ButtonProps,
+  title: string
+  description: string
+  cta: ButtonProps
 }

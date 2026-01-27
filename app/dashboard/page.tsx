@@ -6,9 +6,7 @@ import Link from "next/link"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
   // Get user's invitations
   const { data: invitations } = await supabase
@@ -61,29 +59,21 @@ export default async function DashboardPage() {
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-2xl md:text-3xl font-heading">Selamat Datang!</span>
+          <span className="text-2xl md:text-3xl font-medium">Selamat Datang!</span>
           <p className="text-muted-foreground">Kelola undangan pernikahan digital Anda di sini</p>
         </div>
-        {/* {!invitation && (
-          <Button size="lg" asChild>
-            <Link href="/dashboard/invitations/create">
-              <Plus className="mr-2 h-4 w-4" />
-              Buat Undangan
-            </Link>
-          </Button>
-        )} */}
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <Card key={index} className="bg-sidebar border-border/50">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                <div className={`size-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
+                  <stat.icon className={`size-6 ${stat.color}`} />
                 </div>
                 <div>
                   <p className="text-2xl font-semibold">{stat.value}</p>
@@ -108,16 +98,19 @@ export default async function DashboardPage() {
                   <span className="text-muted-foreground">Mempelai Pria</span>
                   <span className="font-medium">{invitation.groom_name || "-"}</span>
                 </div>
+
                 <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-muted-foreground">Mempelai Wanita</span>
                   <span className="font-medium">{invitation.bride_name || "-"}</span>
                 </div>
+
                 <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-muted-foreground">Tanggal Acara</span>
                   <span className="font-medium">
                     {invitation.event_date ? new Date(invitation.event_date).toLocaleDateString("id-ID") : "-"}
                   </span>
                 </div>
+
                 <div className="flex justify-between items-center py-2">
                   <span className="text-muted-foreground">Status</span>
                   <span
@@ -129,17 +122,19 @@ export default async function DashboardPage() {
                   </span>
                 </div>
               </div>
+
               <div className="flex gap-3 mt-6">
                 <Button asChild className="flex-1">
                   <Link href={`/dashboard/undangan/${invitation.id}`}>
                     Edit Undangan
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="ml-2 size-4" />
                   </Link>
                 </Button>
+
                 {invitation.is_published && (
                   <Button variant="outline" asChild>
                     <Link href={`/undangan/${invitation.slug}`} target="_blank">
-                      <Eye className="mr-2 h-4 w-4" />
+                      <Eye className="mr-2 size-4" />
                       Lihat
                     </Link>
                   </Button>
@@ -153,22 +148,25 @@ export default async function DashboardPage() {
               <CardTitle className="text-lg">Aksi Cepat</CardTitle>
               <CardDescription>Kelola undangan Anda dengan mudah</CardDescription>
             </CardHeader>
+
             <CardContent className="space-y-3">
               <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
                 <Link href="/dashboard/tamu">
-                  <Users className="mr-3 h-4 w-4" />
+                  <Users className="mr-3 size-4" />
                   Kelola Daftar Tamu
                 </Link>
               </Button>
+
               <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
                 <Link href="/dashboard/ucapan">
-                  <MessageSquareHeart className="mr-3 h-4 w-4" />
+                  <MessageSquareHeart className="mr-3 size-4" />
                   Lihat Ucapan & Doa
                 </Link>
               </Button>
+
               <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
                 <Link href="/dashboard/galeri">
-                  <Eye className="mr-3 h-4 w-4" />
+                  <Eye className="mr-3 size-4" />
                   Kelola Galeri Foto
                 </Link>
               </Button>
@@ -178,15 +176,17 @@ export default async function DashboardPage() {
       ) : (
         <Card className="bg-sidebar border-border/50">
           <CardContent className="p-12 text-center">
-            <FileText className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Belum Ada Undangan</h3>
+            <FileText className="size-16 text-muted-foreground/50 mx-auto mb-4" />
+            <span className="text-xl font-semibold mb-2">Belum Ada Undangan</span>
+            
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Mulai buat undangan pernikahan digital Anda sekarang. Pilih template, isi detail acara, dan bagikan ke
+              Mulai buat undangan pernikahan digital Anda sekarang. Pilih tema, isi detail acara, dan bagikan ke
               tamu undangan.
             </p>
+
             <Button asChild size="lg">
               <Link href="/dashboard/invitations/create">
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 size-4" />
                 Buat Undangan Pertama
               </Link>
             </Button>

@@ -1,4 +1,4 @@
-import { ButtonProps } from "@/types/button"
+import { ButtonProps } from "@/types/frontend"
 
 export const loginButton: ButtonProps = {
   label: "Login",

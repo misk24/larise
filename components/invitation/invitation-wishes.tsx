@@ -105,7 +105,7 @@ export function InvitationWishes({ invitationId, wishes, onWishAdded }: Invitati
           <motion.div initial={{ x: 20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
             <div className="h-100 overflow-y-auto space-y-4 pr-2">
               {wishes.length > 0 ? (
-                wishes.map((wish, index) => (
+                wishes.map((wish) => (
                   <Card key={wish.id} className="border-border/50">
                     <CardContent className="p-4">
                       <p className="text-foreground mb-3 italic">&ldquo;{wish.message}&rdquo;</p>

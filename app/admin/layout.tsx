@@ -1,25 +1,19 @@
-import { Breadcrumbs } from "@/components/admin/breadcrumb"
 import { AdminHeader } from "@/components/admin/header"
 import { AdminSidebar } from "@/components/admin/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { createClient } from "@/lib/supabase/server"
 import { Viewport } from "next"
 import { redirect } from "next/navigation"
 
 export const viewport: Viewport = {
-  themeColor: "#eeebe0",
+  themeColor: "#f8fafc",
   width: "device-width",
   initialScale: 1,
 }
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
     redirect("/login")
@@ -32,22 +26,16 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-secondary/20">
-      <AdminSidebar />
-      <div className="lg:pl-64">
-        <AdminHeader 
-          user={user} 
-          profile={profile} 
-        />
-
-        <main className="p-4 md:p-6 lg:p-8">
-          <div className="mb-6">
-            <Breadcrumbs />
-          </div>
-
-          {children}
-        </main>
-      </div>
+    <div className="min-h-screen bg-sidebar">
+      <SidebarProvider>
+        <AdminSidebar />
+        <div className="flex flex-1 flex-col">
+          <AdminHeader user={user} profile={profile} />
+          <main className="mx-auto size-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+            {children}
+          </main>
+        </div>
+      </SidebarProvider>
     </div>
   )
 }

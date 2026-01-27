@@ -1,6 +1,6 @@
 "use client"
 
-import type { Invitation, Template, Wish } from "@/types/database"
+import type { Invitation, Theme, Wish } from "@/types/database"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { InvitationCover } from "./invitation-cover"
@@ -15,7 +15,7 @@ import { InvitationGift } from "./invitation-gift"
 import { InvitationFooter } from "./invitation-footer"
 
 interface InvitationViewProps {
-  invitation: Invitation & { templates: Template | null }
+  invitation: Invitation & { themes: Theme | null }
   guestName: string
   wishes: Wish[]
 }

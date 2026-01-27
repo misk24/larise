@@ -34,7 +34,7 @@ export default async function InvitationPage({ params, searchParams }: PageProps
   const { to } = await searchParams
   const supabase = await createClient()
 
-  const { data: invitation } = await supabase.from("invitations").select("*, templates(*)").eq("slug", slug).single()
+  const { data: invitation } = await supabase.from("invitations").select("*, themes(*)").eq("slug", slug).single()
 
   if (!invitation || !invitation.is_published) {
     notFound()

@@ -5,9 +5,7 @@ import { redirect } from "next/navigation"
 
 export default async function WishesPage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect("/login")
 
@@ -17,10 +15,11 @@ export default async function WishesPage() {
     return (
       <div className="space-y-6">
         <div>
-          <span className="text-2xl md:text-3xl font-heading">Ucapan & Doa</span>
+          <span className="text-2xl md:text-3xl font-medium">Ucapan & Doa</span>
           <p className="text-muted-foreground">Lihat ucapan selamat dari tamu undangan</p>
         </div>
-        <Card className="border-border/50">
+        
+        <Card className="border-border bg-sidebar">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk melihat ucapan.</p>
           </CardContent>

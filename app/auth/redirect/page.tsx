@@ -27,7 +27,7 @@ export default async function AuthRedirectPage() {
 
   // 3. redirect final berdasarkan role
   if (profile.role === "admin") {
-    redirect("/admin/dashboard")
+    redirect("/admin")
   }
 
   redirect("/dashboard")

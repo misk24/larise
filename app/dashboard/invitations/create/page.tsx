@@ -3,17 +3,16 @@ import { createClient } from "@/lib/supabase/server"
 
 export default async function CreateInvitationPage() {
   const supabase = await createClient()
-
-  const { data: templates } = await supabase.from("templates").select("*").eq("is_active", true).order("name")
+  const { data: themes } = await supabase.from("themes").select("*").eq("is_active", true).order("name")
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Buat Undangan Baru</h1>
-        <p className="text-muted-foreground">Pilih template dan isi detail pernikahan Anda</p>
+        <span className="text-2xl md:text-3xl font-medium">Buat Undangan Baru</span>
+        <p className="text-muted-foreground">Pilih tema dan isi detail pernikahan Anda</p>
       </div>
 
-      <CreateInvitationForm templates={templates || []} />
+      <CreateInvitationForm themes={themes || []} />
     </div>
   )
 }
