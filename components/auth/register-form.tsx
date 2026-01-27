@@ -31,7 +31,7 @@ export function RegisterForm() {
     e.preventDefault()
 
     if (password !== confirmPassword) {
-      toast.error("Password tidak sama")
+      toast.error("Password dan Konfirmasi Password tidak sama")
       return
     }
 
@@ -47,6 +47,11 @@ export function RegisterForm() {
 
       if (result?.error) {
         toast.error(result.error)
+        // Jika email sudah terdaftar, arahkan ke login
+        if (result?.shouldRedirectToLogin) {
+          router.replace("/login")
+          return
+        }
         setIsSubmitLoading(false)
         return
       }

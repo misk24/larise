@@ -17,6 +17,7 @@ export async function signUpWithEmail(email: string, password: string) {
   if (profile && profile.provider !== "email") {
     return {
       error: `Email ini sudah terdaftar menggunakan ${profile.provider === "google" ? "Google" : "metode lain"}. Silakan login dengan metode tersebut.`,
+      shouldRedirectToLogin: true,
     }
   }
 
@@ -24,12 +25,13 @@ export async function signUpWithEmail(email: string, password: string) {
   if (profile && profile.provider === "email") {
     return {
       error: "Email ini sudah terdaftar. Silakan login.",
+      shouldRedirectToLogin: true,
     }
   }
 
   const supabase = await createClient()
   const { data, error: authError } = await supabase.auth.signUp({
-    email, 
+    email: email.toLowerCase(), 
     password,
     options: {
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=verify`,
@@ -45,9 +47,11 @@ export async function signUpWithEmail(email: string, password: string) {
   }
 
   // Buat atau perbarui profile dengan provider "email" (upsert supaya idempoten)
+  const normalizedEmail = email.toLowerCase()
+
   const { error: profileCreateError } = await admin.from("profiles").upsert({
     id: data.user.id,
-    email: email,
+    email: normalizedEmail,
     provider: "email",
     role: "user",
   },
@@ -68,8 +72,10 @@ export async function signUpWithEmail(email: string, password: string) {
 export async function signInWithEmail(email: string, password: string) {
   const admin = createAdminClient()
   
+  const normalizedEmail = email.toLowerCase()
+
   // Cek apakah email sudah terdaftar
-  const { data: profile, error: profileError } = await admin.from("profiles").select("provider").eq("email", email).maybeSingle()
+  const { data: profile, error: profileError } = await admin.from("profiles").select("provider").eq("email", normalizedEmail).maybeSingle()
 
   if (profileError) {
     console.error("Profile check failed:", profileError)
@@ -100,7 +106,7 @@ export async function signInWithEmail(email: string, password: string) {
   // Get user role untuk final redirect
   const { data: { user } } = await supabase.auth.getUser()
   if (user) {
-    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single()
 
     if (profile?.role === "admin") {
       redirect("/admin/dashboard")

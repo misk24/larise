@@ -21,18 +21,32 @@ export async function GET(request: Request) {
   }
 
   const user = data.user
-  const email = user.email!
-  const provider = type === "verify" ? "email" : (user.app_metadata.provider || "google")
+  const email = user.email!.toLowerCase()
+  const provider =
+    type === "verify"
+      ? "email"
+      : (user.identities?.[0]?.provider || user.app_metadata?.provider || "google")
 
-  // 2. cek apakah email sudah ada di profiles
-  const { data: profile } = await supabase
+  // 2. cek apakah email sudah ada di profiles (use admin to bypass RLS)
+  const { data: profile } = await admin
     .from("profiles")
     .select("provider")
     .eq("email", email)
     .maybeSingle()
 
-  // 3. konflik provider - email sudah terdaftar dengan provider berbeda
-  if (profile && profile.provider !== provider) {
+  // Debug logging to help trace provider mismatches in dev
+  try {
+    // eslint-disable-next-line no-console
+    console.log("[auth/callback] email:", email, "provider:", provider, "profile:", profile)
+  } catch (e) {
+    // ignore
+  }
+
+  // 3. konflik provider - if this is NOT an email verification callback,
+  //    and the stored profile was created with the email provider, block OAuth sign-ins.
+  //    This is a strict safety check to prevent signing in via Google when the profile
+  //    was originally registered via email/password.
+  if (type !== "verify" && profile && profile.provider === "email") {
     await supabase.auth.signOut()
     return NextResponse.redirect(
       new URL(
@@ -43,7 +57,7 @@ export async function GET(request: Request) {
   }
 
   // 4. email sudah ada dengan provider sama (login, bukan signup)
-  if (profile && profile.provider === provider) {
+  if (profile) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
