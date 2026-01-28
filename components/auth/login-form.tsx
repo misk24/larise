@@ -1,88 +1,116 @@
-"use client"
+"use client";
 
-import { Logo } from "@/components/logo"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { signInWithEmail } from "@/lib/actions/auth"
-import { createClient } from "@/lib/supabase/client"
-import { Icon } from "@iconify/react"
-import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-import type React from "react"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { signInWithEmail } from "@/lib/actions/auth";
+import { createClient } from "@/lib/supabase/client";
+import { Icon } from "@iconify/react";
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function LoginForm() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [isSubmitLoading, setIsSubmitLoading] = useState(false)
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
-  const supabase = createClient()
-  const searchParams = useSearchParams()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const supabase = createClient();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     // Handle error dari query params
-    const error = searchParams.get("error")
-    const provider = searchParams.get("provider")
+    const error = searchParams.get("error");
+    const provider = searchParams.get("provider");
 
     if (error === "provider_mismatch") {
-      toast.error(`Email ini sudah terdaftar dengan ${provider === "google" ? "Google" : "Email"}. Silakan login dengan metode tersebut.`)
+      toast.error(
+        `Email ini sudah terdaftar dengan ${provider === "google" ? "Google" : "Email"}. Silakan login dengan metode tersebut.`,
+      );
     } else if (error === "oauth") {
-      toast.error("Terjadi kesalahan saat login. Silakan coba lagi.")
+      toast.error("Terjadi kesalahan saat login. Silakan coba lagi.");
     } else if (error === "profile_creation") {
-      toast.error("Terjadi kesalahan saat membuat profil. Silakan coba lagi.")
+      toast.error("Terjadi kesalahan saat membuat profil. Silakan coba lagi.");
     }
-  }, [searchParams])
+  }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setIsSubmitLoading(true)
+    e.preventDefault();
+    setIsSubmitLoading(true);
 
     try {
-      const result = await signInWithEmail(email, password)
+      const result = await signInWithEmail(email, password);
 
       if (result?.error) {
-        toast.error(result.error)
-        setIsSubmitLoading(false)
-        return
+        // Transform Supabase error message menjadi lebih user-friendly
+        let errorMessage = result.error;
+
+        // Case 1: Email/password salah
+        if (result.error.includes("Invalid login credentials")) {
+          errorMessage = "Email atau password salah. Silakan coba lagi.";
+        }
+        // Case 2: Akun terdaftar dengan metode lain (Google OAuth)
+        // Error message sudah di-generate di auth.ts dengan jelas
+
+        toast.error(errorMessage);
+        setIsSubmitLoading(false);
+        return;
       }
-    } catch (err) {
-      console.error(err)
-      toast.error("Terjadi kesalahan. Silakan coba lagi.")
-      setIsSubmitLoading(false)
+      // Jika tidak ada error, redirect akan terjadi otomatis
+      // Tidak perlu handle di sini karena signInWithEmail() sudah redirect
+    } catch (err: unknown) {
+      // Ignore NextJS redirect error (bukan error sebenarnya)
+      if (err instanceof Error && err.message === "NEXT_REDIRECT") {
+        return;
+      }
+
+      console.error(err);
+      toast.error("Terjadi kesalahan. Silakan coba lagi.");
+      setIsSubmitLoading(false);
     }
   }
 
   async function handleGoogle() {
-    setIsGoogleLoading(true)
+    setIsGoogleLoading(true);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${location.origin}/auth/callback`,
       },
-    })
+    });
 
     if (error) {
-      toast.error(error.message)
-      setIsGoogleLoading(false)
+      toast.error(error.message);
+      setIsGoogleLoading(false);
     }
   }
 
   return (
     <Card className="w-full max-w-md border-none bg-primary-foreground">
       <CardHeader className="flex flex-col items-center gap-4 mb-4">
-        <CardTitle><Logo /></CardTitle>
+        <CardTitle>
+          <Logo />
+        </CardTitle>
         <CardDescription>Masuk ke akun Anda untuk melanjutkan</CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">        
+        <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -108,12 +136,12 @@ export function LoginForm() {
                 required
                 disabled={isSubmitLoading}
               />
-              
+
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsPasswordVisible(prevState => !prevState)}
+                onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
               >
                 {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
@@ -126,13 +154,15 @@ export function LoginForm() {
         </CardContent>
 
         <CardFooter className="mt-4">
-          <Button 
-            type="submit" 
-            size="lg" 
-            className="w-full" 
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
             disabled={isSubmitLoading}
           >
-            {isSubmitLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+            {isSubmitLoading && (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            )}
             Masuk
           </Button>
         </CardFooter>
@@ -152,10 +182,10 @@ export function LoginForm() {
           <Separator className="flex-1" />
         </div>
 
-        <Button 
-          type="button" 
-          variant="outline" 
-          size="lg" 
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
           className="w-full gap-2 hover:text-primary-foreground"
           onClick={handleGoogle}
           disabled={isGoogleLoading}
@@ -171,5 +201,5 @@ export function LoginForm() {
         </Button>
       </div>
     </Card>
-  )
+  );
 }

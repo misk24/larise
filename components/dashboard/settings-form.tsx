@@ -1,31 +1,37 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { createClient } from "@/lib/supabase/client"
-import { Profile } from "@/types/database"
-import type { User } from "@supabase/supabase-js"
-import { Loader2 } from "lucide-react"
-import type React from "react"
-import { useState } from "react"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { createClient } from "@/lib/supabase/client";
+import { Profile } from "@/types/database";
+import type { User } from "@supabase/supabase-js";
+import { Loader2 } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface SettingsFormProps {
-  user: User
-  profile: Profile | null
+  user: User;
+  profile: Profile | null;
 }
 
 export function SettingsForm({ user, profile }: SettingsFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [fullName, setFullName] = useState(profile?.full_name || "")
-  const [phone, setPhone] = useState(profile?.phone || "")
-  const supabase = createClient()
+  const [isLoading, setIsLoading] = useState(false);
+  const [fullName, setFullName] = useState(profile?.full_name || "");
+  const [phone, setPhone] = useState(profile?.phone || "");
+  const supabase = createClient();
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       const { error } = await supabase
@@ -34,18 +40,18 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
           full_name: fullName,
           phone: phone,
         })
-        .eq("id", user.id)
+        .eq("id", user.id);
 
       if (error) {
-        toast.error(error.message)
-        return
+        toast.error(error.message);
+        return;
       }
 
-      toast.success("Profil berhasil diperbarui!")
+      toast.success("Profil berhasil diperbarui!");
     } catch {
-      toast.error("Terjadi kesalahan")
+      toast.error("Terjadi kesalahan");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -56,13 +62,17 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
           <CardTitle>Informasi Profil</CardTitle>
           <CardDescription>Perbarui informasi akun Anda</CardDescription>
         </CardHeader>
-        
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" value={user.email || ""} disabled className="bg-muted" />
+            <Input
+              id="email"
+              type="email"
+              value={user.email || ""}
+              disabled
+              className="bg-muted"
+            />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="fullName">Nama Lengkap</Label>
             <Input
@@ -72,12 +82,15 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
               placeholder="Nama lengkap Anda"
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="phone">Nomor Telepon</Label>
-            <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="08123456789" />
+            <Input
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="08123456789"
+            />
           </div>
-
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
             Simpan Perubahan
@@ -85,5 +98,5 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
         </CardContent>
       </Card>
     </form>
-  )
+  );
 }

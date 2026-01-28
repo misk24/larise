@@ -1,25 +1,25 @@
-import gsap from "gsap"
-import { SplitText } from "gsap/SplitText"
-import { RefObject, useEffect, useRef } from "react"
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
+import { RefObject, useEffect, useRef } from "react";
 
 export function useGsapContext(
-  scope: RefObject<HTMLElement | null>, 
-  animate: () => void, 
-  deps: any[] = []
+  scope: RefObject<HTMLElement | null>,
+  animate: () => void,
+  deps: any[] = [],
 ) {
   useEffect(() => {
-    if (!scope.current) return
-    const ctx = gsap.context(animate, scope)
-    return () => ctx.revert()
-  }, deps)
+    if (!scope.current) return;
+    const ctx = gsap.context(animate, scope);
+    return () => ctx.revert();
+  }, deps);
 }
 
 export function useGsapReveal(
-  scope: RefObject<HTMLElement | null>, 
-  options: gsap.TweenVars & { start?: string } = {}
+  scope: RefObject<HTMLElement | null>,
+  options: gsap.TweenVars & { start?: string } = {},
 ) {
   useEffect(() => {
-    if (!scope.current) return
+    if (!scope.current) return;
     const ctx = gsap.context(() => {
       gsap.from(scope.current!.children, {
         opacity: 0,
@@ -31,20 +31,20 @@ export function useGsapReveal(
           trigger: scope.current,
           start: options.start ?? "top 75%",
         },
-        ...options
-      })
-    }, [scope])
+        ...options,
+      });
+    }, [scope]);
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, []);
 }
 
 export function useGsapRevealUp(
-  scope: RefObject<HTMLElement | null>, 
-  options: gsap.TweenVars & { start?: string } = {}
+  scope: RefObject<HTMLElement | null>,
+  options: gsap.TweenVars & { start?: string } = {},
 ) {
   useEffect(() => {
-    if (!scope.current) return
+    if (!scope.current) return;
     const ctx = gsap.context(() => {
       gsap.from(scope.current!.children, {
         opacity: 0,
@@ -56,20 +56,20 @@ export function useGsapRevealUp(
           trigger: scope.current,
           start: options.start ?? "top 75%",
         },
-        ...options
-      })
-    }, scope)
+        ...options,
+      });
+    }, scope);
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, []);
 }
 
 export function useGsapRevealDown(
-  scope: RefObject<HTMLElement | null>, 
-  options: gsap.TweenVars & { start?: string } = {}
+  scope: RefObject<HTMLElement | null>,
+  options: gsap.TweenVars & { start?: string } = {},
 ) {
   useEffect(() => {
-    if (!scope.current) return
+    if (!scope.current) return;
     const ctx = gsap.context(() => {
       gsap.from(scope.current!.children, {
         opacity: 0,
@@ -81,21 +81,21 @@ export function useGsapRevealDown(
           trigger: scope.current,
           start: options.start ?? "top 75%",
         },
-        ...options
-      })
-    }, scope)
+        ...options,
+      });
+    }, scope);
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, []);
 }
 
 export function useGsapScrollStagger(
   scope: RefObject<HTMLElement | null>,
   selector: string,
-  options: gsap.TweenVars & { start?: string } = {}
+  options: gsap.TweenVars & { start?: string } = {},
 ) {
   useEffect(() => {
-    if (!scope.current) return
+    if (!scope.current) return;
 
     const ctx = gsap.context(() => {
       gsap.from(scope.current!.querySelectorAll(selector), {
@@ -109,11 +109,11 @@ export function useGsapScrollStagger(
           start: options.start ?? "top 75%",
         },
         ...options,
-      })
-    }, scope)
+      });
+    }, scope);
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, []);
 }
 
 export function useGsapToggleStagger(
@@ -122,40 +122,40 @@ export function useGsapToggleStagger(
   isOpen: boolean,
   visible: boolean,
   skipCloseRef: React.MutableRefObject<boolean>,
-  onClose: () => void
+  onClose: () => void,
 ) {
-  const wasOpen = useRef(isOpen)
-  
+  const wasOpen = useRef(isOpen);
+
   useEffect(() => {
     if (!scope.current) {
-      wasOpen.current = isOpen
-      return
+      wasOpen.current = isOpen;
+      return;
     }
 
-    const items = scope.current.querySelectorAll(selector)
+    const items = scope.current.querySelectorAll(selector);
     if (!items.length) {
-      wasOpen.current = isOpen
-      return
+      wasOpen.current = isOpen;
+      return;
     }
 
     if (isOpen && visible) {
       gsap.fromTo(
-        items, 
+        items,
         { opacity: 0, x: 24 },
         {
           opacity: 1,
-          x:0,
+          x: 0,
           duration: 0.8,
           stagger: 0.15,
           ease: "power3.out",
-        }
-      )
+        },
+      );
     }
 
     if (wasOpen.current && !isOpen && visible) {
       if (skipCloseRef.current) {
-        skipCloseRef.current = false
-        onClose()
+        skipCloseRef.current = false;
+        onClose();
       } else {
         gsap.to(items, {
           opacity: 0,
@@ -164,21 +164,21 @@ export function useGsapToggleStagger(
           stagger: 0.15,
           ease: "power3.in",
           onComplete: onClose,
-        })
+        });
       }
     }
 
-    wasOpen.current = isOpen
-  }, [isOpen, visible])
+    wasOpen.current = isOpen;
+  }, [isOpen, visible]);
 }
 
 export function useGsapParallax(
   scope: RefObject<HTMLElement | null>,
   selector: string,
-  distance = 40
+  distance = 40,
 ) {
   useEffect(() => {
-    if (!scope.current) return
+    if (!scope.current) return;
 
     const ctx = gsap.context(() => {
       gsap.to(scope.current!.querySelectorAll(selector), {
@@ -190,32 +190,30 @@ export function useGsapParallax(
           end: "bottom top",
           scrub: true,
         },
-      })
-    }, scope)
+      });
+    }, scope);
 
-    return () => ctx.revert()
-  }, [distance])
+    return () => ctx.revert();
+  }, [distance]);
 }
 
-export function useGsapSplitText(
-  scope: RefObject<HTMLElement | null>
-) {
+export function useGsapSplitText(scope: RefObject<HTMLElement | null>) {
   useEffect(() => {
-    if (!scope.current) return
+    if (!scope.current) return;
 
     const split = new SplitText(scope.current, {
       type: "words, chars",
-    })
+    });
 
     gsap.from(split.chars, {
-      duration: 2, 
+      duration: 2,
       x: 24,
-      // y: 24, 
-      autoAlpha: 0, 
+      // y: 24,
+      autoAlpha: 0,
       stagger: 0.08,
       ease: "power3.out",
-    })
+    });
 
-    return () => split.revert()
-  }, [scope])
+    return () => split.revert();
+  }, [scope]);
 }

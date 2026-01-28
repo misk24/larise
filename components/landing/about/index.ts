@@ -1,1 +1,2 @@
-export { AboutSection } from "./about"
+export { AboutSection } from "./about";
+

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { stats } from "./constant"
+import { motion } from "framer-motion";
+import { stats } from "./constant";
 
 export function StatSection() {
   return (
     <section className="px-6 pb-32">
       <div className="max-w-xl mx-auto">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
@@ -22,5 +22,5 @@ export function StatSection() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

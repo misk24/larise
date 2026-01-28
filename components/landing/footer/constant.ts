@@ -1,4 +1,4 @@
-import { SocialLinkProps } from "./type"
+import { SocialLinkProps } from "./type";
 
 export const socialLinks: SocialLinkProps[] = [
   {
@@ -16,7 +16,7 @@ export const socialLinks: SocialLinkProps[] = [
     label: "@larise",
     href: "https://instagram.com",
   },
-]
+];
 
-export const location: string = "Lombok Timur, NTB"
-export const copy: string = "LARISÉ. Crafted with care."
+export const location: string = "Lombok Timur, NTB";
+export const copy: string = "LARISÉ. Crafted with care.";

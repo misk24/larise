@@ -1,32 +1,41 @@
-import { GuestManager } from "@/components/dashboard/guest-manager"
-import { Card, CardContent } from "@/components/ui/card"
-import { createClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
+import { GuestManager } from "@/components/dashboard/guest-manager";
+import { Card, CardContent } from "@/components/ui/card";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function GuestsPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login")
+  if (!user) redirect("/login");
 
   // Get user's invitation
-  const { data: invitation } = await supabase.from("invitations").select("id").eq("user_id", user.id).single()
+  const { data: invitation } = await supabase
+    .from("invitations")
+    .select("id")
+    .eq("user_id", user.id)
+    .single();
 
   if (!invitation) {
     return (
       <div className="space-y-6">
         <div>
           <span className="text-2xl md:text-3xl font-medium">Daftar Tamu</span>
-          <p className="text-muted-foreground">Kelola daftar tamu undangan Anda</p>
+          <p className="text-muted-foreground">
+            Kelola daftar tamu undangan Anda
+          </p>
         </div>
-        
         <Card className="border-border bg-sidebar">
           <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk mengelola daftar tamu.</p>
+            <p className="text-muted-foreground">
+              Buat undangan terlebih dahulu untuk mengelola daftar tamu.
+            </p>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   // Get guests with RSVP status
@@ -34,16 +43,17 @@ export default async function GuestsPage() {
     .from("guests")
     .select("*, rsvp(*)")
     .eq("invitation_id", invitation.id)
-    .order("name")
+    .order("name");
 
   return (
     <div className="space-y-6">
       <div>
         <span className="text-2xl md:text-3xl font-medium">Daftar Tamu</span>
-        <p className="text-muted-foreground">Kelola daftar tamu undangan Anda</p>
+        <p className="text-muted-foreground">
+          Kelola daftar tamu undangan Anda
+        </p>
       </div>
-
       <GuestManager invitationId={invitation.id} initialGuests={guests || []} />
     </div>
-  )
+  );
 }

@@ -1,28 +1,38 @@
-import { AdminHeader } from "@/components/admin/header"
-import { AdminSidebar } from "@/components/admin/sidebar"
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { createClient } from "@/lib/supabase/server"
-import { Viewport } from "next"
-import { redirect } from "next/navigation"
+import { AdminHeader } from "@/components/admin/header";
+import { AdminSidebar } from "@/components/admin/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { createClient } from "@/lib/supabase/server";
+import { Viewport } from "next";
+import { redirect } from "next/navigation";
 
 export const viewport: Viewport = {
   themeColor: "#f8fafc",
   width: "device-width",
   initialScale: 1,
-}
+};
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login")
+    redirect("/login");
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
 
   if (profile?.role !== "admin") {
-    redirect("/dashboard")
+    redirect("/dashboard");
   }
 
   return (
@@ -37,5 +47,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
       </SidebarProvider>
     </div>
-  )
+  );
 }

@@ -1,29 +1,39 @@
-import { DashboardHeader } from "@/components/dashboard/header"
-import { DashboardSidebar } from "@/components/dashboard/sidebar"
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { createClient } from "@/lib/supabase/server"
-import { Viewport } from "next"
-import { redirect } from "next/navigation"
-import type React from "react"
+import { DashboardHeader } from "@/components/dashboard/header";
+import { DashboardSidebar } from "@/components/dashboard/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { createClient } from "@/lib/supabase/server";
+import { Viewport } from "next";
+import { redirect } from "next/navigation";
+import type React from "react";
 
 export const viewport: Viewport = {
   themeColor: "#f8fafc",
   width: "device-width",
   initialScale: 1,
-}
+};
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login")
+    redirect("/login");
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
 
   if (profile?.role === "admin") {
-    redirect("/admin")
+    redirect("/admin");
   }
 
   return (
@@ -38,5 +48,5 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </SidebarProvider>
     </div>
-  )
+  );
 }

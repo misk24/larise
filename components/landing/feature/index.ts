@@ -1,1 +1,2 @@
-export { FeatureSection } from "./feature"
+export { FeatureSection } from "./feature";
+

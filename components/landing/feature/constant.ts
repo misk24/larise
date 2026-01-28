@@ -1,5 +1,5 @@
-import { BookUser, Medal, Palette, Share } from "lucide-react"
-import { FeatureSectionProps } from "./type"
+import { BookUser, Medal, Palette, Share } from "lucide-react";
+import { FeatureSectionProps } from "./type";
 
 export const featureSection: FeatureSectionProps = {
   title: "Everything You Need",
@@ -7,12 +7,14 @@ export const featureSection: FeatureSectionProps = {
     {
       icon: Palette,
       title: "Elegant Design",
-      description: "Desain bersih dan modern yang tetap relevan sepanjang waktu.",
+      description:
+        "Desain bersih dan modern yang tetap relevan sepanjang waktu.",
     },
     {
       icon: Share,
       title: "Easy Sharing",
-      description: "Undangan dapat dibagikan dengan mudah melalui berbagai platform.",
+      description:
+        "Undangan dapat dibagikan dengan mudah melalui berbagai platform.",
     },
     {
       icon: BookUser,
@@ -24,5 +26,5 @@ export const featureSection: FeatureSectionProps = {
       title: "Mobile Friendly",
       description: "Optimal di semua perangkat tanpa ribet.",
     },
-  ]
-}
+  ],
+};

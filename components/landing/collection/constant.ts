@@ -1,9 +1,9 @@
-import { ThemeProps, ThemeSectionProps } from "./type"
+import { ThemeProps, ThemeSectionProps } from "./type";
 
 export const themeSection: ThemeSectionProps = {
   title: "Our Collections",
   sub: "Pilih tema yang sesuai dengan tema dan gaya pernikahan Anda",
-}
+};
 
 export const themes: ThemeProps[] = [
   {
@@ -34,4 +34,4 @@ export const themes: ThemeProps[] = [
     image: "/images/royal-gold-luxury-wedding-invitation-ornate-elegan.jpg",
     popular: false,
   },
-]
+];

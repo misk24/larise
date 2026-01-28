@@ -1,4 +1,4 @@
-import { HeroSectionProps } from "./type"
+import { HeroSectionProps } from "./type";
 
 export const heroSection: HeroSectionProps = {
   title: "Timeless Wedding Invitations",
@@ -7,4 +7,4 @@ export const heroSection: HeroSectionProps = {
     primary: { label: "Create Invitation", href: "/register" },
     secondary: { label: "View Collection", href: "#collections" },
   },
-}
+};

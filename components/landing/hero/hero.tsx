@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { motion, stagger } from "framer-motion"
-import Link from "next/link"
-import { heroSection } from "./constant"
+import { Button } from "@/components/ui/button";
+import { motion, stagger } from "framer-motion";
+import Link from "next/link";
+import { heroSection } from "./constant";
 
 export function HeroSection() {
   return (
@@ -13,26 +13,27 @@ export function HeroSection() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/images/romantic-wedding-flowers-soft-pink-petals-elegant-.jpg')` }}
+        style={{
+          backgroundImage: `url('/images/romantic-wedding-flowers-soft-pink-petals-elegant-.jpg')`,
+        }}
       >
         <div className="absolute inset-0 bg-background/85" />
       </motion.div>
-
       <div className="container relative z-10 px-4 py-20 md:py-32">
-        <motion.div 
+        <motion.div
           initial="hidden"
           whileInView="show"
           variants={{
             hidden: {},
             show: {
               transition: {
-                delayChildren: stagger(0.6)
-              }
-            }
+                delayChildren: stagger(0.6),
+              },
+            },
           }}
           className="max-w-3xl mx-auto text-center"
         >
-          <motion.h1 
+          <motion.h1
             variants={{
               hidden: { opacity: 0, y: 24 },
               show: {
@@ -41,15 +42,14 @@ export function HeroSection() {
                 transition: {
                   duration: 1.2,
                   ease: "easeOut",
-                }
-              }
+                },
+              },
             }}
             className="mb-8 text-balance"
           >
             {heroSection.title}
           </motion.h1>
-
-          <motion.p 
+          <motion.p
             variants={{
               hidden: { opacity: 0, y: 24 },
               show: {
@@ -58,15 +58,14 @@ export function HeroSection() {
                 transition: {
                   duration: 1.2,
                   ease: "easeOut",
-                }
-              }
+                },
+              },
             }}
             className="text-muted-foreground tracking-[0.3em] uppercase mb-12"
           >
             {heroSection.sub}
           </motion.p>
-
-          <motion.div 
+          <motion.div
             variants={{
               hidden: { opacity: 0, y: 24 },
               show: {
@@ -75,18 +74,22 @@ export function HeroSection() {
                 transition: {
                   duration: 1.2,
                   ease: "easeOut",
-                }
-              }
+                },
+              },
             }}
             className="max-w-xs mx-auto grid grid-cols-2 items-center justify-center gap-4"
           >
-            <Button size="lg" className="rounded-full"asChild>
+            <Button size="lg" className="rounded-full" asChild>
               <Link href={heroSection.cta.primary.href}>
                 <span>{heroSection.cta.primary.label}</span>
               </Link>
             </Button>
-
-            <Button variant="outline" size="lg" className="border-background hover:border-accent hover:text-primary-foreground rounded-full" asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-background hover:border-accent hover:text-primary-foreground rounded-full"
+              asChild
+            >
               <Link href={heroSection.cta.secondary.href}>
                 <span>{heroSection.cta.secondary.label}</span>
               </Link>
@@ -94,8 +97,7 @@ export function HeroSection() {
           </motion.div>
         </motion.div>
       </div>
-
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent" />
     </section>
-  )
+  );
 }

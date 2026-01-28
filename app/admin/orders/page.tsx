@@ -1,27 +1,44 @@
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { createClient } from "@/lib/supabase/server"
-import { ShoppingCart } from "lucide-react"
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { createClient } from "@/lib/supabase/server";
+import { ShoppingCart } from "lucide-react";
 
 export default async function AdminOrdersPage() {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
   const { data: orders } = await supabase
     .from("orders")
     .select("*, profiles(full_name, email)")
-    .order("created_at", { ascending: false })
+    .order("created_at", { ascending: false });
 
   function getStatusBadge(status: string) {
     switch (status) {
       case "paid":
-        return <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">Lunas</Badge>
+        return (
+          <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">
+            Lunas
+          </Badge>
+        );
       case "pending":
-        return <Badge variant="secondary">Menunggu</Badge>
+        return <Badge variant="secondary">Menunggu</Badge>;
       case "cancelled":
-        return <Badge variant="destructive">Batal</Badge>
+        return <Badge variant="destructive">Batal</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
   }
 
@@ -31,13 +48,11 @@ export default async function AdminOrdersPage() {
         <span className="text-2xl md:text-3xl font-medium">Kelola Pesanan</span>
         <p className="text-muted-foreground">Lihat dan kelola semua pesanan</p>
       </div>
-
       <Card className="border-border bg-sidebar">
         <CardHeader>
           <CardTitle>Daftar Pesanan</CardTitle>
           <CardDescription>Total {orders?.length || 0} pesanan</CardDescription>
         </CardHeader>
-
         <CardContent>
           {orders && orders.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
@@ -52,21 +67,30 @@ export default async function AdminOrdersPage() {
                     <TableHead>Tanggal</TableHead>
                   </TableRow>
                 </TableHeader>
-
                 <TableBody>
                   {orders.map((order) => (
                     <TableRow key={order.id}>
-                      <TableCell className="font-mono text-xs">{order.id.slice(0, 8)}...</TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {order.id.slice(0, 8)}...
+                      </TableCell>
                       <TableCell>
                         <div>
-                          <p className="font-medium">{order.profiles?.full_name || "-"}</p>
-                          <p className="text-xs text-muted-foreground">{order.profiles?.email}</p>
+                          <p className="font-medium">
+                            {order.profiles?.full_name || "-"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {order.profiles?.email}
+                          </p>
                         </div>
                       </TableCell>
                       <TableCell>{order.package_name}</TableCell>
-                      <TableCell>Rp {order.amount?.toLocaleString("id-ID")}</TableCell>
+                      <TableCell>
+                        Rp {order.amount?.toLocaleString("id-ID")}
+                      </TableCell>
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
-                      <TableCell>{new Date(order.created_at).toLocaleDateString("id-ID")}</TableCell>
+                      <TableCell>
+                        {new Date(order.created_at).toLocaleDateString("id-ID")}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -81,5 +105,5 @@ export default async function AdminOrdersPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -79,13 +79,13 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
-  --text-h1: clamp(2rem, 6vw, 4rem);          /* 32px → 64px */
-  --text-h2: clamp(1.5rem, 4vw, 2.5rem);      /* 24px → 40px */
-  --text-h3: clamp(1.25rem, 3vw, 1.5rem);     /* 20px → 24px */
-  --text-h4: clamp(1.1rem, 2vw, 1.25rem);     /* 18px → 20px */
-  --text-body: clamp(1rem, 2vw, 1.1rem);      /* 16px → 18px*/
+  --text-h1: clamp(2rem, 6vw, 4rem); /* 32px → 64px */
+  --text-h2: clamp(1.5rem, 4vw, 2.5rem); /* 24px → 40px */
+  --text-h3: clamp(1.25rem, 3vw, 1.5rem); /* 20px → 24px */
+  --text-h4: clamp(1.1rem, 2vw, 1.25rem); /* 18px → 20px */
+  --text-body: clamp(1rem, 2vw, 1.1rem); /* 16px → 18px*/
   --text-small: clamp(0.875rem, 1.2vw, 1rem); /* 14px → 16px*/
-  --text-meta: 0.75rem;                       /* 12px */
+  --text-meta: 0.75rem; /* 12px */
   --lh-hero: 1.2;
   --lh-section: 1.4;
   --lh-body: 1.6;
@@ -138,14 +138,18 @@ html {
   scroll-behavior: smooth;
 }
 
-body, p {
+body,
+p {
   font-family: var(--font-body);
   font-size: var(--text-small);
   font-weight: 500;
   line-height: var(--lh-body);
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--font-heading);
   font-weight: 500;
 }

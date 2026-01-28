@@ -1,28 +1,33 @@
-"use client"
+"use client";
 
-import type { Theme } from "@/types/database"
-import type React from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
-import { createClient } from "@/lib/supabase/client"
-import { Check, Loader2 } from "lucide-react"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { createClient } from "@/lib/supabase/client";
+import type { Theme } from "@/types/database";
+import { Check, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface CreateInvitationFormProps {
-  themes: Theme[]
+  themes: Theme[];
 }
 
 export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
-  const [step, setStep] = useState(1)
-  const [selectedTheme, setSelectedTheme] = useState<string>("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [step, setStep] = useState(1);
+  const [selectedTheme, setSelectedTheme] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     groomName: "",
     brideName: "",
@@ -36,38 +41,40 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
     akadVenue: "",
     akadVenueAddress: "",
     slug: "",
-  })
+  });
 
-  const router = useRouter()
-  const supabase = createClient()
+  const router = useRouter();
+  const supabase = createClient();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
     // Auto-generate slug from names
     if (name === "groomName" || name === "brideName") {
-      const groom = name === "groomName" ? value : formData.groomName
-      const bride = name === "brideName" ? value : formData.brideName
+      const groom = name === "groomName" ? value : formData.groomName;
+      const bride = name === "brideName" ? value : formData.brideName;
       if (groom && bride) {
-        const slug = `${groom.toLowerCase().replace(/\s+/g, "-")}-${bride.toLowerCase().replace(/\s+/g, "-")}`
-        setFormData((prev) => ({ ...prev, slug }))
+        const slug = `${groom.toLowerCase().replace(/\s+/g, "-")}-${bride.toLowerCase().replace(/\s+/g, "-")}`;
+        setFormData((prev) => ({ ...prev, slug }));
       }
     }
-  }
+  };
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       const {
         data: { user },
-      } = await supabase.auth.getUser()
+      } = await supabase.auth.getUser();
 
       if (!user) {
-        toast.error("Silakan login terlebih dahulu")
-        return
+        toast.error("Silakan login terlebih dahulu");
+        return;
       }
 
       const { data, error } = await supabase
@@ -90,23 +97,23 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
           is_published: false,
         })
         .select()
-        .single()
+        .single();
 
       if (error) {
         if (error.code === "23505") {
-          toast.error("URL undangan sudah digunakan. Silakan ubah.")
+          toast.error("URL undangan sudah digunakan. Silakan ubah.");
         } else {
-          toast.error(error.message)
+          toast.error(error.message);
         }
-        return
+        return;
       }
 
-      toast.success("Undangan berhasil dibuat!")
-      router.push(`/dashboard/undangan/${data.id}`)
+      toast.success("Undangan berhasil dibuat!");
+      router.push(`/dashboard/undangan/${data.id}`);
     } catch {
-      toast.error("Terjadi kesalahan. Silakan coba lagi.")
+      toast.error("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -116,7 +123,9 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
         <Card className="border-border/50">
           <CardHeader>
             <CardTitle>Pilih Tema</CardTitle>
-            <CardDescription>Pilih desain tema yang sesuai dengan tema pernikahan Anda</CardDescription>
+            <CardDescription>
+              Pilih desain tema yang sesuai dengan tema pernikahan Anda
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <RadioGroup
@@ -129,10 +138,16 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                   key={theme.id}
                   htmlFor={theme.id}
                   className={`cursor-pointer rounded-lg border-2 overflow-hidden transition-all ${
-                    selectedTheme === theme.id ? "border-primary ring-2 ring-primary/20" : "border-border/50"
+                    selectedTheme === theme.id
+                      ? "border-primary ring-2 ring-primary/20"
+                      : "border-border/50"
                   }`}
                 >
-                  <RadioGroupItem value={theme.id} id={theme.id} className="sr-only" />
+                  <RadioGroupItem
+                    value={theme.id}
+                    id={theme.id}
+                    className="sr-only"
+                  />
                   <div className="aspect-2/3 bg-secondary/50 relative">
                     {/* {theme.preview_image ? (
                       <Image
@@ -154,27 +169,33 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                   </div>
                   <div className="p-3">
                     <p className="font-medium">{theme.name}</p>
-                    <p className="text-xs text-muted-foreground">{theme.category}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {theme.category}
+                    </p>
                   </div>
                 </Label>
               ))}
             </RadioGroup>
-
             <div className="flex justify-end mt-6">
-              <Button type="button" onClick={() => setStep(2)} disabled={!selectedTheme}>
+              <Button
+                type="button"
+                onClick={() => setStep(2)}
+                disabled={!selectedTheme}
+              >
                 Lanjutkan
               </Button>
             </div>
           </CardContent>
         </Card>
       )}
-
       {step === 2 && (
         <div className="space-y-6">
           <Card className="border-border/50">
             <CardHeader>
               <CardTitle>Data Mempelai</CardTitle>
-              <CardDescription>Masukkan informasi kedua mempelai</CardDescription>
+              <CardDescription>
+                Masukkan informasi kedua mempelai
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid md:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -227,11 +248,12 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
               </div>
             </CardContent>
           </Card>
-
           <Card className="border-border/50">
             <CardHeader>
               <CardTitle>Detail Acara</CardTitle>
-              <CardDescription>Masukkan informasi waktu dan tempat acara</CardDescription>
+              <CardDescription>
+                Masukkan informasi waktu dan tempat acara
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid md:grid-cols-3 gap-4">
@@ -267,7 +289,6 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                   />
                 </div>
               </div>
-
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -318,17 +339,20 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
               </div>
             </CardContent>
           </Card>
-
           <Card className="border-border/50">
             <CardHeader>
               <CardTitle>URL Undangan</CardTitle>
-              <CardDescription>Buat URL unik untuk undangan Anda</CardDescription>
+              <CardDescription>
+                Buat URL unik untuk undangan Anda
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <Label htmlFor="slug">URL Undangan</Label>
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-sm">nikahku.id/undangan/</span>
+                  <span className="text-muted-foreground text-sm">
+                    nikahku.id/undangan/
+                  </span>
                   <Input
                     id="slug"
                     name="slug"
@@ -339,11 +363,12 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                     required
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">Hanya gunakan huruf kecil, angka, dan tanda hubung (-)</p>
+                <p className="text-xs text-muted-foreground">
+                  Hanya gunakan huruf kecil, angka, dan tanda hubung (-)
+                </p>
               </div>
             </CardContent>
           </Card>
-
           <div className="flex gap-3 justify-end">
             <Button type="button" variant="outline" onClick={() => setStep(1)}>
               Kembali
@@ -356,5 +381,5 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
         </div>
       )}
     </form>
-  )
+  );
 }

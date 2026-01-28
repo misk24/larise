@@ -1,5 +1,5 @@
 export interface SocialLinkProps {
-  icon: string
-  label: string
-  href: string
+  icon: string;
+  label: string;
+  href: string;
 }

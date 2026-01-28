@@ -1,5 +1,15 @@
-import { AdminNavProps, UserNavProps } from "@/types/backend"
-import { ChartNoAxesCombined, FileText, ImageIcon, LayoutDashboard, MessageSquareHeart, Palette, Settings, ShoppingCart, Users } from "lucide-react"
+import { AdminNavProps, UserNavProps } from "@/types/backend";
+import {
+  ChartNoAxesCombined,
+  FileText,
+  ImageIcon,
+  LayoutDashboard,
+  MessageSquareHeart,
+  Palette,
+  Settings,
+  ShoppingCart,
+  Users,
+} from "lucide-react";
 
 export const adminNavs: AdminNavProps[] = [
   { href: "/admin", icon: ChartNoAxesCombined, label: "Dashboard" },
@@ -7,7 +17,7 @@ export const adminNavs: AdminNavProps[] = [
   { href: "/admin/themes", icon: Palette, label: "Themes" },
   { href: "/admin/orders", icon: ShoppingCart, label: "Orders" },
   { href: "/admin/settings", icon: Settings, label: "Settings" },
-]
+];
 
 export const userNavs: UserNavProps[] = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -16,8 +26,8 @@ export const userNavs: UserNavProps[] = [
   { href: "/dashboard/wishes", icon: MessageSquareHeart, label: "Wishes" },
   { href: "/dashboard/gallery", icon: ImageIcon, label: "Gallery" },
   { href: "/dashboard/settings", icon: Settings, label: "Settings" },
-]
+];
 
 export const subpageNavs: Record<string, string> = {
   create: "Create",
-}
+};

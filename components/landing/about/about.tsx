@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { aboutSection } from "./constant"
+import { motion } from "framer-motion";
+import { aboutSection } from "./constant";
 
 export function AboutSection() {
   return (
@@ -15,8 +15,7 @@ export function AboutSection() {
           >
             {aboutSection.title}
           </motion.h2>
-
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
@@ -27,5 +26,5 @@ export function AboutSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

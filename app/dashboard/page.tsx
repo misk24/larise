@@ -1,31 +1,50 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { createClient } from "@/lib/supabase/server"
-import { ArrowRight, Eye, FileText, MessageSquareHeart, Plus, Users } from "lucide-react"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { createClient } from "@/lib/supabase/server";
+import {
+  ArrowRight,
+  Eye,
+  FileText,
+  MessageSquareHeart,
+  Plus,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // Get user's invitations
   const { data: invitations } = await supabase
     .from("invitations")
     .select("*, guests(count), wishes(count)")
-    .eq("user_id", user?.id)
+    .eq("user_id", user?.id);
 
-  const invitation = invitations?.[0]
+  const invitation = invitations?.[0];
 
   // Calculate stats
-  const totalGuests = invitation?.guests?.[0]?.count || 0
-  const totalWishes = invitation?.wishes?.[0]?.count || 0
+  const totalGuests = invitation?.guests?.[0]?.count || 0;
+  const totalWishes = invitation?.wishes?.[0]?.count || 0;
 
   // Get RSVP stats
   const { data: rsvpStats } = invitation
-    ? await supabase.from("rsvp").select("status").eq("invitation_id", invitation.id)
-    : { data: [] }
+    ? await supabase
+        .from("rsvp")
+        .select("status")
+        .eq("invitation_id", invitation.id)
+    : { data: [] };
 
-  const confirmedGuests = rsvpStats?.filter((r) => r.status === "attending").length || 0
+  const confirmedGuests =
+    rsvpStats?.filter((r) => r.status === "attending").length || 0;
 
   const stats = [
     {
@@ -56,14 +75,18 @@ export default async function DashboardPage() {
       color: "text-chart-4",
       bgColor: "bg-chart-4/10",
     },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-2xl md:text-3xl font-medium">Selamat Datang!</span>
-          <p className="text-muted-foreground">Kelola undangan pernikahan digital Anda di sini</p>
+          <span className="text-2xl md:text-3xl font-medium">
+            Selamat Datang!
+          </span>
+          <p className="text-muted-foreground">
+            Kelola undangan pernikahan digital Anda di sini
+          </p>
         </div>
       </div>
 
@@ -72,7 +95,9 @@ export default async function DashboardPage() {
           <Card key={index} className="bg-sidebar border-border/50">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className={`size-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
+                <div
+                  className={`size-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}
+                >
                   <stat.icon className={`size-6 ${stat.color}`} />
                 </div>
                 <div>
@@ -96,18 +121,26 @@ export default async function DashboardPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-muted-foreground">Mempelai Pria</span>
-                  <span className="font-medium">{invitation.groom_name || "-"}</span>
+                  <span className="font-medium">
+                    {invitation.groom_name || "-"}
+                  </span>
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-muted-foreground">Mempelai Wanita</span>
-                  <span className="font-medium">{invitation.bride_name || "-"}</span>
+                  <span className="font-medium">
+                    {invitation.bride_name || "-"}
+                  </span>
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-muted-foreground">Tanggal Acara</span>
                   <span className="font-medium">
-                    {invitation.event_date ? new Date(invitation.event_date).toLocaleDateString("id-ID") : "-"}
+                    {invitation.event_date
+                      ? new Date(invitation.event_date).toLocaleDateString(
+                          "id-ID",
+                        )
+                      : "-"}
                   </span>
                 </div>
 
@@ -115,7 +148,9 @@ export default async function DashboardPage() {
                   <span className="text-muted-foreground">Status</span>
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      invitation.is_published ? "bg-chart-3/20 text-chart-3" : "bg-accent/20 text-accent-foreground"
+                      invitation.is_published
+                        ? "bg-chart-3/20 text-chart-3"
+                        : "bg-accent/20 text-accent-foreground"
                     }`}
                   >
                     {invitation.is_published ? "Dipublikasi" : "Draft"}
@@ -146,25 +181,39 @@ export default async function DashboardPage() {
           <Card className="border-border/50">
             <CardHeader>
               <CardTitle className="text-lg">Aksi Cepat</CardTitle>
-              <CardDescription>Kelola undangan Anda dengan mudah</CardDescription>
+              <CardDescription>
+                Kelola undangan Anda dengan mudah
+              </CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+              <Button
+                variant="outline"
+                className="w-full justify-start bg-transparent"
+                asChild
+              >
                 <Link href="/dashboard/tamu">
                   <Users className="mr-3 size-4" />
                   Kelola Daftar Tamu
                 </Link>
               </Button>
 
-              <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+              <Button
+                variant="outline"
+                className="w-full justify-start bg-transparent"
+                asChild
+              >
                 <Link href="/dashboard/ucapan">
                   <MessageSquareHeart className="mr-3 size-4" />
                   Lihat Ucapan & Doa
                 </Link>
               </Button>
 
-              <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+              <Button
+                variant="outline"
+                className="w-full justify-start bg-transparent"
+                asChild
+              >
                 <Link href="/dashboard/galeri">
                   <Eye className="mr-3 size-4" />
                   Kelola Galeri Foto
@@ -177,11 +226,13 @@ export default async function DashboardPage() {
         <Card className="bg-sidebar border-border/50">
           <CardContent className="p-12 text-center">
             <FileText className="size-16 text-muted-foreground/50 mx-auto mb-4" />
-            <span className="text-xl font-semibold mb-2">Belum Ada Undangan</span>
-            
+            <span className="text-xl font-semibold mb-2">
+              Belum Ada Undangan
+            </span>
+
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Mulai buat undangan pernikahan digital Anda sekarang. Pilih tema, isi detail acara, dan bagikan ke
-              tamu undangan.
+              Mulai buat undangan pernikahan digital Anda sekarang. Pilih tema,
+              isi detail acara, dan bagikan ke tamu undangan.
             </p>
 
             <Button asChild size="lg">
@@ -194,5 +245,5 @@ export default async function DashboardPage() {
         </Card>
       )}
     </div>
-  )
+  );
 }
