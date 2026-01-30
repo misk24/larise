@@ -1,7 +1,4 @@
-interface ButtonProps {
-  label: string;
-  href: string;
-}
+import { ButtonProps } from "@/types/frontend";
 
 export interface HeroSectionProps {
   title: string;

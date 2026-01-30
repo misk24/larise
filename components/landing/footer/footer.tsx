@@ -5,7 +5,7 @@ import { navLinks } from "@/constants/frontend";
 import { Icon } from "@iconify/react";
 import { ChevronRight, MapPin } from "lucide-react";
 import Link from "next/link";
-import { copy, location, socialLinks } from "./constant";
+import { footerSection } from "./constant";
 
 export function Footer() {
   return (
@@ -36,7 +36,7 @@ export function Footer() {
           <div>
             <h4 className="mb-4">Contacts</h4>
             <ul className="space-y-4 opacity-90">
-              {socialLinks.map((social, index) => (
+              {footerSection.socials.map((social, index) => (
                 <li key={index}>
                   <a
                     href={social.href}
@@ -55,7 +55,7 @@ export function Footer() {
               <li>
                 <div className="flex items-center gap-2">
                   <MapPin className="size-4" />
-                  <span className="text-sm">{location}</span>
+                  <span className="text-sm">{footerSection.location}</span>
                 </div>
               </li>
             </ul>
@@ -63,7 +63,7 @@ export function Footer() {
         </div>
         <div className="border-t border-background/20 pt-8 text-center opacity-90">
           <span className="text-sm">
-            &copy; {new Date().getFullYear()} {copy}
+            &copy; {new Date().getFullYear()} {footerSection.copy}
           </span>
         </div>
       </div>

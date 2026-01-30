@@ -4,7 +4,7 @@ import { aboutSection } from "./constant";
 
 export function AboutSection() {
   return (
-    <section className="px-6 pt-32 pb-20">
+    <section className="px-6 pt-24 pb-8">
       <div className="max-w-4xl mx-auto">
         <div className="grid md:grid-cols-2 items-center gap-12 mb-16">
           <h2>{aboutSection.title}</h2>

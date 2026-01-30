@@ -1,5 +1,5 @@
-export interface SocialLinkProps {
-  icon: string;
-  label: string;
-  href: string;
+export interface FooterSectionProps {
+  socials: Array<{ icon: string; label: string; href: string }>;
+  location: string;
+  copy: string;
 }

@@ -6,7 +6,7 @@ import { ctaSection } from "./constant";
 
 export function CTASection() {
   return (
-    <section className="py-20 md:py-32 bg-primary text-primary-foreground">
+    <section className="py-20 md:py-24 bg-primary text-primary-foreground">
       <div className="max-w-3xl mx-auto px-4">
         <div className="text-center">
           <h2 className="mb-4 text-balance">{ctaSection.title}</h2>

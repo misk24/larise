@@ -1,10 +1,8 @@
-interface FeatureProps {
-  title: string;
-  description: string;
-  items: string[];
-}
-
 export interface FeatureSectionProps {
   title: string;
-  features: FeatureProps[];
+  features: Array<{
+    title: string;
+    description: string;
+    items: Array<string>;
+  }>;
 }

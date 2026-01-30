@@ -4,7 +4,7 @@ import { stats } from "./constant";
 
 export function StatSection() {
   return (
-    <section className="px-6 pb-32">
+    <section className="px-6 pb-24">
       <div className="max-w-xl mx-auto">
         <div className="grid grid-cols-3 gap-12">
           {stats.map((stat, index) => (
