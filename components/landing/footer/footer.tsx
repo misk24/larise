@@ -3,7 +3,6 @@
 import { Logo } from "@/components/logo";
 import { navLinks } from "@/constants/frontend";
 import { Icon } from "@iconify/react";
-import { motion } from "framer-motion";
 import { ChevronRight, MapPin } from "lucide-react";
 import Link from "next/link";
 import { copy, location, socialLinks } from "./constant";
@@ -12,12 +11,7 @@ export function Footer() {
   return (
     <footer className="bg-foreground text-background pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
           <Link href="/">
             <Logo variant="footer" />
           </Link>
@@ -66,17 +60,12 @@ export function Footer() {
               </li>
             </ul>
           </div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="border-t border-background/20 pt-8 text-center opacity-90"
-        >
+        </div>
+        <div className="border-t border-background/20 pt-8 text-center opacity-90">
           <span className="text-sm">
             &copy; {new Date().getFullYear()} {copy}
           </span>
-        </motion.div>
+        </div>
       </div>
     </footer>
   );

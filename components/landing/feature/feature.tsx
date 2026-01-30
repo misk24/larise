@@ -1,38 +1,28 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { CheckSquare } from "lucide-react";
 import { featureSection } from "./constant";
 
 export function FeatureSection() {
   return (
-    <section id="features" className="px-6 py-32 bg-muted">
+    <section id="features" className="px-6 py-32">
       <div className="max-w-6xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, x: 24 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="mb-16"
-        >
-          {featureSection.title}
-        </motion.h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <h2 className="mb-16">{featureSection.title}</h2>
+        <div className="grid md:grid-cols-2 gap-8">
           {featureSection.features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 1.2,
-                delay: index * 0.4,
-                ease: "easeOut",
-              }}
-              className="rounded-2xl bg-background p-6"
-            >
+            <div key={index} className="rounded-2xl bg-background p-6">
               <h3>{feature.title}</h3>
-              <p className="mt-4 text-muted-foreground">
+              {/* <p className="mt-4 text-muted-foreground">
                 {feature.description}
-              </p>
-            </motion.div>
+              </p> */}
+              <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
+                {feature.items.map((item, i) => (
+                  <li key={i} className="flex items-center gap-2">
+                    <CheckSquare className="size-4" /> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
         </div>
       </div>

@@ -1,30 +1,38 @@
-import { BookUser, Medal, Palette, Share } from "lucide-react";
 import { FeatureSectionProps } from "./type";
 
 export const featureSection: FeatureSectionProps = {
   title: "Everything You Need",
   features: [
     {
-      icon: Palette,
-      title: "Elegant Design",
+      title: "Invitation Personalization",
+      description: "Undangan yang terasa dibuat khusus, bukan template massal.",
+      items: [
+        "Nama tamu otomatis",
+        "Tema & urutan fleksibel",
+        "Musik bebas request",
+      ],
+    },
+    {
+      title: "Event Information",
       description:
-        "Desain bersih dan modern yang tetap relevan sepanjang waktu.",
+        "Detail acara tersaji rapi agar tamu tidak salah waktu atau lokasi.",
+      items: [
+        "Detail acara lengkap",
+        "Navigasi Google Maps",
+        "Hitung mundur otomatis",
+      ],
     },
     {
-      icon: Share,
-      title: "Easy Sharing",
+      title: "Guest Interaction",
       description:
-        "Undangan dapat dibagikan dengan mudah melalui berbagai platform.",
+        "Kelola kehadiran dan pesan tamu tanpa ribet follow-up manual.",
+      items: ["RSVP real-time", "Kolom ucapan & doa", "Manajemen daftar tamu"],
     },
     {
-      icon: BookUser,
-      title: "RSVP & Guest Book",
-      description: "Kelola kehadiran tamu secara praktis dan rapi.",
-    },
-    {
-      icon: Medal,
-      title: "Mobile Friendly",
-      description: "Optimal di semua perangkat tanpa ribet.",
+      title: "Media & Gifts",
+      description:
+        "Bagikan momen spesial dan terima hadiah dengan cara modern.",
+      items: ["Galeri foto & video", "Amplop digital"],
     },
   ],
 };

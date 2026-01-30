@@ -19,7 +19,7 @@ export function Logo({
   alt = "Logo",
 }: LogoProps) {
   const src =
-    variant === "footer" ? "/images/logo-dark.svg" : "/images/logo-light.svg";
+    variant === "footer" ? "/images/logo-dark.png" : "/images/logo-light.png";
 
   return (
     <Image

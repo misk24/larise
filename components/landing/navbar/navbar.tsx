@@ -5,11 +5,10 @@ import { Button } from "@/components/ui/button";
 import { navLinks } from "@/constants/frontend";
 import { useOverlay } from "@/hooks/use-overlay";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { loginButton } from "./constant";
-import MobileHeader from "./mobile-navbar";
+import { MobileHeader } from "./mobile-navbar";
 import { useScroll } from "./use-scroll";
 
 export function Navbar() {
@@ -25,12 +24,7 @@ export function Navbar() {
           : "bg-transparent",
       )}
     >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-        className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6"
-      >
+      <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6">
         <Link href="/">
           <Logo />
         </Link>
@@ -61,7 +55,7 @@ export function Navbar() {
         >
           <Menu className="size-4" />
         </button>
-      </motion.div>
+      </div>
 
       <MobileHeader isOpen={isOpen.isOpen} onClose={isOpen.close} />
     </header>

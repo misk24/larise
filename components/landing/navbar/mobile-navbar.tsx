@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { navLinks } from "@/constants/frontend";
-import { useGsapToggleStagger } from "@/hooks/use-gsap";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { loginButton } from "./constant";
 
 interface MobileHeaderProps {
@@ -11,31 +9,11 @@ interface MobileHeaderProps {
   onClose: () => void;
 }
 
-export default function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
-  const mobileRef = useRef<HTMLDivElement>(null);
-  const skipCloseAnimRef = useRef(false);
-  const [visible, setVisible] = useState(isOpen);
-
-  useEffect(() => {
-    if (isOpen) setVisible(true);
-  }, [isOpen]);
-
-  useGsapToggleStagger(
-    mobileRef,
-    "[data-mobile-menu]",
-    isOpen,
-    visible,
-    skipCloseAnimRef,
-    () => setVisible(false),
-  );
-
-  if (!visible) return null;
+export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
+  if (!isOpen) return null;
 
   return (
-    <div
-      ref={mobileRef}
-      className="fixed inset-0 z-50 h-screen text-muted bg-foreground/95 backdrop-blur-sm"
-    >
+    <div className="fixed inset-0 z-50 h-screen text-muted bg-foreground/95 backdrop-blur-sm">
       <button
         onClick={onClose}
         className="absolute top-6 right-8 hover:text-accent transition-colors focus:outline-none"
@@ -46,14 +24,8 @@ export default function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
       <nav className="mt-24 px-6">
         <ul className="space-y-12">
           {navLinks.map((link) => (
-            <li key={link.href} data-mobile-menu>
-              <Link
-                href={link.href}
-                onClick={() => {
-                  skipCloseAnimRef.current = true;
-                  onClose();
-                }}
-              >
+            <li key={link.href}>
+              <Link href={link.href} onClick={onClose}>
                 <span className="font-heading text-3xl hover:text-accent transition-colors">
                   {link.label}
                 </span>
@@ -65,10 +37,11 @@ export default function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
       <Button
         variant="link"
         className="mt-30 px-6 font-heading text-3xl text-muted hover:text-accent bg-transparent transition-colors"
-        data-mobile-menu
         asChild
       >
-        <Link href={loginButton.href}>{loginButton.label}</Link>
+        <Link href={loginButton.href} onClick={onClose}>
+          {loginButton.label}
+        </Link>
       </Button>
     </div>
   );
