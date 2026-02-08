@@ -2,17 +2,7 @@
 
 import { FadeLeft, FadeUp } from "@/components/motion";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { Star } from "lucide-react";
-import Image from "next/image";
 import React from "react";
 import { testimonialSection } from "./constant";
 
@@ -34,7 +24,7 @@ export function TestimonialsSection() {
           </h2>
         </FadeLeft>
 
-        <FadeUp>
+        {/* <FadeUp>
           <Carousel
             plugins={[plugin.current]}
             onMouseEnter={plugin.current.stop}
@@ -90,9 +80,9 @@ export function TestimonialsSection() {
             <CarouselPrevious className="hidden lg:flex" />
             <CarouselNext className="hidden lg:flex" />
           </Carousel>
-        </FadeUp>
+        </FadeUp> */}
 
-        <FadeUp>
+        <FadeUp className="">
           <AnimatedTestimonials
             testimonials={testimonialSection.animate}
             autoplay={true}

@@ -2,7 +2,7 @@
 
 import { navLinks } from "@/components/landing/shared";
 import { Logo } from "@/components/logo";
-import { Fade } from "@/components/motion";
+import { FadeIn } from "@/components/motion";
 import { Icon } from "@iconify/react";
 import { ChevronRight, MapPin } from "lucide-react";
 import Link from "next/link";
@@ -11,7 +11,7 @@ import { footerSection } from "./constant";
 export function Footer() {
   return (
     <footer className="bg-foreground text-background px-6 pt-16 pb-8 md:px-8">
-      <Fade className="max-w-7xl mx-auto">
+      <FadeIn className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
           <div>
             <Link href="/">
@@ -71,7 +71,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} {footerSection.copy}
           </span>
         </div>
-      </Fade>
+      </FadeIn>
     </footer>
   );
 }

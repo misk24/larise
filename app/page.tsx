@@ -1,5 +1,5 @@
 import { AboutSection } from "@/components/landing/about";
-import { ThemeSection } from "@/components/landing/collection";
+import { ThemeSectionHorizontal } from "@/components/landing/collection";
 import { CTASection } from "@/components/landing/cta";
 import { FAQSection } from "@/components/landing/faq";
 import { FeatureSection } from "@/components/landing/feature";
@@ -15,7 +15,7 @@ export default function Home() {
       <HeroSection />
       <AboutSection />
       <FeatureSection />
-      <ThemeSection />
+      <ThemeSectionHorizontal />
       <CTASection />
       <TestimonialsSection />
       <FAQSection />

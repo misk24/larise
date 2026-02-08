@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { timings } from "./presets";
 import { MotionBaseProps } from "./type";
 
-export function Fade({
+export function FadeIn({
   children,
   className,
   duration = timings.slow,

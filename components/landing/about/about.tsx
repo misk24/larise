@@ -42,9 +42,9 @@ export function AboutSection() {
             Statistik
           </h2>
 
-          <FadeUp className="grid grid-cols-3 gap-12">
+          <FadeUp className="grid grid-cols-3 gap-10">
             {aboutSection.stats.map((stat) => (
-              <div key={stat.label} className="text-center">
+              <div key={stat.label} className="md:text-center">
                 <StatCounter value={stat.value} decimals={stat.decimal} />
                 <p className="text-muted-foreground">{stat.label}</p>
               </div>

@@ -1,4 +1,4 @@
-export { Fade } from "./fade";
+export { FadeIn } from "./fade";
 export { FadeLeft } from "./fade-left";
 export { FadeRight } from "./fade-right";
 export { FadeUp } from "./fade-up";
