@@ -5,7 +5,7 @@ export const ctaSection: CTASectionProps = {
   description:
     "Saatnya menyampaikan kabar bahagia Anda dengan cara yang lebih modern dan berkesan.",
   cta: {
-    label: "Create Your Invitation",
+    label: "Create Invitation",
     href: "/register",
   },
 };

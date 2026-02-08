@@ -8,4 +8,10 @@ export interface TestimonialSectionProps {
     content: string;
     rating: number;
   }>;
+  animate: Array<{
+    name: string;
+    designation: string;
+    quote: string;
+    src: string;
+  }>;
 }

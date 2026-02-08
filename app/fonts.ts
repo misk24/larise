@@ -1,9 +1,9 @@
 import localFont from "next/font/local";
 
-export const andora = localFont({
+export const rosehot = localFont({
   src: [
     {
-      path: "../public/fonts/andora/AndoraModernSerif.otf",
+      path: "../public/fonts/Rosehot.ttf",
       weight: "400",
       style: "normal",
     },
@@ -15,7 +15,7 @@ export const andora = localFont({
 export const satoshi = localFont({
   src: [
     {
-      path: "../public/fonts/satoshi/Satoshi-Regular.woff2",
+      path: "../public/fonts/Satoshi-Regular.woff2",
       weight: "400",
       style: "normal",
     },

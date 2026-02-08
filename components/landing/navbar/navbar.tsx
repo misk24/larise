@@ -1,8 +1,9 @@
 "use client";
 
+import { navLinks } from "@/components/landing/shared";
 import { Logo } from "@/components/logo";
+import { Scale } from "@/components/motion";
 import { Button } from "@/components/ui/button";
-import { navLinks } from "@/constants/frontend";
 import { useOverlay } from "@/hooks/use-overlay";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
@@ -24,10 +25,11 @@ export function Navbar() {
           : "bg-transparent",
       )}
     >
-      <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6">
+      <Scale className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6 md:px-8">
         <Link href="/">
           <Logo />
         </Link>
+
         <nav className="hidden md:inline-block">
           <ul className="flex items-center gap-12">
             {navLinks.map((link) => (
@@ -40,22 +42,26 @@ export function Navbar() {
             ))}
           </ul>
         </nav>
+
         <Button
           size="sm"
-          className="hidden md:inline-flex px-4 rounded-full"
+          className="hidden md:inline-flex px-6 rounded-full"
           asChild
         >
           <Link href={loginButton.href}>{loginButton.label}</Link>
         </Button>
-        <button
+
+        <Button
+          variant="link"
+          size="icon"
           onClick={isOpen.toggle}
-          className="md:hidden size-6"
+          className="md:hidden"
           aria-expanded={isOpen.isOpen}
           aria-label="Toggle Menu"
         >
           <Menu className="size-4" />
-        </button>
-      </div>
+        </Button>
+      </Scale>
 
       <MobileHeader isOpen={isOpen.isOpen} onClose={isOpen.close} />
     </header>

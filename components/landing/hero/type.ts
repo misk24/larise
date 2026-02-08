@@ -1,4 +1,4 @@
-import { ButtonProps } from "@/types/frontend";
+import { ButtonProps } from "@/components/landing/shared";
 
 export interface HeroSectionProps {
   title: string;
