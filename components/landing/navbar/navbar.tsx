@@ -5,6 +5,7 @@ import { Logo } from "@/components/logo";
 import { Scale } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import { useOverlay } from "@/hooks/use-overlay";
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Link from "next/link";
@@ -15,6 +16,7 @@ import { useScroll } from "./use-scroll";
 export function Navbar() {
   const isScrolled = useScroll();
   const isOpen = useOverlay();
+  const handleSmoothScroll = useSmoothScroll();
 
   return (
     <header
@@ -26,7 +28,7 @@ export function Navbar() {
       )}
     >
       <Scale className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6 md:px-8">
-        <Link href="/">
+        <Link href="/" onClick={(e) => handleSmoothScroll(e, "/")}>
           <Logo />
         </Link>
 
@@ -37,7 +39,12 @@ export function Navbar() {
                 key={link.href}
                 className="text-sm hover:text-accent transition-colors"
               >
-                <Link href={link.href}>{link.label}</Link>
+                <Link
+                  href={link.href}
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
+                >
+                  {link.label}
+                </Link>
               </li>
             ))}
           </ul>

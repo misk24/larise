@@ -138,6 +138,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Override GSAP ScrollTrigger smooth scroll conflicts */
+html[data-scroll-behavior="smooth"] {
+  scroll-behavior: smooth;
+}
+
 body,
 p {
   font-family: var(--font-body);
