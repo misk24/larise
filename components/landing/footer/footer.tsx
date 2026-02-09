@@ -1,25 +1,22 @@
 "use client";
 
 import { navLinks } from "@/components/landing/shared";
-import { Logo } from "@/components/logo";
 import { FadeIn } from "@/components/motion";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
+import { Logo } from "@/components/ui/logo";
+import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { Icon } from "@iconify/react";
 import { ChevronRight, MapPin } from "lucide-react";
-import Link from "next/link";
 import { footerSection } from "./constant";
 
 export function Footer() {
-  const handleSmoothScroll = useSmoothScroll();
-
   return (
     <footer className="bg-foreground text-background px-6 pt-16 pb-8 md:px-8">
       <FadeIn className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
           <div>
-            <Link href="/" onClick={(e) => handleSmoothScroll(e, "/")}>
+            <SmoothScrollLink href="/">
               <Logo variant="footer" />
-            </Link>
+            </SmoothScrollLink>
           </div>
 
           <div>
@@ -27,12 +24,12 @@ export function Footer() {
             <ul className="space-y-4 opacity-90">
               {navLinks.map((link, index) => (
                 <li key={index} className="hover:text-accent transition-colors">
-                  <Link href={link.href}>
+                  <SmoothScrollLink href={link.href}>
                     <div className="flex items-center gap-2">
                       <ChevronRight className="size-4" />
                       <span className="text-sm">{link.label}</span>
                     </div>
-                  </Link>
+                  </SmoothScrollLink>
                 </li>
               ))}
             </ul>

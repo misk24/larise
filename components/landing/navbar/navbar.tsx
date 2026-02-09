@@ -1,11 +1,11 @@
 "use client";
 
 import { navLinks } from "@/components/landing/shared";
-import { Logo } from "@/components/logo";
 import { Scale } from "@/components/motion";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
+import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { useOverlay } from "@/hooks/use-overlay";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Link from "next/link";
@@ -16,7 +16,6 @@ import { useScroll } from "./use-scroll";
 export function Navbar() {
   const isScrolled = useScroll();
   const isOpen = useOverlay();
-  const handleSmoothScroll = useSmoothScroll();
 
   return (
     <header
@@ -28,9 +27,9 @@ export function Navbar() {
       )}
     >
       <Scale className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6 md:px-8">
-        <Link href="/" onClick={(e) => handleSmoothScroll(e, "/")}>
+        <SmoothScrollLink href="/">
           <Logo />
-        </Link>
+        </SmoothScrollLink>
 
         <nav className="hidden md:inline-block">
           <ul className="flex items-center gap-12">
@@ -39,12 +38,9 @@ export function Navbar() {
                 key={link.href}
                 className="text-sm hover:text-accent transition-colors"
               >
-                <Link
-                  href={link.href}
-                  onClick={(e) => handleSmoothScroll(e, link.href)}
-                >
+                <SmoothScrollLink href={link.href}>
                   {link.label}
-                </Link>
+                </SmoothScrollLink>
               </li>
             ))}
           </ul>

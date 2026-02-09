@@ -25,17 +25,16 @@ export function ThemeSectionHorizontal() {
 
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-    const previousOverflow = document.body.style.overflowX;
-    document.body.style.overflowX = "hidden";
+    // Store original overflow styles
+    const originalBodyOverflow = {
+      x: document.body.style.overflowX,
+      y: document.body.style.overflowY
+    };
 
-    // Mobile detection
-    const isMobile = window.innerWidth <= 768;
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const isSmallScreen = window.innerWidth <= 480; // Very small screens
-
-    // Disable horizontal scroll on very small screens
-    if (isSmallScreen) {
-      return; // Skip GSAP initialization on very small screens
+    // Apply overflow only to this section's parent, not globally
+    const sectionParent = pageRef.current.parentElement;
+    if (sectionParent) {
+      sectionParent.style.overflowX = "hidden";
     }
 
     const ctx = gsap.context(() => {
@@ -44,13 +43,8 @@ export function ThemeSectionHorizontal() {
       );
       if (!panelsRef.current || panelItems.length <= 1) return;
 
-      // Calculate end position based on device type
-      const calculateEnd = () => {
-        const containerWidth = panelsRef.current!.offsetWidth;
-        const viewportWidth = window.innerWidth;
-        const endValue = containerWidth - viewportWidth;
-        return "+=" + Math.max(endValue, viewportWidth);
-      };
+      // Mobile detection for responsive behavior
+      const isMobile = window.innerWidth < 768;
 
       const tween = gsap.to(panelItems, {
         xPercent: -100 * (panelItems.length - 1),
@@ -59,51 +53,33 @@ export function ThemeSectionHorizontal() {
           trigger: panelsRef.current,
           pin: true,
           start: "top top",
-          scrub: isMobile ? 0.5 : 1, // Faster scrub on mobile
+          scrub: isMobile ? 0.5 : 1,
           anticipatePin: 1,
-          // Disable snap on mobile for better touch performance
-          snap: isMobile ? undefined : {
+          snap: {
             snapTo: 1 / (panelItems.length - 1),
             inertia: false,
             duration: { min: 0.1, max: 0.1 },
           },
-          // Improved touch handling
-          onUpdate: (self) => {
-            if (isTouchDevice && isMobile) {
-              // Prevent default touch behavior during scroll
-              const touchEvent = (self as any).event;
-              if (touchEvent && touchEvent.preventDefault) {
-                touchEvent.preventDefault();
-              }
-            }
+          end: () => {
+            const containerWidth = panelsRef.current!.offsetWidth;
+            const viewportWidth = window.innerWidth;
+            return "+=" + Math.max(containerWidth - viewportWidth, viewportWidth);
           },
-          end: calculateEnd(),
-          // Mobile-specific settings
-          invalidateOnRefresh: true, // Recalculate on resize
-          refreshPriority: 1, // Higher priority for mobile
+          // Prevent conflicts with other scroll behaviors
+          invalidateOnRefresh: true,
         },
       });
 
       tweenRef.current = tween;
-
-      // Handle window resize for responsive behavior
-      const handleResize = () => {
-        ScrollTrigger.refresh();
-      };
-
-      window.addEventListener('resize', handleResize);
-      window.addEventListener('orientationchange', handleResize);
-
-      return () => {
-        window.removeEventListener('resize', handleResize);
-        window.removeEventListener('orientationchange', handleResize);
-      };
     }, pageRef);
 
     return () => {
       tweenRef.current = null;
       ctx.revert();
-      document.body.style.overflowX = previousOverflow;
+      // Restore original overflow styles
+      if (sectionParent) {
+        sectionParent.style.overflowX = originalBodyOverflow.x;
+      }
     };
   }, []);
 
@@ -113,33 +89,31 @@ export function ThemeSectionHorizontal() {
         id="panels-container"
         ref={panelsRef}
         style={{ width: `${panels.length * 100}vw` }}
-        className="relative flex flex-nowrap h-screen overflow-x-hidden overflow-y-hidden md:h-screen max-[480px]:h-auto max-[480px]:w-screen"
+        className="relative flex flex-nowrap h-screen"
       >
-        <div className="max-w-6xl mx-auto">
-          <div className="absolute left-0 top-0 z-10 w-screen px-6 pt-32 md:px-8">
-            <FadeLeft>
-              <h2 id="collections-title" className="md:text-center">
-                {themeSection.title}
-              </h2>
-            </FadeLeft>
-          </div>
+        <div className="absolute left-0 top-0 z-10 w-screen px-6 pt-32 md:px-8 pointer-events-none">
+          <FadeLeft className="pointer-events-auto">
+            <h2 id="collections-title" className="md:text-center">
+              {themeSection.title}
+            </h2>
+          </FadeLeft>
         </div>
 
         {panels.map((theme, index) => (
           <article
             key={theme.id}
             id={`panel-${index + 1}`}
-            className="panel relative flex w-screen h-screen items-center overflow-hidden"
+            className="panel relative flex w-screen h-screen items-center"
           >
             <FadeIn className="max-w-3xl mx-auto px-6 pt-32 grid grid-cols-1 gap-8 w-full md:px-8 md:grid-cols-2">
-              <Card className="group relative lg:h-96 overflow-hidden">
+              <Card className="group relative lg:h-96">
                 <CardHeader className="relative aspect-square overflow-hidden">
                   <Image
-                    src="/images/logo-light.png"
+                    src={theme.image || "/images/logo-light.png"}
                     alt={theme.name}
                     fill
-                    sizes="(max-width: 768px) 90vw, 45vw"
-                    className="p-8 object-contain group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 85vw, 40vw"
+                    className="p-4 md:p-8 object-contain group-hover:scale-105 transition-transform duration-500"
                     priority={index === 0}
                   />
 
@@ -152,7 +126,7 @@ export function ThemeSectionHorizontal() {
                   <span className="text-small text-muted-foreground uppercase tracking-widest mb-1">
                     {theme.category}
                   </span>
-                  <h3>{theme.name}</h3>
+                  <h3 className="text-lg md:text-xl">{theme.name}</h3>
                 </CardContent>
               </Card>
             </FadeIn>

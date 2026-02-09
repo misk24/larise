@@ -1,34 +1,45 @@
 "use client";
 
+import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useCallback } from "react";
 
-export const useSmoothScroll = () => {
-  const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Only apply smooth scroll to anchor links (starting with #) or home link
-    if (href.startsWith("#") || href === "/") {
-      e.preventDefault();
-      
-      if (href === "/") {
-        // Scroll to top when clicking logo
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-      } else {
-        // Smooth scroll to anchor
-        const targetId = href.replace("#", "");
-        const element = document.getElementById(targetId);
-        
-        if (element) {
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-        }
-      }
-    }
-    // For other regular links, let Next.js handle navigation normally
+export function useSmoothScroll() {
+  const scrollToElement = useCallback((targetId: string) => {
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
+
+    // Kill any ongoing GSAP animations
+    gsap.killTweensOf(window);
+
+    const element = document.querySelector(targetId);
+    if (!element) return;
+
+    // Get the target position
+    const targetPosition = (element as HTMLElement).offsetTop;
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition;
+    const duration = Math.min(Math.abs(distance) / 2, 1500); // Dynamic duration based on distance
+
+    // Use GSAP for smooth scrolling
+    gsap.to(window, {
+      duration: duration / 1000,
+      scrollTo: {
+        y: targetPosition,
+        autoKill: true,
+      },
+      ease: "power2.inOut",
+      onComplete: () => {
+        // Ensure ScrollTrigger is updated after scroll completes
+        ScrollTrigger.refresh();
+      },
+      onUpdate: () => {
+        // Refresh ScrollTrigger during scroll
+        ScrollTrigger.refresh();
+      },
+    });
   }, []);
 
-  return handleSmoothScroll;
-};
+  return { scrollToElement };
+}

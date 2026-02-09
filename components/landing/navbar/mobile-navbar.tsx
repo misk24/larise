@@ -1,6 +1,6 @@
 import { navLinks } from "@/components/landing/shared";
 import { Button } from "@/components/ui/button";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
+import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { ArrowUpRight, X } from "lucide-react";
 import Link from "next/link";
 import { loginButton } from "./constant";
@@ -11,12 +11,6 @@ interface MobileHeaderProps {
 }
 
 export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
-  const handleSmoothScroll = useSmoothScroll();
-
-  const handleMobileSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    handleSmoothScroll(e, href);
-    onClose();
-  };
   if (!isOpen) return null;
 
   return (
@@ -35,9 +29,9 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
         <ul className="space-y-12">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <Link href={link.href} onClick={(e) => handleMobileSmoothScroll(e, link.href)}>
+              <SmoothScrollLink href={link.href} onClick={onClose}>
                 <span className="font-heading text-3xl">{link.label}</span>
-              </Link>
+              </SmoothScrollLink>
             </li>
           ))}
         </ul>
