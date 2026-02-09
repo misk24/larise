@@ -1,6 +1,5 @@
 "use client";
 
-import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { signInWithEmail } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
@@ -196,7 +196,7 @@ export function LoginForm() {
             <Icon icon="logos:google-icon" className="size-4" />
           )}
           <span>
-            {isGoogleLoading ? "Redirecting..." : "Login dengan Google"}
+            {isGoogleLoading ? "Redirecting..." : "Lanjut dengan Google"}
           </span>
         </Button>
       </div>

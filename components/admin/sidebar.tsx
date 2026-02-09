@@ -1,6 +1,6 @@
 "use client";
 
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/ui/logo";
 import {
   Sidebar,
   SidebarContent,
@@ -11,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { adminNavs } from "@/constants/backend";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,7 @@ import { usePathname } from "next/navigation";
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   return (
     <Sidebar>
@@ -28,8 +30,9 @@ export function AdminSidebar() {
             <Logo />
           </div>
         </SidebarHeader>
+
         <SidebarGroup>
-          <SidebarGroupLabel>Pages</SidebarGroupLabel>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {adminNavs.map((link) => {
@@ -41,13 +44,18 @@ export function AdminSidebar() {
                       className={cn(
                         "rounded-md transition-colors",
                         isActive
-                          ? "bg-secondary hover:bg-secondary"
-                          : "bg-transparent hover:bg-accent/10 text-muted-foreground",
+                          ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+                          : "bg-transparent text-muted-foreground hover:bg-secondary",
                       )}
                       asChild
                     >
                       <Link
                         href={link.href}
+                        onClick={() => {
+                          if (isMobile) {
+                            setOpenMobile(false);
+                          }
+                        }}
                         className="flex items-center gap-4 px-4 py-5"
                       >
                         <link.icon className="size-5" />

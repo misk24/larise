@@ -1,6 +1,5 @@
 "use client";
 
-import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { signUpWithEmail } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
@@ -98,10 +98,12 @@ export function RegisterForm() {
         <CardTitle>
           <Logo />
         </CardTitle>
+
         <CardDescription>
           Mulai buat undangan pernikahan digital Anda
         </CardDescription>
       </CardHeader>
+
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -116,6 +118,7 @@ export function RegisterForm() {
               disabled={isSubmitLoading}
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <div className="relative">
@@ -128,6 +131,7 @@ export function RegisterForm() {
                 required
                 disabled={isSubmitLoading}
               />
+
               <Button
                 type="button"
                 variant="ghost"
@@ -142,6 +146,7 @@ export function RegisterForm() {
               </Button>
             </div>
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
             <div className="relative">
@@ -154,6 +159,7 @@ export function RegisterForm() {
                 required
                 disabled={isSubmitLoading}
               />
+
               <Button
                 type="button"
                 variant="ghost"
@@ -171,6 +177,7 @@ export function RegisterForm() {
             </div>
           </div>
         </CardContent>
+
         <CardFooter className="mt-4">
           <Button
             type="submit"
@@ -185,6 +192,7 @@ export function RegisterForm() {
           </Button>
         </CardFooter>
       </form>
+
       <div className="w-full px-6 space-y-4">
         <p className="text-sm text-muted-foreground text-center">
           Sudah punya akun?{" "}
@@ -192,11 +200,13 @@ export function RegisterForm() {
             Masuk di sini
           </Link>
         </p>
+
         <div className="flex items-center gap-4">
           <Separator className="flex-1" />
           <p className="text-xs">atau</p>
           <Separator className="flex-1" />
         </div>
+
         <Button
           type="button"
           variant="outline"
