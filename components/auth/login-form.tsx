@@ -151,6 +151,15 @@ export function LoginForm() {
               </Button>
             </div>
           </div>
+
+          <div className="flex justify-end">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              Lupa password?
+            </Link>
+          </div>
         </CardContent>
 
         <CardFooter className="mt-4">

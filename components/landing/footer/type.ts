@@ -1,5 +1,5 @@
-export interface FooterSectionProps {
-  socials: Array<{ icon: string; label: string; href: string }>;
+import { FooterProps } from "@/components/shared/types";
+
+export interface FooterSectionProps extends FooterProps {
   location: string;
-  copy: string;
 }

@@ -2,7 +2,7 @@ import { RegisterForm } from "@/components/auth/register-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "LARISÉ - Registration",
+  title: "LARISÉ - Daftar",
   description: "Buat akun LARISÉ baru",
 };
 

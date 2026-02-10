@@ -130,6 +130,46 @@ export async function signInWithEmail(email: string, password: string) {
   redirect("/dashboard");
 }
 
+export async function requestPasswordReset(email: string) {
+  const admin = createAdminClient();
+  const normalizedEmail = email.toLowerCase();
+
+  const { data: profile, error: profileError } = await admin
+    .from("profiles")
+    .select("provider")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
+
+  if (profileError) {
+    console.error("Profile check failed:", profileError);
+    return { error: "Terjadi kesalahan sistem." };
+  }
+
+  if (!profile) {
+    return { error: "Email tidak terdaftar. Silakan cek kembali." };
+  }
+
+  if (profile.provider !== "email") {
+    return {
+      error: "Email ini sudah terdaftar dengan metode lain. Silakan login.",
+    };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    normalizedEmail,
+    {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`,
+    },
+  );
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { success: true };
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
