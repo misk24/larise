@@ -17,6 +17,11 @@ import Link from "next/link";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Email tidak valid."),
+});
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -25,6 +30,11 @@ export function ForgotPasswordForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const validation = forgotPasswordSchema.safeParse({ email });
+    if (!validation.success) {
+      toast.error(validation.error.issues[0]?.message ?? "Email tidak valid.");
+      return;
+    }
     setIsSubmitting(true);
 
     const result = await requestPasswordReset(email);
@@ -46,7 +56,7 @@ export function ForgotPasswordForm() {
         <CardTitle>
           <Logo />
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-center">
           Masukkan email untuk menerima link reset password
         </CardDescription>
       </CardHeader>
@@ -61,7 +71,6 @@ export function ForgotPasswordForm() {
               placeholder="nama@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
               disabled={isSubmitting || isSent}
             />
           </div>

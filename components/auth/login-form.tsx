@@ -22,6 +22,12 @@ import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().email("Email tidak valid."),
+  password: z.string().min(6, "Password minimal 6 karakter."),
+});
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -50,6 +56,12 @@ export function LoginForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const validation = loginSchema.safeParse({ email, password });
+    if (!validation.success) {
+      toast.error(validation.error.issues[0]?.message ?? "Data tidak valid.");
+      return;
+    }
+
     setIsSubmitLoading(true);
 
     try {
@@ -119,7 +131,6 @@ export function LoginForm() {
               placeholder="nama@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
               disabled={isSubmitLoading}
             />
           </div>
@@ -133,7 +144,6 @@ export function LoginForm() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
                 disabled={isSubmitLoading}
               />
 

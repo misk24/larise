@@ -13,15 +13,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { createClient } from "@/lib/supabase/client";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const resetPasswordSchema = z
+  .object({
+    password: z.string().min(6, "Password minimal 6 karakter."),
+    confirmPassword: z.string().min(6, "Password minimal 6 karakter."),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password dan Konfirmasi Password tidak sama.",
+    path: ["confirmPassword"],
+  });
 
 export function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isExchanging, setIsExchanging] = useState(true);
   const [isReady, setIsReady] = useState(false);
@@ -67,13 +82,12 @@ export function ResetPasswordForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (password.length < 6) {
-      toast.error("Password minimal 6 karakter.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast.error("Password dan Konfirmasi Password tidak sama.");
+    const validation = resetPasswordSchema.safeParse({
+      password,
+      confirmPassword,
+    });
+    if (!validation.success) {
+      toast.error(validation.error.issues[0]?.message ?? "Data tidak valid.");
       return;
     }
 
@@ -133,28 +147,58 @@ export function ResetPasswordForm() {
             <>
               <div className="space-y-2">
                 <Label htmlFor="password">Password Baru</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Password baru"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isFormDisabled}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={isPasswordVisible ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isFormDisabled}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsPasswordVisible((prev) => !prev)}
+                    className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
+                    disabled={isFormDisabled}
+                  >
+                    {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                    <span className="sr-only">
+                      {isPasswordVisible ? "Hide password" : "Show password"}
+                    </span>
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Ulangi password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  disabled={isFormDisabled}
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={isConfirmPasswordVisible ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={isFormDisabled}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsConfirmPasswordVisible((prev) => !prev)}
+                    className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
+                    disabled={isFormDisabled}
+                  >
+                    {isConfirmPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                    <span className="sr-only">
+                      {isConfirmPasswordVisible
+                        ? "Hide password"
+                        : "Show password"}
+                    </span>
+                  </Button>
+                </div>
               </div>
             </>
           ) : null}

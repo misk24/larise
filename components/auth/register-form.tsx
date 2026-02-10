@@ -22,6 +22,18 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const registerSchema = z
+  .object({
+    email: z.string().email("Email tidak valid."),
+    password: z.string().min(6, "Password minimal 6 karakter."),
+    confirmPassword: z.string().min(6, "Password minimal 6 karakter."),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password dan Konfirmasi Password tidak sama.",
+    path: ["confirmPassword"],
+  });
 
 export function RegisterForm() {
   const [email, setEmail] = useState("");
@@ -38,13 +50,13 @@ export function RegisterForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      toast.error("Password dan Konfirmasi Password tidak sama");
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error("Password minimal 6 karakter");
+    const validation = registerSchema.safeParse({
+      email,
+      password,
+      confirmPassword,
+    });
+    if (!validation.success) {
+      toast.error(validation.error.issues[0]?.message ?? "Data tidak valid.");
       return;
     }
 
@@ -114,7 +126,6 @@ export function RegisterForm() {
               placeholder="nama@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
               disabled={isSubmitLoading}
             />
           </div>
@@ -128,7 +139,6 @@ export function RegisterForm() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
                 disabled={isSubmitLoading}
               />
 
@@ -156,7 +166,6 @@ export function RegisterForm() {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                required
                 disabled={isSubmitLoading}
               />
 
