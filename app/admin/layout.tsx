@@ -1,7 +1,8 @@
+import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminHeader } from "@/components/admin/header";
 import { AdminSidebar } from "@/components/admin/sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { createClient } from "@/lib/supabase/server";
+import { Footer } from "@/components/shared/footer";
+import { getUser, getUserProfile } from "@/lib/actions/auth";
 import { Viewport } from "next";
 import { redirect } from "next/navigation";
 
@@ -16,36 +17,24 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser();
+  const profile = await getUserProfile();
 
   if (!user) {
     redirect("/login");
   }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
 
   if (profile?.role !== "admin") {
     redirect("/dashboard");
   }
 
   return (
-    <div className="min-h-screen bg-sidebar">
-      <SidebarProvider>
-        <AdminSidebar />
-        <div className="flex flex-1 flex-col">
-          <AdminHeader user={user} profile={profile} />
-          <main className="mx-auto size-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
-            {children}
-          </main>
-        </div>
-      </SidebarProvider>
-    </div>
+    <AdminShell
+      sidebar={<AdminSidebar />}
+      header={<AdminHeader user={user} profile={profile} />}
+      footer={<Footer />}
+    >
+      {children}
+    </AdminShell>
   );
 }

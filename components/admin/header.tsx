@@ -2,10 +2,10 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import type { Profile } from "@/types/database";
 import type { User } from "@supabase/supabase-js";
-import { Separator } from "../ui/separator";
 import { Breadcrumbs } from "./breadcrumb";
 import { AdminProfile } from "./profile";
 
@@ -27,12 +27,13 @@ export function AdminHeader({ user, profile }: AdminHeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b bg-sidebar">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-2">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 px-6 py-2.5">
         <div className="flex items-center gap-4">
           <SidebarTrigger className="text-muted-foreground hover:bg-accent/10" />
           <Separator orientation="vertical" className="hidden h-4! sm:block" />
           <Breadcrumbs />
         </div>
+
         <div className="flex items-center gap-4">
           <AdminProfile
             trigger={
@@ -50,6 +51,8 @@ export function AdminHeader({ user, profile }: AdminHeaderProps) {
                 </Avatar>
               </Button>
             }
+            user={user}
+            profile={profile}
           />
         </div>
       </div>

@@ -1,3 +1,4 @@
+import RecentUsersTable from "@/components/admin/recent-users";
 import {
   Card,
   CardContent,
@@ -5,8 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { StatsCard } from "@/components/ui/stats-card";
 import { createClient } from "@/lib/supabase/server";
-import { FileText, ShoppingCart, TrendingUp, Users } from "lucide-react";
+import {
+  FileTextIcon,
+  ShoppingCartIcon,
+  TrendingUpIcon,
+  UsersIcon,
+} from "lucide-react";
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -39,28 +46,32 @@ export default async function AdminDashboardPage() {
     {
       title: "Total Pengguna",
       value: usersCount || 0,
-      icon: Users,
+      icon: UsersIcon,
+      change: 3,
       color: "text-primary",
       bgColor: "bg-primary/10",
     },
     {
       title: "Total Undangan",
       value: invitationsCount || 0,
-      icon: FileText,
+      icon: FileTextIcon,
+      change: 1,
       color: "text-chart-2",
       bgColor: "bg-chart-2/10",
     },
     {
       title: "Total Pesanan",
       value: ordersCount || 0,
-      icon: ShoppingCart,
+      icon: ShoppingCartIcon,
+      change: 6,
       color: "text-chart-3",
       bgColor: "bg-chart-3/10",
     },
     {
       title: "Pendapatan",
       value: "Rp 0",
-      icon: TrendingUp,
+      icon: TrendingUpIcon,
+      change: 4,
       color: "text-chart-4",
       bgColor: "bg-chart-4/10",
     },
@@ -74,53 +85,31 @@ export default async function AdminDashboardPage() {
           Selamat datang di panel administrasi LARISÉ
         </p>
       </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 col-span-full">
         {stats.map((stat, index) => (
-          <Card key={index} className="border-border bg-sidebar">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div
-                  className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}
-                >
-                  <stat.icon className={`size-6 ${stat.color}`} />
-                </div>
-                <div>
-                  <p className="text-2xl font-medium">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.title}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <StatsCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            change={stat.change}
+            icon={stat.icon}
+            iconColor={stat.color}
+            iconBg={stat.bgColor}
+          />
         ))}
       </div>
+
       <div className="grid lg:grid-cols-2 gap-6">
         <Card className="border-border bg-sidebar">
           <CardHeader>
             <CardTitle className="text-lg">Pengguna Terbaru</CardTitle>
             <CardDescription>5 pengguna yang baru mendaftar</CardDescription>
           </CardHeader>
+
           <CardContent>
             {recentUsers && recentUsers.length > 0 ? (
-              <div className="space-y-4">
-                {recentUsers.map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex items-center justify-between py-2 border-b border-border last:border-0"
-                  >
-                    <div>
-                      <p className="font-medium">
-                        {user.full_name || "Tanpa Nama"}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(user.created_at).toLocaleDateString("id-ID")}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <RecentUsersTable data={recentUsers ?? []} />
             ) : (
               <p className="text-muted-foreground text-center py-8">
                 Belum ada pengguna
@@ -128,11 +117,13 @@ export default async function AdminDashboardPage() {
             )}
           </CardContent>
         </Card>
+
         <Card className="border-border bg-sidebar">
           <CardHeader>
             <CardTitle className="text-lg">Pesanan Terbaru</CardTitle>
             <CardDescription>5 pesanan terakhir</CardDescription>
           </CardHeader>
+
           <CardContent>
             {recentOrders && recentOrders.length > 0 ? (
               <div className="space-y-4">
@@ -149,6 +140,7 @@ export default async function AdminDashboardPage() {
                         {order.package_name}
                       </p>
                     </div>
+
                     <div className="text-right">
                       <p className="font-medium">
                         Rp {order.amount?.toLocaleString("id-ID")}

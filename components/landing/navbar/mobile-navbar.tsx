@@ -1,7 +1,7 @@
 import { navLinks } from "@/components/landing/shared";
 import { Button } from "@/components/ui/button";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
-import { ArrowUpRight, X } from "lucide-react";
+import { ArrowUpRightIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { loginButton } from "./constant";
 
@@ -22,7 +22,7 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
         className="absolute top-4 right-6 text-primary-foreground focus:outline-none"
         aria-label="Close Menu"
       >
-        <X className="size-4" />
+        <XIcon className="size-4" />
       </Button>
 
       <nav className="mt-24 px-6">
@@ -43,7 +43,7 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
           onClick={onClose}
           className="flex items-center gap-4"
         >
-          {loginButton.label} <ArrowUpRight className="size-[30]" />
+          {loginButton.label} <ArrowUpRightIcon className="size-[30]" />
         </Link>
       </div>
     </div>

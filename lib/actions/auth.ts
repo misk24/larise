@@ -152,6 +152,7 @@ export async function requestPasswordReset(email: string) {
   if (profile.provider !== "email") {
     return {
       error: "Email ini sudah terdaftar dengan metode lain. Silakan login.",
+      shouldRedirectToLogin: true,
     };
   }
 

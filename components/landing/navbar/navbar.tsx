@@ -7,7 +7,7 @@ import { Logo } from "@/components/ui/logo";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { useOverlay } from "@/hooks/use-overlay";
 import { cn } from "@/lib/utils";
-import { Menu } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { loginButton } from "./constant";
 import { MobileHeader } from "./mobile-navbar";
@@ -62,7 +62,7 @@ export function Navbar() {
           aria-expanded={isOpen.isOpen}
           aria-label="Toggle Menu"
         >
-          <Menu className="size-4" />
+          <MenuIcon className="size-4" />
         </Button>
       </Scale>
 

@@ -1,31 +1,34 @@
 import { AdminNavProps, UserNavProps } from "@/types/backend";
 import {
-  ChartNoAxesCombined,
-  FileText,
+  FileTextIcon,
   ImageIcon,
-  LayoutDashboard,
-  MessageSquareHeart,
-  Palette,
-  Settings,
-  ShoppingCart,
-  Users,
+  LayoutDashboardIcon,
+  MessageSquareHeartIcon,
+  PaletteIcon,
+  SettingsIcon,
+  ShoppingCartIcon,
+  UsersIcon,
 } from "lucide-react";
 
 export const adminNavs: AdminNavProps[] = [
-  { href: "/admin", icon: ChartNoAxesCombined, label: "Dashboard" },
-  { href: "/admin/users", icon: Users, label: "Users" },
-  { href: "/admin/themes", icon: Palette, label: "Themes" },
-  { href: "/admin/orders", icon: ShoppingCart, label: "Orders" },
-  { href: "/admin/settings", icon: Settings, label: "Settings" },
+  { href: "/admin", icon: LayoutDashboardIcon, label: "Dashboard" },
+  { href: "/admin/users", icon: UsersIcon, label: "Users" },
+  { href: "/admin/themes", icon: PaletteIcon, label: "Themes" },
+  { href: "/admin/orders", icon: ShoppingCartIcon, label: "Orders" },
+  { href: "/admin/settings", icon: SettingsIcon, label: "Settings" },
 ];
 
 export const userNavs: UserNavProps[] = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/dashboard/invitations", icon: FileText, label: "Invitations" },
-  { href: "/dashboard/guests", icon: Users, label: "Guests" },
-  { href: "/dashboard/wishes", icon: MessageSquareHeart, label: "Wishes" },
+  {
+    href: "/dashboard/overview",
+    icon: LayoutDashboardIcon,
+    label: "Dashboard",
+  },
+  { href: "/dashboard/invitations", icon: FileTextIcon, label: "Invitations" },
+  { href: "/dashboard/guests", icon: UsersIcon, label: "Guests" },
+  { href: "/dashboard/wishes", icon: MessageSquareHeartIcon, label: "Wishes" },
   { href: "/dashboard/gallery", icon: ImageIcon, label: "Gallery" },
-  { href: "/dashboard/settings", icon: Settings, label: "Settings" },
+  { href: "/dashboard/settings", icon: SettingsIcon, label: "Settings" },
 ];
 
 export const subpageNavs: Record<string, string> = {

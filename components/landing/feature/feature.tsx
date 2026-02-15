@@ -2,7 +2,7 @@
 
 import { FadeLeft, FadeUp } from "@/components/motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckSquare } from "lucide-react";
+import { CheckSquareIcon } from "lucide-react";
 import { featureSection } from "./constant";
 
 export function FeatureSection() {
@@ -33,7 +33,7 @@ export function FeatureSection() {
                   <ul className="space-y-2 text-muted-foreground">
                     {feature.items.map((item, i) => (
                       <li key={i} className="flex items-center gap-2">
-                        <CheckSquare className="size-4" /> {item}
+                        <CheckSquareIcon className="size-4" /> {item}
                       </li>
                     ))}
                   </ul>

@@ -164,6 +164,11 @@ h2 {
   line-height: var(--lh-section);
 }
 
+h2.dashboard {
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
 h3 {
   font-size: var(--text-h3);
   line-height: var(--lh-section);

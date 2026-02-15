@@ -5,7 +5,7 @@ import { FadeIn } from "@/components/motion";
 import { Logo } from "@/components/ui/logo";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { Icon } from "@iconify/react";
-import { ChevronRight, MapPin } from "lucide-react";
+import { ChevronRightIcon, MapPinIcon } from "lucide-react";
 import { footerSection } from "./constant";
 
 export function Footer() {
@@ -26,7 +26,7 @@ export function Footer() {
                 <li key={index} className="hover:text-accent transition-colors">
                   <SmoothScrollLink href={link.href}>
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="size-4" />
+                      <ChevronRightIcon className="size-4" />
                       <span className="text-sm">{link.label}</span>
                     </div>
                   </SmoothScrollLink>
@@ -58,7 +58,7 @@ export function Footer() {
 
               <li>
                 <div className="flex items-center gap-2">
-                  <MapPin className="size-4" />
+                  <MapPinIcon className="size-4" />
                   <span className="text-sm">{footerSection.location}</span>
                 </div>
               </li>
