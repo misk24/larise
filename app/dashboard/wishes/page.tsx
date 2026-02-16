@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { MessageSquareHeart } from "lucide-react";
+import { MessageSquareHeartIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default async function WishesPage() {
@@ -78,7 +78,7 @@ export default async function WishesPage() {
       ) : (
         <Card className="border-border/50">
           <CardContent className="p-12 text-center">
-            <MessageSquareHeart className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+            <MessageSquareHeartIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
             <p className="text-muted-foreground">
               Belum ada ucapan. Ucapan dari tamu akan muncul di sini.
             </p>

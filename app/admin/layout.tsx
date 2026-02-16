@@ -5,6 +5,7 @@ import { Footer } from "@/components/shared/footer";
 import { getUser, getUserProfile } from "@/lib/actions/auth";
 import { Viewport } from "next";
 import { redirect } from "next/navigation";
+import type React from "react";
 
 export const viewport: Viewport = {
   themeColor: "#f8fafc",

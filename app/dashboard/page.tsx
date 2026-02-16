@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import {
-  ArrowRight,
-  Eye,
-  FileText,
-  MessageSquareHeart,
-  Plus,
-  Users,
+  ArrowRightIcon,
+  EyeIcon,
+  FileTextIcon,
+  MessageSquareHeartIcon,
+  PlusIcon,
+  UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -23,19 +23,16 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Get user's invitations
   const { data: invitations } = await supabase
     .from("invitations")
+    // .select("*")
     .select("*, guests(count), wishes(count)")
     .eq("user_id", user?.id);
 
   const invitation = invitations?.[0];
-
-  // Calculate stats
   const totalGuests = invitation?.guests?.[0]?.count || 0;
   const totalWishes = invitation?.wishes?.[0]?.count || 0;
 
-  // Get RSVP stats
   const { data: rsvpStats } = invitation
     ? await supabase
         .from("rsvp")
@@ -50,28 +47,28 @@ export default async function DashboardPage() {
     {
       title: "Undangan Aktif",
       value: invitation ? 1 : 0,
-      icon: FileText,
+      icon: FileTextIcon,
       color: "text-primary",
       bgColor: "bg-primary/10",
     },
     {
       title: "Total Tamu",
       value: totalGuests,
-      icon: Users,
+      icon: UsersIcon,
       color: "text-chart-2",
       bgColor: "bg-chart-2/10",
     },
     {
       title: "Konfirmasi Hadir",
       value: confirmedGuests,
-      icon: Eye,
+      icon: EyeIcon,
       color: "text-chart-3",
       bgColor: "bg-chart-3/10",
     },
     {
       title: "Ucapan",
       value: totalWishes,
-      icon: MessageSquareHeart,
+      icon: MessageSquareHeartIcon,
       color: "text-chart-4",
       bgColor: "bg-chart-4/10",
     },
@@ -92,7 +89,7 @@ export default async function DashboardPage() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <Card key={index} className="bg-sidebar border-border/50">
+          <Card key={index} className="bg-sidebar border-border shadow-none">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div
@@ -162,14 +159,18 @@ export default async function DashboardPage() {
                 <Button asChild className="flex-1">
                   <Link href={`/dashboard/undangan/${invitation.id}`}>
                     Edit Undangan
-                    <ArrowRight className="ml-2 size-4" />
+                    <ArrowRightIcon className="ml-2 size-4" />
                   </Link>
                 </Button>
 
                 {invitation.is_published && (
-                  <Button variant="outline" asChild>
+                  <Button
+                    variant="outline"
+                    className="hover:text-primary-foreground"
+                    asChild
+                  >
                     <Link href={`/undangan/${invitation.slug}`} target="_blank">
-                      <Eye className="mr-2 size-4" />
+                      <EyeIcon className="mr-2 size-4" />
                       Lihat
                     </Link>
                   </Button>
@@ -189,33 +190,33 @@ export default async function DashboardPage() {
             <CardContent className="space-y-3">
               <Button
                 variant="outline"
-                className="w-full justify-start bg-transparent"
+                className="w-full justify-start bg-transparent hover:text-primary-foreground"
                 asChild
               >
                 <Link href="/dashboard/tamu">
-                  <Users className="mr-3 size-4" />
+                  <UsersIcon className="mr-3 size-4" />
                   Kelola Daftar Tamu
                 </Link>
               </Button>
 
               <Button
                 variant="outline"
-                className="w-full justify-start bg-transparent"
+                className="w-full justify-start bg-transparent hover:text-primary-foreground"
                 asChild
               >
                 <Link href="/dashboard/ucapan">
-                  <MessageSquareHeart className="mr-3 size-4" />
+                  <MessageSquareHeartIcon className="mr-3 size-4" />
                   Lihat Ucapan & Doa
                 </Link>
               </Button>
 
               <Button
                 variant="outline"
-                className="w-full justify-start bg-transparent"
+                className="w-full justify-start bg-transparent hover:text-primary-foreground"
                 asChild
               >
                 <Link href="/dashboard/galeri">
-                  <Eye className="mr-3 size-4" />
+                  <EyeIcon className="mr-3 size-4" />
                   Kelola Galeri Foto
                 </Link>
               </Button>
@@ -223,9 +224,9 @@ export default async function DashboardPage() {
           </Card>
         </div>
       ) : (
-        <Card className="bg-sidebar border-border/50">
+        <Card className="bg-sidebar border-dashed shadow-none">
           <CardContent className="p-12 text-center">
-            <FileText className="size-16 text-muted-foreground/50 mx-auto mb-4" />
+            <FileTextIcon className="size-16 text-muted-foreground/50 mx-auto mb-4" />
             <span className="text-xl font-semibold mb-2">
               Belum Ada Undangan
             </span>
@@ -237,7 +238,7 @@ export default async function DashboardPage() {
 
             <Button asChild size="lg">
               <Link href="/dashboard/invitations/create">
-                <Plus className="mr-2 size-4" />
+                <PlusIcon className="mr-2 size-4" />
                 Buat Undangan Pertama
               </Link>
             </Button>

@@ -16,7 +16,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/server";
-import { Palette, Plus } from "lucide-react";
+import { PaletteIcon } from "lucide-react";
+import Link from "next/link";
 
 export default async function AdminThemesPage() {
   const supabase = await createClient();
@@ -24,20 +25,21 @@ export default async function AdminThemesPage() {
   const { data: themes } = await supabase
     .from("themes")
     .select("*")
-    .order("name");
+    .order("created_at", { ascending: false });
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-2xl md:text-3xl font-medium">Kelola Tema</span>
+          <div className="text-2xl md:text-3xl font-medium">Kelola Tema</div>
           <p className="text-muted-foreground">
             Kelola tema undangan yang tersedia
           </p>
         </div>
-        <Button>
-          <Plus className="size-4" />
-          Tambah Tema
+        <Button asChild>
+          <Link href="/admin/themes/create" className="flex items-center gap-2">
+            Create Theme
+          </Link>
         </Button>
       </div>
       <Card className="border-border bg-sidebar">
@@ -51,13 +53,23 @@ export default async function AdminThemesPage() {
           {themes && themes.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-primary">
                   <TableRow>
-                    <TableHead>Nama Tema</TableHead>
-                    <TableHead>Kategori</TableHead>
-                    <TableHead>Harga</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Aksi</TableHead>
+                    <TableHead className="text-primary-foreground">
+                      Nama Tema
+                    </TableHead>
+                    <TableHead className="text-primary-foreground">
+                      Kategori
+                    </TableHead>
+                    <TableHead className="text-primary-foreground">
+                      Harga
+                    </TableHead>
+                    <TableHead className="text-primary-foreground">
+                      Status
+                    </TableHead>
+                    <TableHead className="text-primary-foreground">
+                      Aksi
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -80,8 +92,8 @@ export default async function AdminThemesPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Button variant="outline" size="sm">
-                          Edit
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/admin/themes/${theme.id}`}>Edit</Link>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -91,7 +103,7 @@ export default async function AdminThemesPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <Palette className="size-12 text-muted-foreground/50 mx-auto mb-4" />
+              <PaletteIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">Belum ada tema</p>
             </div>
           )}

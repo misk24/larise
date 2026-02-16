@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { signInWithEmail } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
 import { Icon } from "@iconify/react";
-import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type React from "react";
@@ -154,7 +154,7 @@ export function LoginForm() {
                 onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
               >
-                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
                 <span className="sr-only">
                   {isPasswordVisible ? "Hide password" : "Show password"}
                 </span>
@@ -180,7 +180,7 @@ export function LoginForm() {
             disabled={isSubmitLoading}
           >
             {isSubmitLoading && (
-              <Loader2 className="mr-2 size-4 animate-spin" />
+              <Loader2Icon className="mr-2 size-4 animate-spin" />
             )}
             Masuk
           </Button>
@@ -210,7 +210,7 @@ export function LoginForm() {
           disabled={isGoogleLoading}
         >
           {isGoogleLoading ? (
-            <Loader2 className="size-4 animate-spin" />
+            <Loader2Icon className="size-4 animate-spin" />
           ) : (
             <Icon icon="logos:google-icon" className="size-4" />
           )}

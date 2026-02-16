@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { Edit, ExternalLink, Plus } from "lucide-react";
+import { EditIcon, ExternalLinkIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 
 export default async function UndanganPage() {
@@ -30,7 +30,7 @@ export default async function UndanganPage() {
         </div>
         <Button asChild>
           <Link href="/dashboard/invitations/create">
-            <Plus className="mr-2 size-4" />
+            <PlusIcon className="mr-2 size-4" />
             Buat Undangan
           </Link>
         </Button>
@@ -87,21 +87,26 @@ export default async function UndanganPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex-1 bg-transparent"
+                    className="flex-1 bg-transparent hover:text-primary-foreground"
                     asChild
                   >
                     <Link href={`/dashboard/invitations/${invitation.id}`}>
-                      <Edit className="mr-2 size-3" />
+                      <EditIcon className="mr-2 size-3" />
                       Edit
                     </Link>
                   </Button>
                   {invitation.is_published && (
-                    <Button variant="outline" size="sm" asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="hover:text-primary-foreground"
+                      asChild
+                    >
                       <Link
                         href={`/undangan/${invitation.slug}`}
                         target="_blank"
                       >
-                        <ExternalLink className="size-3" />
+                        <ExternalLinkIcon className="size-3" />
                       </Link>
                     </Button>
                   )}
@@ -113,7 +118,7 @@ export default async function UndanganPage() {
       ) : (
         <Card className="border-border bg-sidebar">
           <CardContent className="p-12 text-center">
-            <Plus className="size-16 text-muted-foreground/50 mx-auto mb-4" />
+            <PlusIcon className="size-16 text-muted-foreground/50 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Belum Ada Undangan</h3>
             <p className="text-muted-foreground mb-6">
               Buat undangan pernikahan digital pertama Anda

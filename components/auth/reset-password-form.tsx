@@ -164,7 +164,7 @@ export function ResetPasswordForm() {
                     className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                     disabled={isFormDisabled}
                   >
-                    {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                    {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
                     <span className="sr-only">
                       {isPasswordVisible ? "Hide password" : "Show password"}
                     </span>
@@ -191,7 +191,7 @@ export function ResetPasswordForm() {
                     className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                     disabled={isFormDisabled}
                   >
-                    {isConfirmPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                    {isConfirmPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
                     <span className="sr-only">
                       {isConfirmPasswordVisible
                         ? "Hide password"

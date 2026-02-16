@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { requestPasswordReset } from "@/lib/actions/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -27,6 +28,7 @@ export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,6 +43,9 @@ export function ForgotPasswordForm() {
 
     if (result?.error) {
       toast.error(result.error);
+      if (result?.shouldRedirectToLogin) {
+        router.replace("/login");
+      }
       setIsSubmitting(false);
       return;
     }

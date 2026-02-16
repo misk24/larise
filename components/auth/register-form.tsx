@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { signUpWithEmail } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
 import { Icon } from "@iconify/react";
-import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type React from "react";
@@ -149,7 +149,7 @@ export function RegisterForm() {
                 onClick={() => setIsPasswordVisible((prevState) => !prevState)}
                 className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
               >
-                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
                 <span className="sr-only">
                   {isPasswordVisible ? "Hide password" : "Show password"}
                 </span>
@@ -178,7 +178,7 @@ export function RegisterForm() {
                 }
                 className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
               >
-                {isConfirmPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                {isConfirmPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
                 <span className="sr-only">
                   {isConfirmPasswordVisible ? "Hide password" : "Show password"}
                 </span>
@@ -195,7 +195,7 @@ export function RegisterForm() {
             disabled={isSubmitLoading}
           >
             {isSubmitLoading && (
-              <Loader2 className="mr-2 size-4 animate-spin" />
+              <Loader2Icon className="mr-2 size-4 animate-spin" />
             )}
             Daftar
           </Button>
@@ -225,7 +225,7 @@ export function RegisterForm() {
           disabled={isGoogleLoading}
         >
           {isGoogleLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2Icon className="size-4 animate-spin" />
           ) : (
             <Icon icon="logos:google-icon" className="size-4" />
           )}

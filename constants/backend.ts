@@ -20,7 +20,7 @@ export const adminNavs: AdminNavProps[] = [
 
 export const userNavs: UserNavProps[] = [
   {
-    href: "/dashboard/overview",
+    href: "/dashboard",
     icon: LayoutDashboardIcon,
     label: "Dashboard",
   },

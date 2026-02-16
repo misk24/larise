@@ -1,30 +1,49 @@
-"use client"
+"use client";
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
-import { createClient } from "@/lib/supabase/client"
-import type { Invitation, Theme } from "@/types/database"
-import { ExternalLink, Loader2, Save, Trash2 } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import type React from "react"
-import { useState } from "react"
-import { toast } from "sonner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { createClient } from "@/lib/supabase/client";
+import type { Invitation, Theme } from "@/types/database";
+import { ExternalLink, Loader2, Save, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface EditInvitationFormProps {
-  invitation: Invitation & { themes: Theme | null }
-  themes: Theme[]
+  invitation: Invitation & { themes: Theme | null };
+  themes: Theme[];
 }
 
-export function EditInvitationForm({ invitation, themes }: EditInvitationFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+export function EditInvitationForm({
+  invitation,
+  themes,
+}: EditInvitationFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [formData, setFormData] = useState({
     themeId: invitation.theme_id || "",
     groomName: invitation.groom_name || "",
@@ -44,19 +63,21 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
     // bankAccount: invitation.bank_account || "",
     // bankHolder: invitation.bank_holder || "",
     isPublished: invitation.is_published || false,
-  })
+  });
 
-  const router = useRouter()
-  const supabase = createClient()
+  const router = useRouter();
+  const supabase = createClient();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       const { error } = await supabase
@@ -81,55 +102,59 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
           // bank_holder: formData.bankHolder,
           is_published: formData.isPublished,
         })
-        .eq("id", invitation.id)
+        .eq("id", invitation.id);
 
       if (error) {
         if (error.code === "23505") {
-          toast.error("URL undangan sudah digunakan. Silakan ubah.")
+          toast.error("URL undangan sudah digunakan. Silakan ubah.");
         } else {
-          toast.error(error.message)
+          toast.error(error.message);
         }
-        return
+        return;
       }
 
-      toast.success("Undangan berhasil diperbarui!")
-      router.refresh()
+      toast.success("Undangan berhasil diperbarui!");
+      router.refresh();
     } catch {
-      toast.error("Terjadi kesalahan. Silakan coba lagi.")
+      toast.error("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   async function handleDelete() {
-    setIsDeleting(true)
+    setIsDeleting(true);
 
     try {
-      const { error } = await supabase.from("invitations").delete().eq("id", invitation.id)
+      const { error } = await supabase
+        .from("invitations")
+        .delete()
+        .eq("id", invitation.id);
 
       if (error) {
-        toast.error(error.message)
-        return
+        toast.error(error.message);
+        return;
       }
 
-      toast.success("Undangan berhasil dihapus!")
-      router.push("/dashboard/undangan")
+      toast.success("Undangan berhasil dihapus!");
+      router.push("/dashboard/invitations");
     } catch {
-      toast.error("Terjadi kesalahan. Silakan coba lagi.")
+      toast.error("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
   }
 
   return (
-    // <form>
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex items-center gap-3">
           <Switch
             id="published"
             checked={formData.isPublished}
-            onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isPublished: checked }))}
+            onCheckedChange={(checked) =>
+              setFormData((prev) => ({ ...prev, isPublished: checked }))
+            }
           />
           <Label htmlFor="published" className="cursor-pointer">
             {/* Draft */}
@@ -138,9 +163,13 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
         </div>
         <div className="flex-1" />
         {formData.isPublished && (
-          <Button type="button" variant="outline" asChild>
-            {/* <Link href="" target="_blank"> */}
-            <Link href={`/undangan/${formData.slug}`} target="_blank">
+          <Button
+            type="button"
+            variant="outline"
+            className="hover:text-primary-foreground"
+            asChild
+          >
+            <Link href={`/${formData.slug}`} target="_blank">
               <ExternalLink className="mr-2 h-4 w-4" />
               Lihat Undangan
             </Link>
@@ -157,8 +186,8 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
             <AlertDialogHeader>
               <AlertDialogTitle>Hapus Undangan?</AlertDialogTitle>
               <AlertDialogDescription>
-                Tindakan ini tidak dapat dibatalkan. Semua data undangan termasuk daftar tamu dan ucapan akan dihapus
-                permanen.
+                Tindakan ini tidak dapat dibatalkan. Semua data undangan
+                termasuk daftar tamu dan ucapan akan dihapus permanen.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -168,7 +197,9 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
                 disabled={isDeleting}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                {isDeleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {isDeleting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
                 Hapus
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -338,7 +369,9 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
               <div className="space-y-2">
                 <Label htmlFor="slug">URL Undangan</Label>
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-sm">nikahku.id/undangan/</span>
+                  <span className="text-muted-foreground text-sm">
+                    nikahku.id/undangan/
+                  </span>
                   <Input
                     id="slug"
                     name="slug"
@@ -357,7 +390,9 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
           <Card className="border-border/50">
             <CardHeader>
               <CardTitle>Cerita Cinta</CardTitle>
-              <CardDescription>Bagikan kisah perjalanan cinta Anda</CardDescription>
+              <CardDescription>
+                Bagikan kisah perjalanan cinta Anda
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -379,7 +414,9 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
           <Card className="border-border/50">
             <CardHeader>
               <CardTitle>Amplop Digital</CardTitle>
-              <CardDescription>Informasi rekening untuk hadiah dari tamu</CardDescription>
+              <CardDescription>
+                Informasi rekening untuk hadiah dari tamu
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -417,5 +454,5 @@ export function EditInvitationForm({ invitation, themes }: EditInvitationFormPro
         </TabsContent>
       </Tabs>
     </form>
-  )
+  );
 }

@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 import { Profile } from "@/types/database";
 import type { User } from "@supabase/supabase-js";
-import { Loader2 } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -62,6 +62,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
           <CardTitle>Informasi Profil</CardTitle>
           <CardDescription>Perbarui informasi akun Anda</CardDescription>
         </CardHeader>
+
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <Label htmlFor="email">Email</Label>
@@ -73,6 +74,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
               className="bg-muted"
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="fullName">Nama Lengkap</Label>
             <Input
@@ -82,6 +84,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
               placeholder="Nama lengkap Anda"
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="phone">Nomor Telepon</Label>
             <Input
@@ -91,8 +94,9 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
               placeholder="08123456789"
             />
           </div>
+
           <Button type="submit" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+            {isLoading && <Loader2Icon className="mr-2 size-4 animate-spin" />}
             Simpan Perubahan
           </Button>
         </CardContent>

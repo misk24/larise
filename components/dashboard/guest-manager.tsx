@@ -1,44 +1,78 @@
-"use client"
+"use client";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { createClient } from "@/lib/supabase/client"
-import type { Guest, RSVP } from "@/types/database"
-import { Check, Copy, Loader2, Plus, Search, Trash2, UserCheck, Users, UserX } from "lucide-react"
-import type React from "react"
-import { useState } from "react"
-import { toast } from "sonner"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { createClient } from "@/lib/supabase/client";
+import type { Guest, RSVP } from "@/types/database";
+import {
+  Check,
+  Copy,
+  Loader2,
+  Plus,
+  Search,
+  Trash2,
+  UserCheck,
+  Users,
+  UserX,
+} from "lucide-react";
+import type React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface GuestManagerProps {
-  invitationId: string
-  initialGuests: (Guest & { rsvp: RSVP[] })[]
+  invitationId: string;
+  initialGuests: (Guest & { rsvp: RSVP[] })[];
 }
 
 // export function GuestManager() {
-export function GuestManager({ invitationId, initialGuests }: GuestManagerProps) {
-  const [guests, setGuests] = useState(initialGuests)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [copiedId, setCopiedId] = useState<string | null>(null)
+export function GuestManager({
+  invitationId,
+  initialGuests,
+}: GuestManagerProps) {
+  const [guests, setGuests] = useState(initialGuests);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [newGuest, setNewGuest] = useState({
     name: "",
     phone: "",
     email: "",
-  })
+  });
 
-  const supabase = createClient()
+  const supabase = createClient();
 
   const filteredGuests = guests.filter(
     (guest) =>
       guest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guest.phone?.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  );
 
   // const stats = {
   //   total: guests.length,
@@ -48,8 +82,8 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
   // }
 
   async function handleAddGuest(e: React.FormEvent) {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       const { data, error } = await supabase
@@ -61,57 +95,64 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
           email: newGuest.email || null,
         })
         .select("*, rsvp(*)")
-        .single()
+        .single();
 
       if (error) {
-        toast.error(error.message)
-        return
+        toast.error(error.message);
+        return;
       }
 
-      setGuests((prev) => [...prev, data])
-      setNewGuest({ name: "", phone: "", email: "" })
-      setIsDialogOpen(false)
-      toast.success("Tamu berhasil ditambahkan!")
+      setGuests((prev) => [...prev, data]);
+      setNewGuest({ name: "", phone: "", email: "" });
+      setIsDialogOpen(false);
+      toast.success("Tamu berhasil ditambahkan!");
     } catch {
-      toast.error("Terjadi kesalahan")
+      toast.error("Terjadi kesalahan");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   async function handleDeleteGuest(guestId: string) {
     try {
-      const { error } = await supabase.from("guests").delete().eq("id", guestId)
+      const { error } = await supabase
+        .from("guests")
+        .delete()
+        .eq("id", guestId);
 
       if (error) {
-        toast.error(error.message)
-        return
+        toast.error(error.message);
+        return;
       }
 
-      setGuests((prev) => prev.filter((g) => g.id !== guestId))
-      toast.success("Tamu berhasil dihapus!")
+      setGuests((prev) => prev.filter((g) => g.id !== guestId));
+      toast.success("Tamu berhasil dihapus!");
     } catch {
-      toast.error("Terjadi kesalahan")
+      toast.error("Terjadi kesalahan");
     }
   }
 
   function copyInvitationLink(guestSlug: string) {
-    const link = `${window.location.origin}/undangan/${guestSlug}`
-    navigator.clipboard.writeText(link)
-    setCopiedId(guestSlug)
-    toast.success("Link undangan disalin!")
-    setTimeout(() => setCopiedId(null), 2000)
+    const link = `${window.location.origin}/undangan/${guestSlug}`;
+    navigator.clipboard.writeText(link);
+    setCopiedId(guestSlug);
+    toast.success("Link undangan disalin!");
+    setTimeout(() => setCopiedId(null), 2000);
   }
 
   function getRsvpBadge(rsvp: RSVP[] | undefined) {
     // const status = rsvp?.[0]?.status
     if (status === "attending") {
-      return <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">Hadir</Badge>
+      return (
+        <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">
+          Hadir
+        </Badge>
+      );
     }
     if (status === "not_attending") {
-      return <Badge variant="destructive">Tidak Hadir</Badge>
+      return <Badge variant="destructive">Tidak Hadir</Badge>;
     }
-    return <Badge variant="secondary">Menunggu</Badge>
+    return <Badge variant="secondary">Menunggu</Badge>;
   }
 
   return (
@@ -168,7 +209,9 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <CardTitle>Daftar Tamu</CardTitle>
-              <CardDescription>Kelola tamu undangan dan lihat status RSVP</CardDescription>
+              <CardDescription>
+                Kelola tamu undangan dan lihat status RSVP
+              </CardDescription>
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
@@ -182,7 +225,9 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
                 <form onSubmit={handleAddGuest}>
                   <DialogHeader>
                     <DialogTitle>Tambah Tamu Baru</DialogTitle>
-                    <DialogDescription>Masukkan data tamu undangan baru</DialogDescription>
+                    <DialogDescription>
+                      Masukkan data tamu undangan baru
+                    </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
@@ -190,7 +235,12 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
                       <Input
                         id="name"
                         value={newGuest.name}
-                        onChange={(e) => setNewGuest((prev) => ({ ...prev, name: e.target.value }))}
+                        onChange={(e) =>
+                          setNewGuest((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
                         placeholder="Nama lengkap"
                         required
                       />
@@ -200,7 +250,12 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
                       <Input
                         id="phone"
                         value={newGuest.phone}
-                        onChange={(e) => setNewGuest((prev) => ({ ...prev, phone: e.target.value }))}
+                        onChange={(e) =>
+                          setNewGuest((prev) => ({
+                            ...prev,
+                            phone: e.target.value,
+                          }))
+                        }
                         placeholder="08123456789"
                       />
                     </div>
@@ -210,17 +265,29 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
                         id="email"
                         type="email"
                         value={newGuest.email}
-                        onChange={(e) => setNewGuest((prev) => ({ ...prev, email: e.target.value }))}
+                        onChange={(e) =>
+                          setNewGuest((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
                         placeholder="email@example.com"
                       />
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="hover:text-primary-foreground"
+                      onClick={() => setIsDialogOpen(false)}
+                    >
                       Batal
                     </Button>
                     <Button type="submit" disabled={isLoading}>
-                      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {isLoading && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
                       Tambah
                     </Button>
                   </DialogFooter>
@@ -248,9 +315,13 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nama</TableHead>
-                    <TableHead className="hidden md:table-cell">Telepon</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Telepon
+                    </TableHead>
                     <TableHead>Status RSVP</TableHead>
-                    <TableHead className="hidden md:table-cell">Jumlah Tamu</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Jumlah Tamu
+                    </TableHead>
                     <TableHead className="text-right">Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -258,8 +329,12 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
                   {filteredGuests.map((guest) => (
                     // <TableRow>
                     <TableRow key={guest.id}>
-                      <TableCell className="font-medium">{guest.name}</TableCell>
-                      <TableCell className="hidden md:table-cell">{guest.phone || "-"}</TableCell>
+                      <TableCell className="font-medium">
+                        {guest.name}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {guest.phone || "-"}
+                      </TableCell>
                       <TableCell>{getRsvpBadge(guest.rsvp)}</TableCell>
                       {/* <TableCell className="hidden md:table-cell">{guest.rsvp?.[0]?.guest_count || "-"}</TableCell> */}
                       <TableCell className="text-right">
@@ -295,12 +370,14 @@ export function GuestManager({ invitationId, initialGuests }: GuestManagerProps)
             <div className="text-center py-12">
               <Users className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">
-                {searchQuery ? "Tidak ada tamu yang ditemukan" : "Belum ada tamu. Tambahkan tamu pertama Anda."}
+                {searchQuery
+                  ? "Tidak ada tamu yang ditemukan"
+                  : "Belum ada tamu. Tambahkan tamu pertama Anda."}
               </p>
             </div>
           )}
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

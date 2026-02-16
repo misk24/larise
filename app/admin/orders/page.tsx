@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/server";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCartIcon } from "lucide-react";
 
 export default async function AdminOrdersPage() {
   const supabase = await createClient();
@@ -98,7 +98,7 @@ export default async function AdminOrdersPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <ShoppingCart className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+              <ShoppingCartIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">Belum ada pesanan</p>
             </div>
           )}

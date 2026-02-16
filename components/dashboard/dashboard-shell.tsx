@@ -2,7 +2,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
-interface AdminShellProps {
+interface DashboardShellProps {
   sidebar: ReactNode;
   header: ReactNode;
   footer: ReactNode;
@@ -10,13 +10,13 @@ interface AdminShellProps {
   className?: string;
 }
 
-export function AdminShell({
+export function DashboardShell({
   sidebar,
   header,
   footer,
   children,
   className,
-}: AdminShellProps) {
+}: DashboardShellProps) {
   return (
     <div className={cn("flex min-h-screen w-full bg-primary/10", className)}>
       <SidebarProvider>

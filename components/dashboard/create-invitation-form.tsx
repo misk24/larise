@@ -370,7 +370,12 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
             </CardContent>
           </Card>
           <div className="flex gap-3 justify-end">
-            <Button type="button" variant="outline" onClick={() => setStep(1)}>
+            <Button
+              type="button"
+              variant="outline"
+              className="hover:text-primary-foreground"
+              onClick={() => setStep(1)}
+            >
               Kembali
             </Button>
             <Button type="submit" disabled={isLoading}>

@@ -33,6 +33,7 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
           <Separator orientation="vertical" className="hidden h-4! sm:block" />
           <Breadcrumbs />
         </div>
+
         <div className="flex items-center gap-4">
           <UserProfile
             trigger={
@@ -50,6 +51,8 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
                 </Avatar>
               </Button>
             }
+            user={user}
+            profile={profile}
           />
         </div>
       </div>

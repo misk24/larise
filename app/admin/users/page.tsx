@@ -15,14 +15,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/server";
-import { Users } from "lucide-react";
+import { UsersIcon } from "lucide-react";
 
 export default async function AdminUsersPage() {
   const supabase = await createClient();
 
   const { data: users } = await supabase
     .from("profiles")
-    .select("*")
     .select("*, invitations(count)")
     .order("created_at", { ascending: false });
 
@@ -47,21 +46,21 @@ export default async function AdminUsersPage() {
           {users && users.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
-                <TableHeader className="bg-secondary">
+                <TableHeader className="bg-primary">
                   <TableRow>
-                    <TableHead className="text-primary font-semibold">
+                    <TableHead className="text-primary-foreground">
                       Nama
                     </TableHead>
-                    <TableHead className="text-primary font-semibold">
+                    <TableHead className="text-primary-foreground">
                       Email
                     </TableHead>
-                    <TableHead className="text-primary font-semibold">
+                    <TableHead className="text-primary-foreground">
                       Role
                     </TableHead>
-                    <TableHead className="text-primary font-semibold">
+                    <TableHead className="text-primary-foreground">
                       Undangan
                     </TableHead>
-                    <TableHead className="text-primary font-semibold">
+                    <TableHead className="text-primary-foreground">
                       Tanggal Daftar
                     </TableHead>
                   </TableRow>
@@ -93,7 +92,7 @@ export default async function AdminUsersPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <Users className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+              <UsersIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">
                 Belum ada pengguna terdaftar
               </p>
