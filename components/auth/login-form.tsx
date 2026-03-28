@@ -13,8 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { signInWithEmail } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
@@ -32,11 +34,12 @@ const loginSchema = z.object({
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const supabase = createClient();
   const searchParams = useSearchParams();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Handle error dari query params
@@ -113,16 +116,46 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md border-none bg-primary-foreground">
+    <Card
+      className={cn(
+        "w-full max-w-md bg-sidebar",
+        isMobile ? "border-none shadow-none" : "",
+      )}
+    >
       <CardHeader className="flex flex-col items-center gap-4 mb-4">
         <CardTitle>
           <Logo />
         </CardTitle>
+
         <CardDescription>Masuk ke akun Anda untuk melanjutkan</CardDescription>
       </CardHeader>
 
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+      <CardContent className="space-y-4">
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="w-full gap-2 hover:text-primary-foreground"
+          onClick={handleGoogle}
+          disabled={isGoogleLoading}
+        >
+          {isGoogleLoading ? (
+            <Loader2Icon className="size-4 animate-spin" />
+          ) : (
+            <Icon icon="logos:google-icon" className="size-4" />
+          )}
+          <span>
+            {isGoogleLoading ? "Redirecting..." : "Masuk dengan Google"}
+          </span>
+        </Button>
+
+        <div className="flex items-center gap-4">
+          <Separator className="flex-1" />
+          <p className="text-xs">atau</p>
+          <Separator className="flex-1" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -140,7 +173,7 @@ export function LoginForm() {
             <div className="relative">
               <Input
                 id="password"
-                type={isPasswordVisible ? "text" : "password"}
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -151,12 +184,12 @@ export function LoginForm() {
                 type="button"
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsPasswordVisible((prevState) => !prevState)}
+                onClick={() => setShowPassword((prevState) => !prevState)}
                 className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
               >
-                {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
+                {showPassword ? <EyeIcon /> : <EyeOffIcon />}
                 <span className="sr-only">
-                  {isPasswordVisible ? "Hide password" : "Show password"}
+                  {showPassword ? "Hide password" : "Show password"}
                 </span>
               </Button>
             </div>
@@ -170,9 +203,7 @@ export function LoginForm() {
               Lupa password?
             </Link>
           </div>
-        </CardContent>
 
-        <CardFooter className="mt-4">
           <Button
             type="submit"
             size="lg"
@@ -184,41 +215,19 @@ export function LoginForm() {
             )}
             Masuk
           </Button>
-        </CardFooter>
-      </form>
+        </form>
+      </CardContent>
 
-      <div className="w-full px-6 space-y-4">
-        <p className="text-sm text-muted-foreground text-center">
-          Belum punya akun?{" "}
-          <Link href="/register" className="text-primary hover:underline">
-            Daftar sekarang
-          </Link>
-        </p>
-
-        <div className="flex items-center gap-4">
-          <Separator className="flex-1" />
-          <p className="text-xs">atau</p>
-          <Separator className="flex-1" />
+      <CardFooter className="flex flex-col">
+        <div className="text-sm text-muted-foreground">
+          Belum punya akun?
+          <Button variant="link" className="-ml-2" asChild>
+            <Link href="/register" className="text-primary">
+              Daftar sekarang
+            </Link>
+          </Button>
         </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          className="w-full gap-2 hover:text-primary-foreground"
-          onClick={handleGoogle}
-          disabled={isGoogleLoading}
-        >
-          {isGoogleLoading ? (
-            <Loader2Icon className="size-4 animate-spin" />
-          ) : (
-            <Icon icon="logos:google-icon" className="size-4" />
-          )}
-          <span>
-            {isGoogleLoading ? "Redirecting..." : "Lanjut dengan Google"}
-          </span>
-        </Button>
-      </div>
+      </CardFooter>
     </Card>
   );
 }

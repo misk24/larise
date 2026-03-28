@@ -12,7 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -34,9 +36,8 @@ const resetPasswordSchema = z
 export function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isExchanging, setIsExchanging] = useState(true);
   const [isReady, setIsReady] = useState(false);
@@ -44,6 +45,7 @@ export function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = useMemo(() => createClient(), []);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const code = searchParams.get("code");
@@ -113,7 +115,12 @@ export function ResetPasswordForm() {
   const isFormDisabled = isSubmitting || isExchanging || !isReady || isComplete;
 
   return (
-    <Card className="w-full max-w-md border-none bg-primary-foreground">
+    <Card
+      className={cn(
+        "w-full max-w-md bg-sidebar",
+        isMobile ? "border-none shadow-none" : "",
+      )}
+    >
       <CardHeader className="flex flex-col items-center gap-4 mb-4">
         <CardTitle>
           <Logo />
@@ -150,7 +157,7 @@ export function ResetPasswordForm() {
                 <div className="relative">
                   <Input
                     id="password"
-                    type={isPasswordVisible ? "text" : "password"}
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -160,13 +167,13 @@ export function ResetPasswordForm() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    onClick={() => setIsPasswordVisible((prev) => !prev)}
+                    onClick={() => setShowPassword((prev) => !prev)}
                     className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                     disabled={isFormDisabled}
                   >
-                    {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
+                    {showPassword ? <EyeIcon /> : <EyeOffIcon />}
                     <span className="sr-only">
-                      {isPasswordVisible ? "Hide password" : "Show password"}
+                      {showPassword ? "Hide password" : "Show password"}
                     </span>
                   </Button>
                 </div>
@@ -177,7 +184,7 @@ export function ResetPasswordForm() {
                 <div className="relative">
                   <Input
                     id="confirmPassword"
-                    type={isConfirmPasswordVisible ? "text" : "password"}
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -187,15 +194,13 @@ export function ResetPasswordForm() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    onClick={() => setIsConfirmPasswordVisible((prev) => !prev)}
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
                     className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                     disabled={isFormDisabled}
                   >
-                    {isConfirmPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
+                    {showConfirmPassword ? <EyeIcon /> : <EyeOffIcon />}
                     <span className="sr-only">
-                      {isConfirmPasswordVisible
-                        ? "Hide password"
-                        : "Show password"}
+                      {showConfirmPassword ? "Hide password" : "Show password"}
                     </span>
                   </Button>
                 </div>

@@ -20,7 +20,8 @@ export default async function AdminDashboardPage() {
 
   const { count: usersCount } = await supabase
     .from("profiles")
-    .select("*", { count: "exact", head: true });
+    .select("*", { count: "exact", head: true })
+    .eq("role", "user");
 
   const { count: invitationsCount } = await supabase
     .from("invitations")
@@ -39,6 +40,7 @@ export default async function AdminDashboardPage() {
   const { data: recentUsers } = await supabase
     .from("profiles")
     .select("*")
+    .eq("role", "user")
     .order("created_at", { ascending: false })
     .limit(5);
 
@@ -80,7 +82,7 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <span className="text-2xl md:text-3xl font-medium">Dashboard</span>
+        <h2 className="dashboard">Dashboard</h2>
         <p className="text-muted-foreground">
           Selamat datang di panel administrasi LARISÉ
         </p>
@@ -101,7 +103,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="border-border bg-sidebar">
+        <Card className="border-border bg-sidebar overflow-hidden">
           <CardHeader>
             <CardTitle className="text-lg">Pengguna Terbaru</CardTitle>
             <CardDescription>5 pengguna yang baru mendaftar</CardDescription>

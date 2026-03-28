@@ -13,8 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { signUpWithEmail } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
@@ -39,13 +41,13 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const isMobile = useIsMobile();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -105,7 +107,12 @@ export function RegisterForm() {
   }
 
   return (
-    <Card className="w-full max-w-md border-none bg-background">
+    <Card
+      className={cn(
+        "w-full max-w-md bg-sidebar",
+        isMobile ? "border-none shadow-none" : "",
+      )}
+    >
       <CardHeader className="flex flex-col items-center gap-4 mb-4">
         <CardTitle>
           <Logo />
@@ -116,106 +123,7 @@ export function RegisterForm() {
         </CardDescription>
       </CardHeader>
 
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="nama@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isSubmitLoading}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={isPasswordVisible ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isSubmitLoading}
-              />
-
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsPasswordVisible((prevState) => !prevState)}
-                className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
-              >
-                {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
-                <span className="sr-only">
-                  {isPasswordVisible ? "Hide password" : "Show password"}
-                </span>
-              </Button>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-            <div className="relative">
-              <Input
-                id="confirmPassword"
-                type={isConfirmPasswordVisible ? "text" : "password"}
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={isSubmitLoading}
-              />
-
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() =>
-                  setIsConfirmPasswordVisible((prevState) => !prevState)
-                }
-                className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
-              >
-                {isConfirmPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
-                <span className="sr-only">
-                  {isConfirmPasswordVisible ? "Hide password" : "Show password"}
-                </span>
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-
-        <CardFooter className="mt-4">
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full"
-            disabled={isSubmitLoading}
-          >
-            {isSubmitLoading && (
-              <Loader2Icon className="mr-2 size-4 animate-spin" />
-            )}
-            Daftar
-          </Button>
-        </CardFooter>
-      </form>
-
-      <div className="w-full px-6 space-y-4">
-        <p className="text-sm text-muted-foreground text-center">
-          Sudah punya akun?{" "}
-          <Link href="/login" className="text-primary hover:underline">
-            Masuk di sini
-          </Link>
-        </p>
-
-        <div className="flex items-center gap-4">
-          <Separator className="flex-1" />
-          <p className="text-xs">atau</p>
-          <Separator className="flex-1" />
-        </div>
-
+      <CardContent className="space-y-4">
         <Button
           type="button"
           variant="outline"
@@ -233,7 +141,106 @@ export function RegisterForm() {
             {isGoogleLoading ? "Redirecting..." : "Daftar dengan Google"}
           </span>
         </Button>
-      </div>
+
+        <div className="flex items-center gap-4">
+          <Separator className="flex-1" />
+          <p className="text-xs">atau</p>
+          <Separator className="flex-1" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="nama@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isSubmitLoading}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isSubmitLoading}
+              />
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowPassword((prevState) => !prevState)}
+                className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
+              >
+                {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+                <span className="sr-only">
+                  {showPassword ? "Hide password" : "Show password"}
+                </span>
+              </Button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={isSubmitLoading}
+              />
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  setShowConfirmPassword((prevState) => !prevState)
+                }
+                className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
+              >
+                {showConfirmPassword ? <EyeIcon /> : <EyeOffIcon />}
+                <span className="sr-only">
+                  {showConfirmPassword ? "Hide password" : "Show password"}
+                </span>
+              </Button>
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={isSubmitLoading}
+          >
+            {isSubmitLoading && (
+              <Loader2Icon className="mr-2 size-4 animate-spin" />
+            )}
+            Daftar
+          </Button>
+        </form>
+      </CardContent>
+
+      <CardFooter className="flex flex-col">
+        <div className="text-sm text-muted-foreground">
+          Sudah punya akun?
+          <Button variant="link" className="-ml-2" asChild>
+            <Link href="/login" className="text-primary">
+              Masuk di sini
+            </Link>
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
 }

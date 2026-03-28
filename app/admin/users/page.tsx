@@ -23,6 +23,7 @@ export default async function AdminUsersPage() {
   const { data: users } = await supabase
     .from("profiles")
     .select("*, invitations(count)")
+    .eq("role", "user")
     .order("created_at", { ascending: false });
 
   return (

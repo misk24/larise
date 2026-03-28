@@ -12,7 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { requestPasswordReset } from "@/lib/actions/auth";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type React from "react";
@@ -29,6 +31,7 @@ export function ForgotPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,18 +59,24 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <Card className="w-full max-w-md border-none bg-primary-foreground">
+    <Card
+      className={cn(
+        "w-full max-w-md bg-sidebar",
+        isMobile ? " border-none shadow-none" : "",
+      )}
+    >
       <CardHeader className="flex flex-col items-center gap-4 mb-4">
         <CardTitle>
           <Logo />
         </CardTitle>
-        <CardDescription className="text-center">
+
+        <CardDescription>
           Masukkan email untuk menerima link reset password
         </CardDescription>
       </CardHeader>
 
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -79,9 +88,7 @@ export function ForgotPasswordForm() {
               disabled={isSubmitting || isSent}
             />
           </div>
-        </CardContent>
 
-        <CardFooter className="mt-4 flex flex-col gap-3">
           <Button
             type="submit"
             size="lg"
@@ -90,22 +97,25 @@ export function ForgotPasswordForm() {
           >
             {isSubmitting ? "Mengirim..." : "Kirim Link Reset"}
           </Button>
-          {isSent ? (
-            <p className="text-xs text-muted-foreground text-center">
-              Sudah terkirim. Silakan cek inbox atau folder spam.
-            </p>
-          ) : null}
-        </CardFooter>
-      </form>
 
-      <div className="w-full px-6 pb-6">
-        <p className="text-sm text-muted-foreground text-center">
-          Ingat password?{" "}
-          <Link href="/login" className="text-primary hover:underline">
-            Kembali ke login
-          </Link>
-        </p>
-      </div>
+          {isSent ? (
+            <div className="text-xs text-muted-foreground text-center">
+              Sudah terkirim. Silakan cek inbox atau folder spam.
+            </div>
+          ) : null}
+        </form>
+      </CardContent>
+
+      <CardFooter className="flex flex-col">
+        <div className="text-sm text-muted-foreground">
+          Ingat password?
+          <Button variant="link" className="-ml-2" asChild>
+            <Link href="/login" className="text-primary">
+              Kembali ke login
+            </Link>
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
 }
