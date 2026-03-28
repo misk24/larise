@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { subpageNavs, userNavs } from "@/constants/backend";
+import { subpageNavs, userNavs } from "@/config/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
