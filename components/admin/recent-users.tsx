@@ -1,10 +1,12 @@
+"use client";
+
+import { DataTable } from "@/components/shared/datatable";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DataTable } from "./datatable";
 
 interface User {
   id: string;
