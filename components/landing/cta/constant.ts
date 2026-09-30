@@ -1,11 +1,9 @@
-import { CTASectionProps } from "./type";
-
-export const ctaSection: CTASectionProps = {
-  title: "Your Wedding, Beautifully Announced",
+export const ctaSection = {
+  title: "Your Story Starts Here",
   description:
-    "Saatnya menyampaikan kabar bahagia Anda dengan cara yang lebih modern dan berkesan.",
+    "Buat undangan pernikahan digital yang terasa personal, indah, dan benar-benar milik kalian.",
   cta: {
-    label: "Create Invitation",
+    label: "Create Your Invitation",
     href: "/register",
   },
 };

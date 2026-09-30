@@ -1,6 +1,6 @@
 "use client";
 
-import { FadeLeft, FadeUp } from "@/components/motion";
+import { FadeUp } from "@/components/motion";
 import {
   Accordion,
   AccordionContent,
@@ -8,7 +8,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { faqSection } from "./constant";
 
@@ -17,51 +16,58 @@ export function FAQSection() {
     <section
       id="faq"
       aria-labelledby="faq-title"
-      className="px-6 py-24 md:px-8"
+      className="px-6 py-24 md:px-8 md:py-32"
     >
-      <div className="max-w-6xl mx-auto">
-        <FadeLeft>
-          <h2 id="faq-title" className="mb-16 md:text-center">
-            {faqSection.title}
-          </h2>
-        </FadeLeft>
+      <div className="mx-auto max-w-4xl">
+        <FadeUp>
+          <div className="mb-12 text-center md:mb-16">
+            <p className="mb-4 text-small uppercase tracking-[0.2em] text-muted-foreground">
+              FAQ
+            </p>
 
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10">
-          <FadeUp>
-            <Accordion
-              type="single"
-              collapsible
-              className="rounded-2xl border border-border/60 bg-card/30 px-4 md:px-6"
-            >
-              {faqSection.faqs.map((faq, index) => (
-                <AccordionItem key={faq.question} value={`faq-${index}`}>
-                  <AccordionTrigger className="text-base">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground text-base">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </FadeUp>
+            <h2 id="faq-title" className="text-balance">
+              {faqSection.title}
+            </h2>
 
-          <FadeUp>
-            <Card className="h-full border-border/60 bg-muted/30">
-              <CardContent className="p-6 md:p-8">
-                <h3 className="mb-2">{faqSection.aside.title}</h3>
-                <p className="text-muted-foreground mb-6">
-                  {faqSection.aside.description}
-                </p>
-                <Button size="lg" className="rounded-full" asChild>
-                  <Link href={faqSection.aside.cta.href}>
-                    {faqSection.aside.cta.label}
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </FadeUp>
-        </div>
+            <p className="mx-auto mt-5 max-w-xl text-muted-foreground">
+              {faqSection.description}
+            </p>
+          </div>
+        </FadeUp>
+
+        <FadeUp>
+          <Accordion type="single" collapsible className="w-full">
+            {faqSection.faqs.map((faq, index) => (
+              <AccordionItem
+                key={faq.question}
+                value={`faq-${index}`}
+                className="border-border/70"
+              >
+                <AccordionTrigger className="py-6 text-left text-base font-medium hover:no-underline md:text-lg">
+                  {faq.question}
+                </AccordionTrigger>
+
+                <AccordionContent className="max-w-3xl pb-6 text-base leading-relaxed text-muted-foreground">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </FadeUp>
+
+        <FadeUp>
+          <div className="mt-12 flex flex-col items-center text-center md:mt-16">
+            <p className="mb-4 text-muted-foreground">
+              {faqSection.aside.title}
+            </p>
+
+            <Button size="lg" className="rounded-full" asChild>
+              <Link href={faqSection.aside.cta.href}>
+                {faqSection.aside.cta.label}
+              </Link>
+            </Button>
+          </div>
+        </FadeUp>
       </div>
     </section>
   );

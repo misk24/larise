@@ -1,42 +1,46 @@
-import { FAQSectionProps } from "./type";
-
-export const faqSection: FAQSectionProps = {
-  title: "FAQ",
+export const faqSection = {
+  title: "Questions, Answered",
   description:
-    "Ringkas, jelas, dan langsung ke poin supaya kamu cepat menentukan langkah berikutnya.",
+    "Hal-hal yang mungkin ingin kamu ketahui sebelum membuat undangan.",
   faqs: [
     {
-      question: "Berapa lama proses pembuatan undangan?",
+      question: "Apa itu LARISÉ?",
       answer:
-        "Rata-rata 1-3 hari kerja setelah data lengkap diterima. Revisi minor bisa selesai di hari yang sama.",
+        "LARISÉ adalah platform undangan pernikahan digital yang membantu kamu membuat, mengatur, dan membagikan undangan secara online.",
     },
     {
-      question: "Apakah bisa custom tema sesuai keinginan?",
+      question: "Apakah undangan bisa disesuaikan?",
       answer:
-        "Bisa. Kamu bisa pilih dari koleksi yang ada lalu kami sesuaikan warna, foto, dan detail konten.",
+        "Ya. Kamu dapat menyesuaikan informasi dan konten undangan seperti nama, foto, cerita, detail acara, dan fitur yang tersedia pada tema yang dipilih.",
     },
     {
-      question: "Bagaimana cara isi data tamu dan RSVP?",
+      question: "Apakah undangan bisa dibuka lewat HP?",
       answer:
-        "Kami sediakan template data tamu. RSVP bisa aktif otomatis dan kamu dapat pantau dari dashboard.",
+        "Bisa. Undangan LARISÉ dirancang agar nyaman dibuka melalui smartphone maupun perangkat lainnya.",
     },
     {
-      question: "Apakah undangan bisa diakses di semua perangkat?",
-      answer: "Ya, desain responsif dan optimal untuk mobile maupun desktop.",
+      question: "Bagaimana cara membagikan undangan?",
+      answer:
+        "Setelah undangan siap dan dipublikasikan, kamu dapat membagikan link undangan melalui WhatsApp, media sosial, atau platform lainnya.",
     },
     {
-      question: "Apakah ada batas revisi?",
+      question: "Apakah tamu bisa melakukan RSVP?",
       answer:
-        "Tidak ada batas untuk revisi minor. Untuk perubahan besar, kami konfirmasi estimasi waktu tambahan.",
+        "Ya. Jika fitur RSVP tersedia pada tema atau paket yang digunakan, tamu dapat mengonfirmasi kehadiran langsung melalui undangan.",
+    },
+    {
+      question: "Apakah saya bisa mengganti tema setelah membuat undangan?",
+      answer:
+        "Tema dapat diganti selama undangan tetap menggunakan struktur dan fitur yang didukung oleh tema tersebut. Konten undangan akan tetap tersimpan.",
     },
   ],
   aside: {
-    title: "Masih ada pertanyaan?",
+    title: "Siap membuat undangan?",
     description:
-      "Tim kami siap bantu pilih tema, isi konten, sampai undangan live.",
+      "Pilih tema yang kamu suka, personalisasi isinya, lalu bagikan kepada tamu.",
     cta: {
-      label: "Konsultasi via WhatsApp",
-      href: "https://wa.me/6281234567890",
+      label: "Create Invitation",
+      href: "/register",
     },
   },
 };

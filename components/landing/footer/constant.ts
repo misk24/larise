@@ -1,23 +1,7 @@
-import { FooterSectionProps } from "./type";
+import { contacts } from "@/config/contact";
 
-export const footerSection: FooterSectionProps = {
-  socials: [
-    {
-      icon: "whatsapp",
-      label: "0877-3976-0490",
-      href: "https://wa.me/6281234567890",
-    },
-    {
-      icon: "gmail",
-      label: "admin@larise.id",
-      href: "mailto:admin@larise.id",
-    },
-    {
-      icon: "instagram",
-      label: "@larise",
-      href: "https://instagram.com",
-    },
-  ],
+export const footerSection = {
+  contacts: contacts,
   location: "Lombok Timur, NTB",
   copy: "LARISÉ. Crafted with care.",
 };

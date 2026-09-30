@@ -1,7 +1,7 @@
-import { ThemeSectionProps } from "./type";
-
-export const themeSection: ThemeSectionProps = {
-  title: "Our Collections",
+export const themeSection = {
+  title: "Find Your Style",
+  description:
+    "Pilih tampilan yang paling sesuai dengan cerita dan suasana hari istimewamu.",
   themes: [
     {
       id: 1,

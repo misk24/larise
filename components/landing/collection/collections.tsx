@@ -1,6 +1,6 @@
 "use client";
 
-import { FadeIn, FadeLeft } from "@/components/motion";
+import { FadeIn, FadeLeft, Item, Stagger } from "@/components/motion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import gsap from "gsap";
@@ -28,7 +28,7 @@ export function ThemeSectionHorizontal() {
     // Store original overflow styles
     const originalBodyOverflow = {
       x: document.body.style.overflowX,
-      y: document.body.style.overflowY
+      y: document.body.style.overflowY,
     };
 
     // Apply overflow only to this section's parent, not globally
@@ -63,7 +63,9 @@ export function ThemeSectionHorizontal() {
           end: () => {
             const containerWidth = panelsRef.current!.offsetWidth;
             const viewportWidth = window.innerWidth;
-            return "+=" + Math.max(containerWidth - viewportWidth, viewportWidth);
+            return (
+              "+=" + Math.max(containerWidth - viewportWidth, viewportWidth)
+            );
           },
           // Prevent conflicts with other scroll behaviors
           invalidateOnRefresh: true,
@@ -84,7 +86,11 @@ export function ThemeSectionHorizontal() {
   }, []);
 
   return (
-    <section id="collections" ref={pageRef} className="relative overflow-hidden">
+    <section
+      id="collections"
+      ref={pageRef}
+      className="relative overflow-hidden"
+    >
       <div
         id="panels-container"
         ref={panelsRef}
@@ -92,11 +98,19 @@ export function ThemeSectionHorizontal() {
         className="relative flex flex-nowrap h-screen"
       >
         <div className="absolute left-0 top-0 z-10 w-screen px-6 pt-32 md:px-8 pointer-events-none">
-          <FadeLeft className="pointer-events-auto">
-            <h2 id="collections-title" className="md:text-center">
-              {themeSection.title}
-            </h2>
-          </FadeLeft>
+          <Stagger className="md:text-center">
+            <FadeLeft className="pointer-events-auto">
+              <h2 id="collections-title" className="mb-6">
+                {themeSection.title}
+              </h2>
+            </FadeLeft>
+
+            <Item>
+              <p className="text-muted-foreground">
+                {themeSection.description}
+              </p>
+            </Item>
+          </Stagger>
         </div>
 
         {panels.map((theme, index) => (

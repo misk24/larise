@@ -1,6 +1,5 @@
 "use client";
 
-import { navLinks } from "@/components/landing/shared";
 import { Scale } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
@@ -9,7 +8,7 @@ import { useOverlay } from "@/hooks/use-overlay";
 import { cn } from "@/lib/utils";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
-import { loginButton } from "./constant";
+import { loginButton, navLinks } from "./constant";
 import { MobileHeader } from "./mobile-navbar";
 import { useScroll } from "./use-scroll";
 

@@ -1,9 +1,8 @@
-import { navLinks } from "@/components/landing/shared";
 import { Button } from "@/components/ui/button";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { ArrowUpRightIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { loginButton } from "./constant";
+import { loginButton, navLinks } from "./constant";
 
 interface MobileHeaderProps {
   isOpen: boolean;

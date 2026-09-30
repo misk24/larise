@@ -2,7 +2,7 @@
 
 import { Item, Stagger } from "@/components/motion";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/public/images/romantic-wedding-flowers-soft-pink-petals-elegant-.jpg";
+import heroImage from "@/public/images/hero.jpg";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,7 +36,7 @@ export function HeroSection() {
       <div className="container relative z-10 px-4 py-20 md:py-32">
         <Stagger className="max-w-3xl mx-auto text-center">
           <Item>
-            <h1 id="hero-title" className="mb-8 text-balance">
+            <h1 id="hero-title" className="mb-8 text-display text-balance">
               {heroSection.title}
             </h1>
           </Item>

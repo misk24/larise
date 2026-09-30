@@ -1,11 +1,11 @@
 "use client";
 
-import { navLinks } from "@/components/landing/shared";
 import { FadeIn } from "@/components/motion";
 import { Logo } from "@/components/ui/logo";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { Icon } from "@iconify/react";
 import { ChevronRightIcon, MapPinIcon } from "lucide-react";
+import { navLinks } from "../navbar/constant";
 import { footerSection } from "./constant";
 
 export function Footer() {
@@ -38,19 +38,19 @@ export function Footer() {
           <div>
             <h4 className="mb-4">Contacts</h4>
             <ul className="space-y-4 opacity-90">
-              {footerSection.socials.map((social, index) => (
+              {footerSection.contacts.map((contact, index) => (
                 <li key={index} className="hover:text-accent transition-colors">
                   <a
-                    href={social.href}
+                    href={contact.href}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <div className="flex items-center gap-2">
                       <Icon
-                        icon={`simple-icons:${social.icon}`}
+                        icon={`simple-icons:${contact.icon}`}
                         className="size-3.5"
                       />
-                      <span className="text-sm">{social.label}</span>
+                      <span className="text-sm">{contact.label}</span>
                     </div>
                   </a>
                 </li>
