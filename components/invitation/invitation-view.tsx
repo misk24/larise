@@ -1,10 +1,7 @@
 "use client"
 
 import type { Invitation, Theme, Wish } from "@/types/database"
-import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
-import { InvitationCover } from "./invitation-cover"
-import { MusicPlayer } from "./music-player"
 import { InvitationHero } from "./invitation-hero"
 import { InvitationCouple } from "./invitation.couple"
 import { InvitationEvent } from "./invitation-event"
@@ -15,103 +12,96 @@ import { InvitationGift } from "./invitation-gift"
 import { InvitationFooter } from "./invitation-footer"
 
 interface InvitationViewProps {
-  invitation: Invitation & { themes: Theme | null }
+  invitation: Invitation & { themes?: Theme | null }
   guestName: string
   wishes: Wish[]
 }
 
+function parentLabel(father: string | null, mother: string | null) {
+  return [father, mother].filter(Boolean).join(" & ")
+}
+
 export function InvitationView({ invitation, guestName, wishes: initialWishes }: InvitationViewProps) {
-  const [isOpen, setIsOpen] = useState(false)
   const [wishes, setWishes] = useState(initialWishes)
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
-    if (isOpen && audioRef.current) {
-      audioRef.current.play().catch(() => {
-        // Autoplay blocked, user needs to interact
-      })
+    if (invitation.background_music_url) {
+      audioRef.current?.play().catch(() => undefined)
     }
-  }, [isOpen])
+  }, [invitation.background_music_url])
 
-  const handleOpen = () => {
-    setIsOpen(true)
-  }
-
-  const addWish = (newWish: Wish) => {
-    setWishes((prev) => [newWish, ...prev])
-  }
+  const eventDate = invitation.resepsi_date || invitation.akad_date || ""
+  const gallery = invitation.gallery_photos || []
+  const bank = invitation.bank_accounts?.[0]
 
   return (
-    <div className="min-h-screen bg-background">
-      <audio ref={audioRef} src="/wedding-music.mp3" loop />
+    <main className="min-h-screen bg-background">
+      {invitation.background_music_url && (
+        <audio ref={audioRef} src={invitation.background_music_url} loop />
+      )}
 
-      <AnimatePresence mode="wait">
-        {/* {!isOpen ? (
-          <InvitationCover
-            key="cover"
-            groomName={invitation.groom_name || ""}
-            brideName={invitation.bride_name || ""}
-            eventDate={invitation.event_date || ""}
-            guestName={guestName}
-            onOpen={handleOpen}
-          />
-        ) : (
-          <motion.div
-            key="content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="relative"
-          >
-            <MusicPlayer audioRef={audioRef} />
+      <InvitationHero
+        groomName={invitation.groom_name}
+        brideName={invitation.bride_name}
+        eventDate={eventDate}
+      />
 
-            <InvitationHero
-              groomName={invitation.groom_name || ""}
-              brideName={invitation.bride_name || ""}
-              eventDate={invitation.event_date || ""}
-            />
+      <InvitationCouple
+        groomName={invitation.groom_name}
+        brideName={invitation.bride_name}
+        groomParents={parentLabel(invitation.groom_father, invitation.groom_mother)}
+        brideParents={parentLabel(invitation.bride_father, invitation.bride_mother)}
+      />
 
-            <InvitationCouple
-              groomName={invitation.groom_name || ""}
-              brideName={invitation.bride_name || ""}
-              groomParents={invitation.groom_parents || ""}
-              brideParents={invitation.bride_parents || ""}
-            />
+      {(invitation.akad_location || invitation.resepsi_location) && (
+        <InvitationEvent
+          eventDate={eventDate}
+          akadTime={invitation.akad_time || ""}
+          eventTime={invitation.resepsi_time || ""}
+          akadVenue={invitation.akad_location || ""}
+          akadAddress={invitation.akad_address || ""}
+          venueName={invitation.resepsi_location || ""}
+          venueAddress={invitation.resepsi_address || ""}
+        />
+      )}
 
-            <InvitationEvent
-              eventDate={invitation.event_date || ""}
-              akadTime={invitation.akad_time || ""}
-              eventTime={invitation.event_time || ""}
-              akadVenue={invitation.akad_venue || ""}
-              akadAddress={invitation.akad_address || ""}
-              venueName={invitation.venue_name || ""}
-              venueAddress={invitation.venue_address || ""}
-            />
+      {invitation.love_story && (
+        <section className="py-20 md:py-32">
+          <div className="container px-6 max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-serif font-semibold mb-6">Kisah Kami</h2>
+            <p className="whitespace-pre-line text-muted-foreground leading-8">{invitation.love_story}</p>
+          </div>
+        </section>
+      )}
 
-            {invitation.gallery_images && invitation.gallery_images.length > 0 && (
-              <InvitationGallery images={invitation.gallery_images} />
-            )}
+      {invitation.show_gallery && gallery.length > 0 && <InvitationGallery images={gallery} />}
 
-            <InvitationRsvp invitationId={invitation.id} guestName={guestName} />
+      {invitation.show_rsvp && (
+        <InvitationRsvp invitationId={invitation.id} guestName={guestName} />
+      )}
 
-            <InvitationWishes invitationId={invitation.id} wishes={wishes} onWishAdded={addWish} />
+      {invitation.show_rsvp && (
+        <InvitationWishes
+          invitationId={invitation.id}
+          wishes={wishes}
+          onWishAdded={(wish) => setWishes((prev) => [wish, ...prev])}
+        />
+      )}
 
-            {(invitation.bank_name || invitation.bank_account) && (
-              <InvitationGift
-                bankName={invitation.bank_name || ""}
-                bankAccount={invitation.bank_account || ""}
-                bankHolder={invitation.bank_holder || ""}
-              />
-            )}
+      {invitation.show_gift && bank && (
+        <InvitationGift
+          bankName={bank.bank}
+          bankAccount={bank.account_number}
+          bankHolder={bank.account_name}
+        />
+      )}
 
-            <InvitationFooter
-              groomName={invitation.groom_name || ""}
-              brideName={invitation.bride_name || ""}
-              eventDate={invitation.event_date || ""}
-            />
-          </motion.div>
-        )} */}
-      </AnimatePresence>
-    </div>
+      <InvitationFooter
+        groomName={invitation.groom_name}
+        brideName={invitation.bride_name}
+        eventDate={eventDate}
+      />
+    </main>
   )
 }
