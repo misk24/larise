@@ -53,7 +53,7 @@ export default async function GuestsPage() {
           Kelola daftar tamu undangan Anda
         </p>
       </div>
-      <GuestManager invitationId={invitation.id} initialGuests={guests || []} />
+      <GuestManager invitationId={invitation.id} invitationSlug={invitation.slug} initialGuests={guests || []} />
     </div>
   );
 }
