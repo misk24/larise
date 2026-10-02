@@ -47,6 +47,7 @@ import { toast } from "sonner";
 
 interface GuestManagerProps {
   invitationId: string;
+  invitationSlug: string;
   initialGuests: (Guest & { rsvp: RSVP[] })[];
 }
 
@@ -54,6 +55,7 @@ interface GuestManagerProps {
 export function GuestManager({
   invitationId,
   initialGuests,
+  invitationSlug,
 }: GuestManagerProps) {
   const [guests, setGuests] = useState(initialGuests);
   const [isLoading, setIsLoading] = useState(false);
@@ -132,8 +134,8 @@ export function GuestManager({
     }
   }
 
-  function copyInvitationLink(guestSlug: string) {
-    const link = `${window.location.origin}/undangan/${guestSlug}`;
+  function copyInvitationLink(guestToken: string) {
+    const link = `${window.location.origin}/undangan/${invitationSlug}?guest=${encodeURIComponent(guestToken)}`;
     navigator.clipboard.writeText(link);
     setCopiedId(guestSlug);
     toast.success("Link undangan disalin!");
@@ -342,10 +344,10 @@ export function GuestManager({
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => copyInvitationLink(guest.slug)}
+                            onClick={() => copyInvitationLink(guest.public_token)}
                             title="Salin link undangan"
                           >
-                            {copiedId === guest.slug ? (
+                            {copiedId === guest.public_token ? (
                               <Check className="h-4 w-4 text-chart-3" />
                             ) : (
                               <Copy className="h-4 w-4" />
