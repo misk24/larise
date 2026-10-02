@@ -221,7 +221,6 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                   <Textarea
                     id="groomParents"
                     name="groomParents"
-                    value={formData.groomParents}
                     onChange={handleInputChange}
                     placeholder="Putra dari Bapak ... dan Ibu ..."
                     rows={2}
@@ -245,7 +244,6 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                   <Textarea
                     id="brideParents"
                     name="brideParents"
-                    value={formData.brideParents}
                     onChange={handleInputChange}
                     placeholder="Putri dari Bapak ... dan Ibu ..."
                     rows={2}
@@ -267,9 +265,9 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                   <Label htmlFor="eventDate">Tanggal Acara</Label>
                   <Input
                     id="eventDate"
-                    name="eventDate"
+                    name="resepsiDate"
                     type="date"
-                    value={formData.eventDate}
+                    value={formData.resepsiDate}
                     onChange={handleInputChange}
                     required
                   />
@@ -288,9 +286,9 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                   <Label htmlFor="eventTime">Waktu Resepsi</Label>
                   <Input
                     id="eventTime"
-                    name="eventTime"
+                    name="resepsiTime"
                     type="time"
-                    value={formData.eventTime}
+                    value={formData.resepsiTime}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -301,8 +299,8 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                     <Label htmlFor="akadVenue">Tempat Akad</Label>
                     <Input
                       id="akadVenue"
-                      name="akadVenue"
-                      value={formData.akadVenue}
+                      name="akadLocation"
+                      value={formData.akadLocation}
                       onChange={handleInputChange}
                       placeholder="Nama gedung/tempat akad"
                     />
@@ -324,8 +322,8 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                     <Label htmlFor="venue">Tempat Resepsi</Label>
                     <Input
                       id="venue"
-                      name="venue"
-                      value={formData.venue}
+                      name="resepsiLocation"
+                      value={formData.resepsiLocation}
                       onChange={handleInputChange}
                       placeholder="Nama gedung/tempat resepsi"
                     />
@@ -334,8 +332,8 @@ export function CreateInvitationForm({ themes }: CreateInvitationFormProps) {
                     <Label htmlFor="venueAddress">Alamat Resepsi</Label>
                     <Textarea
                       id="venueAddress"
-                      name="venueAddress"
-                      value={formData.venueAddress}
+                      name="resepsiAddress"
+                      value={formData.resepsiAddress}
                       onChange={handleInputChange}
                       placeholder="Alamat lengkap"
                       rows={2}
