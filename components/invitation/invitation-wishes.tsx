@@ -110,7 +110,7 @@ export function InvitationWishes({ invitationId, wishes, onWishAdded }: Invitati
                     <CardContent className="p-4">
                       <p className="text-foreground mb-3 italic">&ldquo;{wish.message}&rdquo;</p>
                       <div className="flex items-center justify-between">
-                        <p className="font-semibold text-sm">{wish.name}</p>
+                        <p className="font-semibold text-sm">{wish.guest_name}</p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(wish.created_at).toLocaleDateString("id-ID", {
                             day: "numeric",

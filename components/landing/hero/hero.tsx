@@ -2,7 +2,6 @@
 
 import { Item, Stagger } from "@/components/motion";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/public/images/hero.jpg";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,12 +21,11 @@ export function HeroSection() {
         aria-hidden="true"
       >
         <Image
-          src={heroImage}
+          src="/images/hero.jpg"
           alt=""
           fill
           priority
           sizes="100vw"
-          placeholder="blur"
           className="object-cover"
         />
         <div className="absolute inset-0 bg-background/85" />

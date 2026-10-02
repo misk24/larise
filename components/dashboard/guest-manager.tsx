@@ -47,6 +47,7 @@ import { toast } from "sonner";
 
 interface GuestManagerProps {
   invitationId: string;
+  invitationSlug: string;
   initialGuests: (Guest & { rsvp: RSVP[] })[];
 }
 
@@ -54,6 +55,7 @@ interface GuestManagerProps {
 export function GuestManager({
   invitationId,
   initialGuests,
+  invitationSlug,
 }: GuestManagerProps) {
   const [guests, setGuests] = useState(initialGuests);
   const [isLoading, setIsLoading] = useState(false);
@@ -132,16 +134,16 @@ export function GuestManager({
     }
   }
 
-  function copyInvitationLink(guestSlug: string) {
-    const link = `${window.location.origin}/undangan/${guestSlug}`;
+  function copyInvitationLink(guestToken: string) {
+    const link = `${window.location.origin}/undangan/${invitationSlug}?guest=${encodeURIComponent(guestToken)}`;
     navigator.clipboard.writeText(link);
-    setCopiedId(guestSlug);
+    setCopiedId(guestToken);
     toast.success("Link undangan disalin!");
     setTimeout(() => setCopiedId(null), 2000);
   }
 
   function getRsvpBadge(rsvp: RSVP[] | undefined) {
-    // const status = rsvp?.[0]?.status
+    const status = rsvp?.[0]?.status;
     if (status === "attending") {
       return (
         <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">
@@ -342,10 +344,10 @@ export function GuestManager({
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => copyInvitationLink(guest.slug)}
+                            onClick={() => copyInvitationLink(guest.public_token)}
                             title="Salin link undangan"
                           >
-                            {copiedId === guest.slug ? (
+                            {copiedId === guest.public_token ? (
                               <Check className="h-4 w-4 text-chart-3" />
                             ) : (
                               <Copy className="h-4 w-4" />

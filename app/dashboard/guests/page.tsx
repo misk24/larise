@@ -14,7 +14,7 @@ export default async function GuestsPage() {
   // Get user's invitation
   const { data: invitation } = await supabase
     .from("invitations")
-    .select("id")
+    .select("id, slug")
     .eq("user_id", user.id)
     .single();
 
@@ -53,7 +53,7 @@ export default async function GuestsPage() {
           Kelola daftar tamu undangan Anda
         </p>
       </div>
-      <GuestManager invitationId={invitation.id} initialGuests={guests || []} />
+      <GuestManager invitationId={invitation.id} invitationSlug={invitation.slug} initialGuests={guests || []} />
     </div>
   );
 }
