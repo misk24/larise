@@ -14,7 +14,7 @@ export default async function GuestsPage() {
   // Get user's invitation
   const { data: invitation } = await supabase
     .from("invitations")
-    .select("id")
+    .select("id, slug")
     .eq("user_id", user.id)
     .single();
 
