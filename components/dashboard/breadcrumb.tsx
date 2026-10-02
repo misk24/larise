@@ -17,13 +17,11 @@ export function Breadcrumbs() {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
 
-  let pathAccumulator = "";
-
   return (
     <Breadcrumb>
       <BreadcrumbList>
         {segments.map((segment, index) => {
-          pathAccumulator += `/${segment}`;
+          const pathAccumulator = `/${segments.slice(0, index + 1).join("/")}`;
           const isLast = index === segments.length - 1;
           const match = userNavs.find((item) => item.href === pathAccumulator);
           let label: string;
