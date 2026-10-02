@@ -137,13 +137,13 @@ export function GuestManager({
   function copyInvitationLink(guestToken: string) {
     const link = `${window.location.origin}/undangan/${invitationSlug}?guest=${encodeURIComponent(guestToken)}`;
     navigator.clipboard.writeText(link);
-    setCopiedId(guestSlug);
+    setCopiedId(guestToken);
     toast.success("Link undangan disalin!");
     setTimeout(() => setCopiedId(null), 2000);
   }
 
   function getRsvpBadge(rsvp: RSVP[] | undefined) {
-    // const status = rsvp?.[0]?.status
+    const status = rsvp?.[0]?.status;
     if (status === "attending") {
       return (
         <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">
