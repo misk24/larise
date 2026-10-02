@@ -16,8 +16,6 @@ interface Props {
 }
 
 export function DataTablePagination({ table }: Props) {
-  if (!table.getPageCount) return null;
-
   const { pages, showLeftEllipsis, showRightEllipsis } = usePagination({
     currentPage: table.getState().pagination.pageIndex + 1,
     totalPages: table.getPageCount(),
