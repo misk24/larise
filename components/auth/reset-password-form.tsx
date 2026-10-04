@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { createClient } from "@/lib/supabase/client";
+import { passwordResetSchema } from "@/lib/auth/validation";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
@@ -21,17 +22,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const resetPasswordSchema = z
-  .object({
-    password: z.string().min(6, "Password minimal 6 karakter."),
-    confirmPassword: z.string().min(6, "Password minimal 6 karakter."),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password dan Konfirmasi Password tidak sama.",
-    path: ["confirmPassword"],
-  });
 
 export function ResetPasswordForm() {
   const [password, setPassword] = useState("");
