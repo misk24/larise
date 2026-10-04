@@ -1,0 +1,4 @@
+import type { SectionContext } from "./section-registry";
+import { SectionShell } from "./section-shell";
+import { contentValue } from "./content-utils";
+export function LocationSection({section,invitation}:SectionContext) { const c=section.content; const url=contentValue(c,"maps_url",invitation.resepsi_maps_url||invitation.akad_maps_url||""); return <SectionShell className="text-center"><h2 className="text-3xl md:text-4xl font-serif">{contentValue(c,"title","Lokasi")}</h2><p className="mt-6 font-medium">{contentValue(c,"venue",invitation.resepsi_location||"")}</p><p className="mt-2 text-muted-foreground">{contentValue(c,"address",invitation.resepsi_address||"")}</p>{url&&<a href={url} target="_blank" rel="noreferrer" className="mt-6 inline-flex rounded-md border px-4 py-2 text-sm">Buka Maps</a>}</SectionShell>; }
