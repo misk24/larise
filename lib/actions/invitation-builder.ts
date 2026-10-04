@@ -84,7 +84,7 @@ export async function saveInvitationSections(input: z.input<typeof saveSectionsS
 
   revalidatePath(`/dashboard/invitations/${parsed.data.invitationId}`);
   revalidatePath(`/dashboard/invitations/${parsed.data.invitationId}/builder`);
-  revalidatePath(`/i/${(await supabase.from("invitations").select("slug").eq("id", parsed.data.invitationId).single()).data?.slug ?? ""}`);
+  revalidatePath(`/undangan/${(await supabase.from("invitations").select("slug").eq("id", parsed.data.invitationId).single()).data?.slug ?? ""}`);
 
   return { success: true, savedAt: new Date().toISOString() };
 }
