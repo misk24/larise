@@ -86,7 +86,8 @@ const fieldConfig: Record<string, Array<{ key: string; label: string; multiline?
 
 function displayValue(section: InvitationSection, key: string) {
   const value = section.content[key];
-  if (key === "images" && Array.isArray(value)) return value.join("\n");
+  if (key === "images" && Array.isArray(value)) return value.join("
+");
   if (typeof value === "string") return value;
   return "";
 }
@@ -96,7 +97,8 @@ function updateContent(section: InvitationSection, key: string, raw: string) {
     ...section,
     content: {
       ...section.content,
-      [key]: key === "images" ? raw.split("\n").map((value) => value.trim()).filter(Boolean) : raw,
+      [key]: key === "images" ? raw.split("
+").map((value) => value.trim()).filter(Boolean) : raw,
     },
   };
 }
@@ -295,7 +297,22 @@ export function InvitationBuilder({
         </CardHeader>
         <CardContent>
           {selected ? (
-            selected.section_type === "gallery" ? (\n              <div className="space-y-5">\n                <div className="space-y-2">\n                  <Label>Judul</Label>\n                  <Input value={displayValue(selected, "title")} onChange={(event) => updateSelected(updateContent(selected, "title", event.target.value))} />\n                </div>\n                <InvitationMediaUploader invitationId={invitation.id} initialMedia={media} onChange={(nextMedia) => {\n                  const urls = nextMedia.map((item) => (item as InvitationMedia & { public_url?: string }).public_url).filter((url): url is string => Boolean(url));\n                  updateSelected({ ...selected, content: { ...selected.content, images: urls } });\n                }} />\n                <div className="flex flex-wrap gap-2 pt-2">\n                  <Button variant="outline" size="sm" onClick={() => moveSelected(-1)} disabled={sections[0]?.id === selected.id}><ArrowUp className="size-4" />Naik</Button>\n                  <Button variant="outline" size="sm" onClick={() => moveSelected(1)} disabled={sections[sections.length - 1]?.id === selected.id}><ArrowDown className="size-4" />Turun</Button>\n                </div>\n              </div>\n            ) : selected.section_type === "rsvp" || selected.section_type === "wishes" ? (
+            selected.section_type === "gallery" ? (
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <Label>Judul</Label>
+                  <Input value={displayValue(selected, "title")} onChange={(event) => updateSelected(updateContent(selected, "title", event.target.value))} />
+                </div>
+                <InvitationMediaUploader invitationId={invitation.id} initialMedia={media} onChange={(nextMedia) => {
+                  const urls = nextMedia.map((item) => (item as InvitationMedia & { public_url?: string }).public_url).filter((url): url is string => Boolean(url));
+                  updateSelected({ ...selected, content: { ...selected.content, images: urls } });
+                }} />
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <Button variant="outline" size="sm" onClick={() => moveSelected(-1)} disabled={sections[0]?.id === selected.id}><ArrowUp className="size-4" />Naik</Button>
+                  <Button variant="outline" size="sm" onClick={() => moveSelected(1)} disabled={sections[sections.length - 1]?.id === selected.id}><ArrowDown className="size-4" />Turun</Button>
+                </div>
+              </div>
+            ) : selected.section_type === "rsvp" || selected.section_type === "wishes" ? (
               <p className="rounded-md bg-muted p-4 text-sm text-muted-foreground">
                 Section ini tidak punya field konten. Pengaturan RSVP dan ucapan dikelola dari data guest/public flow.
               </p>
