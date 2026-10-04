@@ -9,7 +9,7 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
 
   if (!user) redirect("/login");
 
-  const [{ data: invitation }, { data: sections }, { data: wishes }] = await Promise.all([
+  const [{ data: invitation }, { data: sections }, { data: wishes }, { data: media }] = await Promise.all([
     supabase
       .from("invitations")
       .select("*, themes(*)")
@@ -28,6 +28,7 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
       .eq("visibility", "visible")
       .order("created_at", { ascending: false })
       .limit(50),
+    supabase.from("invitation_media").select("*").eq("invitation_id", id).order("created_at"),
   ]);
 
   if (!invitation) notFound();
@@ -43,7 +44,7 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
           <p className="text-muted-foreground">Edit konten, visibility, urutan, lalu preview sebelum publish.</p>
         </div>
         <a
-          href={`/i/${invitation.slug}`}
+          href={`/undangan/${invitation.slug}`}
           target="_blank"
           rel="noreferrer"
           className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
@@ -51,7 +52,7 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
           Buka undangan publik
         </a>
       </div>
-      <InvitationBuilder invitation={invitation} initialSections={sections ?? []} wishes={wishes ?? []} />
+      <InvitationBuilder invitation={invitation} initialSections={sections ?? []} wishes={wishes ?? []} media={media ?? []} />
     </div>
   );
 }

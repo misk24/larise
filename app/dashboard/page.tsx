@@ -35,7 +35,7 @@ export default async function DashboardPage() {
 
   const { data: rsvpStats } = invitation
     ? await supabase
-        .from("rsvp")
+        .from("rsvps")
         .select("status")
         .eq("invitation_id", invitation.id)
     : { data: [] };
@@ -133,7 +133,7 @@ export default async function DashboardPage() {
                 <div className="flex justify-between items-center py-2 border-b border-border">
                   <span className="text-muted-foreground">Tanggal Acara</span>
                   <span className="font-medium">
-                    {invitation.event_date
+                    {invitation.resepsi_date
                       ? new Date(invitation.event_date).toLocaleDateString(
                           "id-ID",
                         )
@@ -157,7 +157,7 @@ export default async function DashboardPage() {
 
               <div className="flex gap-3 mt-6">
                 <Button asChild className="flex-1">
-                  <Link href={`/dashboard/undangan/${invitation.id}`}>
+                  <Link href={`/dashboard/invitations/${invitation.id}`}>
                     Edit Undangan
                     <ArrowRightIcon className="ml-2 size-4" />
                   </Link>
@@ -193,7 +193,7 @@ export default async function DashboardPage() {
                 className="w-full justify-start bg-transparent hover:text-primary-foreground"
                 asChild
               >
-                <Link href="/dashboard/tamu">
+                <Link href="/dashboard/guests">
                   <UsersIcon className="mr-3 size-4" />
                   Kelola Daftar Tamu
                 </Link>
@@ -204,7 +204,7 @@ export default async function DashboardPage() {
                 className="w-full justify-start bg-transparent hover:text-primary-foreground"
                 asChild
               >
-                <Link href="/dashboard/ucapan">
+                <Link href="/dashboard/wishes">
                   <MessageSquareHeartIcon className="mr-3 size-4" />
                   Lihat Ucapan & Doa
                 </Link>
@@ -215,7 +215,7 @@ export default async function DashboardPage() {
                 className="w-full justify-start bg-transparent hover:text-primary-foreground"
                 asChild
               >
-                <Link href="/dashboard/galeri">
+                <Link href="/dashboard/gallery">
                   <EyeIcon className="mr-3 size-4" />
                   Kelola Galeri Foto
                 </Link>

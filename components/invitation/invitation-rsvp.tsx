@@ -58,26 +58,26 @@ export function InvitationRsvp({ invitationId, guestName }: InvitationRsvpProps)
       }
 
       // Check if RSVP already exists
-      const { data: existingRsvp } = await supabase.from("rsvp").select("id").eq("guest_id", guestId).single()
+      const { data: existingRsvp } = await supabase.from("rsvps").select("id").eq("guest_id", guestId).single()
 
       if (existingRsvp) {
         // Update existing RSVP
         const { error } = await supabase
-          .from("rsvp")
+          .from("rsvps")
           .update({
             status: formData.status,
-            guest_count: Number.parseInt(formData.guestCount),
+            attendee_count: Number.parseInt(formData.guestCount),
           })
           .eq("id", existingRsvp.id)
 
         if (error) throw error
       } else {
         // Create new RSVP
-        const { error } = await supabase.from("rsvp").insert({
+        const { error } = await supabase.from("rsvps").insert({
           invitation_id: invitationId,
           guest_id: guestId,
           status: formData.status,
-          guest_count: Number.parseInt(formData.guestCount),
+          attendee_count: Number.parseInt(formData.guestCount),
         })
 
         if (error) throw error
