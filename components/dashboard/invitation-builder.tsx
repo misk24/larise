@@ -86,8 +86,7 @@ const fieldConfig: Record<string, Array<{ key: string; label: string; multiline?
 
 function displayValue(section: InvitationSection, key: string) {
   const value = section.content[key];
-  if (key === "images" && Array.isArray(value)) return value.join("
-");
+  if (key === "images" && Array.isArray(value)) return value.join("\n");
   if (typeof value === "string") return value;
   return "";
 }
