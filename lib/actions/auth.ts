@@ -186,6 +186,18 @@ export async function getUser() {
   return user;
 }
 
+export async function updateProfile(input: { full_name: string; phone: string }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Sesi login tidak valid." };
+
+  const fullName = input.full_name.trim().slice(0, 120);
+  const phone = input.phone.trim().slice(0, 30);
+  const { error } = await supabase.from("profiles").update({ full_name: fullName || null, phone: phone || null }).eq("id", user.id);
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
 export async function getUserProfile() {
   const supabase = await createClient();
   const {
