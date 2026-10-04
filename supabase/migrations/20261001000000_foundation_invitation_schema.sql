@@ -53,8 +53,5 @@ alter table public.guests enable row level security;
 alter table public.rsvps enable row level security;
 alter table public.wishes enable row level security;
 
--- NOTE:
--- The existing invitation status constraint currently uses the legacy values
--- draft/pending_payment/active/expired. Status normalization to
--- draft/published/unpublished is intentionally deferred until the application
--- writes are migrated in the same change, preventing a mixed-state deployment.
+-- Invitation status is normalized by the live schema to draft/published/unpublished.
+-- Keep this foundation migration descriptive of the current contract.
