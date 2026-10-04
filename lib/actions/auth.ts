@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { safeRedirectPath } from "@/lib/auth/validation";
 
 export async function signUpWithEmail(email: string, password: string) {
   const admin = createAdminClient();
@@ -74,7 +75,7 @@ export async function signUpWithEmail(email: string, password: string) {
   };
 }
 
-export async function signInWithEmail(email: string, password: string) {
+export async function signInWithEmail(email: string, password: string, redirectTo?: string) {
   const admin = createAdminClient();
   const normalizedEmail = email.toLowerCase();
 
@@ -127,7 +128,7 @@ export async function signInWithEmail(email: string, password: string) {
     }
   }
 
-  redirect("/dashboard");
+  redirect(safeRedirectPath(redirectTo));
 }
 
 export async function requestPasswordReset(email: string) {
@@ -183,6 +184,18 @@ export async function getUser() {
     data: { user },
   } = await supabase.auth.getUser();
   return user;
+}
+
+export async function updateProfile(input: { full_name: string; phone: string }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Sesi login tidak valid." };
+
+  const fullName = input.full_name.trim().slice(0, 120);
+  const phone = input.phone.trim().slice(0, 30);
+  const { error } = await supabase.from("profiles").update({ full_name: fullName || null, phone: phone || null }).eq("id", user.id);
+  if (error) return { error: error.message };
+  return { success: true };
 }
 
 export async function getUserProfile() {

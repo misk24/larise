@@ -15,6 +15,7 @@ import { Logo } from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { signInWithEmail } from "@/lib/actions/auth";
+import { loginSchema } from "@/lib/auth/validation";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
@@ -24,12 +25,6 @@ import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const loginSchema = z.object({
-  email: z.string().email("Email tidak valid."),
-  password: z.string().min(6, "Password minimal 6 karakter."),
-});
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -39,6 +34,7 @@ export function LoginForm() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const supabase = createClient();
   const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -68,7 +64,7 @@ export function LoginForm() {
     setIsSubmitLoading(true);
 
     try {
-      const result = await signInWithEmail(email, password);
+      const result = await signInWithEmail(email, password, redirectTo ?? undefined);
 
       if (result?.error) {
         // Transform Supabase error message menjadi lebih user-friendly
