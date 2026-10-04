@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createClient } from "@/lib/supabase/client";
+import { updateProfile } from "@/lib/actions/auth";
 import { Profile } from "@/types/database";
 import type { User } from "@supabase/supabase-js";
 import { Loader2Icon } from "lucide-react";
@@ -27,23 +27,16 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [fullName, setFullName] = useState(profile?.full_name || "");
   const [phone, setPhone] = useState(profile?.phone || "");
-  const supabase = createClient();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          full_name: fullName,
-          phone: phone,
-        })
-        .eq("id", user.id);
+      const result = await updateProfile({ full_name: fullName, phone });
 
-      if (error) {
-        toast.error(error.message);
+      if (result.error) {
+        toast.error(result.error);
         return;
       }
 
