@@ -15,6 +15,7 @@ import { Logo } from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { signUpWithEmail } from "@/lib/actions/auth";
+import { registerSchema } from "@/lib/auth/validation";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
@@ -24,18 +25,6 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const registerSchema = z
-  .object({
-    email: z.string().email("Email tidak valid."),
-    password: z.string().min(6, "Password minimal 6 karakter."),
-    confirmPassword: z.string().min(6, "Password minimal 6 karakter."),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password dan Konfirmasi Password tidak sama.",
-    path: ["confirmPassword"],
-  });
 
 export function RegisterForm() {
   const [email, setEmail] = useState("");
