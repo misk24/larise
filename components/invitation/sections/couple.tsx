@@ -1,0 +1,4 @@
+import type { SectionContext } from "./section-registry";
+import { SectionShell } from "./section-shell";
+import { contentValue } from "./content-utils";
+export function CoupleSection({section,invitation}:SectionContext) { const c=section.content; return <SectionShell className="text-center"><h2 className="text-3xl md:text-4xl font-serif font-semibold">{contentValue(c,"title","Mempelai")}</h2><div className="mt-10 grid gap-8 md:grid-cols-2"><div><h3 className="text-2xl font-serif">{contentValue(c,"groom_name",invitation.groom_name)}</h3><p className="mt-2 text-sm text-muted-foreground">{contentValue(c,"groom_parents","")}</p></div><div><h3 className="text-2xl font-serif">{contentValue(c,"bride_name",invitation.bride_name)}</h3><p className="mt-2 text-sm text-muted-foreground">{contentValue(c,"bride_parents","")}</p></div></div></SectionShell>; }
