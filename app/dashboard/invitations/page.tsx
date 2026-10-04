@@ -1,131 +1,13 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { InvitationActions } from "@/components/dashboard/invitation-actions";
 import { createClient } from "@/lib/supabase/server";
-import { EditIcon, ExternalLinkIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 
-export default async function UndanganPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: invitations } = await supabase
-    .from("invitations")
-    .select("*, themes(name, category)")
-    .eq("user_id", user?.id)
-    .order("created_at", { ascending: false });
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <span className="text-2xl md:text-3xl font-medium">
-            Undangan Saya
-          </span>
-          <p className="text-muted-foreground">
-            Kelola semua undangan pernikahan Anda
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/dashboard/invitations/create">
-            <PlusIcon className="mr-2 size-4" />
-            Buat Undangan
-          </Link>
-        </Button>
-      </div>
-      {invitations && invitations.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {invitations.map((invitation) => (
-            <Card
-              key={invitation.id}
-              className="border-border/50 overflow-hidden"
-            >
-              <div className="aspect-4/3 bg-secondary/50 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center p-4">
-                    <p className="text-lg font-serif">
-                      {invitation.groom_name || "Nama Pria"}
-                    </p>
-                    <p className="text-muted-foreground">&</p>
-                    <p className="text-lg font-serif">
-                      {invitation.bride_name || "Nama Wanita"}
-                    </p>
-                  </div>
-                </div>
-                <Badge
-                  className={`absolute top-3 right-3 ${
-                    invitation.is_published
-                      ? "bg-chart-3 text-chart-3-foreground"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {invitation.is_published ? "Dipublikasi" : "Draft"}
-                </Badge>
-              </div>
-              <CardContent className="p-4">
-                <div className="space-y-2 mb-4">
-                  <p className="text-sm text-muted-foreground">
-                    Tema: {invitation.themes?.name || "Belum dipilih"}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Tanggal:{" "}
-                    {invitation.event_date
-                      ? new Date(invitation.event_date).toLocaleDateString(
-                          "id-ID",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          },
-                        )
-                      : "Belum diatur"}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 bg-transparent hover:text-primary-foreground"
-                    asChild
-                  >
-                    <Link href={`/dashboard/invitations/${invitation.id}`}>
-                      <EditIcon className="mr-2 size-3" />
-                      Edit
-                    </Link>
-                  </Button>
-                  {invitation.is_published && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="hover:text-primary-foreground"
-                      asChild
-                    >
-                      <Link
-                        href={`/undangan/${invitation.slug}`}
-                        target="_blank"
-                      >
-                        <ExternalLinkIcon className="size-3" />
-                      </Link>
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : (
-        <Card className="border-border bg-sidebar">
-          <CardContent className="p-12 text-center">
-            <PlusIcon className="size-16 text-muted-foreground/50 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Belum Ada Undangan</h3>
-            <p className="text-muted-foreground mb-6">
-              Buat undangan pernikahan digital pertama Anda
-            </p>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
+export default async function InvitationsPage() {
+  const supabase=await createClient();
+  const {data:invitations,error}=await supabase.from("invitations").select("id,theme_id,slug,status,is_published,created_at,updated_at,view_count,themes(name,category,is_premium)").order("created_at",{ascending:false});
+  if(error) throw new Error("Gagal memuat undangan.");
+  return <div className="space-y-6"><div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h1 className="text-2xl font-semibold md:text-3xl">Undangan Saya</h1><p className="text-muted-foreground">Kelola draft, tema, duplikasi, dan status publikasi.</p></div><Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4"/>Buat Undangan</Link></Button></div>{invitations?.length?<div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{invitations.map(invitation=>{const theme=Array.isArray(invitation.themes)?invitation.themes[0]:invitation.themes;return <Card key={invitation.id}><div className="flex aspect-[4/3] items-center justify-center bg-secondary/40"><div className="text-center"><p className="font-serif text-2xl">{theme?.name??"Tanpa tema"}</p><p className="mt-1 text-sm text-muted-foreground">{invitation.slug}</p><p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">{invitation.status}</p></div></div><CardContent className="space-y-4 p-4"><div className="text-sm text-muted-foreground"><p>Tema: {theme?.name??"Belum dipilih"}</p><p>Dibuat: {new Date(invitation.created_at).toLocaleDateString("id-ID")}</p></div><InvitationActions invitationId={invitation.id} published={invitation.is_published}/></CardContent></Card>})}</div>:<Card className="border-dashed"><CardContent className="p-12 text-center"><h2 className="text-xl font-semibold">Belum ada undangan</h2><p className="mt-2 text-muted-foreground">Buat draft pertama Anda dari salah satu tema yang tersedia.</p><Button asChild className="mt-5"><Link href="/dashboard/invitations/create">Buat Undangan</Link></Button></CardContent></Card>}</div>;
 }
