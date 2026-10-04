@@ -15,6 +15,7 @@ import { Logo } from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { signInWithEmail } from "@/lib/actions/auth";
+import { loginSchema } from "@/lib/auth/validation";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
@@ -24,12 +25,6 @@ import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const loginSchema = z.object({
-  email: z.string().email("Email tidak valid."),
-  password: z.string().min(6, "Password minimal 6 karakter."),
-});
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
