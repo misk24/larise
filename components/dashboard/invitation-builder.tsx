@@ -243,8 +243,15 @@ export function InvitationBuilder({
           {published ? "Unpublish" : "Publish"}
         </Button>
       </div>
+      <div className="grid grid-cols-3 gap-1 rounded-lg border bg-muted p-1 xl:hidden">
+        {([["sections","Sections"],["editor","Editor"],["preview","Preview"]] as const).map(([value, label]) => (
+          <button key={value} type="button" onClick={() => setMobileView(value)} className={`rounded-md px-3 py-2 text-sm font-medium ${mobileView === value ? "bg-background shadow-sm" : "text-muted-foreground"}`}>
+            {label}
+          </button>
+        ))}
+      </div>
       <div className="grid gap-4 xl:grid-cols-[220px_minmax(320px,420px)_minmax(360px,1fr)]">
-      <Card className="h-fit xl:sticky xl:top-4">
+      <Card className={`h-fit xl:sticky xl:top-4 ${mobileView === "sections" ? "block" : "hidden"} xl:block`}>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Sections</CardTitle>
           <CardDescription>Urutkan dan pilih bagian undangan.</CardDescription>
@@ -266,7 +273,7 @@ export function InvitationBuilder({
         </CardContent>
       </Card>
 
-      <Card className="h-fit">
+      <Card className={`h-fit ${mobileView === "editor" ? "block" : "hidden"} xl:block`}>
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -329,7 +336,7 @@ export function InvitationBuilder({
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden xl:sticky xl:top-4 xl:h-[calc(100vh-2rem)]">
+      <Card className={`overflow-hidden xl:sticky xl:top-4 xl:h-[calc(100vh-2rem)] ${mobileView === "preview" ? "block" : "hidden"} xl:block`}>
         <CardHeader className="flex-row items-center justify-between gap-3 border-b">
           <div>
             <CardTitle className="text-base">Preview</CardTitle>
