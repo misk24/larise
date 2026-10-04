@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { saveInvitationSections } from "@/lib/actions/invitation-builder";
+import { setInvitationPublished } from "@/lib/actions/invitations";
 import { SharedInvitationRenderer } from "@/components/invitation/shared-renderer";
 import type { Invitation, InvitationSection, Theme, Wish } from "@/types/database";
 import { ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, Loader2, Save } from "lucide-react";
@@ -111,6 +112,8 @@ export function InvitationBuilder({
   const [sections, setSections] = useState(() => [...initialSections].sort((a, b) => a.position - b.position));
   const [selectedId, setSelectedId] = useState(initialSections[0]?.id ?? "");
   const [status, setStatus] = useState<"saved" | "dirty" | "saving">("saved");
+  const [mobileView, setMobileView] = useState<"sections" | "editor" | "preview">("sections");
+  const [published, setPublished] = useState(invitation.is_published);
   const [isPending, startTransition] = useTransition();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -197,12 +200,50 @@ export function InvitationBuilder({
     });
   }
 
+  useEffect(() => {
+    if (status === "saved") return;
+    const handler = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [status]);
+
+  async function togglePublish() {
+    if (status !== "saved") {
+      toast.error("Simpan perubahan terlebih dahulu sebelum publish.");
+      saveNow();
+      return;
+    }
+    const next = !published;
+    const result = await setInvitationPublished(invitation.id, next);
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
+    setPublished(next);
+    toast.success(next ? "Undangan dipublish." : "Undangan di-unpublish.");
+  }
+
   useEffect(() => () => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
   }, []);
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[220px_minmax(320px,420px)_minmax(360px,1fr)]">
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-background p-3">
+        <div className="text-sm">
+          <span className="font-medium">Status:</span>{" "}
+          <span className="text-muted-foreground">{published ? "Published" : "Draft"}</span>
+          {status !== "saved" && <span className="ml-2 text-amber-600">• Belum tersimpan</span>}
+        </div>
+        <Button onClick={togglePublish} disabled={isPending || status === "saving"} variant={published ? "outline" : "default"}>
+          {isPending && <Loader2 className="size-4 animate-spin" />}
+          {published ? "Unpublish" : "Publish"}
+        </Button>
+      </div>
+      <div className="grid gap-4 xl:grid-cols-[220px_minmax(320px,420px)_minmax(360px,1fr)]">
       <Card className="h-fit xl:sticky xl:top-4">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Sections</CardTitle>
@@ -310,6 +351,7 @@ export function InvitationBuilder({
           </div>
         </div>
       </Card>
+      </div>
     </div>
   );
 }
