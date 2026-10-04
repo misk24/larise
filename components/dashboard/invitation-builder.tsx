@@ -303,7 +303,7 @@ export function InvitationBuilder({
                   <Input value={displayValue(selected, "title")} onChange={(event) => updateSelected(updateContent(selected, "title", event.target.value))} />
                 </div>
                 <InvitationMediaUploader invitationId={invitation.id} initialMedia={media} onChange={(nextMedia) => {
-                  const urls = nextMedia.map((item) => (item as InvitationMedia & { public_url?: string }).public_url).filter((url): url is string => Boolean(url));
+                  const urls = nextMedia.map((item) => (item as InvitationMedia & { public_url?: string }).public_url ?? "").filter(Boolean);
                   updateSelected({ ...selected, content: { ...selected.content, images: urls } });
                 }} />
                 <div className="flex flex-wrap gap-2 pt-2">
