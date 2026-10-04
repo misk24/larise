@@ -44,7 +44,7 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
           <p className="text-muted-foreground">Edit konten, visibility, urutan, lalu preview sebelum publish.</p>
         </div>
         <a
-          href={`/i/${invitation.slug}`}
+          href={`/undangan/${invitation.slug}`}
           target="_blank"
           rel="noreferrer"
           className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
