@@ -74,7 +74,7 @@ export function ResetPasswordForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const validation = resetPasswordSchema.safeParse({
+    const validation = passwordResetSchema.safeParse({
       password,
       confirmPassword,
     });
