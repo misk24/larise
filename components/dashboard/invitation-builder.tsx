@@ -65,7 +65,6 @@ const fieldConfig: Record<string, Array<{ key: string; label: string; multiline?
   ],
   gallery: [
     { key: "title", label: "Judul" },
-    { key: "images", label: "URL gambar, satu per baris", multiline: true },
   ],
   location: [
     { key: "title", label: "Judul" },
@@ -96,8 +95,7 @@ function updateContent(section: InvitationSection, key: string, raw: string) {
     ...section,
     content: {
       ...section.content,
-      [key]: key === "images" ? raw.split("
-").map((value) => value.trim()).filter(Boolean) : raw,
+      [key]: key === "images" ? raw.split("\n").map((value) => value.trim()).filter(Boolean) : raw,
     },
   };
 }
@@ -106,10 +104,12 @@ export function InvitationBuilder({
   invitation,
   initialSections,
   wishes,
+  media,
 }: {
   invitation: BuilderInvitation;
   initialSections: InvitationSection[];
   wishes: Wish[];
+  media: InvitationMedia[];
 }) {
   const [sections, setSections] = useState(() => [...initialSections].sort((a, b) => a.position - b.position));
   const [selectedId, setSelectedId] = useState(initialSections[0]?.id ?? "");
