@@ -25,20 +25,22 @@ export function InvitationMediaUploader({
   onChange?: (media: InvitationMedia[]) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [media, setMedia] = useState(initialMedia);
+  const supabase = createClient();
+  const withPublicUrls = (items: InvitationMedia[]) => items.map((item) => ({ ...item, public_url: supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl }));
+  const [media, setMedia] = useState(withPublicUrls(initialMedia));
   const [pending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
 
   function update(next: InvitationMedia[]) {
-    setMedia(next);
-    onChange?.(next);
+    const enriched = withPublicUrls(next);
+    setMedia(enriched);
+    onChange?.(enriched as InvitationMedia[]);
   }
 
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return;
     setUploading(true);
     try {
-      const supabase = createClient();
       for (const file of Array.from(files)) {
         if (!ACCEPTED.includes(file.type as typeof ACCEPTED[number])) {
           toast.error(`${file.name}: format harus JPG, PNG, atau WebP.`);
@@ -118,7 +120,7 @@ export function InvitationMediaUploader({
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {media.map((item) => (
             <div key={item.id} className="group relative overflow-hidden rounded-md border bg-muted">
-              <img src={(item as InvitationMedia & { public_url?: string }).public_url ?? ""} alt={item.file_name} className="aspect-square w-full object-cover" />
+              <img src={(item as InvitationMedia & { public_url?: string }).public_url ?? supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl} alt={item.file_name} className="aspect-square w-full object-cover" />
               <button type="button" onClick={() => remove(item)} disabled={pending} className="absolute right-1 top-1 rounded-md bg-background/90 p-1.5 opacity-0 shadow transition group-hover:opacity-100" aria-label={`Hapus ${item.file_name}`}>
                 <Trash2 className="size-4 text-destructive" />
               </button>
