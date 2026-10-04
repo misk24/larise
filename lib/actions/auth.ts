@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { safeRedirectPath } from "@/lib/auth/validation";
 
 export async function signUpWithEmail(email: string, password: string) {
   const admin = createAdminClient();
@@ -74,7 +75,7 @@ export async function signUpWithEmail(email: string, password: string) {
   };
 }
 
-export async function signInWithEmail(email: string, password: string) {
+export async function signInWithEmail(email: string, password: string, redirectTo?: string) {
   const admin = createAdminClient();
   const normalizedEmail = email.toLowerCase();
 
@@ -127,7 +128,7 @@ export async function signInWithEmail(email: string, password: string) {
     }
   }
 
-  redirect("/dashboard");
+  redirect(safeRedirectPath(redirectTo));
 }
 
 export async function requestPasswordReset(email: string) {
