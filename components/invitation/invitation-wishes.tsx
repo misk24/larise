@@ -36,7 +36,7 @@ export function InvitationWishes({ invitationId, wishes, onWishAdded }: Invitati
         .from("wishes")
         .insert({
           invitation_id: invitationId,
-          name: formData.name,
+          guest_name: formData.name,
           message: formData.message,
         })
         .select()
