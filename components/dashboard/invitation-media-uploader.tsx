@@ -26,8 +26,7 @@ export function InvitationMediaUploader({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
-  const withPublicUrls = (items: InvitationMedia[]) => items.map((item) => ({ ...item, public_url: supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl }));
-  const [media, setMedia] = useState(withPublicUrls(initialMedia));
+  const [media, setMedia] = useState(initialMedia);
   const [pending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
 
