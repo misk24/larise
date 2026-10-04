@@ -64,7 +64,7 @@ export async function registerInvitationMedia(input: z.input<typeof mediaInputSc
   }
 
   revalidatePath(`/dashboard/invitations/${invitation.id}/builder`);
-  revalidatePath(`/i/${invitation.slug}`);
+  revalidatePath(`/undangan/${invitation.slug}`);
   return { success: true, media: data };
 }
 
@@ -98,6 +98,6 @@ export async function deleteInvitationMedia(mediaId: string) {
   if (error) return { error: "Metadata gambar gagal dihapus." };
 
   revalidatePath(`/dashboard/invitations/${media.invitation_id}/builder`);
-  revalidatePath(`/i/${(media.invitations as { slug: string }).slug}`);
+  revalidatePath(`/undangan/${(media.invitations as { slug: string }).slug}`);
   return { success: true };
 }
