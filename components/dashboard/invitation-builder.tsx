@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { saveInvitationSections } from "@/lib/actions/invitation-builder";
 import { setInvitationPublished } from "@/lib/actions/invitations";
 import { SharedInvitationRenderer } from "@/components/invitation/shared-renderer";
-import type { Invitation, InvitationSection, Theme, Wish } from "@/types/database";
+import { InvitationMediaUploader } from "@/components/dashboard/invitation-media-uploader";
+import type { Invitation, InvitationMedia, InvitationSection, Theme, Wish } from "@/types/database";
 import { ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -294,7 +295,7 @@ export function InvitationBuilder({
         </CardHeader>
         <CardContent>
           {selected ? (
-            selected.section_type === "rsvp" || selected.section_type === "wishes" ? (
+            selected.section_type === "gallery" ? (\n              <div className="space-y-5">\n                <div className="space-y-2">\n                  <Label>Judul</Label>\n                  <Input value={displayValue(selected, "title")} onChange={(event) => updateSelected(updateContent(selected, "title", event.target.value))} />\n                </div>\n                <InvitationMediaUploader invitationId={invitation.id} initialMedia={media} onChange={(nextMedia) => {\n                  const urls = nextMedia.map((item) => (item as InvitationMedia & { public_url?: string }).public_url).filter((url): url is string => Boolean(url));\n                  updateSelected({ ...selected, content: { ...selected.content, images: urls } });\n                }} />\n                <div className="flex flex-wrap gap-2 pt-2">\n                  <Button variant="outline" size="sm" onClick={() => moveSelected(-1)} disabled={sections[0]?.id === selected.id}><ArrowUp className="size-4" />Naik</Button>\n                  <Button variant="outline" size="sm" onClick={() => moveSelected(1)} disabled={sections[sections.length - 1]?.id === selected.id}><ArrowDown className="size-4" />Turun</Button>\n                </div>\n              </div>\n            ) : selected.section_type === "rsvp" || selected.section_type === "wishes" ? (
               <p className="rounded-md bg-muted p-4 text-sm text-muted-foreground">
                 Section ini tidak punya field konten. Pengaturan RSVP dan ucapan dikelola dari data guest/public flow.
               </p>
