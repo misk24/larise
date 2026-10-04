@@ -34,6 +34,7 @@ export function LoginForm() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const supabase = createClient();
   const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export function LoginForm() {
     setIsSubmitLoading(true);
 
     try {
-      const result = await signInWithEmail(email, password);
+      const result = await signInWithEmail(email, password, redirectTo ?? undefined);
 
       if (result?.error) {
         // Transform Supabase error message menjadi lebih user-friendly
