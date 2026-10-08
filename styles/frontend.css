@@ -1,7 +1,6 @@
-/* Frontend design layer
- * Public marketing pages and published invitations only.
- * Keep product UI/admin rules out of this file.
- */
+/* Landing page design layer
+ * Product marketing UI only.
+ * Published invitations must be styled by their selected theme. */
 
 @layer components {
   .frontend-shell {
