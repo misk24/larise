@@ -8,26 +8,16 @@ import { redirect } from "next/navigation";
 import type React from "react";
 
 export const viewport: Viewport = {
-  themeColor: "#f8fafc",
+  themeColor: "var(--background)",
   width: "device-width",
   initialScale: 1,
 };
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getUser();
   const profile = await getUserProfile();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  if (profile?.role !== "admin") {
-    redirect("/dashboard");
-  }
+  if (!user) redirect("/login");
+  if (profile?.role !== "admin") redirect("/dashboard");
 
   return (
     <AdminShell

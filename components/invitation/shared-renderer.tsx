@@ -4,7 +4,12 @@ import type { Invitation, InvitationSection, Theme, Wish } from "@/types/databas
 import { sectionRegistry } from "./sections/section-registry";
 import { invitationSectionSchema } from "./sections/types";
 
-interface Props { invitation: Invitation & { themes?: Theme | null }; sections: InvitationSection[]; guestName: string; wishes: Wish[]; }
+interface Props {
+  invitation: Invitation & { themes?: Theme | null };
+  sections: InvitationSection[];
+  guestName: string;
+  wishes: Wish[];
+}
 
 export function SharedInvitationRenderer({ invitation, sections, guestName, wishes: initialWishes }: Props) {
   const [wishes, setWishes] = useState(initialWishes);
@@ -13,7 +18,7 @@ export function SharedInvitationRenderer({ invitation, sections, guestName, wish
     .sort((a, b) => a.position - b.position);
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen">
       {ordered.map((section) => {
         const Component = sectionRegistry[section.section_type as keyof typeof sectionRegistry];
         if (!Component) return null;
