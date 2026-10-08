@@ -6,7 +6,7 @@ import { Logo } from "@/components/ui/logo";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { useOverlay } from "@/hooks/use-overlay";
 import { cn } from "@/lib/utils";
-import { MenuIcon } from "lucide-react";
+import { ArrowUpRightIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { loginButton, navLinks } from "./constant";
 import { MobileHeader } from "./mobile-navbar";
@@ -19,25 +19,37 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
         isScrolled
-          ? "bg-background/80 backdrop-blur-md shadow-sm"
+          ? "border-b border-foreground/10 bg-background/85 backdrop-blur-xl"
           : "bg-transparent",
       )}
     >
-      <Scale className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6 md:px-8">
-        <SmoothScrollLink href="/">
-          <Logo />
+      <Scale
+        className={cn(
+          "mx-auto flex h-[76px] max-w-7xl items-center justify-between px-6 transition-all duration-500 md:px-8",
+          isScrolled && "h-[68px]",
+        )}
+      >
+        <SmoothScrollLink
+          href="/"
+          className="shrink-0"
+          aria-label="Larisé, beranda"
+        >
+          <Logo width={170} height={56} alt="Larisé" />
         </SmoothScrollLink>
 
-        <nav className="hidden md:inline-block">
-          <ul className="flex items-center gap-12">
-            {navLinks.map((link) => (
-              <li
-                key={link.href}
-                className="text-sm hover:text-accent transition-colors"
-              >
-                <SmoothScrollLink href={link.href}>
+        <nav className="hidden md:block" aria-label="Navigasi utama">
+          <ul className="flex items-center gap-9">
+            {navLinks.map((link, index) => (
+              <li key={link.href}>
+                <SmoothScrollLink
+                  href={link.href}
+                  className="group relative inline-flex items-center gap-1.5 py-2 text-[13px] font-medium tracking-[0.01em] text-foreground/70 transition-colors hover:text-foreground"
+                >
+                  <span className="absolute -left-3 text-[9px] font-normal tracking-normal text-accent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                   {link.label}
                 </SmoothScrollLink>
               </li>
@@ -45,23 +57,35 @@ export function Navbar() {
           </ul>
         </nav>
 
-        <Button
-          size="sm"
-          className="hidden md:inline-flex px-6 rounded-full"
-          asChild
-        >
-          <Link href={loginButton.href}>{loginButton.label}</Link>
-        </Button>
+        <div className="hidden items-center gap-4 md:flex">
+          <Link
+            href={loginButton.href}
+            className="text-[13px] font-medium text-foreground/65 transition-colors hover:text-foreground"
+          >
+            {loginButton.label}
+          </Link>
+
+          <Button
+            size="sm"
+            className="group h-10 rounded-full px-5 text-[13px] shadow-none"
+            asChild
+          >
+            <Link href="/register">
+              {loginButton.ctaLabel}
+              <ArrowUpRightIcon className="size-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+          </Button>
+        </div>
 
         <Button
-          variant="link"
+          variant="ghost"
           size="icon"
           onClick={isOpen.toggle}
-          className="md:hidden"
+          className="size-10 rounded-full md:hidden"
           aria-expanded={isOpen.isOpen}
-          aria-label="Toggle Menu"
+          aria-label={isOpen.isOpen ? "Tutup menu" : "Buka menu"}
         >
-          <MenuIcon className="size-4" />
+          <MenuIcon className="size-[18px]" />
         </Button>
       </Scale>
 
