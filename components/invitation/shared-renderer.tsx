@@ -18,7 +18,7 @@ export function SharedInvitationRenderer({ invitation, sections, guestName, wish
     .sort((a, b) => a.position - b.position);
 
   return (
-    <main className="frontend-shell min-h-screen bg-background">
+    <main className="min-h-screen">
       {ordered.map((section) => {
         const Component = sectionRegistry[section.section_type as keyof typeof sectionRegistry];
         if (!Component) return null;
