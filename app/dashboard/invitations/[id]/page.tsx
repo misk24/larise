@@ -8,7 +8,7 @@ export default async function EditInvitationPage({params}:{params:Promise<{id:st
   const {id}=await params; const supabase=await createClient();
   const {data:{user}}=await supabase.auth.getUser(); if(!user) redirect("/login");
   const [{data:invitation},{data:themes}]=await Promise.all([
-    supabase.from("invitations").select("id,user_id,theme_id,slug,status,is_published").eq("id",id).eq("user_id",user.id).single(),
+    supabase.from("invitations").select("id,user_id,theme_id,slug,status,is_published,groom_name,bride_name").eq("id",id).eq("user_id",user.id).single(),
     supabase.from("themes").select("id,name,slug,description,category,features,price,is_premium").eq("is_active",true).order("name"),
   ]);
   if(!invitation) notFound();

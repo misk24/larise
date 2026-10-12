@@ -141,7 +141,7 @@ export async function updateInvitation(
 
     const { error } = await supabase
       .from("invitations")
-      .update({ theme_id: theme.id, slug })
+      .update({ theme_id: theme.id, slug, groom_name: parsed.data.groomName, bride_name: parsed.data.brideName })
       .eq("id", invitationId)
       .eq("user_id", user.id);
 

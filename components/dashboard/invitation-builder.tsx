@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { saveInvitationSections } from "@/lib/actions/invitation-builder";
 import { setInvitationPublished } from "@/lib/actions/invitations";
 import { SharedInvitationRenderer } from "@/components/invitation/shared-renderer";
-import type { Invitation, InvitationSection, Theme, Wish } from "@/types/database";
+import { InvitationMediaUploader } from "@/components/dashboard/invitation-media-uploader";
+import type { Invitation, InvitationMedia, InvitationSection, Theme, Wish } from "@/types/database";
 import { ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -64,7 +65,6 @@ const fieldConfig: Record<string, Array<{ key: string; label: string; multiline?
   ],
   gallery: [
     { key: "title", label: "Judul" },
-    { key: "images", label: "URL gambar, satu per baris", multiline: true },
   ],
   location: [
     { key: "title", label: "Judul" },
@@ -104,10 +104,12 @@ export function InvitationBuilder({
   invitation,
   initialSections,
   wishes,
+  media,
 }: {
   invitation: BuilderInvitation;
   initialSections: InvitationSection[];
   wishes: Wish[];
+  media: InvitationMedia[];
 }) {
   const [sections, setSections] = useState(() => [...initialSections].sort((a, b) => a.position - b.position));
   const [selectedId, setSelectedId] = useState(initialSections[0]?.id ?? "");
@@ -294,7 +296,22 @@ export function InvitationBuilder({
         </CardHeader>
         <CardContent>
           {selected ? (
-            selected.section_type === "rsvp" || selected.section_type === "wishes" ? (
+            selected.section_type === "gallery" ? (
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <Label>Judul</Label>
+                  <Input value={displayValue(selected, "title")} onChange={(event) => updateSelected(updateContent(selected, "title", event.target.value))} />
+                </div>
+                <InvitationMediaUploader invitationId={invitation.id} initialMedia={media} onChange={(nextMedia) => {
+                  const urls = nextMedia.map((item) => (item as InvitationMedia & { public_url?: string }).public_url ?? "").filter(Boolean);
+                  updateSelected({ ...selected, content: { ...selected.content, images: urls } });
+                }} />
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <Button variant="outline" size="sm" onClick={() => moveSelected(-1)} disabled={sections[0]?.id === selected.id}><ArrowUp className="size-4" />Naik</Button>
+                  <Button variant="outline" size="sm" onClick={() => moveSelected(1)} disabled={sections[sections.length - 1]?.id === selected.id}><ArrowDown className="size-4" />Turun</Button>
+                </div>
+              </div>
+            ) : selected.section_type === "rsvp" || selected.section_type === "wishes" ? (
               <p className="rounded-md bg-muted p-4 text-sm text-muted-foreground">
                 Section ini tidak punya field konten. Pengaturan RSVP dan ucapan dikelola dari data guest/public flow.
               </p>
