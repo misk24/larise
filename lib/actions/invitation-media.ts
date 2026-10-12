@@ -97,7 +97,13 @@ export async function deleteInvitationMedia(mediaId: string) {
   const { error } = await supabase.from("invitation_media").delete().eq("id", media.id);
   if (error) return { error: "Metadata gambar gagal dihapus." };
 
+  const invitation = Array.isArray(media.invitations)
+    ? media.invitations[0]
+    : media.invitations;
+
+  if (!invitation) return { error: "Undangan tidak ditemukan." };
+
   revalidatePath(`/dashboard/invitations/${media.invitation_id}/builder`);
-  revalidatePath(`/undangan/${(media.invitations as { slug: string }).slug}`);
+  revalidatePath(`/undangan/${invitation.slug}`);
   return { success: true };
 }
