@@ -10,22 +10,14 @@ interface AdminShellProps {
   className?: string;
 }
 
-export function AdminShell({
-  sidebar,
-  header,
-  footer,
-  children,
-  className,
-}: AdminShellProps) {
+export function AdminShell({ sidebar, header, footer, children, className }: AdminShellProps) {
   return (
-    <div className={cn("flex min-h-screen w-full bg-primary/10", className)}>
+    <div className={cn("backend-shell flex w-full", className)}>
       <SidebarProvider>
         {sidebar}
         <div className="min-w-0 flex flex-1 flex-col">
           {header}
-          <main className="max-w-7xl mx-auto w-full min-w-0 p-6 flex flex-1 flex-col overflow-hidden">
-            {children}
-          </main>
+          <main className="backend-page">{children}</main>
           {footer}
         </div>
       </SidebarProvider>

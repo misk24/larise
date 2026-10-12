@@ -10,7 +10,7 @@ import { ValueSection } from "@/components/landing/value/value";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className="frontend-shell min-h-screen">
       <Navbar />
       <HeroSection />
       <ValueSection />

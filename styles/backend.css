@@ -1,0 +1,30 @@
+/* Backend application design layer
+ * Dashboard and admin UI only.
+ * Keep public/invitation presentation rules out of this file.
+ */
+
+@layer components {
+  .backend-shell {
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  .backend-page {
+    width: 100%;
+    min-width: 0;
+    max-width: 80rem;
+    margin-inline: auto;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1.5rem;
+  }
+
+  .backend-surface {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+}

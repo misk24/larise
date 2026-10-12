@@ -1,0 +1,34 @@
+/* Landing page design layer
+ * Product marketing UI only.
+ * Published invitations must be styled by their selected theme. */
+
+@layer components {
+  .frontend-shell {
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  .frontend-display {
+    font-family: var(--font-heading);
+    letter-spacing: -0.025em;
+  }
+
+  .frontend-gradient {
+    background:
+      radial-gradient(circle at 15% 20%, oklch(0.93 0.04 85 / 0.65), transparent 38%),
+      radial-gradient(circle at 85% 10%, oklch(0.95 0.025 70 / 0.5), transparent 32%),
+      linear-gradient(120deg, var(--background), var(--card), var(--background));
+    background-size: 180% 180%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frontend-shell,
+  .frontend-shell * {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -31,7 +31,7 @@ export function AdminSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent className="bg-primary">
+      <SidebarContent className="bg-sidebar text-sidebar-foreground">
         <SidebarHeader>
           <div
             className={cn(
@@ -44,7 +44,7 @@ export function AdminSidebar() {
         </SidebarHeader>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-primary-foreground">
+          <SidebarGroupLabel className="text-sidebar-foreground">
             Menu
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -58,8 +58,8 @@ export function AdminSidebar() {
                     className={cn(
                       "rounded-md transition-colors",
                       isActive
-                        ? "bg-[#2f3135] text-primary-foreground hover:bg-[#2f3135] hover:text-primary-foreground"
-                        : "text-primary-foreground hover:bg-[#a9cec2]",
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     )}
                     asChild
                   >
