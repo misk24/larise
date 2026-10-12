@@ -134,7 +134,7 @@ export default async function DashboardPage() {
                   <span className="text-muted-foreground">Tanggal Acara</span>
                   <span className="font-medium">
                     {invitation.resepsi_date
-                      ? new Date(invitation.event_date).toLocaleDateString(
+                      ? new Date(invitation.resepsi_date).toLocaleDateString(
                           "id-ID",
                         )
                       : "-"}
