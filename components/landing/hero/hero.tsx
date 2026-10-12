@@ -31,7 +31,7 @@ export function HeroSection() {
       </motion.div>
 
       <div
-        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,hsl(var(--background)/0.76)_0%,hsl(var(--background)/0.58)_42%,hsl(var(--background)/0.82)_100%)]"
+        className="absolute inset-0 -z-10 bg-gradient-to-b from-background/80 via-background/55 to-background/80"
         aria-hidden="true"
       />
 
