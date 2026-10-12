@@ -6,7 +6,7 @@ import { Logo } from "@/components/ui/logo";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { useOverlay } from "@/hooks/use-overlay";
 import { cn } from "@/lib/utils";
-import { MenuIcon } from "lucide-react";
+import { ArrowUpRight, Menu } from "lucide-react";
 import Link from "next/link";
 import { loginButton, navLinks } from "./constant";
 import { MobileHeader } from "./mobile-navbar";
@@ -14,32 +14,34 @@ import { useScroll } from "./use-scroll";
 
 export function Navbar() {
   const isScrolled = useScroll();
-  const isOpen = useOverlay();
+  const menu = useOverlay();
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-background/80 backdrop-blur-md shadow-sm"
-          : "bg-transparent",
+        "fixed inset-x-0 top-0 z-50 px-3 pt-3 transition-all duration-300 md:px-6 md:pt-5",
       )}
     >
-      <Scale className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6 md:px-8">
-        <SmoothScrollLink href="/">
-          <Logo />
+      <Scale
+        className={cn(
+          "mx-auto flex h-[60px] max-w-7xl items-center justify-between rounded-full border px-4 transition-all duration-300 md:h-[68px] md:px-7",
+          isScrolled
+            ? "border-border/70 bg-background/90 shadow-sm backdrop-blur-xl"
+            : "border-foreground/10 bg-background/65 backdrop-blur-md",
+        )}
+      >
+        <SmoothScrollLink href="/" className="flex shrink-0 items-center">
+          <Logo alt="Larisé" width={138} height={46} className="h-6 md:h-7" />
         </SmoothScrollLink>
 
-        <nav className="hidden md:inline-block">
-          <ul className="flex items-center gap-12">
+        <nav aria-label="Navigasi utama" className="hidden md:block">
+          <ul className="flex items-center gap-8 lg:gap-10">
             {navLinks.map((link) => (
               <li
                 key={link.href}
-                className="text-sm hover:text-accent transition-colors"
+                className="text-sm text-foreground/75 transition-colors hover:text-foreground"
               >
-                <SmoothScrollLink href={link.href}>
-                  {link.label}
-                </SmoothScrollLink>
+                <SmoothScrollLink href={link.href}>{link.label}</SmoothScrollLink>
               </li>
             ))}
           </ul>
@@ -47,25 +49,30 @@ export function Navbar() {
 
         <Button
           size="sm"
-          className="hidden md:inline-flex px-6 rounded-full"
+          variant="outline"
+          className="hidden rounded-full border-foreground/20 bg-transparent px-5 md:inline-flex"
           asChild
         >
-          <Link href={loginButton.href}>{loginButton.label}</Link>
+          <Link href={loginButton.href}>
+            {loginButton.label}
+            <ArrowUpRight className="ml-1 size-3.5" aria-hidden="true" />
+          </Link>
         </Button>
 
         <Button
-          variant="link"
+          variant="outline"
           size="icon"
-          onClick={isOpen.toggle}
-          className="md:hidden"
-          aria-expanded={isOpen.isOpen}
-          aria-label="Toggle Menu"
+          onClick={menu.toggle}
+          className="size-10 rounded-full border-foreground/15 bg-transparent md:hidden"
+          aria-expanded={menu.isOpen}
+          aria-controls="mobile-navigation"
+          aria-label={menu.isOpen ? "Tutup menu" : "Buka menu"}
         >
-          <MenuIcon className="size-4" />
+          <Menu className="size-4" aria-hidden="true" />
         </Button>
       </Scale>
 
-      <MobileHeader isOpen={isOpen.isOpen} onClose={isOpen.close} />
+      <MobileHeader isOpen={menu.isOpen} onClose={menu.close} />
     </header>
   );
 }
