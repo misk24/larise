@@ -1,23 +1,23 @@
 "use client";
 
 import { Item, Stagger } from "@/components/motion";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { heroSection } from "./constant";
 
 export function HeroSection() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section
       aria-labelledby="hero-title"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
+      className="relative isolate flex min-h-[min(900px,100svh)] items-center justify-center overflow-hidden bg-background px-5 pb-20 pt-28 md:px-8 md:pb-28 md:pt-32"
     >
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2 }}
-        className="absolute inset-0"
+        initial={reduceMotion ? false : { opacity: 0, scale: 1.035 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.1, ease: "easeOut" }}
+        className="absolute inset-0 -z-20"
         aria-hidden="true"
       >
         <Image
@@ -26,49 +26,40 @@ export function HeroSection() {
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-background/85" />
       </motion.div>
 
-      <div className="container relative z-10 px-4 py-20 md:py-32">
-        <Stagger className="max-w-3xl mx-auto text-center">
+      <div
+        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,hsl(var(--background)/0.76)_0%,hsl(var(--background)/0.58)_42%,hsl(var(--background)/0.82)_100%)]"
+        aria-hidden="true"
+      />
+
+      <div className="pointer-events-none absolute inset-x-5 inset-y-8 -z-10 border border-foreground/10 md:inset-x-8 md:inset-y-10" aria-hidden="true" />
+
+      <div className="mx-auto w-full max-w-6xl py-16 md:py-24">
+        <Stagger className="mx-auto max-w-5xl text-center">
           <Item>
-            <h1 id="hero-title" className="mb-8 text-display text-balance">
+            <h1
+              id="hero-title"
+              className="mx-auto max-w-5xl text-balance font-heading text-[clamp(3.1rem,9vw,8.5rem)] font-normal leading-[0.94] tracking-[-0.065em] text-foreground"
+            >
               {heroSection.title}
             </h1>
           </Item>
 
           <Item>
-            <p className="text-muted-foreground tracking-[0.3em] uppercase mb-12">
+            <p className="mx-auto mt-7 max-w-lg text-pretty text-base leading-relaxed text-foreground/80 md:mt-9 md:text-lg">
               {heroSection.sub}
             </p>
-          </Item>
-
-          <Item>
-            <div className="max-w-sm mx-auto px-6 grid grid-cols-2 items-center justify-center gap-6">
-              <Button size="lg" className="rounded-full" asChild>
-                <Link href={heroSection.cta.primary.href}>
-                  <span>{heroSection.cta.primary.label}</span>
-                </Link>
-              </Button>
-
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-background hover:border-accent hover:text-primary-foreground rounded-full"
-                asChild
-              >
-                <Link href={heroSection.cta.secondary.href}>
-                  <span>{heroSection.cta.secondary.label}</span>
-                </Link>
-              </Button>
-            </div>
           </Item>
         </Stagger>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent" />
+      <div
+        className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background/70 to-transparent md:h-28"
+        aria-hidden="true"
+      />
     </section>
   );
 }
