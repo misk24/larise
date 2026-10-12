@@ -41,7 +41,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       locale: "id_ID",
       title,
       description,
-      url: `/undangan/${invitation.slug}`,
       siteName: "LARISÉ",
     },
     twitter: {
