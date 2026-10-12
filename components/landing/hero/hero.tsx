@@ -24,7 +24,7 @@ export function HeroSection() {
           src="/images/hero.jpg"
           alt=""
           fill
-          priority
+          preload
           sizes="100vw"
           className="object-cover object-center"
         />
