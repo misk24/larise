@@ -5,41 +5,46 @@ import { redirect } from "next/navigation";
 
 export default async function GuestsPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
 
-  // Get user's invitation
-  const { data: invitation } = await supabase
+  const { data: invitation, error: invitationError } = await supabase
     .from("invitations")
     .select("id, slug")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
-  if (!invitation) {
+  if (invitationError) {
     return (
       <div className="space-y-6">
-        <div>
-          <span className="text-2xl md:text-3xl font-medium">Daftar Tamu</span>
-          <p className="text-muted-foreground">
-            Kelola daftar tamu undangan Anda
-          </p>
-        </div>
-        <Card className="border-border bg-sidebar">
-          <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground">
-              Buat undangan terlebih dahulu untuk mengelola daftar tamu.
-            </p>
+        <h1 className="text-2xl font-semibold">Daftar Tamu</h1>
+        <Card className="border-border/50">
+          <CardContent className="p-8 text-sm text-destructive">
+            Data undangan gagal dimuat. Muat ulang halaman atau periksa koneksi database.
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  // Get guests with RSVP status
-  const { data: guests } = await supabase
+  if (!invitation) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Daftar Tamu</h1>
+          <p className="text-muted-foreground">Kelola daftar tamu undangan Anda</p>
+        </div>
+        <Card className="border-border bg-sidebar">
+          <CardContent className="p-12 text-center">
+            <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk mengelola daftar tamu.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const { data: guests, error: guestsError } = await supabase
     .from("guests")
     .select("*, rsvp(*)")
     .eq("invitation_id", invitation.id)
@@ -48,12 +53,22 @@ export default async function GuestsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <span className="text-2xl md:text-3xl font-medium">Daftar Tamu</span>
-        <p className="text-muted-foreground">
-          Kelola daftar tamu undangan Anda
-        </p>
+        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Daftar Tamu</h1>
+        <p className="text-muted-foreground">Kelola kontak, tautan personal, dan konfirmasi kehadiran.</p>
       </div>
-      <GuestManager invitationId={invitation.id} invitationSlug={invitation.slug} initialGuests={guests || []} />
+      {guestsError ? (
+        <Card className="border-border/50">
+          <CardContent className="p-8 text-sm text-destructive">
+            Daftar tamu gagal dimuat. Periksa kebijakan akses database dan coba lagi.
+          </CardContent>
+        </Card>
+      ) : (
+        <GuestManager
+          invitationId={invitation.id}
+          invitationSlug={invitation.slug}
+          initialGuests={guests ?? []}
+        />
+      )}
     </div>
   );
 }
