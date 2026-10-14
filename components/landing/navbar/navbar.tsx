@@ -8,7 +8,7 @@ import { useOverlay } from "@/hooks/use-overlay";
 import { cn } from "@/lib/utils";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
-import { loginButton, navLinks } from "./constant";
+import { loginButton, navLinks, registerButton } from "./constant";
 import { MobileHeader } from "./mobile-navbar";
 import { useScroll } from "./use-scroll";
 
@@ -19,10 +19,8 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-background/80 backdrop-blur-md shadow-sm"
-          : "bg-transparent",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        isScrolled ? "bg-card/90 backdrop-blur-md shadow-sm" : "bg-transparent",
       )}
     >
       <Scale className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6 md:px-8">
@@ -31,7 +29,7 @@ export function Navbar() {
         </SmoothScrollLink>
 
         <nav className="hidden md:inline-block">
-          <ul className="flex items-center gap-12">
+          <ul className="flex items-center gap-6 lg:gap-12">
             {navLinks.map((link) => (
               <li
                 key={link.href}
@@ -45,19 +43,25 @@ export function Navbar() {
           </ul>
         </nav>
 
-        <Button
-          size="sm"
-          className="hidden md:inline-flex px-6 rounded-full"
-          asChild
-        >
-          <Link href={loginButton.href}>{loginButton.label}</Link>
-        </Button>
+        <div className="hidden md:flex items-center gap-2 lg:gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="border-background hover:border-accent hover:text-primary-foreground rounded-full"
+            asChild
+          >
+            <Link href={loginButton.href}>{loginButton.label}</Link>
+          </Button>
+          <Button size="sm" className="rounded-full" asChild>
+            <Link href={registerButton.href}>{registerButton.label}</Link>
+          </Button>
+        </div>
 
         <Button
           variant="link"
           size="icon"
           onClick={isOpen.toggle}
-          className="md:hidden"
+          className="md:hidden -mr-2"
           aria-expanded={isOpen.isOpen}
           aria-label="Toggle Menu"
         >

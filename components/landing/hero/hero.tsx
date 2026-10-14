@@ -2,6 +2,7 @@
 
 import { Item, Stagger } from "@/components/motion";
 import { Button } from "@/components/ui/button";
+import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,9 +60,9 @@ export function HeroSection() {
                 className="border-background hover:border-accent hover:text-primary-foreground rounded-full"
                 asChild
               >
-                <Link href={heroSection.cta.secondary.href}>
-                  <span>{heroSection.cta.secondary.label}</span>
-                </Link>
+                <SmoothScrollLink href={heroSection.cta.secondary.href}>
+                  {heroSection.cta.secondary.label}
+                </SmoothScrollLink>
               </Button>
             </div>
           </Item>

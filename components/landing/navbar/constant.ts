@@ -3,6 +3,11 @@ export const loginButton = {
   href: "/login",
 };
 
+export const registerButton = {
+  label: "Create Invitation",
+  href: "/register",
+};
+
 export const navLinks = [
   { label: "Collections", href: "#collections" },
   { label: "Features", href: "#features" },

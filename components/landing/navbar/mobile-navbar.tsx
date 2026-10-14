@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
-import { ArrowUpRightIcon, XIcon } from "lucide-react";
+import { ArrowUpRight, XIcon } from "lucide-react";
 import Link from "next/link";
-import { loginButton, navLinks } from "./constant";
+import { loginButton, navLinks, registerButton } from "./constant";
 
 interface MobileHeaderProps {
   isOpen: boolean;
@@ -13,37 +13,68 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 h-screen bg-foreground/95 backdrop-blur-sm text-primary-foreground overflow-y-auto">
-      <Button
-        variant="link"
-        size="icon"
-        onClick={onClose}
-        className="absolute top-4 right-6 text-primary-foreground focus:outline-none"
-        aria-label="Close Menu"
-      >
-        <XIcon className="size-4" />
-      </Button>
+    <div
+      id="mobile-navigation"
+      aria-hidden={!isOpen}
+      className={`absolute inset-x-0 top-0 border-b border-primary/10 bg-card transition-all duration-300 ease-out lg:hidden ${
+        isOpen
+          ? "visible translate-y-0 opacity-100"
+          : "invisible -translate-y-2 opacity-0"
+      }`}
+    >
+      <div className="px-6 pt-4 pb-8 sm:px-8">
+        <div className="flex items-center justify-between">
+          <p className=" text-[10px] uppercase tracking-[0.24em] text-accent">
+            Explore Larise
+          </p>
 
-      <nav className="mt-24 px-6">
-        <ul className="space-y-12">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <SmoothScrollLink href={link.href} onClick={onClose}>
-                <span className="font-heading text-3xl">{link.label}</span>
-              </SmoothScrollLink>
-            </li>
+          <Button
+            variant="link"
+            size="icon"
+            onClick={onClose}
+            className="-mr-2 text-accent focus:outline-none"
+            aria-label="Close Menu"
+          >
+            <XIcon className="size-4" />
+          </Button>
+        </div>
+
+        <div className="divide-y divide-primary/10">
+          {navLinks.map((item, index) => (
+            <SmoothScrollLink
+              key={item.label}
+              href={item.href}
+              onClick={onClose}
+              className="flex items-center justify-between py-4 text-[22px] tracking-tight text-primary"
+            >
+              {item.label}
+
+              <ArrowUpRight
+                size={18}
+                strokeWidth={1.5}
+                className="text-accent"
+              />
+            </SmoothScrollLink>
           ))}
-        </ul>
-      </nav>
+        </div>
 
-      <div className="mt-30 mb-12 px-6 font-heading text-3xl">
-        <Link
-          href={loginButton.href}
-          onClick={onClose}
-          className="flex items-center gap-4"
-        >
-          {loginButton.label} <ArrowUpRightIcon className="size-[30]" />
-        </Link>
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <Button
+            variant="outline"
+            className="h-12 rounded-full text-[12px]"
+            asChild
+          >
+            <Link href={loginButton.href}>{loginButton.label}</Link>
+          </Button>
+
+          <Button className="h-12 rounded-full text-[12px]" asChild>
+            <Link href={registerButton.href}>{registerButton.label}</Link>
+          </Button>
+        </div>
+
+        <p className="mt-6 text-center text-[10px] tracking-wide text-primary/45">
+          Your story, beautifully invited.
+        </p>
       </div>
     </div>
   );
