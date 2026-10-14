@@ -98,7 +98,7 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
           .update(values)
           .eq("id", editingGuest.id)
           .eq("invitation_id", invitationId)
-          .select("*, rsvp(*)")
+          .select("*, rsvp:rsvps(*)")
           .single();
         if (error) {
           toast.error("Gagal memperbarui tamu. " + error.message);
@@ -110,7 +110,7 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
         const { data, error } = await supabase
           .from("guests")
           .insert({ ...values, invitation_id: invitationId })
-          .select("*, rsvp(*)")
+          .select("*, rsvp:rsvps(*)")
           .single();
         if (error) {
           toast.error("Gagal menambahkan tamu. " + error.message);
