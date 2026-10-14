@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CalendarCheckIcon,
   FileTextIcon,
   ImageIcon,
   LayoutDashboardIcon,
@@ -21,21 +22,16 @@ export const adminNavs = [
 ];
 
 export const userNavs = [
-  {
-    href: "/dashboard",
-    icon: LayoutDashboardIcon,
-    label: "Dashboard",
-  },
+  { href: "/dashboard", icon: LayoutDashboardIcon, label: "Dashboard" },
   { href: "/dashboard/invitations", icon: FileTextIcon, label: "Invitations" },
   { href: "/dashboard/guests", icon: UsersIcon, label: "Guests" },
+  { href: "/dashboard/rsvp", icon: CalendarCheckIcon, label: "RSVP" },
   { href: "/dashboard/wishes", icon: MessageSquareHeartIcon, label: "Wishes" },
   { href: "/dashboard/gallery", icon: ImageIcon, label: "Gallery" },
   { href: "/dashboard/settings", icon: SettingsIcon, label: "Settings" },
 ];
 
-export const subpageNavs: Record<string, string> = {
-  create: "Create",
-};
+export const subpageNavs: Record<string, string> = { create: "Create" };
 
 export const navs = [
   { href: "/test-admin", icon: LayoutDashboardIcon, label: "Dashboard" },
@@ -45,11 +41,7 @@ export const navs = [
 ];
 
 export const users = [
-  {
-    href: "/test-user",
-    icon: LayoutDashboardIcon,
-    label: "Dashboard",
-  },
+  { href: "/test-user", icon: LayoutDashboardIcon, label: "Dashboard" },
   { href: "/test-user/invitations", icon: FileTextIcon, label: "Invitations" },
   { href: "/test-user/guests", icon: UsersIcon, label: "Guests" },
   { href: "/test-user/wishes", icon: MessageSquareHeartIcon, label: "Wishes" },
