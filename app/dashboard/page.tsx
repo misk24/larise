@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
+import { PublicUrlActions } from "@/components/dashboard/public-url-actions";
 import { ArrowRightIcon, CheckCircle2Icon, EyeIcon, FileTextIcon, MessageSquareHeartIcon, PlusIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -84,7 +85,7 @@ export default async function DashboardPage() {
                   <div className="flex flex-wrap gap-2 border-t pt-4">
                     <Button size="sm" asChild><Link href={`/dashboard/invitations/${invitation.id}`}>Kelola undangan <ArrowRightIcon className="ml-2 size-3.5" /></Link></Button>
                     <Button size="sm" variant="outline" asChild><Link href={`/dashboard/invitations/${invitation.id}/builder`}>Edit isi</Link></Button>
-                    {invitation.is_published ? <Button size="sm" variant="outline" asChild><Link href={`/undangan/${invitation.slug}`} target="_blank" rel="noreferrer"><EyeIcon className="mr-2 size-3.5" />Lihat publik</Link></Button> : null}
+                    {invitation.is_published ? <><Button size="sm" variant="outline" asChild><Link href={`/undangan/${invitation.slug}`} target="_blank" rel="noreferrer"><EyeIcon className="mr-2 size-3.5" />Lihat publik</Link></Button><PublicUrlActions slug={invitation.slug} /></> : null}
                   </div>
                 </CardContent>
               </Card>
