@@ -46,7 +46,7 @@ export default async function GuestsPage() {
 
   const { data: guests, error: guestsError } = await supabase
     .from("guests")
-    .select("*, rsvp(*)")
+    .select("*, rsvp:rsvps(*)")
     .eq("invitation_id", invitation.id)
     .order("name");
 
