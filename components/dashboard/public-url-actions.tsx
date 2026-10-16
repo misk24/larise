@@ -7,12 +7,12 @@ import { toast } from "sonner";
 
 export function PublicUrlActions({ slug }: { slug: string }) {
   const [isCopying, setIsCopying] = useState(false);
-  const publicUrl = typeof window === "undefined" ? "" : `${window.location.origin}/undangan/${slug}`;
+  const publicUrl = typeof window === "undefined" ? "" : `${window.location.origin}/${slug}`;
 
   async function copyUrl() {
     setIsCopying(true);
     try {
-      const url = publicUrl || `${window.location.origin}/undangan/${slug}`;
+      const url = publicUrl || `${window.location.origin}/${slug}`;
       await navigator.clipboard.writeText(url);
       toast.success("Tautan undangan berhasil disalin.");
     } catch {
@@ -23,7 +23,7 @@ export function PublicUrlActions({ slug }: { slug: string }) {
   }
 
   async function shareUrl() {
-    const url = publicUrl || `${window.location.origin}/undangan/${slug}`;
+    const url = publicUrl || `${window.location.origin}/${slug}`;
     try {
       if (navigator.share) {
         await navigator.share({ title: "Undangan pernikahan", url });
