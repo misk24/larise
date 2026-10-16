@@ -12,68 +12,31 @@ import Link from "next/link";
 import { MobileHeader } from "./mobile-navbar";
 
 export const navigation = [
-  { label: "Collections", href: "#collections" },
-  { label: "Features", href: "#features" },
-  { label: "How It Works", href: "#how-it-works" },
+  { label: "Tema", href: "#collections" },
+  { label: "Fitur", href: "#features" },
+  { label: "Cara Kerja", href: "#how-it-works" },
   { label: "FAQ", href: "#faq" },
 ];
+
 export function Navbar() {
   const isScrolled = useScroll();
   const isOpen = useOverlay();
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-card/90 backdrop-blur-md shadow-sm" : "bg-transparent",
-      )}
-    >
-      <Scale className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6 md:px-8">
-        <SmoothScrollLink href="/">
-          <Logo />
-        </SmoothScrollLink>
-
-        <nav className="hidden md:inline-block">
-          <ul className="flex items-center gap-6 lg:gap-12">
-            {navigation.map((link) => (
-              <li
-                key={link.href}
-                className="text-sm hover:text-accent transition-colors"
-              >
-                <SmoothScrollLink href={link.href}>
-                  {link.label}
-                </SmoothScrollLink>
-              </li>
-            ))}
+    <header className={cn("fixed inset-x-0 top-0 z-50 border-b transition-all duration-300", isScrolled ? "border-border/70 bg-background/90 shadow-[0_8px_30px_-24px_rgba(41,39,31,0.3)] backdrop-blur-xl" : "border-transparent bg-background/70 backdrop-blur-md")}>
+      <Scale className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
+        <SmoothScrollLink href="/" aria-label="LARISÉ, kembali ke atas" className="shrink-0"><Logo width={150} height={50} className="h-6 sm:h-7" /></SmoothScrollLink>
+        <nav aria-label="Navigasi utama" className="hidden md:block">
+          <ul className="flex items-center gap-5 lg:gap-9">
+            {navigation.map((link) => <li key={link.href} className="text-xs tracking-wide text-muted-foreground transition-colors hover:text-foreground lg:text-sm"><SmoothScrollLink href={link.href}>{link.label}</SmoothScrollLink></li>)}
           </ul>
         </nav>
-
-        <div className="hidden md:flex items-center gap-2 lg:gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="px-4 hover:border-accent hover:text-primary-foreground rounded-full"
-            asChild
-          >
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button size="sm" className="px-4 rounded-full" asChild>
-            <Link href="/register">Create Invitation</Link>
-          </Button>
+        <div className="hidden items-center gap-2 sm:gap-3 md:flex">
+          <Button variant="ghost" size="sm" className="rounded-full px-4 text-xs lg:text-sm" asChild><Link href="/login">Masuk</Link></Button>
+          <Button size="sm" className="rounded-full px-4 text-xs lg:px-5 lg:text-sm" asChild><Link href="/register">Buat Undangan <span aria-hidden="true" className="ml-1">↗</span></Link></Button>
         </div>
-
-        <Button
-          variant="link"
-          size="icon"
-          onClick={isOpen.toggle}
-          className="md:hidden -mr-2"
-          aria-expanded={isOpen.isOpen}
-          aria-label="Toggle Menu"
-        >
-          <MenuIcon className="size-4" />
-        </Button>
+        <Button variant="outline" size="icon" onClick={isOpen.toggle} className="size-10 rounded-full border-border bg-background/70 md:hidden" aria-expanded={isOpen.isOpen} aria-controls="mobile-navigation" aria-label={isOpen.isOpen ? "Tutup menu" : "Buka menu"}><MenuIcon className="size-4" /></Button>
       </Scale>
-
       <MobileHeader isOpen={isOpen.isOpen} onClose={isOpen.close} />
     </header>
   );
