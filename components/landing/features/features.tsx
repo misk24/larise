@@ -1,75 +1,44 @@
 "use client";
 
 import { FadeLeft, FadeUp } from "@/components/motion";
+import { Check, Heart, MapPin, Music2, UsersRound } from "lucide-react";
 
 const features = [
-  {
-    title: "Personal",
-    description: "Nama tamu · Cerita & Detail acara",
-  },
-  {
-    title: "Convenient",
-    description: "RSVP · Google Maps · Ucapan & doa",
-  },
-  {
-    title: "Beautiful",
-    description: "Beragam tema · Personalisasi · Responsive design",
-  },
-  {
-    title: "Complete",
-    description: "Galeri foto · Musik latar · Amplop digital",
-  },
+  { number: "01", title: "Personal touches", description: "Sapa setiap tamu dengan nama, lalu ceritakan perjalanan kalian lewat profil, galeri, dan love story.", items: ["Nama tamu personal", "Profil & love story", "Galeri foto"], icon: Heart },
+  { number: "02", title: "Details, in one place", description: "Bantu tamu menemukan informasi acara dan memberi kabar kehadiran tanpa harus bertanya berulang kali.", items: ["Jadwal & lokasi acara", "Google Maps", "RSVP dan ucapan"], icon: MapPin },
+  { number: "03", title: "A little atmosphere", description: "Lengkapi pengalaman undangan dengan elemen visual dan audio yang sesuai dengan suasana kalian.", items: ["Musik latar", "Video dan foto", "Kutipan pilihan"], icon: Music2 },
+  { number: "04", title: "Made to be shared", description: "Undangan berbasis web yang praktis dibuka dari ponsel dan mudah diteruskan kepada orang terdekat.", items: ["Tautan undangan", "Tampilan responsif", "Informasi terpusat"], icon: UsersRound },
 ];
 
 export function FeaturesSection() {
   return (
-    <section
-      id="features"
-      aria-labelledby="features-title"
-      className="px-6 py-24 md:px-8 md:py-32"
-    >
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-16 md:mb-20">
-          <FadeLeft>
+    <section id="features" aria-labelledby="features-title" className="bg-background px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
+      <div className="mx-auto max-w-7xl">
+        <FadeLeft>
+          <div className="grid gap-7 border-b border-border pb-10 md:grid-cols-[1fr_0.8fr] md:items-end md:gap-12 md:pb-14">
             <div>
-              <p className="mb-4 text-xs tracking-[0.25em] uppercase text-muted-foreground">
-                Features
-              </p>
-              <h2 id="features-title" className="text-balance">
-                {/* <h2 id="features-title" className="mb-16 md:text-center"> */}
-                Everything You Need
-              </h2>
+              <p className="mb-4 flex items-center gap-3 text-[10px] uppercase tracking-[0.24em] text-muted-foreground sm:text-xs"><span className="h-px w-8 bg-accent" />Thoughtful details</p>
+              <h2 id="features-title" className="frontend-display max-w-2xl text-[clamp(2.75rem,6vw,5rem)] leading-[0.98] tracking-[-0.055em] text-balance">Semua yang perlu, <span className="italic text-accent">tanpa berlebihan.</span></h2>
             </div>
-          </FadeLeft>
-
-          <FadeUp>
-            <p className="mt-6 max-w-xl text-body text-muted-foreground">
-              Semua yang kamu butuhkan untuk berbagi cerita, menyambut tamu, dan
-              membuat hari istimewamu terasa lebih lengkap.
-            </p>
-          </FadeUp>
-        </div>
-
-        <div className="border-t border-border">
-          {features.map((feature, index) => (
-            <FadeUp key={feature.title}>
-              <article className="group border-b border-border py-8 md:py-10">
-                <div className="grid gap-6 md:grid-cols-[80px_1fr_2fr] md:items-start md:gap-8 lg:grid-cols-[80px_1fr_1fr]">
-                  <span className="pt-1 text-meta text-muted-foreground">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  <h3 className="tracking-tight transition-transform duration-500 group-hover:translate-x-2">
-                    {feature.title}
-                  </h3>
-
-                  <p className="text-small text-muted-foreground">
-                    {feature.description}
-                  </p>
-                </div>
-              </article>
-            </FadeUp>
-          ))}
+            <p className="max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8 md:justify-self-end">Dari informasi acara sampai sentuhan personal, fitur LARISÉ membantu menyatukan detail penting dalam satu pengalaman.</p>
+          </div>
+        </FadeLeft>
+        <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
+          {features.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <FadeUp key={feature.number}>
+                <article className="group flex h-full min-h-[18rem] flex-col bg-background p-6 transition-colors duration-300 hover:bg-[#f4f0e8] sm:min-h-[20rem] sm:p-8 lg:p-10">
+                  <div className="flex items-start justify-between"><span className="text-xs tracking-[0.2em] text-muted-foreground">{feature.number}</span><span className="grid size-11 place-items-center rounded-full border border-border text-accent transition-all duration-300 group-hover:border-accent group-hover:bg-accent/15"><Icon className="size-5" strokeWidth={1.4} /></span></div>
+                  <h3 className="frontend-display mt-8 text-2xl tracking-tight sm:text-3xl">{feature.title}</h3>
+                  <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">{feature.description}</p>
+                  <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2 border-t border-border/80 pt-4">
+                    {feature.items.map((item) => <li key={item} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground sm:text-sm"><Check className="size-3.5 text-accent" strokeWidth={2} />{item}</li>)}
+                  </ul>
+                </article>
+              </FadeUp>
+            );
+          })}
         </div>
       </div>
     </section>
