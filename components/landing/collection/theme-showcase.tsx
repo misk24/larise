@@ -141,7 +141,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
   return (
     <section
-      id="tema"
+      id="collections"
       ref={sectionRef}
       className="relative overflow-hidden bg-[#F8F6F1] py-20 text-[#29271F] sm:py-28 lg:py-36"
     >
