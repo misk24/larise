@@ -76,7 +76,7 @@ export default async function DashboardPage() {
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
                       <h3 className="truncate font-semibold">{invitation.groom_name || "Mempelai pria"} &amp; {invitation.bride_name || "mempelai wanita"}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{theme?.name ?? "Tema belum dipilih"} · /undangan/{invitation.slug}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{theme?.name ?? "Tema belum dipilih"} · /{invitation.slug}</p>
                       <p className="mt-1 text-xs text-muted-foreground">{invitation.resepsi_date ? new Date(invitation.resepsi_date).toLocaleDateString("id-ID", { dateStyle: "long" }) : "Tanggal acara belum diatur"}</p>
                     </div>
                     <span className={invitation.is_published ? "w-fit rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300" : "w-fit rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"}>{invitation.is_published ? "Dipublikasikan" : invitation.status === "unpublished" ? "Tidak dipublikasikan" : "Draft"}</span>
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
                   <div className="flex flex-wrap gap-2 border-t pt-4">
                     <Button size="sm" asChild><Link href={`/dashboard/invitations/${invitation.id}`}>Kelola undangan <ArrowRightIcon className="ml-2 size-3.5" /></Link></Button>
                     <Button size="sm" variant="outline" asChild><Link href={`/dashboard/invitations/${invitation.id}/builder`}>Edit isi</Link></Button>
-                    {invitation.is_published ? <><Button size="sm" variant="outline" asChild><Link href={`/undangan/${invitation.slug}`} target="_blank" rel="noreferrer"><EyeIcon className="mr-2 size-3.5" />Lihat publik</Link></Button><PublicUrlActions slug={invitation.slug} /></> : null}
+                    {invitation.is_published ? <><Button size="sm" variant="outline" asChild><Link href={`/${invitation.slug}`} target="_blank" rel="noreferrer"><EyeIcon className="mr-2 size-3.5" />Lihat publik</Link></Button><PublicUrlActions slug={invitation.slug} /></> : null}
                   </div>
                 </CardContent>
               </Card>

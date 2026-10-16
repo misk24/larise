@@ -152,7 +152,7 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
   }
 
   async function copyInvitationLink(guestToken: string) {
-    const link = `${window.location.origin}/undangan/${invitationSlug}?guest=${encodeURIComponent(guestToken)}`;
+    const link = `${window.location.origin}/${invitationSlug}?guest=${encodeURIComponent(guestToken)}`;
     try {
       await navigator.clipboard.writeText(link);
       setCopiedId(guestToken);

@@ -64,7 +64,7 @@ export async function registerInvitationMedia(input: z.input<typeof mediaInputSc
   }
 
   revalidatePath(`/dashboard/invitations/${invitation.id}/builder`);
-  revalidatePath(`/undangan/${invitation.slug}`);
+  revalidatePath(`/${invitation.slug}`);
   return { success: true, media: data };
 }
 
@@ -104,6 +104,6 @@ export async function deleteInvitationMedia(mediaId: string) {
   if (!invitation) return { error: "Undangan tidak ditemukan." };
 
   revalidatePath(`/dashboard/invitations/${media.invitation_id}/builder`);
-  revalidatePath(`/undangan/${invitation.slug}`);
+  revalidatePath(`/${invitation.slug}`);
   return { success: true };
 }
