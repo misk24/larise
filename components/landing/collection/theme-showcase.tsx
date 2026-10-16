@@ -123,7 +123,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
     }, sectionRef);
 
     return () => context.revert();
-  }, [filteredThemes.length]);
+  }, [filteredThemes]);
 
   return (
     <section
@@ -209,7 +209,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     className="theme-card group min-w-0"
                   >
                     <Link
-                      href={`/register?theme=${encodeURIComponent(theme.slug)}`}
+                      href="/register"
                       className="block"
                       aria-label={`Pilih tema ${theme.name}`}
                     >
