@@ -75,7 +75,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
   );
 
   useEffect(() => {
-    if (!sectionRef.current || !gridRef.current) return;
+    if (!sectionRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
     const reduceMotion = window.matchMedia(
@@ -84,17 +84,19 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
     const context = gsap.context(() => {
       if (reduceMotion) {
-        gsap.set(".theme-reveal", { clearProps: "all" });
+        gsap.set([".theme-heading", ".theme-card"], {
+          clearProps: "all",
+        });
         return;
       }
 
       gsap.fromTo(
         ".theme-heading",
-        { autoAlpha: 0, y: 28 },
+        { autoAlpha: 0, y: 24 },
         {
           autoAlpha: 1,
           y: 0,
-          duration: 0.8,
+          duration: 0.75,
           ease: "power3.out",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -103,26 +105,38 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
           },
         },
       );
-
-      gsap.fromTo(
-        ".theme-card",
-        { autoAlpha: 0, y: 32 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.65,
-          stagger: 0.09,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: "top 84%",
-            once: true,
-          },
-        },
-      );
     }, sectionRef);
 
     return () => context.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!gridRef.current) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reduceMotion) {
+      gsap.set(".theme-card", { clearProps: "all" });
+      return;
+    }
+
+    const cards = gridRef.current.querySelectorAll(".theme-card");
+    gsap.killTweensOf(cards);
+
+    gsap.fromTo(
+      cards,
+      { autoAlpha: 0, y: 18 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.42,
+        stagger: 0.055,
+        ease: "power2.out",
+        clearProps: "opacity,visibility,transform",
+      },
+    );
   }, [filteredThemes]);
 
   return (
