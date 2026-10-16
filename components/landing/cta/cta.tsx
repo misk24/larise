@@ -3,7 +3,6 @@
 import { Item, Stagger } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ctaSection } from "./constant";
 
 export function CTASection() {
   return (
@@ -15,19 +14,20 @@ export function CTASection() {
         <Stagger>
           <Item>
             <h2 id="cta-title" className="text-balance">
-              {ctaSection.title}
+              Your Story Starts Here
             </h2>
           </Item>
 
           <Item>
             <p className="mx-auto mt-6 max-w-xl text-muted-foreground text-balance">
-              {ctaSection.description}
+              Buat undangan pernikahan digital yang terasa personal, indah, dan
+              benar-benar milik kalian.
             </p>
           </Item>
 
           <Item>
             <Button size="lg" className="mt-8 rounded-full px-8" asChild>
-              <Link href={ctaSection.cta.href}>{ctaSection.cta.label}</Link>
+              <Link href="/register">Create Your Invitation</Link>
             </Button>
           </Item>
         </Stagger>

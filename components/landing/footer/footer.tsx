@@ -3,10 +3,10 @@
 import { FadeIn } from "@/components/motion";
 import { Logo } from "@/components/ui/logo";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
+import { contacts } from "@/config/contact";
 import { Icon } from "@iconify/react";
 import { ChevronRightIcon, MapPinIcon } from "lucide-react";
-import { navLinks } from "../navbar/constant";
-import { footerSection } from "./constant";
+import { navigation } from "../navbar/navbar";
 
 export function Footer() {
   return (
@@ -22,7 +22,7 @@ export function Footer() {
           <div>
             <h4 className="mb-4">Links</h4>
             <ul className="space-y-4 opacity-90">
-              {navLinks.map((link, index) => (
+              {navigation.map((link, index) => (
                 <li key={index} className="hover:text-accent transition-colors">
                   <SmoothScrollLink href={link.href}>
                     <div className="flex items-center gap-2">
@@ -38,7 +38,7 @@ export function Footer() {
           <div>
             <h4 className="mb-4">Contacts</h4>
             <ul className="space-y-4 opacity-90">
-              {footerSection.contacts.map((contact, index) => (
+              {contacts.map((contact, index) => (
                 <li key={index} className="hover:text-accent transition-colors">
                   <a
                     href={contact.href}
@@ -59,7 +59,7 @@ export function Footer() {
               <li>
                 <div className="flex items-center gap-2">
                   <MapPinIcon className="size-4" />
-                  <span className="text-sm">{footerSection.location}</span>
+                  <span className="text-sm">Lombok Timur, NTB</span>
                 </div>
               </li>
             </ul>
@@ -68,7 +68,7 @@ export function Footer() {
 
         <div className="border-t border-background/20 pt-8 text-center opacity-90">
           <span className="text-sm">
-            &copy; {new Date().getFullYear()} {footerSection.copy}
+            &copy; {new Date().getFullYear()} LARISÉ. Crafted with care.
           </span>
         </div>
       </FadeIn>

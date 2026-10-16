@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { ArrowUpRight, XIcon } from "lucide-react";
 import Link from "next/link";
-import { loginButton, navLinks, registerButton } from "./constant";
+import { navigation } from "./navbar";
 
 interface MobileHeaderProps {
   isOpen: boolean;
@@ -40,7 +40,7 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
         </div>
 
         <div className="divide-y divide-primary/10">
-          {navLinks.map((item, index) => (
+          {navigation.map((item, index) => (
             <SmoothScrollLink
               key={item.label}
               href={item.href}
@@ -61,14 +61,15 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
         <div className="mt-5 grid grid-cols-2 gap-3">
           <Button
             variant="outline"
-            className="h-12 rounded-full text-[12px]"
+            size="lg"
+            className="rounded-full text-[12px]"
             asChild
           >
-            <Link href={loginButton.href}>{loginButton.label}</Link>
+            <Link href="/login">Login</Link>
           </Button>
 
-          <Button className="h-12 rounded-full text-[12px]" asChild>
-            <Link href={registerButton.href}>{registerButton.label}</Link>
+          <Button size="lg" className="rounded-full text-[12px]" asChild>
+            <Link href="/register">Create Invitation</Link>
           </Button>
         </div>
 

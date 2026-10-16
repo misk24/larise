@@ -1,7 +1,6 @@
 "use client";
 
 import { FadeLeft, Item, Stagger } from "@/components/motion";
-import { valueSection } from "./constant";
 
 export function ValueSection() {
   return (
@@ -14,13 +13,14 @@ export function ValueSection() {
         <Stagger className="md:text-center">
           <FadeLeft>
             <h2 id="value-title" className="mb-6">
-              {valueSection.title}
+              More Than an Invitation
             </h2>
           </FadeLeft>
 
           <Item>
             <p className="max-w-md mx-auto text-muted-foreground">
-              {valueSection.description}
+              Satu tempat untuk berbagi cerita, detail acara, dan momen yang
+              berarti sebelum hari istimewa tiba.
             </p>
           </Item>
         </Stagger>

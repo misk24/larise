@@ -5,13 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
 import { useOverlay } from "@/hooks/use-overlay";
+import { useScroll } from "@/hooks/use-scroll";
 import { cn } from "@/lib/utils";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
-import { loginButton, navLinks, registerButton } from "./constant";
 import { MobileHeader } from "./mobile-navbar";
-import { useScroll } from "./use-scroll";
 
+export const navigation = [
+  { label: "Collections", href: "#collections" },
+  { label: "Features", href: "#features" },
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "FAQ", href: "#faq" },
+];
 export function Navbar() {
   const isScrolled = useScroll();
   const isOpen = useOverlay();
@@ -30,7 +35,7 @@ export function Navbar() {
 
         <nav className="hidden md:inline-block">
           <ul className="flex items-center gap-6 lg:gap-12">
-            {navLinks.map((link) => (
+            {navigation.map((link) => (
               <li
                 key={link.href}
                 className="text-sm hover:text-accent transition-colors"
@@ -47,13 +52,13 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="sm"
-            className="border-background hover:border-accent hover:text-primary-foreground rounded-full"
+            className="px-4 hover:border-accent hover:text-primary-foreground rounded-full"
             asChild
           >
-            <Link href={loginButton.href}>{loginButton.label}</Link>
+            <Link href="/login">Login</Link>
           </Button>
-          <Button size="sm" className="rounded-full" asChild>
-            <Link href={registerButton.href}>{registerButton.label}</Link>
+          <Button size="sm" className="px-4 rounded-full" asChild>
+            <Link href="/register">Create Invitation</Link>
           </Button>
         </div>
 

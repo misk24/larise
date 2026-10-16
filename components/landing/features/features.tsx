@@ -1,7 +1,25 @@
 "use client";
 
 import { FadeLeft, FadeUp } from "@/components/motion";
-import { featureSection } from "./constant";
+
+const features = [
+  {
+    title: "Personal",
+    description: "Nama tamu · Cerita & Detail acara",
+  },
+  {
+    title: "Convenient",
+    description: "RSVP · Google Maps · Ucapan & doa",
+  },
+  {
+    title: "Beautiful",
+    description: "Beragam tema · Personalisasi · Responsive design",
+  },
+  {
+    title: "Complete",
+    description: "Galeri foto · Musik latar · Amplop digital",
+  },
+];
 
 export function FeaturesSection() {
   return (
@@ -15,24 +33,25 @@ export function FeaturesSection() {
           <FadeLeft>
             <div>
               <p className="mb-4 text-xs tracking-[0.25em] uppercase text-muted-foreground">
-                {featureSection.eyebrow}
+                Features
               </p>
               <h2 id="features-title" className="text-balance">
                 {/* <h2 id="features-title" className="mb-16 md:text-center"> */}
-                {featureSection.title}
+                Everything You Need
               </h2>
             </div>
           </FadeLeft>
 
           <FadeUp>
             <p className="mt-6 max-w-xl text-body text-muted-foreground">
-              {featureSection.description}
+              Semua yang kamu butuhkan untuk berbagi cerita, menyambut tamu, dan
+              membuat hari istimewamu terasa lebih lengkap.
             </p>
           </FadeUp>
         </div>
 
         <div className="border-t border-border">
-          {featureSection.features.map((feature, index) => (
+          {features.map((feature, index) => (
             <FadeUp key={feature.title}>
               <article className="group border-b border-border py-8 md:py-10">
                 <div className="grid gap-6 md:grid-cols-[80px_1fr_2fr] md:items-start md:gap-8 lg:grid-cols-[80px_1fr_1fr]">

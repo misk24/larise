@@ -1,7 +1,27 @@
 "use client";
 
 import { FadeUp } from "@/components/motion";
-import { howItWorksSection } from "./constant";
+
+const steps = [
+  {
+    number: "01",
+    title: "Choose Your Theme",
+    description:
+      "Pilih desain yang paling sesuai dengan gaya dan cerita kalian.",
+  },
+  {
+    number: "02",
+    title: "Make It Yours",
+    description:
+      "Tambahkan nama, foto, cerita, detail acara, dan informasi lainnya.",
+  },
+  {
+    number: "03",
+    title: "Share Your Invitation",
+    description:
+      "Preview undanganmu, publish, lalu bagikan link-nya kepada tamu.",
+  },
+];
 
 export function HowItWorksSection() {
   return (
@@ -14,21 +34,22 @@ export function HowItWorksSection() {
         <FadeUp>
           <div className="max-w-2xl mb-16 md:mb-20">
             <p className="mb-4 text-xs tracking-[0.25em] uppercase text-muted-foreground">
-              {howItWorksSection.eyebrow}
+              How It Works
             </p>
 
             <h2 id="how-it-works-title" className="text-balance">
-              {howItWorksSection.title}
+              Simple from Start to Share
             </h2>
 
             <p className="mt-6 max-w-xl text-muted-foreground">
-              {howItWorksSection.description}
+              Buat undanganmu dalam beberapa langkah sederhana, lalu bagikan
+              kepada orang-orang yang kamu sayangi.
             </p>
           </div>
         </FadeUp>
 
         <div className="grid gap-0 md:grid-cols-3 md:gap-8">
-          {howItWorksSection.steps.map((step, index) => (
+          {steps.map((step, index) => (
             <FadeUp key={step.number}>
               <article
                 className={[
@@ -49,7 +70,7 @@ export function HowItWorksSection() {
                 </p>
 
                 {/* Desktop connector */}
-                {index < howItWorksSection.steps.length - 1 && (
+                {index < steps.length - 1 && (
                   <span
                     aria-hidden="true"
                     className="absolute top-2 right-0 hidden h-px w-8 translate-x-full bg-border md:block"

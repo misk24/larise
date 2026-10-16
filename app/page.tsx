@@ -5,7 +5,7 @@ import { FeaturesSection } from "@/components/landing/features/features";
 import { Footer } from "@/components/landing/footer/footer";
 import { HeroSection } from "@/components/landing/hero/hero";
 import { HowItWorksSection } from "@/components/landing/how-it-works/how-it-works";
-import { Navbar } from "@/components/landing/navbar";
+import { Navbar } from "@/components/landing/navbar/navbar";
 import { ValueSection } from "@/components/landing/value/value";
 
 export default function Home() {

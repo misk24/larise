@@ -3,12 +3,14 @@
 import { Item, Stagger } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { heroSection } from "./constant";
 
 export function HeroSection() {
+  const isMobile = useIsMobile();
+
   return (
     <section
       aria-labelledby="hero-title"
@@ -36,21 +38,23 @@ export function HeroSection() {
         <Stagger className="max-w-3xl mx-auto text-center">
           <Item>
             <h1 id="hero-title" className="mb-8 text-display text-balance">
-              {heroSection.title}
+              Timeless Wedding Invitations
             </h1>
           </Item>
 
           <Item>
             <p className="text-muted-foreground tracking-[0.3em] uppercase mb-12">
-              {heroSection.sub}
+              Celebrate Your Forever
             </p>
           </Item>
 
           <Item>
             <div className="max-w-sm mx-auto px-6 grid grid-cols-2 items-center justify-center gap-6">
               <Button size="lg" className="rounded-full" asChild>
-                <Link href={heroSection.cta.primary.href}>
-                  <span>{heroSection.cta.primary.label}</span>
+                <Link href="/register">
+                  <span className={`${isMobile ? "text-[12px]" : ""}`}>
+                    Create Invitation
+                  </span>
                 </Link>
               </Button>
 
@@ -60,8 +64,10 @@ export function HeroSection() {
                 className="border-background hover:border-accent hover:text-primary-foreground rounded-full"
                 asChild
               >
-                <SmoothScrollLink href={heroSection.cta.secondary.href}>
-                  {heroSection.cta.secondary.label}
+                <SmoothScrollLink href="#collections">
+                  <span className={`${isMobile ? "text-[12px]" : ""}`}>
+                    View Collection
+                  </span>
                 </SmoothScrollLink>
               </Button>
             </div>
