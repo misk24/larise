@@ -201,7 +201,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
             <div
               ref={gridRef}
-              className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-7"
+              className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-7"
             >
               {filteredThemes.map((theme, index) => {
                 const image = theme.thumbnail_url || theme.preview_url;
@@ -232,7 +232,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                             alt={`Preview tema ${theme.name}`}
                             fill
                             unoptimized
-                            sizes="(max-width: 640px) 46vw, (max-width: 1024px) 30vw, 25vw"
+                            sizes="(max-width: 639px) 90vw, (max-width: 1023px) 46vw, 30vw"
                             priority={index < 2}
                             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                           />
