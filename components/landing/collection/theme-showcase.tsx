@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Palette } from "lucide-react";
+import { ChevronRight, Palette } from "lucide-react";
 
 type Theme = {
   id: string;
@@ -189,9 +189,11 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     type="button"
                     onClick={() => setActiveCategory(category)}
                     aria-pressed={selected}
-                    className={`shrink-0 rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 ${selected
-                      ? "border-[#29271F] bg-[#29271F] text-[#F8F6F1]"
-                      : "border-[#29271F]/15 bg-transparent text-[#29271F]/65 hover:border-[#A58A67] hover:text-[#29271F]"}`}
+                    className={`shrink-0 rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 ${
+                      selected
+                        ? "border-[#29271F] bg-[#29271F] text-[#F8F6F1]"
+                        : "border-[#29271F]/15 bg-transparent text-[#29271F]/65 hover:border-[#A58A67] hover:text-[#29271F]"
+                    }`}
                   >
                     {categoryLabels[category] ?? category}
                   </button>
@@ -199,8 +201,14 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
               })}
             </div>
 
+            <div className="mb-3 flex items-center justify-between text-[11px] text-[#29271F]/55 sm:hidden">
+              <span>Geser untuk melihat tema lainnya</span>
+              <ChevronRight size={15} aria-hidden="true" />
+            </div>
+
             <div
               ref={gridRef}
+              aria-label="Koleksi tema, geser horizontal untuk melihat tema lainnya"
               className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 sm:overflow-visible sm:pb-0 lg:grid-cols-3 lg:gap-x-7"
             >
               {filteredThemes.map((theme, index) => {
@@ -216,15 +224,18 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                 return (
                   <article
                     key={theme.id}
-                    className="theme-card group w-[82%] max-w-[340px] shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink sm:min-w-0"
+                    className="theme-card w-[86%] max-w-[340px] shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink sm:min-w-0"
                   >
                     <Link
                       href="/register"
-                      className="block"
+                      className="group block"
                       aria-label={`Pilih tema ${theme.name}`}
                     >
                       <div
-                        className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${categoryColors[category] ?? "from-[#e8e3d9] via-[#f7f3ec] to-[#c9b9a4]"}`}
+                        className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${
+                          categoryColors[category] ??
+                          "from-[#e8e3d9] via-[#f7f3ec] to-[#c9b9a4]"
+                        }`}
                       >
                         {image ? (
                           <Image
@@ -232,7 +243,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                             alt={`Preview tema ${theme.name}`}
                             fill
                             unoptimized
-                            sizes="(max-width: 639px) 90vw, (max-width: 1023px) 46vw, 30vw"
+                            sizes="(max-width: 639px) 86vw, (max-width: 1023px) 46vw, 30vw"
                             priority={index < 2}
                             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                           />
@@ -313,7 +324,6 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
             </p>
           </div>
         )}
-
       </div>
     </section>
   );
