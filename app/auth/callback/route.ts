@@ -46,7 +46,6 @@ export async function GET(request: Request) {
 
   if (!profile && intent !== "signup" && type !== "verify") {
     // The login button must not silently create a new account.
-    await admin.auth.admin.deleteUser(user.id);
     await supabase.auth.signOut();
     return NextResponse.redirect(new URL("/login?error=account_not_found", url.origin));
   }
