@@ -39,22 +39,49 @@ export function ResetPasswordForm() {
 
   useEffect(() => {
     const code = searchParams.get("code");
-
-    if (!code) {
-      setIsExchanging(false);
-      setIsReady(false);
-      return;
-    }
-
-    const resetCode = code;
+    const tokenHash = searchParams.get("token_hash");
+    const tokenType = searchParams.get("type");
     let isMounted = true;
 
-    async function exchangeCode(codeValue: string) {
-      const { error } = await supabase.auth.exchangeCodeForSession(codeValue);
+    async function validateRecoveryLink() {
+      let validationError: Error | null = null;
+
+      try {
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          validationError = error;
+        } else if (tokenHash && tokenType === "recovery") {
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: "recovery",
+          });
+          validationError = error;
+        } else {
+          // Some Supabase email templates redirect with access tokens in the URL
+          // fragment instead of a PKCE code or token_hash query parameter.
+          const hashParams = new URLSearchParams(window.location.hash.slice(1));
+          const hashType = hashParams.get("type");
+          const accessToken = hashParams.get("access_token");
+
+          if (hashType === "recovery" && accessToken) {
+            const { data, error } = await supabase.auth.getSession();
+            validationError = error;
+            if (!validationError && !data.session) {
+              validationError = new Error("Recovery session was not established.");
+            }
+          } else {
+            validationError = new Error("No supported password recovery token was found.");
+          }
+        }
+      } catch (error) {
+        validationError = error instanceof Error ? error : new Error("Recovery link validation failed.");
+      }
 
       if (!isMounted) return;
 
-      if (error) {
+      if (validationError) {
+        // Keep token values out of logs and show a safe, actionable message to users.
+        console.error("Password recovery link validation failed:", validationError.message);
         toast.error("Link reset tidak valid atau sudah kedaluwarsa.");
         setIsReady(false);
       } else {
@@ -64,7 +91,7 @@ export function ResetPasswordForm() {
       setIsExchanging(false);
     }
 
-    exchangeCode(resetCode);
+    void validateRecoveryLink();
 
     return () => {
       isMounted = false;
