@@ -201,7 +201,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
             <div
               ref={gridRef}
-              className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-7"
+              className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 sm:overflow-visible sm:pb-0 lg:grid-cols-3 lg:gap-x-7"
             >
               {filteredThemes.map((theme, index) => {
                 const image = theme.thumbnail_url || theme.preview_url;
@@ -216,7 +216,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                 return (
                   <article
                     key={theme.id}
-                    className="theme-card group min-w-0"
+                    className="theme-card group w-[82%] max-w-[340px] shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink sm:min-w-0"
                   >
                     <Link
                       href="/register"
