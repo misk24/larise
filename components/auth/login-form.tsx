@@ -220,7 +220,7 @@ export function LoginForm() {
         <div className="text-sm text-muted-foreground">
           Belum punya akun?
           <Button variant="link" className="-ml-2" asChild>
-            <Link href="/registrasi" className="text-primary">
+            <Link href="/register" className="text-primary">
               Daftar sekarang
             </Link>
           </Button>
