@@ -2,86 +2,69 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
+function destinationForRole(role: string | null | undefined) {
+  return role === "admin" ? "/admin" : "/dashboard";
+}
+
 export async function GET(request: Request) {
+  const url = new URL(request.url);
   const supabase = await createClient();
   const admin = createAdminClient();
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get("code");
-  const type = searchParams.get("type"); // "verify" for email, undefined for OAuth
+  const code = url.searchParams.get("code");
+  const type = url.searchParams.get("type");
+  const intent = url.searchParams.get("intent") ?? "login";
 
-  if (!code) {
-    return NextResponse.redirect(new URL("/login?error=oauth", request.url));
-  }
+  if (!code) return NextResponse.redirect(new URL("/login?error=oauth", url.origin));
 
-  // 1. exchange code → session
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
-  if (error || !data.user) {
-    return NextResponse.redirect(new URL("/login?error=oauth", request.url));
+  if (error || !data.user?.email) {
+    return NextResponse.redirect(new URL("/login?error=oauth", url.origin));
   }
 
   const user = data.user;
-  const email = user.email!.toLowerCase();
-  const provider =
-    type === "verify"
-      ? "email"
-      : user.identities?.[0]?.provider ||
-        user.app_metadata?.provider ||
-        "google";
+  const email = user.email.trim().toLowerCase();
+  const provider = type === "verify" ? "email" :
+    (user.app_metadata?.provider === "google" || user.identities?.some(identity => identity.provider === "google")
+      ? "google" : user.app_metadata?.provider ?? "email");
 
-  // 2. cek apakah email sudah ada di profiles (use admin to bypass RLS)
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("provider")
-    .eq("email", email)
-    .maybeSingle();
+  const { data: profile, error: lookupError } = await admin
+    .from("profiles").select("id, provider, role").ilike("email", email).maybeSingle();
 
-  // Debug logging to help trace provider mismatches in dev
-  // try {
-  // eslint-disable-next-line no-console
-  // console.log("[auth/callback] email:", email, "provider:", provider, "profile:", profile)
-  // } catch (e) {
-  // ignore
-  // }
-
-  // 3. konflik provider - if this is NOT an email verification callback,
-  //    and the stored profile was created with the email provider, block OAuth sign-ins.
-  //    This is a strict safety check to prevent signing in via Google when the profile
-  //    was originally registered via email/password.
-  if (type !== "verify" && profile && profile.provider === "email") {
+  if (lookupError) {
+    console.error("OAuth profile lookup failed:", lookupError);
     await supabase.auth.signOut();
-    return NextResponse.redirect(
-      new URL(
-        `/login?error=provider_mismatch&provider=${profile.provider}`,
-        request.url,
-      ),
-    );
+    return NextResponse.redirect(new URL("/login?error=profile_creation", url.origin));
   }
 
-  // 4. email sudah ada dengan provider sama (login, bukan signup)
-  if (profile) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // Email verification may only complete the account that initiated registration.
+  // A provider mismatch must never silently attach a second identity to the same email.
+  if (profile && (profile.provider !== provider || profile.id !== user.id)) {
+    await supabase.auth.signOut();
+    return NextResponse.redirect(new URL(
+      `/login?error=provider_mismatch&provider=${encodeURIComponent(profile.provider)}`, url.origin));
   }
 
-  // 5. user baru dengan OAuth → buat profile
-  if (!profile && provider === "google") {
-    const { error: profileError } = await admin.from("profiles").insert({
-      id: user.id,
-      email: email,
-      provider: "google",
-      role: "user",
+  if (!profile && intent !== "signup" && type !== "verify") {
+    // The login button must not silently create a new account.
+    await admin.auth.admin.deleteUser(user.id);
+    await supabase.auth.signOut();
+    return NextResponse.redirect(new URL("/login?error=account_not_found", url.origin));
+  }
+
+  if (!profile) {
+    const { error: insertError } = await admin.from("profiles").insert({
+      id: user.id, email, provider, role: "user",
     });
-
-    if (profileError) {
-      console.error("Profile creation failed:", profileError);
+    if (insertError) {
+      console.error("OAuth profile creation failed:", insertError);
+      await admin.auth.admin.deleteUser(user.id);
       await supabase.auth.signOut();
-      return NextResponse.redirect(
-        new URL("/login?error=profile_creation", request.url),
-      );
+      return NextResponse.redirect(new URL("/login?error=profile_creation", url.origin));
     }
   }
 
-  // 6. untuk email verification, profile sudah dibuat di signUp
-  // tinggal redirect ke dashboard
-  return NextResponse.redirect(new URL("/dashboard", request.url));
+  // Email/password users may be signed in after verification, but Google accounts
+  // only arrive here after the OAuth identity has been confirmed by Supabase.
+  const role = profile?.role ?? "user";
+  return NextResponse.redirect(new URL(destinationForRole(role), url.origin));
 }
