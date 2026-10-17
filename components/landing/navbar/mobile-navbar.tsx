@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
-import { ArrowUpRight, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import Link from "next/link";
 import { navigation } from "./navbar";
 
@@ -20,10 +20,9 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
           <Button variant="outline" size="icon" onClick={onClose} className="size-9 rounded-full" aria-label="Tutup menu"><XIcon className="size-4" /></Button>
         </div>
         <nav aria-label="Navigasi mobile" className="divide-y divide-border">
-          {navigation.map((item, index) => (
-            <SmoothScrollLink key={item.label} href={item.href} onClick={onClose} className="flex items-center justify-between py-4 text-xl tracking-tight text-foreground">
-              <span className="flex items-center gap-4"><span className="text-[10px] tracking-[0.18em] text-accent">{String(index + 1).padStart(2, "0")}</span>{item.label}</span>
-              <ArrowUpRight size={18} strokeWidth={1.4} className="text-accent" />
+          {navigation.map((item) => (
+            <SmoothScrollLink key={item.label} href={item.href} onClick={onClose} className="flex items-center py-4 text-xl tracking-tight text-foreground">
+              {item.label}
             </SmoothScrollLink>
           ))}
         </nav>
@@ -31,7 +30,6 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
           <Button variant="outline" size="lg" className="h-11 rounded-full" asChild><Link href="/login">Masuk</Link></Button>
           <Button size="lg" className="h-11 rounded-full" asChild><Link href="/register">Buat Undangan</Link></Button>
         </div>
-        <p className="mt-5 text-center text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Your story, beautifully invited.</p>
       </div>
     </div>
   );
