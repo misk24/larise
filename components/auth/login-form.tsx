@@ -46,7 +46,9 @@ export function LoginForm() {
       toast.error(
         `Email ini sudah terdaftar dengan ${provider === "google" ? "Google" : "Email"}. Silakan login dengan metode tersebut.`,
       );
-    } else if (error === "account_not_found") {\n      toast.error("Akun belum terdaftar. Silakan daftar terlebih dahulu.");\n    } else if (error === "oauth") {
+    } else if (error === "account_not_found") {
+      toast.error("Akun belum terdaftar. Silakan daftar terlebih dahulu.");
+    } else if (error === "oauth") {
       toast.error("Terjadi kesalahan saat login. Silakan coba lagi.");
     } else if (error === "profile_creation") {
       toast.error("Terjadi kesalahan saat membuat profil. Silakan coba lagi.");
