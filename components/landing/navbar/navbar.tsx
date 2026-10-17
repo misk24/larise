@@ -33,7 +33,7 @@ export function Navbar() {
         </nav>
         <div className="hidden items-center gap-2 sm:gap-3 md:flex">
           <Button variant="ghost" size="sm" className="rounded-full px-4 text-xs lg:text-sm" asChild><Link href="/login">Masuk</Link></Button>
-          <Button size="sm" className="rounded-full px-4 text-xs lg:px-5 lg:text-sm" asChild><Link href="/register">Buat Undangan <span aria-hidden="true" className="ml-1">↗</span></Link></Button>
+          <Button size="sm" className="rounded-full px-4 text-xs lg:px-5 lg:text-sm" asChild><Link href="/register">Buat Undangan</Link></Button>
         </div>
         <Button variant="outline" size="icon" onClick={isOpen.toggle} className="size-10 rounded-full border-border bg-background/70 md:hidden" aria-expanded={isOpen.isOpen} aria-controls="mobile-navigation" aria-label={isOpen.isOpen ? "Tutup menu" : "Buka menu"}><MenuIcon className="size-4" /></Button>
       </Scale>
