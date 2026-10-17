@@ -46,7 +46,7 @@ export function LoginForm() {
       toast.error(
         `Email ini sudah terdaftar dengan ${provider === "google" ? "Google" : "Email"}. Silakan login dengan metode tersebut.`,
       );
-    } else if (error === "oauth") {
+    } else if (error === "account_not_found") {\n      toast.error("Akun belum terdaftar. Silakan daftar terlebih dahulu.");\n    } else if (error === "oauth") {
       toast.error("Terjadi kesalahan saat login. Silakan coba lagi.");
     } else if (error === "profile_creation") {
       toast.error("Terjadi kesalahan saat membuat profil. Silakan coba lagi.");
@@ -101,7 +101,7 @@ export function LoginForm() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${location.origin}/auth/callback`,
+        redirectTo: `${location.origin}/auth/callback?intent=login`,
       },
     });
 
@@ -218,7 +218,7 @@ export function LoginForm() {
         <div className="text-sm text-muted-foreground">
           Belum punya akun?
           <Button variant="link" className="-ml-2" asChild>
-            <Link href="/register" className="text-primary">
+            <Link href="/registrasi" className="text-primary">
               Daftar sekarang
             </Link>
           </Button>
