@@ -57,20 +57,13 @@ export function ResetPasswordForm() {
           });
           validationError = error;
         } else {
-          // Some Supabase email templates redirect with access tokens in the URL
-          // fragment instead of a PKCE code or token_hash query parameter.
-          const hashParams = new URLSearchParams(window.location.hash.slice(1));
-          const hashType = hashParams.get("type");
-          const accessToken = hashParams.get("access_token");
-
-          if (hashType === "recovery" && accessToken) {
-            const { data, error } = await supabase.auth.getSession();
-            validationError = error;
-            if (!validationError && !data.session) {
-              validationError = new Error("Recovery session was not established.");
-            }
-          } else {
-            validationError = new Error("No supported password recovery token was found.");
+          // Supabase may consume URL-fragment tokens while initializing the browser
+          // client, so the fragment is not guaranteed to remain available here.
+          // Accept only if Supabase has established a valid session.
+          const { data, error } = await supabase.auth.getSession();
+          validationError = error;
+          if (!validationError && !data.session) {
+            validationError = new Error("No valid recovery session was established.");
           }
         }
       } catch (error) {
