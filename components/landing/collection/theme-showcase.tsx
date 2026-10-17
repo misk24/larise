@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowDownRight, ArrowRight, Check, Crown, Palette } from "lucide-react";
+import { Palette } from "lucide-react";
 
 type Theme = {
   id: string;
@@ -169,13 +169,9 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
           <Link
             href="/register"
-            className="group inline-flex w-fit items-center gap-3 border-b border-[#29271F]/25 pb-2 text-sm transition-colors hover:border-[#A58A67] hover:text-[#927653]"
+            className="inline-flex w-fit border-b border-[#29271F]/25 pb-2 text-sm transition-colors hover:border-[#A58A67] hover:text-[#927653]"
           >
             Jelajahi semua tema
-            <ArrowDownRight
-              size={17}
-              className="transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1"
-            />
           </Link>
         </div>
 
@@ -258,8 +254,8 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
                         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5 sm:left-4 sm:top-4">
                           {theme.is_premium && (
-                            <span className="inline-flex items-center gap-1 bg-[#29271F]/85 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.12em] text-white backdrop-blur-sm">
-                              <Crown size={11} /> Premium
+                            <span className="bg-[#29271F]/85 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.12em] text-white backdrop-blur-sm">
+                              Premium
                             </span>
                           )}
                         </div>
@@ -267,9 +263,6 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                         <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white sm:bottom-5 sm:left-5 sm:right-5">
                           <span className="text-[9px] uppercase tracking-[0.18em] text-white/80 sm:text-[10px]">
                             {categoryLabels[category] ?? theme.category}
-                          </span>
-                          <span className="flex size-8 translate-y-2 items-center justify-center rounded-full border border-white/60 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                            <ArrowRight size={15} />
                           </span>
                         </div>
                       </div>
@@ -297,9 +290,8 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                           {features.slice(0, 2).map((feature) => (
                             <span
                               key={feature}
-                              className="inline-flex items-center gap-1 text-[10px] text-[#29271F]/55"
+                              className="text-[10px] text-[#29271F]/55"
                             >
-                              <Check size={11} className="text-[#927653]" />
                               {feature}
                             </span>
                           ))}
@@ -322,10 +314,6 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
           </div>
         )}
 
-        <div className="mt-12 flex items-center justify-between border-t border-[#29271F]/15 pt-5 text-[10px] uppercase tracking-[0.16em] text-[#29271F]/45 sm:mt-16">
-          <span>Curated for your day</span>
-          <span>{themes.length} tema tersedia</span>
-        </div>
       </div>
     </section>
   );
