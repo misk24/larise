@@ -2,173 +2,123 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { loginSchema, registerSchema, safeRedirectPath } from "@/lib/auth/validation";
 import { redirect } from "next/navigation";
-import { safeRedirectPath } from "@/lib/auth/validation";
+
+const siteUrl = () =>
+  (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
+
+function providerLabel(provider: string) {
+  return provider === "google" ? "Google" : "email dan password";
+}
 
 export async function signUpWithEmail(email: string, password: string) {
+  const validation = registerSchema.safeParse({ email, password, confirmPassword: password });
+  if (!validation.success) return { error: validation.error.issues[0]?.message ?? "Data registrasi tidak valid." };
+
+  const normalizedEmail = email.trim().toLowerCase();
   const admin = createAdminClient();
-  const { data: profile, error } = await admin
-    .from("profiles")
-    .select("provider")
-    .eq("email", email)
-    .maybeSingle();
+  const { data: existing, error: lookupError } = await admin
+    .from("profiles").select("id, provider").ilike("email", normalizedEmail).maybeSingle();
 
-  if (error) {
-    console.error("Profile check failed:", error);
-    return { error: "Terjadi kesalahan sistem." };
+  if (lookupError) {
+    console.error("Auth profile lookup failed:", lookupError);
+    return { error: "Terjadi kesalahan sistem. Coba lagi nanti." };
   }
-
-  // Email sudah terdaftar dengan metode lain
-  if (profile && profile.provider !== "email") {
+  if (existing) {
     return {
-      error: `Email ini sudah terdaftar menggunakan ${profile.provider === "google" ? "Google" : "metode lain"}. Silakan login dengan metode tersebut.`,
-      shouldRedirectToLogin: true,
-    };
-  }
-
-  // Email sudah terdaftar dengan metode email
-  if (profile && profile.provider === "email") {
-    return {
-      error: "Email ini sudah terdaftar. Silakan login.",
+      error: `Email ini sudah terdaftar menggunakan ${providerLabel(existing.provider)}. Silakan login dengan metode tersebut.`,
       shouldRedirectToLogin: true,
     };
   }
 
   const supabase = await createClient();
-  const { data, error: authError } = await supabase.auth.signUp({
-    email: email.toLowerCase(),
+  const { data, error } = await supabase.auth.signUp({
+    email: normalizedEmail,
     password,
-    options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=verify`,
-    },
+    options: { emailRedirectTo: `${siteUrl()}/auth/callback?type=verify` },
   });
 
-  if (authError) {
-    return { error: authError.message };
+  if (error) {
+    if (/already registered|already exists|user already/i.test(error.message)) {
+      return { error: "Email ini sudah terdaftar. Silakan login.", shouldRedirectToLogin: true };
+    }
+    console.error("Email sign-up failed:", error);
+    return { error: "Registrasi gagal. Periksa data dan coba lagi." };
+  }
+  if (!data.user) return { error: "Registrasi gagal. Silakan coba lagi." };
+
+  // Supabase may create profiles through a database trigger. Upsert is idempotent
+  // for this auth user, while the database's case-insensitive email index prevents duplicates.
+  const { error: profileError } = await admin.from("profiles").upsert({
+    id: data.user.id,
+    email: normalizedEmail,
+    provider: "email",
+    role: "user",
+  }, { onConflict: "id" });
+
+  if (profileError) {
+    console.error("Profile creation failed:", profileError);
+    await admin.auth.admin.deleteUser(data.user.id);
+    return { error: "Akun belum dapat dibuat dengan aman. Silakan coba lagi." };
   }
 
-  if (!data.user) {
-    return { error: "Terjadi kesalahan saat membuat akun." };
-  }
-
-  // Buat atau perbarui profile dengan provider "email" (upsert supaya idempoten)
-  const normalizedEmail = email.toLowerCase();
-  const { error: profileCreateError } = await admin.from("profiles").upsert(
-    {
-      id: data.user.id,
-      email: normalizedEmail,
-      provider: "email",
-      role: "user",
-    },
-    {
-      onConflict: "id",
-    },
-  );
-
-  if (profileCreateError) {
-    // Log error, tapi jangan batalkan alur verifikasi — user sudah dibuat di Supabase
-    console.error("Profile upsert failed:", profileCreateError);
-  }
-
-  return {
-    needsVerification: !data.session,
-  };
+  return { needsVerification: !data.session };
 }
 
 export async function signInWithEmail(email: string, password: string, redirectTo?: string) {
-  const admin = createAdminClient();
-  const normalizedEmail = email.toLowerCase();
+  const validation = loginSchema.safeParse({ email, password });
+  if (!validation.success) return { error: validation.error.issues[0]?.message ?? "Data login tidak valid." };
 
-  // Cek apakah email sudah terdaftar
+  const normalizedEmail = email.trim().toLowerCase();
+  const admin = createAdminClient();
   const { data: profile, error: profileError } = await admin
-    .from("profiles")
-    .select("provider")
-    .eq("email", normalizedEmail)
-    .maybeSingle();
+    .from("profiles").select("id, provider, role").ilike("email", normalizedEmail).maybeSingle();
 
   if (profileError) {
-    console.error("Profile check failed:", profileError);
-    return { error: "Terjadi kesalahan sistem." };
+    console.error("Auth profile lookup failed:", profileError);
+    return { error: "Terjadi kesalahan sistem. Coba lagi nanti." };
   }
-
-  // Email belum terdaftar
-  if (!profile) {
-    return {
-      error: "Email belum terdaftar. Silakan daftar terlebih dahulu.",
-    };
-  }
-
-  // Email terdaftar dengan metode lain
+  if (!profile) return { error: "Email atau password salah, atau akun belum terdaftar." };
   if (profile.provider !== "email") {
-    return {
-      error: `Email ini terdaftar menggunakan ${profile.provider === "google" ? "Google" : "metode lain"}. Silakan login dengan metode tersebut.`,
-    };
+    return { error: `Email ini terdaftar menggunakan ${providerLabel(profile.provider)}. Silakan login dengan metode tersebut.` };
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-
+  const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
   if (error) {
-    return { error: error.message };
+    return { error: /email not confirmed/i.test(error.message)
+      ? "Verifikasi email terlebih dahulu melalui tautan yang kami kirim."
+      : "Email atau password salah. Silakan coba lagi." };
   }
 
-  // Get user role untuk final redirect
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    const { data: profile } = await admin
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-    if (profile?.role === "admin") {
-      redirect("/admin");
-    }
-  }
-
-  redirect(safeRedirectPath(redirectTo));
+  if (profile.role === "admin") redirect("/admin");
+  const destination = safeRedirectPath(redirectTo);
+  redirect(destination.startsWith("/admin") ? "/dashboard" : destination);
 }
 
 export async function requestPasswordReset(email: string) {
+  const normalizedEmail = email.trim().toLowerCase();
   const admin = createAdminClient();
-  const normalizedEmail = email.toLowerCase();
-
-  const { data: profile, error: profileError } = await admin
-    .from("profiles")
-    .select("provider")
-    .eq("email", normalizedEmail)
-    .maybeSingle();
-
-  if (profileError) {
-    console.error("Profile check failed:", profileError);
-    return { error: "Terjadi kesalahan sistem." };
-  }
-
-  if (!profile) {
-    return { error: "Email tidak terdaftar. Silakan cek kembali." };
-  }
-
-  if (profile.provider !== "email") {
-    return {
-      error: "Email ini sudah terdaftar dengan metode lain. Silakan login.",
-      shouldRedirectToLogin: true,
-    };
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(
-    normalizedEmail,
-    {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`,
-    },
-  );
+  const { data: profile, error } = await admin
+    .from("profiles").select("provider").ilike("email", normalizedEmail).maybeSingle();
 
   if (error) {
-    return { error: error.message };
+    console.error("Password reset lookup failed:", error);
+    return { error: "Permintaan reset belum dapat diproses. Coba lagi nanti." };
   }
 
+  // Avoid exposing whether an email is registered or which provider it uses.
+  if (profile?.provider === "email") {
+    const supabase = await createClient();
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+      redirectTo: `${siteUrl()}/reset-password`,
+    });
+    if (resetError) {
+      console.error("Password reset request failed:", resetError);
+      return { error: "Email reset belum dapat dikirim. Coba lagi nanti." };
+    }
+  }
   return { success: true };
 }
 
@@ -180,9 +130,7 @@ export async function signOut() {
 
 export async function getUser() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
   return user;
 }
 
@@ -193,53 +141,34 @@ export async function updateProfile(input: { full_name: string; phone: string })
 
   const fullName = input.full_name.trim().slice(0, 120);
   const phone = input.phone.trim().slice(0, 30);
-  const { error } = await supabase.from("profiles").update({ full_name: fullName || null, phone: phone || null }).eq("id", user.id);
-  if (error) return { error: error.message };
+  const { error } = await supabase.from("profiles")
+    .update({ full_name: fullName || null, phone: phone || null }).eq("id", user.id);
+  if (error) return { error: "Profil gagal diperbarui." };
   return { success: true };
 }
 
 export async function getUserProfile() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
-
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
+  const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
   if (error) {
-    console.error("getUserProfile error:", error);
+    console.error("getUserProfile failed:", error);
     return null;
   }
-
-  return profile;
+  return data;
 }
 
 export async function requireAuth() {
   const user = await getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
+  if (!user) redirect("/login");
   return user;
 }
 
 export async function requireAdmin() {
   const user = await getUser();
-
   if (!user) redirect("/login");
-
   const profile = await getUserProfile();
-
-  if (!profile || profile.role !== "admin") {
-    redirect("/dashboard");
-  }
-
+  if (!profile || profile.role !== "admin") redirect("/dashboard");
   return profile;
 }
