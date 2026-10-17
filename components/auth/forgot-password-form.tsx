@@ -16,7 +16,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { requestPasswordReset } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -30,7 +29,6 @@ export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
-  const router = useRouter();
   const isMobile = useIsMobile();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -46,9 +44,6 @@ export function ForgotPasswordForm() {
 
     if (result?.error) {
       toast.error(result.error);
-      if (result?.shouldRedirectToLogin) {
-        router.replace("/login");
-      }
       setIsSubmitting(false);
       return;
     }
