@@ -16,6 +16,14 @@ export async function GET(request: Request) {
 
   if (!code) return NextResponse.redirect(new URL("/login?error=oauth", url.origin));
 
+  // Recovery links must reach the password reset form before normal login/profile routing.
+  // The reset form exchanges the PKCE code and then lets the user set a new password.
+  if (type === "recovery") {
+    const resetUrl = new URL("/reset-password", url.origin);
+    resetUrl.searchParams.set("code", code);
+    return NextResponse.redirect(resetUrl);
+  }
+
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error || !data.user?.email) {
     return NextResponse.redirect(new URL("/login?error=oauth", url.origin));
