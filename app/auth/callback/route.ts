@@ -22,6 +22,7 @@ export async function GET(request: Request) {
   }
 
   const user = data.user;
+  if (!user.email) return NextResponse.redirect(new URL("/login?error=oauth", url.origin));
   const email = user.email.trim().toLowerCase();
   const provider = type === "verify" ? "email" :
     (user.app_metadata?.provider === "google" || user.identities?.some(identity => identity.provider === "google")
