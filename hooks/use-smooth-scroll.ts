@@ -1,44 +1,36 @@
 "use client";
 
-import gsap from "gsap";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useCallback } from "react";
 
+const DEFAULT_HEADER_OFFSET = 80;
+
 export function useSmoothScroll() {
-  const scrollToElement = useCallback((targetId: string) => {
-    // Register GSAP plugins
-    gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
+  const scrollToElement = useCallback((target: string) => {
+    const isTopTarget = target === "html" || target === "body" || target === "/";
+    const element = isTopTarget ? null : document.querySelector<HTMLElement>(target);
 
-    // Kill any ongoing GSAP animations
-    gsap.killTweensOf(window);
+    // Do not hijack a link if its target does not exist.
+    if (!isTopTarget && !element) return false;
 
-    const element = document.querySelector(targetId);
-    if (!element) return;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-    // Get the target position
-    const targetPosition = (element as HTMLElement).offsetTop;
-    const startPosition = window.pageYOffset;
-    const distance = targetPosition - startPosition;
-    const duration = Math.min(Math.abs(distance) / 2, 1500); // Dynamic duration based on distance
+    const top = element
+      ? Math.max(
+          0,
+          element.getBoundingClientRect().top +
+            window.scrollY -
+            DEFAULT_HEADER_OFFSET,
+        )
+      : 0;
 
-    // Use GSAP for smooth scrolling
-    gsap.to(window, {
-      duration: duration / 1000,
-      scrollTo: {
-        y: targetPosition,
-        autoKill: true,
-      },
-      ease: "power2.inOut",
-      onComplete: () => {
-        // Ensure ScrollTrigger is updated after scroll completes
-        ScrollTrigger.refresh();
-      },
-      onUpdate: () => {
-        // Refresh ScrollTrigger during scroll
-        ScrollTrigger.refresh();
-      },
+    window.scrollTo({
+      top,
+      behavior: prefersReducedMotion ? "auto" : "smooth",
     });
+
+    return true;
   }, []);
 
   return { scrollToElement };

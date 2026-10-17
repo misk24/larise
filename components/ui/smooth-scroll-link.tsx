@@ -2,6 +2,7 @@
 
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 import { forwardRef } from "react";
 
 interface SmoothScrollLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -12,22 +13,24 @@ interface SmoothScrollLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorEle
 
 export const SmoothScrollLink = forwardRef<HTMLAnchorElement, SmoothScrollLinkProps>(
   ({ href, children, className, onClick, ...props }, ref) => {
+    const pathname = usePathname();
     const { scrollToElement } = useSmoothScroll();
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-      // Handle anchor links and root path
-      if (href.startsWith("#") || href === "/") {
-        e.preventDefault();
+      const isHome = pathname === "/";
+      const isSectionLink = href.startsWith("#");
+      const isHomeLink = href === "/";
 
-        if (href === "/") {
-          // Scroll to top for root path
-          scrollToElement("html");
-        } else {
-          scrollToElement(href);
-        }
+      // Only intercept same-page navigation on the landing page.
+      // On other routes, "/" must navigate home instead of scrolling the current page.
+      if (isHome && isSectionLink && document.querySelector(href)) {
+        e.preventDefault();
+        scrollToElement(href);
+      } else if (isHome && isHomeLink) {
+        e.preventDefault();
+        scrollToElement("html");
       }
 
-      // Call original onClick if provided
       onClick?.(e);
     };
 
@@ -42,7 +45,7 @@ export const SmoothScrollLink = forwardRef<HTMLAnchorElement, SmoothScrollLinkPr
         {children}
       </a>
     );
-  }
+  },
 );
 
 SmoothScrollLink.displayName = "SmoothScrollLink";
