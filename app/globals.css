@@ -152,10 +152,6 @@
     @apply border-border outline-ring/50;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
-
   body {
     margin: 0;
     background: var(--background);
