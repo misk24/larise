@@ -2,56 +2,42 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
-
+  let response = NextResponse.next({ request });
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
+        getAll: () => request.cookies.getAll(),
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options),
-          );
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
         },
       },
     },
   );
 
+  // getClaims validates the signed token and refreshes the session cookies when needed.
   const { data } = await supabase.auth.getClaims();
-  const user = data?.claims;
+  const claims = data?.claims;
+  const pathname = request.nextUrl.pathname;
+  const isProtected = ["/dashboard", "/admin"].some(route => pathname === route || pathname.startsWith(route + "/"));
 
-  // Protected routes
-  const protectedRoutes = ["/dashboard", "/admin"];
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route),
-  );
-
-  if (isProtectedRoute && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("redirect", request.nextUrl.pathname);
-    return NextResponse.redirect(url);
+  if (isProtected && !claims) {
+    const target = request.nextUrl.clone();
+    target.pathname = "/login";
+    target.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(target);
   }
 
-  // Redirect authenticated users away from auth pages
-  const authRoutes = ["/login", "/register"];
-  const isAuthRoute = authRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route),
-  );
-
-  if (isAuthRoute && user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
+  // Authenticated visitors should not loop back into login/register pages.
+  const isAuthPage = ["/login", "/register", "/registrasi"].includes(pathname);
+  if (isAuthPage && claims) {
+    const target = request.nextUrl.clone();
+    target.pathname = "/dashboard";
+    return NextResponse.redirect(target);
   }
 
-  return supabaseResponse;
+  return response;
 }
