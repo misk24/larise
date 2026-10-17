@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Authenticated visitors should not loop back into login/register pages.
-  const isAuthPage = ["/login", "/register", "/registrasi"].includes(pathname);
+  const isAuthPage = ["/login", "/register"].includes(pathname);
   if (isAuthPage && claims) {
     const target = request.nextUrl.clone();
     target.pathname = "/dashboard";
