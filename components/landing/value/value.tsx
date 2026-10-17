@@ -1,12 +1,11 @@
 "use client";
 
 import { FadeLeft, FadeUp } from "@/components/motion";
-import { ArrowUpRight, Heart, Link2, Palette } from "lucide-react";
 
 const values = [
-  { number: "01", title: "Personal dari awal", description: "Nama, cerita, dan detail hari istimewa disusun dalam satu undangan yang terasa dekat dengan kalian.", icon: Heart },
-  { number: "02", title: "Mudah dibagikan", description: "Satu tautan untuk dibagikan ke keluarga dan teman, tanpa perlu repot mengirim file satu per satu.", icon: Link2 },
-  { number: "03", title: "Sesuai gaya kalian", description: "Pilih tema dan atur konten yang tersedia agar undangan terasa selaras dengan perayaan kalian.", icon: Palette },
+  { title: "Personal dari awal", description: "Nama, cerita, dan detail hari istimewa disusun dalam satu undangan yang terasa dekat dengan kalian." },
+  { title: "Mudah dibagikan", description: "Satu tautan untuk dibagikan ke keluarga dan teman, tanpa perlu repot mengirim file satu per satu." },
+  { title: "Sesuai gaya kalian", description: "Pilih tema dan atur konten yang tersedia agar undangan terasa selaras dengan perayaan kalian." },
 ];
 
 export function ValueSection() {
