@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowDownRight, ArrowRight, Check, Crown, Palette } from "lucide-react";
+import { ChevronRight, Palette } from "lucide-react";
 
 type Theme = {
   id: string;
@@ -169,13 +169,9 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
           <Link
             href="/register"
-            className="group inline-flex w-fit items-center gap-3 border-b border-[#29271F]/25 pb-2 text-sm transition-colors hover:border-[#A58A67] hover:text-[#927653]"
+            className="inline-flex w-fit border-b border-[#29271F]/25 pb-2 text-sm transition-colors hover:border-[#A58A67] hover:text-[#927653]"
           >
             Jelajahi semua tema
-            <ArrowDownRight
-              size={17}
-              className="transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1"
-            />
           </Link>
         </div>
 
@@ -193,9 +189,11 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     type="button"
                     onClick={() => setActiveCategory(category)}
                     aria-pressed={selected}
-                    className={`shrink-0 rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 ${selected
-                      ? "border-[#29271F] bg-[#29271F] text-[#F8F6F1]"
-                      : "border-[#29271F]/15 bg-transparent text-[#29271F]/65 hover:border-[#A58A67] hover:text-[#29271F]"}`}
+                    className={`shrink-0 rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 ${
+                      selected
+                        ? "border-[#29271F] bg-[#29271F] text-[#F8F6F1]"
+                        : "border-[#29271F]/15 bg-transparent text-[#29271F]/65 hover:border-[#A58A67] hover:text-[#29271F]"
+                    }`}
                   >
                     {categoryLabels[category] ?? category}
                   </button>
@@ -203,9 +201,15 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
               })}
             </div>
 
+            <div className="mb-3 flex items-center justify-between text-[11px] text-[#29271F]/55 sm:hidden">
+              <span>Geser untuk melihat tema lainnya</span>
+              <ChevronRight size={15} aria-hidden="true" />
+            </div>
+
             <div
               ref={gridRef}
-              className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-7"
+              aria-label="Koleksi tema, geser horizontal untuk melihat tema lainnya"
+              className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 sm:overflow-visible sm:pb-0 lg:grid-cols-3 lg:gap-x-7"
             >
               {filteredThemes.map((theme, index) => {
                 const image = theme.thumbnail_url || theme.preview_url;
@@ -220,15 +224,18 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                 return (
                   <article
                     key={theme.id}
-                    className="theme-card group min-w-0"
+                    className="theme-card w-[86%] max-w-[340px] shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink sm:min-w-0"
                   >
                     <Link
                       href="/register"
-                      className="block"
+                      className="group block"
                       aria-label={`Pilih tema ${theme.name}`}
                     >
                       <div
-                        className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${categoryColors[category] ?? "from-[#e8e3d9] via-[#f7f3ec] to-[#c9b9a4]"}`}
+                        className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${
+                          categoryColors[category] ??
+                          "from-[#e8e3d9] via-[#f7f3ec] to-[#c9b9a4]"
+                        }`}
                       >
                         {image ? (
                           <Image
@@ -236,7 +243,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                             alt={`Preview tema ${theme.name}`}
                             fill
                             unoptimized
-                            sizes="(max-width: 640px) 46vw, (max-width: 1024px) 30vw, 25vw"
+                            sizes="(max-width: 639px) 86vw, (max-width: 1023px) 46vw, 30vw"
                             priority={index < 2}
                             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                           />
@@ -258,8 +265,8 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
                         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5 sm:left-4 sm:top-4">
                           {theme.is_premium && (
-                            <span className="inline-flex items-center gap-1 bg-[#29271F]/85 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.12em] text-white backdrop-blur-sm">
-                              <Crown size={11} /> Premium
+                            <span className="bg-[#29271F]/85 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.12em] text-white backdrop-blur-sm">
+                              Premium
                             </span>
                           )}
                         </div>
@@ -267,9 +274,6 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                         <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white sm:bottom-5 sm:left-5 sm:right-5">
                           <span className="text-[9px] uppercase tracking-[0.18em] text-white/80 sm:text-[10px]">
                             {categoryLabels[category] ?? theme.category}
-                          </span>
-                          <span className="flex size-8 translate-y-2 items-center justify-center rounded-full border border-white/60 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                            <ArrowRight size={15} />
                           </span>
                         </div>
                       </div>
@@ -297,9 +301,8 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                           {features.slice(0, 2).map((feature) => (
                             <span
                               key={feature}
-                              className="inline-flex items-center gap-1 text-[10px] text-[#29271F]/55"
+                              className="text-[10px] text-[#29271F]/55"
                             >
-                              <Check size={11} className="text-[#927653]" />
                               {feature}
                             </span>
                           ))}
@@ -321,11 +324,6 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
             </p>
           </div>
         )}
-
-        <div className="mt-12 flex items-center justify-between border-t border-[#29271F]/15 pt-5 text-[10px] uppercase tracking-[0.16em] text-[#29271F]/45 sm:mt-16">
-          <span>Curated for your day</span>
-          <span>{themes.length} tema tersedia</span>
-        </div>
       </div>
     </section>
   );

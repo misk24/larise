@@ -3,7 +3,6 @@
 import { Item, Stagger } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
-import { ArrowDownRight, ArrowUpRight, Heart, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,7 +15,7 @@ export function HeroSection() {
           <Item>
             <p className="mb-6 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.24em] text-muted-foreground sm:text-xs">
               <span className="h-px w-8 bg-accent" />
-              Digital wedding invitations, made personal
+              Undangan digital, lebih personal
             </p>
           </Item>
           <Item>
@@ -36,45 +35,28 @@ export function HeroSection() {
           <Item>
             <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
               <Button size="lg" className="group h-12 rounded-full px-6" asChild>
-                <Link href="/register">Buat Undangan <ArrowUpRight className="ml-2 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></Link>
+                <Link href="/register">Buat Undangan</Link>
               </Button>
               <Button variant="outline" size="lg" className="h-12 rounded-full border-border bg-transparent px-6" asChild>
-                <SmoothScrollLink href="#collections">Lihat Pilihan Tema <ArrowDownRight className="ml-2 size-4" /></SmoothScrollLink>
+                <SmoothScrollLink href="#collections">Lihat Pilihan Tema</SmoothScrollLink>
               </Button>
-            </div>
-          </Item>
-          <Item>
-            <div className="mt-10 flex items-center gap-3 border-t border-border/80 pt-5 sm:mt-12">
-              <div className="flex -space-x-2" aria-hidden="true">
-                <span className="grid size-8 place-items-center rounded-full border-2 border-background bg-[#e8d9c8] text-[#5b4735]"><Heart className="size-3.5" /></span>
-                <span className="grid size-8 place-items-center rounded-full border-2 border-background bg-[#d9dfd2] text-[#485543]"><Sparkles className="size-3.5" /></span>
-              </div>
-              <p className="text-xs leading-5 text-muted-foreground sm:text-sm">Cerita kalian, dirangkai dengan cara yang lebih personal.</p>
             </div>
           </Item>
         </Stagger>
 
         <div className="relative mx-auto w-full max-w-[34rem] lg:max-w-none">
-          <div className="absolute -left-3 top-8 z-10 hidden rounded-full border border-border/70 bg-background/90 px-4 py-3 shadow-sm backdrop-blur sm:flex sm:items-center sm:gap-3 lg:-left-7 lg:top-14">
-            <span className="grid size-9 place-items-center rounded-full bg-accent/20 text-foreground"><Sparkles className="size-4" /></span>
-            <span className="text-xs leading-5"><strong className="block font-medium">Made for your story</strong><span className="text-muted-foreground">Every detail, thoughtfully yours</span></span>
-          </div>
           <div className="relative aspect-[4/4.7] overflow-hidden rounded-t-[48%] rounded-b-[1.25rem] bg-secondary sm:rounded-b-[1.5rem]">
             <Image src="/images/hero.jpg" alt="Inspirasi suasana pernikahan yang hangat dan intim" fill priority sizes="(max-width: 1024px) 90vw, 44vw" className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#29271f]/40 via-transparent to-[#29271f]/5" />
             <div className="absolute inset-x-4 bottom-4 rounded-xl border border-white/30 bg-[#faf9f6]/90 p-4 backdrop-blur-md sm:inset-x-6 sm:bottom-6 sm:p-5">
               <div className="flex items-end justify-between gap-4">
                 <div>
-                  <p className="text-[9px] uppercase tracking-[0.24em] text-[#8a765d] sm:text-[10px]">The beginning of forever</p>
+                  <p className="text-[9px] uppercase tracking-[0.24em] text-[#8a765d] sm:text-[10px]">LARISÉ</p>
                   <p className="frontend-display mt-1 text-2xl italic leading-tight text-[#29271f] sm:text-3xl">A day to remember</p>
                 </div>
-                <span className="mb-1 grid size-9 shrink-0 place-items-center rounded-full border border-[#a58a67]/50 text-[#8a765d]"><Heart className="size-4" /></span>
-              </div>
+                </div>
             </div>
           </div>
-          <p className="mt-4 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:text-xs">
-            <span>Intimate by design</span><span>Est. with love · LARISÉ</span>
-          </p>
         </div>
       </div>
     </section>
