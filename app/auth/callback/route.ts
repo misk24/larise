@@ -16,12 +16,15 @@ export async function GET(request: Request) {
 
   if (!code) return NextResponse.redirect(new URL("/login?error=oauth", url.origin));
 
-  // Recovery links must reach the password reset form before normal login/profile routing.
-  // The reset form exchanges the PKCE code and then lets the user set a new password.
+  // Exchange recovery codes on the server so the Supabase SSR client can persist
+  // the recovery session in cookies before the reset form loads.
   if (type === "recovery") {
-    const resetUrl = new URL("/reset-password", url.origin);
-    resetUrl.searchParams.set("code", code);
-    return NextResponse.redirect(resetUrl);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      console.error("Password recovery code exchange failed:", error.message);
+      return NextResponse.redirect(new URL("/forgot-password?error=invalid_recovery_link", url.origin));
+    }
+    return NextResponse.redirect(new URL("/reset-password", url.origin));
   }
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
