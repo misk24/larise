@@ -45,6 +45,13 @@ export async function GET(request: Request) {
       `/login?error=provider_mismatch&provider=${encodeURIComponent(profile.provider)}`, url.origin));
   }
 
+  // If registration via Google is started for an existing Google account,
+  // treat it as sign-in instead of attempting to create a duplicate profile.
+  // Provider mismatches are rejected above so this cannot bypass the one-provider rule.
+  if (intent === "signup" && profile && profile.provider === "google" && profile.id === user.id) {
+    return NextResponse.redirect(new URL(destinationForRole(profile.role), url.origin));
+  }
+
   if (!profile && intent !== "signup" && type !== "verify") {
     // The login button must not silently create a new account.
     await supabase.auth.signOut();
