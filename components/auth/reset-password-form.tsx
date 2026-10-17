@@ -39,22 +39,42 @@ export function ResetPasswordForm() {
 
   useEffect(() => {
     const code = searchParams.get("code");
-
-    if (!code) {
-      setIsExchanging(false);
-      setIsReady(false);
-      return;
-    }
-
-    const resetCode = code;
+    const tokenHash = searchParams.get("token_hash");
+    const tokenType = searchParams.get("type");
     let isMounted = true;
 
-    async function exchangeCode(codeValue: string) {
-      const { error } = await supabase.auth.exchangeCodeForSession(codeValue);
+    async function validateRecoveryLink() {
+      let validationError: Error | null = null;
+
+      try {
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          validationError = error;
+        } else if (tokenHash && tokenType === "recovery") {
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: "recovery",
+          });
+          validationError = error;
+        } else {
+          // Supabase may consume URL-fragment tokens while initializing the browser
+          // client, so the fragment is not guaranteed to remain available here.
+          // Accept only if Supabase has established a valid session.
+          const { data, error } = await supabase.auth.getSession();
+          validationError = error;
+          if (!validationError && !data.session) {
+            validationError = new Error("No valid recovery session was established.");
+          }
+        }
+      } catch (error) {
+        validationError = error instanceof Error ? error : new Error("Recovery link validation failed.");
+      }
 
       if (!isMounted) return;
 
-      if (error) {
+      if (validationError) {
+        // Keep token values out of logs and show a safe, actionable message to users.
+        console.error("Password recovery link validation failed:", validationError.message);
         toast.error("Link reset tidak valid atau sudah kedaluwarsa.");
         setIsReady(false);
       } else {
@@ -64,7 +84,7 @@ export function ResetPasswordForm() {
       setIsExchanging(false);
     }
 
-    exchangeCode(resetCode);
+    void validateRecoveryLink();
 
     return () => {
       isMounted = false;
