@@ -189,7 +189,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     type="button"
                     onClick={() => setActiveCategory(category)}
                     aria-pressed={selected}
-                    className={`shrink-0 rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 ${
+                    className={`shrink-0 rounded-[4px] border px-4 py-2 text-xs transition-colors duration-200 sm:px-5 sm:py-2.5 ${
                       selected
                         ? "border-[#29271F] bg-[#29271F] text-[#F8F6F1]"
                         : "border-[#29271F]/15 bg-transparent text-[#29271F]/65 hover:border-[#A58A67] hover:text-[#29271F]"
