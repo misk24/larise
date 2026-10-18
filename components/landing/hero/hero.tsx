@@ -1,8 +1,8 @@
 "use client";
 
 import { Item, Stagger } from "@/components/motion";
-import { Button } from "@/components/ui/button";
-import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
+import { landingButtonStyles } from "@/components/landing/ui/button";
+import { LandingScrollLink } from "@/components/landing/ui/smooth-scroll-link";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -34,27 +34,23 @@ export function HeroSection() {
           </Item>
           <Item>
             <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
-              <Button size="lg" className="group h-12 rounded-full px-6" asChild>
-                <Link href="/register">Buat Undangan</Link>
-              </Button>
-              <Button variant="outline" size="lg" className="h-12 rounded-full border-border bg-transparent px-6" asChild>
-                <SmoothScrollLink href="#collections">Lihat Pilihan Tema</SmoothScrollLink>
-              </Button>
+              <Link href="/register" className={landingButtonStyles({ size: "lg", className: "group" })}>
+                Buat Undangan
+              </Link>
+              <LandingScrollLink href="#collections" className={landingButtonStyles({ variant: "secondary", size: "lg" })}>
+                Lihat Pilihan Tema
+              </LandingScrollLink>
             </div>
           </Item>
         </Stagger>
 
         <div className="relative mx-auto w-full max-w-[34rem] lg:max-w-none">
-          <div className="relative aspect-[4/4.7] overflow-hidden rounded-t-[48%] rounded-b-[1.25rem] bg-secondary sm:rounded-b-[1.5rem]">
+          <div className="relative aspect-[4/4.7] overflow-hidden rounded-t-[48%] rounded-b-[4px] bg-secondary">
             <Image src="/images/hero.jpg" alt="Inspirasi suasana pernikahan yang hangat dan intim" fill priority sizes="(max-width: 1024px) 90vw, 44vw" className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#29271f]/40 via-transparent to-[#29271f]/5" />
-            <div className="absolute inset-x-4 bottom-4 rounded-xl border border-white/30 bg-[#faf9f6]/90 p-4 backdrop-blur-md sm:inset-x-6 sm:bottom-6 sm:p-5">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-[9px] uppercase tracking-[0.24em] text-[#8a765d] sm:text-[10px]">LARISÉ</p>
-                  <p className="frontend-display mt-1 text-2xl italic leading-tight text-[#29271f] sm:text-3xl">A day to remember</p>
-                </div>
-                </div>
+            <div className="absolute inset-x-4 bottom-4 border border-white/30 bg-[#faf9f6]/90 p-4 backdrop-blur-md sm:inset-x-6 sm:bottom-6 sm:p-5">
+              <p className="text-[9px] uppercase tracking-[0.24em] text-[#8a765d] sm:text-[10px]">LARISÉ</p>
+              <p className="frontend-display mt-1 text-2xl italic leading-tight text-[#29271f] sm:text-3xl">A day to remember</p>
             </div>
           </div>
         </div>
