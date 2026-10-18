@@ -1,12 +1,11 @@
 "use client";
 
-import { Scale } from "@/components/motion";
 import { BrandLogo } from "@/components/landing/ui/brand-logo";
 import { LandingButton, landingButtonStyles } from "@/components/landing/ui/button";
 import { LandingScrollLink } from "@/components/landing/ui/smooth-scroll-link";
 import { useOverlay } from "@/hooks/use-overlay";
 import { useScroll } from "@/hooks/use-scroll";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { MobileHeader } from "./mobile-navbar";
 
@@ -47,12 +46,25 @@ export function Navbar() {
           variant="icon"
           size="icon"
           onClick={isOpen.toggle}
-          className="md:hidden"
+          className="relative md:hidden"
           aria-expanded={isOpen.isOpen}
           aria-controls="mobile-navigation"
           aria-label={isOpen.isOpen ? "Tutup menu" : "Buka menu"}
         >
-          <MenuIcon className="size-4" />
+          <MenuIcon
+            aria-hidden="true"
+            className={[
+              "absolute size-4 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+              isOpen.isOpen ? "rotate-90 scale-75 opacity-0" : "rotate-0 scale-100 opacity-100",
+            ].join(" ")}
+          />
+          <XIcon
+            aria-hidden="true"
+            className={[
+              "absolute size-4 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+              isOpen.isOpen ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-75 opacity-0",
+            ].join(" ")}
+          />
         </LandingButton>
       </div>
       <MobileHeader isOpen={isOpen.isOpen} onClose={isOpen.close} />
