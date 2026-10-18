@@ -1,8 +1,8 @@
 "use client";
 
 import { FadeIn } from "@/components/motion";
-import { Logo } from "@/components/ui/logo";
-import { SmoothScrollLink } from "@/components/ui/smooth-scroll-link";
+import { BrandLogo } from "@/components/landing/ui/brand-logo";
+import { LandingScrollLink } from "@/components/landing/ui/smooth-scroll-link";
 import { contacts } from "@/config/contact";
 import { Icon } from "@iconify/react";
 import { ArrowUpRight, MapPinIcon } from "lucide-react";
@@ -15,14 +15,14 @@ export function Footer() {
       <FadeIn className="mx-auto max-w-7xl">
         <div className="grid gap-10 border-b border-white/15 pb-10 md:grid-cols-[1.2fr_0.7fr_0.8fr] md:gap-12 md:pb-14">
           <div className="max-w-sm">
-            <SmoothScrollLink href="/" aria-label="LARISÉ, kembali ke atas"><Logo variant="footer" width={160} height={54} className="h-7" /></SmoothScrollLink>
+            <LandingScrollLink href="/" aria-label="LARISÉ, kembali ke atas"><BrandLogo variant="footer" width={160} height={54} className="h-7" /></LandingScrollLink>
             <p className="mt-5 max-w-xs text-sm leading-7 text-white/60">Undangan digital yang personal, untuk cerita dan hari yang berarti.</p>
             <Link href="/register" className="mt-6 inline-flex items-center gap-2 text-sm text-[#c8b18f] transition-colors hover:text-white">Mulai buat undangan <ArrowUpRight className="size-4" /></Link>
           </div>
           <div>
             <h3 className="mb-5 text-[10px] font-medium uppercase tracking-[0.22em] text-[#c8b18f]">Jelajahi</h3>
             <ul className="space-y-3">
-              {navigation.map((link) => <li key={link.href}><SmoothScrollLink href={link.href} className="text-sm text-white/65 transition-colors hover:text-white">{link.label}</SmoothScrollLink></li>)}
+              {navigation.map((item) => <li key={item.href}><LandingScrollLink href={item.href} className="text-sm text-white/65 transition-colors hover:text-white">{item.label}</LandingScrollLink></li>)}
             </ul>
           </div>
           <div>
