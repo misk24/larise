@@ -38,7 +38,7 @@ export function EditorialAccordion({ items, className }: EditorialAccordionProps
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center text-[#8B765A]" aria-hidden="true">
                   <span
                     className={[
-                      "transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                      "transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
                       isOpen ? "rotate-180" : "rotate-0",
                     ].join(" ")}
                   >
