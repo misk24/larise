@@ -189,7 +189,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     type="button"
                     onClick={() => setActiveCategory(category)}
                     aria-pressed={selected}
-                    className={`shrink-0 rounded-full border px-4 py-2 text-xs transition-all duration-200 sm:px-5 sm:py-2.5 ${
+                    className={`shrink-0 rounded-[4px] border px-4 py-2 text-xs transition-colors duration-200 sm:px-5 sm:py-2.5 ${
                       selected
                         ? "border-[#29271F] bg-[#29271F] text-[#F8F6F1]"
                         : "border-[#29271F]/15 bg-transparent text-[#29271F]/65 hover:border-[#A58A67] hover:text-[#29271F]"
@@ -208,8 +208,10 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
             <div
               ref={gridRef}
-              aria-label="Koleksi tema, geser horizontal untuk melihat tema lainnya"
-              className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 sm:overflow-visible sm:pb-0 lg:grid-cols-3 lg:gap-x-7"
+              role="region"
+              aria-label="Koleksi tema. Pada layar kecil, geser horizontal untuk melihat tema lainnya."
+              tabIndex={0}
+              className="flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto overscroll-x-contain pb-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#927653] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 sm:overflow-visible sm:pb-0 sm:focus-visible:outline-none lg:grid-cols-3 lg:gap-x-7"
             >
               {filteredThemes.map((theme, index) => {
                 const image = theme.thumbnail_url || theme.preview_url;

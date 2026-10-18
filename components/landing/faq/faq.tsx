@@ -1,10 +1,7 @@
-"use client";
-
 import { FadeUp } from "@/components/motion";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Minus, Plus } from "lucide-react";
+import { EditorialAccordion, type EditorialAccordionItem } from "@/components/landing/ui/accordion";
 
-const faqs = [
+const faqs: EditorialAccordionItem[] = [
   { question: "Apa itu LARISÉ?", answer: "LARISÉ adalah platform undangan pernikahan digital untuk menyusun informasi acara, membagikan cerita, dan mengirim undangan melalui satu tautan." },
   { question: "Apakah isi undangan bisa disesuaikan?", answer: "Kamu dapat menyesuaikan informasi dan konten yang tersedia, seperti nama pasangan, foto, cerita, detail acara, dan elemen lain sesuai tema yang dipilih." },
   { question: "Apakah undangan bisa dibuka lewat HP?", answer: "Bisa. Halaman undangan dirancang responsif agar nyaman dibuka melalui smartphone maupun layar yang lebih besar." },
@@ -25,20 +22,7 @@ export function FAQSection() {
           </div>
         </FadeUp>
         <FadeUp>
-          <Accordion type="single" collapsible className="w-full border-t border-[#29271f]/20">
-            {faqs.map((faq, index) => (
-              <AccordionItem key={faq.question} value={"faq-" + index} className="border-[#29271f]/15">
-                <AccordionTrigger className="group gap-4 py-5 text-left text-base font-medium text-[#29271f] hover:no-underline sm:py-6 sm:text-lg [&>svg]:hidden">
-                  <span className="flex min-w-6 items-center justify-center text-[#8b765a]" aria-hidden="true">
-                    <Plus className="size-4 group-data-[state=open]:hidden" strokeWidth={1.5} />
-                    <Minus className="hidden size-4 group-data-[state=open]:block" strokeWidth={1.5} />
-                  </span>
-                  <span className="flex-1">{faq.question}</span>
-                </AccordionTrigger>
-                <AccordionContent className="max-w-2xl pb-6 pl-10 text-sm leading-7 text-[#625d51] sm:text-base sm:leading-8">{faq.answer}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <EditorialAccordion items={faqs} />
         </FadeUp>
       </div>
     </section>
