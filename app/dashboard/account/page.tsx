@@ -1,5 +1,6 @@
 import { AccountForm } from "@/components/dashboard/account-form";
 import { LoginSecurityCard } from "@/components/dashboard/login-security-card";
+import { AccountDangerZone } from "@/components/dashboard/account-danger-zone";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -69,6 +70,8 @@ export default async function MyAccountPage() {
           </CardContent>
         </Card>
       </div>
+
+      <AccountDangerZone provider={profile.provider} email={user.email ?? profile.email} />
     </div>
   );
 }
