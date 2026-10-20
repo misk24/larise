@@ -244,7 +244,7 @@ export async function updateProfile(input: { full_name: string; phone: string })
   const phone = input.phone.trim().slice(0, 30);
   const { error } = await supabase
     .from("profiles")
-    .update({ full_name: fullName || null, phone: input.phone.trim().slice(0, 30) || null })
+    .update({ full_name: fullName || null, phone: phone || null })
     .eq("id", user.id);
 
   if (error) {
