@@ -267,7 +267,7 @@ export async function updateProfile(input: {
         if (
           avatarUrl.origin !== supabaseUrl.origin ||
           !avatarUrl.pathname.startsWith(expectedPath) ||
-          !/\\.(jpg|png|webp)$/i.test(avatarUrl.pathname)
+          !/\.(jpg|png|webp)$/i.test(avatarUrl.pathname)
         ) {
           return { error: "URL foto profil tidak valid." };
         }
