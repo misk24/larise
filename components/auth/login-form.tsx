@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -34,6 +34,7 @@ export function LoginForm() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const supabase = createClient();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirectTo = searchParams.get("redirect");
   const isMobile = useIsMobile();
 
@@ -50,8 +51,12 @@ export function LoginForm() {
       toast.error("Akun belum terdaftar. Silakan daftar terlebih dahulu.");
     } else if (error === "oauth") {
       toast.error("Terjadi kesalahan saat login. Silakan coba lagi.");
-    } else if (error === "profile_creation") {
-      toast.error("Terjadi kesalahan saat membuat profil. Silakan coba lagi.");
+    } else if (error === "profile_creation" || error === "profile_lookup") {
+      toast.error("Terjadi kesalahan saat memuat profil. Silakan coba lagi.");
+    } else if (error === "verification_failed") {
+      toast.error("Verifikasi email gagal atau tautannya sudah kedaluwarsa. Minta tautan baru.");
+    } else if (error === "invalid_callback") {
+      toast.error("Tautan autentikasi tidak valid. Silakan coba login kembali.");
     }
   }, [searchParams]);
 
@@ -66,7 +71,7 @@ export function LoginForm() {
     setIsSubmitLoading(true);
 
     try {
-      const result = await signInWithEmail(email, password, redirectTo ?? undefined);
+      const result = await signInWithEmail(email, password, redirectTo);
 
       if (result?.error) {
         // Transform Supabase error message menjadi lebih user-friendly
@@ -83,14 +88,11 @@ export function LoginForm() {
         setIsSubmitLoading(false);
         return;
       }
-      // Jika tidak ada error, redirect akan terjadi otomatis
-      // Tidak perlu handle di sini karena signInWithEmail() sudah redirect
-    } catch (err: unknown) {
-      // Ignore NextJS redirect error (bukan error sebenarnya)
-      if (err instanceof Error && err.message === "NEXT_REDIRECT") {
+      if (result?.success && result.redirectTo) {
+        router.replace(result.redirectTo);
         return;
       }
-
+    } catch (err: unknown) {
       console.error(err);
       toast.error("Terjadi kesalahan. Silakan coba lagi.");
       setIsSubmitLoading(false);

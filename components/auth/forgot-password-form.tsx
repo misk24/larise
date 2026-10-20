@@ -14,16 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { requestPasswordReset } from "@/lib/actions/auth";
+import { emailSchema } from "@/lib/auth/validation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const forgotPasswordSchema = z.object({
-  email: z.string().email("Email tidak valid."),
-});
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -33,24 +29,28 @@ export function ForgotPasswordForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const validation = forgotPasswordSchema.safeParse({ email });
+    const validation = emailSchema.safeParse(email);
     if (!validation.success) {
       toast.error(validation.error.issues[0]?.message ?? "Email tidak valid.");
       return;
     }
     setIsSubmitting(true);
 
-    const result = await requestPasswordReset(email);
+    try {
+      const result = await requestPasswordReset(email);
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
 
-    if (result?.error) {
-      toast.error(result.error);
+      toast.success("Jika email terdaftar untuk login dengan password, link reset akan dikirim. Silakan cek inbox atau folder spam.");
+      setIsSent(true);
+    } catch (error) {
+      console.error("Password reset request failed:", error);
+      toast.error("Permintaan reset belum dapat diproses. Coba lagi nanti.");
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-
-    toast.success("Jika email terdaftar untuk login dengan password, link reset akan dikirim. Silakan cek inbox atau folder spam.");
-    setIsSent(true);
-    setIsSubmitting(false);
   }
 
   return (

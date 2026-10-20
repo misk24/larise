@@ -108,12 +108,15 @@ export function ResetPasswordForm() {
     const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
-      toast.error(error.message);
+      toast.error("Password belum dapat diperbarui. Silakan coba lagi.");
+      console.error("Password update failed:", error.message);
       setIsSubmitting(false);
       return;
     }
 
-    toast.success("Password berhasil diperbarui. Silakan login.");
+    await supabase.auth.signOut();
+
+    toast.success("Password berhasil diperbarui. Silakan login kembali.");
     setIsComplete(true);
     setIsSubmitting(false);
 
