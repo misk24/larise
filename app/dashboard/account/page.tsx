@@ -1,4 +1,5 @@
 import { AccountForm } from "@/components/dashboard/account-form";
+import { LoginSecurityCard } from "@/components/dashboard/login-security-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -49,6 +50,8 @@ export default async function MyAccountPage() {
       </div>
 
       <AccountForm user={user} profile={profile} />
+
+      <LoginSecurityCard provider={profile.provider} email={user.email ?? profile.email} />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <Card className="shadow-none">
