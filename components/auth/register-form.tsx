@@ -72,6 +72,13 @@ export function RegisterForm() {
         router.push("/auth/verify");
         return;
       }
+
+      if (result?.success || result?.needsVerification === false) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      toast.error("Registrasi belum dapat diselesaikan. Silakan coba lagi.");
     } catch (err) {
       console.error(err);
     } finally {
