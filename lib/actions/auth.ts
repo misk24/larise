@@ -84,6 +84,15 @@ export async function signUpWithEmail(email: string, password: string) {
     return { error: "Registrasi belum berhasil. Silakan coba lagi." };
   }
 
+  // Supabase can return a synthetic user for duplicate emails when email
+  // confirmation is enabled. An empty identities list means this is not a new account.
+  if (data.user.identities && data.user.identities.length === 0) {
+    return {
+      error: "Email ini sudah terdaftar. Silakan login atau gunakan fitur lupa password.",
+      shouldRedirectToLogin: true,
+    };
+  }
+
   // Profiles may also be created by a database trigger. Upsert makes this
   // operation safe when that trigger has already created the row.
   const { error: upsertError } = await admin.from("profiles").upsert(
@@ -201,29 +210,6 @@ export async function requestPasswordReset(email: string) {
     }
   }
 
-  return { success: true };
-}
-
-export async function updatePassword(password: string, confirmPassword: string) {
-  const validation = passwordResetSchema.safeParse({ password, confirmPassword });
-  if (!validation.success) {
-    return { error: validation.error.issues[0]?.message ?? "Password tidak valid." };
-  }
-
-  const supabase = await createClient();
-  const { data, error: sessionError } = await supabase.auth.getUser();
-
-  if (sessionError || !data.user) {
-    return { error: "Sesi reset tidak valid atau sudah kedaluwarsa. Minta tautan reset baru." };
-  }
-
-  const { error } = await supabase.auth.updateUser({ password });
-  if (error) {
-    console.error("Password update failed:", error.message);
-    return { error: "Password belum dapat diperbarui. Silakan coba lagi." };
-  }
-
-  await supabase.auth.signOut();
   return { success: true };
 }
 
