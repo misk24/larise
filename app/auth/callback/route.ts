@@ -61,7 +61,7 @@ export async function GET(request: Request) {
   const { data: profile, error: lookupError } = await admin
     .from("profiles")
     .select("id, provider, role")
-    .eq("id", user.id)
+    .ilike("email", email)
     .maybeSingle();
 
   if (lookupError) {
