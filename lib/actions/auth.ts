@@ -235,16 +235,52 @@ export async function getUser() {
   return user;
 }
 
-export async function updateProfile(input: { full_name: string; phone: string }) {
+export async function updateProfile(input: {
+  full_name: string;
+  phone: string;
+  avatar_url?: string | null;
+}) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Sesi login tidak valid." };
 
-  const fullName = input.full_name.trim().slice(0, 120);
-  const phone = input.phone.trim().slice(0, 30);
+  const fullName = input.full_name.trim();
+  const phone = input.phone.trim();
+  if (!fullName || fullName.length > 120) {
+    return { error: "Nama lengkap wajib diisi dan maksimal 120 karakter." };
+  }
+  if (phone.length > 30) {
+    return { error: "Nomor telepon maksimal 30 karakter." };
+  }
+
+  const updates: { full_name: string; phone: string | null; avatar_url?: string | null } = {
+    full_name: fullName,
+    phone: phone || null,
+  };
+
+  if (input.avatar_url !== undefined) {
+    if (input.avatar_url !== null) {
+      try {
+        const avatarUrl = new URL(input.avatar_url);
+        const supabaseUrl = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!);
+        const expectedPath = `/storage/v1/object/public/profile-avatars/${user.id}/avatar.`;
+        if (
+          avatarUrl.origin !== supabaseUrl.origin ||
+          !avatarUrl.pathname.startsWith(expectedPath) ||
+          !/\.(jpg|png|webp)$/i.test(avatarUrl.pathname)
+        ) {
+          return { error: "URL foto profil tidak valid." };
+        }
+      } catch {
+        return { error: "URL foto profil tidak valid." };
+      }
+    }
+    updates.avatar_url = input.avatar_url;
+  }
+
   const { error } = await supabase
     .from("profiles")
-    .update({ full_name: fullName || null, phone: phone || null })
+    .update(updates)
     .eq("id", user.id);
 
   if (error) {
