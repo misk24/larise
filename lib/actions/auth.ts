@@ -5,8 +5,17 @@ import { createClient } from "@/lib/supabase/server";
 import { loginSchema, registerSchema, safeRedirectPath } from "@/lib/auth/validation";
 import { redirect } from "next/navigation";
 
-const siteUrl = () =>
-  (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
+const siteUrl = () => {
+  const configuredUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    "http://localhost:3000";
+  const normalizedUrl = configuredUrl.startsWith("http")
+    ? configuredUrl
+    : `https://${configuredUrl}`;
+  return normalizedUrl.replace(/\/$/, "");
+};
 
 function providerLabel(provider: string) {
   return provider === "google" ? "Google" : "email dan password";
@@ -112,7 +121,9 @@ export async function requestPasswordReset(email: string) {
   if (profile?.provider === "email") {
     const supabase = await createClient();
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
-      redirectTo: `${siteUrl()}/auth/callback?type=recovery`,
+      // A dedicated callback prevents recovery links from being mistaken for
+      // ordinary OAuth/email-verification callbacks when the recovery type is lost.
+      redirectTo: `${siteUrl()}/auth/recovery-callback`,
     });
     if (resetError) {
       console.error("Password reset request failed:", resetError);
