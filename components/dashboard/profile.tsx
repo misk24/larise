@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/lib/actions/auth";
+import Link from "next/link";
 import type { Profile } from "@/types/database";
 import type { User } from "@supabase/supabase-js";
 import { LogOutIcon, SettingsIcon, UserIcon } from "lucide-react";
@@ -66,14 +67,18 @@ export function UserProfile({
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem className="px-4 py-2 focus:bg-accent/10 focus:rounded-md text-muted-foreground">
-            <UserIcon className="size-5" />
-            <p>My Account</p>
+          <DropdownMenuItem asChild className="px-4 py-2 focus:bg-accent/10 focus:rounded-md text-muted-foreground">
+            <Link href="/dashboard/account" className="flex items-center gap-2">
+              <UserIcon className="size-5" />
+              <span>My Account</span>
+            </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="px-4 py-2 focus:bg-accent/10 focus:rounded-md text-muted-foreground">
-            <SettingsIcon className="size-5" />
-            <p>Settings</p>
+          <DropdownMenuItem asChild className="px-4 py-2 focus:bg-accent/10 focus:rounded-md text-muted-foreground">
+            <Link href="/dashboard/settings" className="flex items-center gap-2">
+              <SettingsIcon className="size-5" />
+              <span>Settings</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
