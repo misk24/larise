@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import {
+  emailSchema,
   loginSchema,
   registerSchema,
   safeRedirectPath,
@@ -181,7 +182,12 @@ export async function signInWithEmail(
 }
 
 export async function requestPasswordReset(email: string): Promise<{ error?: string; success?: boolean }> {
-  const normalizedEmail = email.trim().toLowerCase();
+  const validation = emailSchema.safeParse(email);
+  if (!validation.success) {
+    return { error: validation.error.issues[0]?.message ?? "Email tidak valid." };
+  }
+
+  const normalizedEmail = validation.data.toLowerCase();
   const supabase = await createClient();
 
   // Keep the response generic so callers cannot enumerate registered accounts.
