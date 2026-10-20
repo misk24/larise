@@ -51,7 +51,12 @@ export async function GET(request: Request) {
   }
 
   const user = data.user;
-  const email = user.email.trim().toLowerCase();
+  const email = user.email?.trim().toLowerCase();
+  if (!email) {
+    await supabase.auth.signOut();
+    response.headers.set("Location", new URL("/login?error=oauth", url.origin).toString());
+    return response;
+  }
   const provider =
     type === "verify"
       ? "email"
