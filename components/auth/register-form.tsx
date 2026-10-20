@@ -73,7 +73,7 @@ export function RegisterForm() {
         return;
       }
 
-      if (result?.success || result?.needsVerification === false) {
+      if (result?.needsVerification === false) {
         router.replace("/dashboard");
         return;
       }
