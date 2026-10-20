@@ -14,16 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { requestPasswordReset } from "@/lib/actions/auth";
+import { emailSchema } from "@/lib/auth/validation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const forgotPasswordSchema = z.object({
-  email: z.string().email("Email tidak valid."),
-});
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -33,7 +29,7 @@ export function ForgotPasswordForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const validation = forgotPasswordSchema.safeParse({ email });
+    const validation = emailSchema.safeParse(email);
     if (!validation.success) {
       toast.error(validation.error.issues[0]?.message ?? "Email tidak valid.");
       return;
