@@ -36,17 +36,21 @@ export function ForgotPasswordForm() {
     }
     setIsSubmitting(true);
 
-    const result = await requestPasswordReset(email);
+    try {
+      const result = await requestPasswordReset(email);
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
 
-    if (result?.error) {
-      toast.error(result.error);
+      toast.success("Jika email terdaftar untuk login dengan password, link reset akan dikirim. Silakan cek inbox atau folder spam.");
+      setIsSent(true);
+    } catch (error) {
+      console.error("Password reset request failed:", error);
+      toast.error("Permintaan reset belum dapat diproses. Coba lagi nanti.");
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-
-    toast.success("Jika email terdaftar untuk login dengan password, link reset akan dikirim. Silakan cek inbox atau folder spam.");
-    setIsSent(true);
-    setIsSubmitting(false);
   }
 
   return (
