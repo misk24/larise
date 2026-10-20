@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -34,6 +34,7 @@ export function LoginForm() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const supabase = createClient();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirectTo = searchParams.get("redirect");
   const isMobile = useIsMobile();
 
@@ -66,7 +67,7 @@ export function LoginForm() {
     setIsSubmitLoading(true);
 
     try {
-      const result = await signInWithEmail(email, password, redirectTo ?? undefined);
+      const result = await signInWithEmail(email, password, redirectTo);
 
       if (result?.error) {
         // Transform Supabase error message menjadi lebih user-friendly
@@ -83,14 +84,11 @@ export function LoginForm() {
         setIsSubmitLoading(false);
         return;
       }
-      // Jika tidak ada error, redirect akan terjadi otomatis
-      // Tidak perlu handle di sini karena signInWithEmail() sudah redirect
-    } catch (err: unknown) {
-      // Ignore NextJS redirect error (bukan error sebenarnya)
-      if (err instanceof Error && err.message === "NEXT_REDIRECT") {
+      if (result?.success && result.redirectTo) {
+        router.replace(result.redirectTo);
         return;
       }
-
+    } catch (err: unknown) {
       console.error(err);
       toast.error("Terjadi kesalahan. Silakan coba lagi.");
       setIsSubmitLoading(false);
