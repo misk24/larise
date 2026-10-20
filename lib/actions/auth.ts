@@ -28,7 +28,7 @@ function isDuplicateAuthError(message: string) {
   return /already registered|already exists|user already|email.*taken/i.test(message);
 }
 
-export async function signUpWithEmail(email: string, password: string) {
+export async function signUpWithEmail(email: string, password: string): Promise<{ error?: string; shouldRedirectToLogin?: boolean; needsVerification?: boolean }> {
   const validation = registerSchema.safeParse({
     email,
     password,
@@ -118,7 +118,7 @@ export async function signInWithEmail(
   email: string,
   password: string,
   redirectTo?: string | null,
-) {
+): Promise<{ error?: string; success?: boolean; redirectTo?: string }> {
   const validation = loginSchema.safeParse({ email, password });
   if (!validation.success) {
     return { error: validation.error.issues[0]?.message ?? "Data login tidak valid." };
@@ -179,7 +179,7 @@ export async function signInWithEmail(
   return { success: true, redirectTo: destination };
 }
 
-export async function requestPasswordReset(email: string) {
+export async function requestPasswordReset(email: string): Promise<{ error?: string; success?: boolean }> {
   const normalizedEmail = email.trim().toLowerCase();
   const supabase = await createClient();
 
