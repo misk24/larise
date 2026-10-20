@@ -1,8 +1,9 @@
 import { AccountForm } from "@/components/dashboard/account-form";
+import { LoginSecurityCard } from "@/components/dashboard/login-security-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { CalendarDaysIcon, ShieldCheckIcon } from "lucide-react";
+import { CalendarDaysIcon } from "lucide-react";
 
 export default async function MyAccountPage() {
   const supabase = await createClient();
@@ -50,25 +51,9 @@ export default async function MyAccountPage() {
 
       <AccountForm user={user} profile={profile} />
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Card className="shadow-none">
-          <CardContent className="flex items-start gap-3 p-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
-              <ShieldCheckIcon className="size-5 text-muted-foreground" />
-            </div>
-            <div className="min-w-0 space-y-1">
-              <p className="text-sm font-medium">Metode login</p>
-              <p className="text-sm text-muted-foreground">
-                {profile.provider === "google" ? "Google" : "Email dan password"}
-              </p>
-              <p className="text-xs leading-5 text-muted-foreground">
-                {profile.provider === "google"
-                  ? "Gunakan akun Google yang terhubung untuk masuk."
-                  : "Gunakan email dan password untuk masuk ke akun Anda."}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+      <LoginSecurityCard provider={profile.provider} email={user.email ?? profile.email} />
+
+      <div className="max-w-md">
         <Card className="shadow-none">
           <CardContent className="flex items-start gap-3 p-4">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">

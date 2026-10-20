@@ -322,3 +322,57 @@ export async function requireAdmin() {
   if (!profile || profile.role !== "admin") redirect("/dashboard");
   return profile;
 }
+
+
+export async function changeAccountPassword(input: {
+  currentPassword: string;
+  newPassword: string;
+}): Promise<{ error?: string; success?: boolean }> {
+  const currentPassword = input.currentPassword;
+  const newPassword = input.newPassword;
+
+  if (typeof currentPassword !== "string" || !currentPassword) {
+    return { error: "Masukkan password saat ini." };
+  }
+  if (typeof newPassword !== "string" || newPassword.length < 8 || newPassword.length > 128) {
+    return { error: "Password baru harus terdiri dari 8–128 karakter." };
+  }
+  if (currentPassword === newPassword) {
+    return { error: "Password baru harus berbeda dari password saat ini." };
+  }
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.email) return { error: "Sesi login tidak valid. Silakan login kembali." };
+
+  const admin = createAdminClient();
+  const { data: profile, error: profileError } = await admin
+    .from("profiles")
+    .select("provider")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profileError || !profile) {
+    console.error("Password change profile lookup failed:", profileError);
+    return { error: "Informasi akun belum dapat diverifikasi. Coba lagi nanti." };
+  }
+  if (profile.provider !== "email") {
+    return { error: "Akun Google tidak memiliki password LARISÉ. Kelola password melalui Google." };
+  }
+
+  const { error: reauthError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  });
+  if (reauthError) {
+    return { error: "Password saat ini tidak sesuai." };
+  }
+
+  const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+  if (updateError) {
+    console.error("Account password update failed:", updateError.message);
+    return { error: "Password belum berhasil diperbarui. Pastikan password baru memenuhi ketentuan." };
+  }
+
+  return { success: true };
+}
