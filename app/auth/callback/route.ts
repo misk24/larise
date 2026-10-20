@@ -1,5 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 function destinationForRole(role: string | null | undefined) {
@@ -16,15 +18,33 @@ export async function GET(request: Request) {
 
   if (!code) return NextResponse.redirect(new URL("/login?error=oauth", url.origin));
 
-  // Exchange recovery codes on the server so the Supabase SSR client can persist
-  // the recovery session in cookies before the reset form loads.
+  // Persist recovery cookies on the exact redirect response. This avoids losing
+  // the newly exchanged session when the callback returns a redirect response.
   if (type === "recovery") {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const cookieStore = await cookies();
+    const response = NextResponse.redirect(new URL("/reset-password", url.origin));
+    const recoveryClient = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              response.cookies.set(name, value, options);
+            });
+          },
+        },
+      },
+    );
+    const { error } = await recoveryClient.auth.exchangeCodeForSession(code);
     if (error) {
       console.error("Password recovery code exchange failed:", error.message);
       return NextResponse.redirect(new URL("/forgot-password?error=invalid_recovery_link", url.origin));
     }
-    return NextResponse.redirect(new URL("/reset-password", url.origin));
+    return response;
   }
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
