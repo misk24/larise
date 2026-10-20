@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   // Build the Supabase client around the exact response so refreshed session
   // cookies survive the redirect to the destination page.
   const cookieStore = await cookies();
-  let response = NextResponse.redirect(new URL("/login", url.origin));
+  const response = NextResponse.redirect(new URL("/login", url.origin));
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -40,10 +40,10 @@ export async function GET(request: Request) {
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error || !data.user?.email) {
     console.error("Auth callback code exchange failed:", error?.message ?? "Missing user email");
-    response = NextResponse.redirect(new URL(
+    response.headers.set("Location", new URL(
       type === "verify" ? "/login?error=verification_failed" : "/login?error=oauth",
       url.origin,
-    ));
+    ).toString());
     return response;
   }
 
@@ -67,22 +67,25 @@ export async function GET(request: Request) {
   if (lookupError) {
     console.error("Auth callback profile lookup failed:", lookupError);
     await supabase.auth.signOut();
-    return NextResponse.redirect(new URL("/login?error=profile_lookup", url.origin));
+    response.headers.set("Location", new URL("/login?error=profile_lookup", url.origin).toString());
+    return response;
   }
 
   // Verification must match the email account created earlier. Never link
   // a new auth identity to an existing profile merely because email matches.
   if (profile && (profile.provider !== provider || profile.id !== user.id)) {
     await supabase.auth.signOut();
-    return NextResponse.redirect(new URL(
+    response.headers.set("Location", new URL(
       `/login?error=provider_mismatch&provider=${encodeURIComponent(profile.provider)}`,
       url.origin,
-    ));
+    ).toString());
+    return response;
   }
 
   if (!profile && intent !== "signup" && type !== "verify") {
     await supabase.auth.signOut();
-    return NextResponse.redirect(new URL("/login?error=account_not_found", url.origin));
+    response.headers.set("Location", new URL("/login?error=account_not_found", url.origin).toString());
+    return response;
   }
 
   if (!profile) {
@@ -96,18 +99,12 @@ export async function GET(request: Request) {
     if (insertError) {
       console.error("Auth callback profile creation failed:", insertError);
       await supabase.auth.signOut();
-      return NextResponse.redirect(new URL("/login?error=profile_creation", url.origin));
+      response.headers.set("Location", new URL("/login?error=profile_creation", url.origin).toString());
+      return response;
     }
   }
 
   const target = destinationForRole(profile?.role);
-  response = NextResponse.redirect(new URL(target, url.origin));
-  // Cookies are set by the client adapter on the initial response object. Copy
-  // the resulting auth cookies when replacing the response destination.
-  for (const cookie of cookieStore.getAll()) {
-    if (cookie.name.startsWith("sb-")) {
-      response.cookies.set(cookie.name, cookie.value);
-    }
-  }
+  response.headers.set("Location", new URL(target, url.origin).toString());
   return response;
 }
