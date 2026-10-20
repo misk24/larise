@@ -11,6 +11,7 @@ const settingsItems = [
     href: "/dashboard/invitations",
     label: "Buka undangan",
     icon: FileTextIcon,
+    disabled: false,
   },
   {
     title: "Notifikasi",
@@ -26,6 +27,7 @@ const settingsItems = [
     href: "/dashboard/account",
     label: "Kelola akun",
     icon: ShieldCheckIcon,
+    disabled: false,
   },
 ];
 
