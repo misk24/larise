@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import {
   loginSchema,
   registerSchema,
@@ -267,15 +268,11 @@ export async function getUserProfile() {
 
 export async function requireAuth() {
   const user = await getUser();
-  if (!user) {
-    const { redirect } = await import("next/navigation");
-    redirect("/login");
-  }
+  if (!user) redirect("/login");
   return user;
 }
 
 export async function requireAdmin() {
-  const { redirect } = await import("next/navigation");
   const user = await getUser();
   if (!user) redirect("/login");
 
