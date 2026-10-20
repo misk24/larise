@@ -4,7 +4,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import {
   loginSchema,
-  passwordResetSchema,
   registerSchema,
   safeRedirectPath,
 } from "@/lib/auth/validation";
