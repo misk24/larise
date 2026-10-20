@@ -8,6 +8,7 @@ import { changeAccountPassword } from "@/lib/actions/auth";
 import type { Profile } from "@/types/database";
 import { CheckCircle2Icon, EyeIcon, EyeOffIcon, KeyRoundIcon, Loader2Icon, ShieldCheckIcon } from "lucide-react";
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { toast } from "sonner";
 
 type LoginSecurityCardProps = {
@@ -23,7 +24,7 @@ export function LoginSecurityCard({ provider, email }: LoginSecurityCardProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [showPasswords, setShowPasswords] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (newPassword.length < 8) {
