@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { updatePassword } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
 import { passwordResetSchema } from "@/lib/auth/validation";
 import { cn } from "@/lib/utils";
@@ -106,13 +105,16 @@ export function ResetPasswordForm() {
 
     setIsSubmitting(true);
 
-    const result = await updatePassword(password, confirmPassword);
+    const { error } = await supabase.auth.updateUser({ password });
 
-    if (result?.error) {
-      toast.error(result.error);
+    if (error) {
+      toast.error("Password belum dapat diperbarui. Silakan coba lagi.");
+      console.error("Password update failed:", error.message);
       setIsSubmitting(false);
       return;
     }
+
+    await supabase.auth.signOut();
 
     toast.success("Password berhasil diperbarui. Silakan login kembali.");
     setIsComplete(true);
