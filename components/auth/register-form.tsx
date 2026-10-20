@@ -69,7 +69,7 @@ export function RegisterForm() {
       }
 
       if (result?.needsVerification) {
-        router.push("/auth/verify");
+        router.push("/verify");
         return;
       }
 
