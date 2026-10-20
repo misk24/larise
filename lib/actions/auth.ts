@@ -216,7 +216,7 @@ export async function requestPasswordReset(email: string): Promise<{ error?: str
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return { success: true };
+  redirect("/");
 }
 
 export async function getUser() {
