@@ -17,8 +17,8 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/login?error=invalid_callback", url.origin));
   }
 
-  // Build the Supabase client around the exact response so refreshed session
-  // cookies survive the redirect to the destination page.
+  // Attach refreshed session cookies to the redirect response, not only the
+  // request cookie store, so the browser receives the authenticated session.
   const cookieStore = await cookies();
   const response = NextResponse.redirect(new URL("/login", url.origin));
   const supabase = createServerClient(
@@ -40,19 +40,18 @@ export async function GET(request: Request) {
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error || !data.user?.email) {
     console.error("Auth callback code exchange failed:", error?.message ?? "Missing user email");
-    response.headers.set("Location", new URL(
-      type === "verify" ? "/login?error=verification_failed" : "/login?error=oauth",
-      url.origin,
-    ).toString());
+    response.headers.set(
+      "Location",
+      new URL(
+        type === "verify" ? "/login?error=verification_failed" : "/login?error=oauth",
+        url.origin,
+      ).toString(),
+    );
     return response;
   }
 
   const user = data.user;
-  const email = user.email?.trim().toLowerCase();
-  if (!email) {
-    response.headers.set("Location", new URL("/login?error=oauth", url.origin).toString());
-    return response;
-  }
+  const email = user.email.trim().toLowerCase();
   const provider =
     type === "verify"
       ? "email"
@@ -71,24 +70,38 @@ export async function GET(request: Request) {
   if (lookupError) {
     console.error("Auth callback profile lookup failed:", lookupError);
     await supabase.auth.signOut();
-    response.headers.set("Location", new URL("/login?error=profile_lookup", url.origin).toString());
+    response.headers.set(
+      "Location",
+      new URL("/login?error=profile_lookup", url.origin).toString(),
+    );
     return response;
   }
 
-  // Verification must match the email account created earlier. Never link
-  // a new auth identity to an existing profile merely because email matches.
-  if (profile && (profile.provider !== provider || profile.id !== user.id)) {
+  // The Auth user ID is the account identity. A stale provider label on an
+  // existing profile must not block a valid session for that same user.
+  // Still reject a different Auth user with the same email: matching email
+  // alone is not sufficient proof that two separate accounts may be linked.
+  if (profile && profile.id !== user.id) {
     await supabase.auth.signOut();
-    response.headers.set("Location", new URL(
-      `/login?error=provider_mismatch&provider=${encodeURIComponent(profile.provider)}`,
-      url.origin,
-    ).toString());
+    response.headers.set(
+      "Location",
+      new URL(
+        `/login?error=provider_mismatch&provider=${encodeURIComponent(profile.provider ?? "email")}`,
+        url.origin,
+      ).toString(),
+    );
     return response;
   }
 
+  // A login attempt without a profile is not an invitation to create one.
+  // Users can register through the signup flow; email verification is allowed
+  // to finish the profile for the account created during registration.
   if (!profile && intent !== "signup" && type !== "verify") {
     await supabase.auth.signOut();
-    response.headers.set("Location", new URL("/login?error=account_not_found", url.origin).toString());
+    response.headers.set(
+      "Location",
+      new URL("/login?error=account_not_found", url.origin).toString(),
+    );
     return response;
   }
 
@@ -103,12 +116,17 @@ export async function GET(request: Request) {
     if (insertError) {
       console.error("Auth callback profile creation failed:", insertError);
       await supabase.auth.signOut();
-      response.headers.set("Location", new URL("/login?error=profile_creation", url.origin).toString());
+      response.headers.set(
+        "Location",
+        new URL("/login?error=profile_creation", url.origin).toString(),
+      );
       return response;
     }
   }
 
-  const target = destinationForRole(profile?.role);
-  response.headers.set("Location", new URL(target, url.origin).toString());
+  response.headers.set(
+    "Location",
+    new URL(destinationForRole(profile?.role), url.origin).toString(),
+  );
   return response;
 }
