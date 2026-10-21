@@ -36,5 +36,6 @@ export function normalizeSlug(value: string) {
 }
 
 export function buildInvitationSlug(firstNickname: string, secondNickname: string) {
-  return normalizeSlug(`${firstNickname}-${secondNickname}`) || "undangan";
+  if (!firstNickname.trim() || !secondNickname.trim()) return "";
+  return normalizeSlug(`${firstNickname}-${secondNickname}`);
 }
