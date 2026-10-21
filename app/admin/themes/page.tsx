@@ -42,7 +42,7 @@ export default async function AdminThemesPage() {
           </Link>
         </Button>
       </div>
-      <Card className="border-border bg-card">
+      <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Tema</CardTitle>
           <CardDescription>
@@ -103,7 +103,7 @@ export default async function AdminThemesPage() {
             </div>
           ) : (
             <div className="py-12 text-center">
-              <PaletteIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
+              <PaletteIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
               <p className="text-muted-foreground">Belum ada tema</p>
             </div>
           )}
