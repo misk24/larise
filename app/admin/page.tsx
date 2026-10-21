@@ -80,7 +80,7 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div>
         <h2 className="dashboard">Dashboard</h2>
         <p className="text-muted-foreground">
@@ -103,7 +103,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="border-border bg-sidebar overflow-hidden">
+        <Card className="border-border bg-card overflow-hidden">
           <CardHeader>
             <CardTitle className="text-lg">Pengguna Terbaru</CardTitle>
             <CardDescription>5 pengguna yang baru mendaftar</CardDescription>
@@ -120,7 +120,7 @@ export default async function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-sidebar">
+        <Card className="border-border bg-card">
           <CardHeader>
             <CardTitle className="text-lg">Pesanan Terbaru</CardTitle>
             <CardDescription>5 pesanan terakhir</CardDescription>
