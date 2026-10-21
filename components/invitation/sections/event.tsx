@@ -4,7 +4,7 @@ import { contentValue } from "./content-utils";
 
 export function EventSection({ section, invitation }: SectionContext) {
   const content = section.content;
-  const date = contentValue(content, "date") || invitation.event_date || invitation.resepsi_date || invitation.akad_date || "";
+  const date = contentValue(content, "date") || "";
   const displayDate = /^\d{4}-\d{2}-\d{2}$/.test(date)
     ? new Date(`${date}T00:00:00`).toLocaleDateString("id-ID", {
         weekday: "long",
