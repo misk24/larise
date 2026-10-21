@@ -82,7 +82,6 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
         bride_name: parsed.data.brideName,
         bride_nickname: parsed.data.brideNickname,
         name_order: parsed.data.nameOrder,
-        event_date: parsed.data.eventDate,
         status: "draft",
         is_published: false,
       })
