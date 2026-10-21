@@ -40,7 +40,7 @@ export default async function GalleryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">
+        <h1 className="text-2xl md:text-3xl font-semibold">
           Galeri Foto
         </h1>
         <p className="text-muted-foreground">
