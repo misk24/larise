@@ -37,7 +37,7 @@ export default async function SettingsPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-7">
+    <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
       <div className="space-y-1">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Preferences</p>
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Settings</h1>
