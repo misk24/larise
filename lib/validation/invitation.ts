@@ -1,18 +1,23 @@
 import { z } from "zod";
 import slugify from "slugify";
 
+export const invitationNameOrderSchema = z.enum(["groom_first", "bride_first"]);
+
 export const invitationInputSchema = z.object({
   themeId: z.string().uuid(),
   groomName: z.string().trim().min(1).max(120),
+  groomNickname: z.string().trim().min(1).max(60),
   brideName: z.string().trim().min(1).max(120),
-  slug: z.string().trim().min(3).max(80).optional(),
+  brideNickname: z.string().trim().min(1).max(60),
+  nameOrder: invitationNameOrderSchema,
 });
 
 export const invitationSettingsSchema = z.object({
   themeId: z.string().uuid(),
   groomName: z.string().trim().min(1).max(120),
+  groomNickname: z.string().trim().min(1).max(60),
   brideName: z.string().trim().min(1).max(120),
-  slug: z.string().trim().min(3).max(80),
+  brideNickname: z.string().trim().min(1).max(60),
 });
 
 export function normalizeSlug(value: string) {
@@ -24,6 +29,7 @@ export function normalizeSlug(value: string) {
   }).slice(0, 80);
 }
 
-export function buildInvitationSlug(groomName: string, brideName: string) {
-  return normalizeSlug(`${groomName}-${brideName}`) || `undangan-${Date.now()}`;
+export function buildInvitationSlug(firstNickname: string, secondNickname: string) {
+  if (!firstNickname.trim() || !secondNickname.trim()) return "";
+  return normalizeSlug(`${firstNickname}-${secondNickname}`);
 }
