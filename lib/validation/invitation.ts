@@ -3,15 +3,6 @@ import slugify from "slugify";
 
 export const invitationNameOrderSchema = z.enum(["groom_first", "bride_first"]);
 
-const invitationDateSchema = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal acara tidak valid.")
-  .refine((value) => {
-    const [year, month, day] = value.split("-").map(Number);
-    const date = new Date(Date.UTC(year, month - 1, day));
-    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
-  }, "Tanggal acara tidak valid.");
-
 export const invitationInputSchema = z.object({
   themeId: z.string().uuid(),
   groomName: z.string().trim().min(1).max(120),
@@ -19,7 +10,6 @@ export const invitationInputSchema = z.object({
   brideName: z.string().trim().min(1).max(120),
   brideNickname: z.string().trim().min(1).max(60),
   nameOrder: invitationNameOrderSchema,
-  eventDate: invitationDateSchema,
 });
 
 export const invitationSettingsSchema = z.object({
