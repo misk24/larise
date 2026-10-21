@@ -13,7 +13,17 @@ export default async function RsvpDashboardPage() {
     .eq("user_id", user.id).order("created_at", { ascending: false });
 
   if (invitationsError) {
-    return <Card><CardContent className="p-8 text-sm text-destructive">Data undangan gagal dimuat. Coba muat ulang halaman.</CardContent></Card>;
+    return (
+      <div className="backend-content space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ringkasan RSVP</h1>
+          <p className="mt-1 text-muted-foreground">Pantau respons kehadiran dari semua undangan Anda.</p>
+        </div>
+        <Card className="shadow-none">
+          <CardContent className="p-6 text-sm text-destructive">Data undangan gagal dimuat. Coba muat ulang halaman.</CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const list = invitations ?? [];
