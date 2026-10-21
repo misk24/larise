@@ -1,9 +1,11 @@
-import { DashboardShell } from "@/components/dashboard/dashboard-shell";
-import { DashboardHeader } from "@/components/dashboard/header";
-import { DashboardSidebar } from "@/components/dashboard/sidebar";
+import { BackendBreadcrumb } from "@/components/backend/backend-breadcrumb";
+import { BackendHeader } from "@/components/backend/backend-header";
+import { BackendShell } from "@/components/backend/backend-shell";
+import { BackendSidebar } from "@/components/backend/backend-sidebar";
 import { Footer } from "@/components/shared/footer";
+import { userNavs } from "@/config/navigation";
 import { getUser, getUserProfile } from "@/lib/actions/auth";
-import { Viewport } from "next";
+import type { Viewport } from "next";
 import { redirect } from "next/navigation";
 import type React from "react";
 
@@ -20,12 +22,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (profile?.role !== "user") redirect("/admin");
 
   return (
-    <DashboardShell
-      sidebar={<DashboardSidebar />}
-      header={<DashboardHeader user={user} profile={profile} />}
+    <BackendShell
+      variant="dashboard"
+      sidebar={<BackendSidebar items={userNavs} />}
+      header={<BackendHeader user={user} profile={profile} role="user" />}
+      breadcrumbs={<BackendBreadcrumb role="user" />}
       footer={<Footer />}
     >
       {children}
-    </DashboardShell>
+    </BackendShell>
   );
 }

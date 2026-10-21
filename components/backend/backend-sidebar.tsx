@@ -19,12 +19,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { adminNavs } from "@/config/navigation";
 import { cn } from "@/lib/utils";
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function AdminSidebar() {
+export interface BackendNavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+interface BackendSidebarProps {
+  items: BackendNavItem[];
+}
+
+export function BackendSidebar({ items }: BackendSidebarProps) {
   const pathname = usePathname();
   const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
@@ -35,8 +45,8 @@ export function AdminSidebar() {
         <SidebarHeader>
           <div
             className={cn(
-              "p-2 transition-all duration-300 overflow-hidden",
-              collapsed ? "opacity-0 scale-90" : "opacity-100 scale-100",
+              "overflow-hidden p-2 transition-all duration-300",
+              collapsed ? "scale-90 opacity-0" : "scale-100 opacity-100",
             )}
           >
             <Logo variant="footer" />
@@ -49,12 +59,14 @@ export function AdminSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {adminNavs.map((link) => {
-                const isActive = pathname === link.href;
-
+              {items.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/dashboard" &&
+                    item.href !== "/admin" &&
+                    pathname.startsWith(`${item.href}/`));
                 const menu = (
                   <SidebarMenuButton
-                    key={link.href}
                     className={cn(
                       "rounded-md transition-colors",
                       isActive
@@ -64,32 +76,30 @@ export function AdminSidebar() {
                     asChild
                   >
                     <Link
-                      href={link.href}
+                      href={item.href}
                       onClick={() => {
-                        if (isMobile) {
-                          setOpenMobile(false);
-                        }
+                        if (isMobile) setOpenMobile(false);
                       }}
                       className="flex items-center gap-4 px-4 py-5"
                     >
-                      <link.icon className="size-5" />
-                      <p>{link.label}</p>
+                      <item.icon className="size-5" />
+                      <p>{item.label}</p>
                     </Link>
                   </SidebarMenuButton>
                 );
 
-                if (!collapsed) return menu;
-
                 return (
-                  <SidebarMenuItem key={link.href}>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>{menu}</TooltipTrigger>
-                        <TooltipContent side="right">
-                          {link.label}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                  <SidebarMenuItem key={item.href}>
+                    {collapsed ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>{menu}</TooltipTrigger>
+                          <TooltipContent side="right">{item.label}</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      menu
+                    )}
                   </SidebarMenuItem>
                 );
               })}
