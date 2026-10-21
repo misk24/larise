@@ -39,7 +39,7 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --font-sans: var(--font-body);
-  --font-mono: var(--font-mono);
+  --font-mono: var(--font-code);
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
   --radius-sm: calc(var(--radius) - 4px);
@@ -57,7 +57,7 @@
   /* Geist is the neutral default; brand-facing shells override these values. */
   --font-heading: var(--font-geist-sans);
   --font-body: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-code: var(--font-geist-mono);
 
   /* Semantic surfaces */
   --background: oklch(0.975 0.008 90);
