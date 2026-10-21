@@ -34,11 +34,11 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
   if (!invitation) notFound();
 
   return (
-    <div className="mx-auto max-w-[1800px] space-y-5">
+    <div className="backend-content mx-auto max-w-[1800px] space-y-5">
       <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
         <div>
           <p className="text-sm text-muted-foreground">Builder</p>
-          <h1 className="text-2xl font-semibold md:text-3xl">
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
             {invitation.groom_name} &amp; {invitation.bride_name}
           </h1>
           <p className="text-muted-foreground">Edit konten, visibility, urutan, lalu preview sebelum publish.</p>
