@@ -37,8 +37,8 @@ export default async function InvitationsPage() {
               ? invitation.themes[0]
               : invitation.themes;
             return (
-              <Card key={invitation.id}>
-                <div className="flex aspect-4/3 items-center justify-center bg-secondary/40">
+              <Card key={invitation.id} className="overflow-hidden shadow-none">
+                <div className="flex aspect-4/3 items-center justify-center bg-muted/70 p-4">
                   <div className="text-center">
                     <p className="text-2xl font-semibold tracking-tight">
                       {theme?.name ?? "Tanpa tema"}
