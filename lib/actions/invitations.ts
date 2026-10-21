@@ -153,7 +153,6 @@ export async function updateInvitation(
         groom_nickname: parsed.data.groomNickname,
         bride_name: parsed.data.brideName,
         bride_nickname: parsed.data.brideNickname,
-        event_date: parsed.data.eventDate,
       })
       .eq("id", invitationId)
       .eq("user_id", user.id);
