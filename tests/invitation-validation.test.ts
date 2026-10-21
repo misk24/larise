@@ -39,7 +39,12 @@ describe("invitation creation validation", () => {
   });
 
   it("does not accept slug or name order in settings updates", () => {
-    expect(invitationSettingsSchema.safeParse({ ...validInput, nameOrder: "bride_first", slug: "another-slug" }).success).toBe(false);
+    const parsed = invitationSettingsSchema.safeParse({ ...validInput, nameOrder: "bride_first", slug: "another-slug" });
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(parsed.data).not.toHaveProperty("nameOrder");
+      expect(parsed.data).not.toHaveProperty("slug");
+    }
     expect(invitationSettingsSchema.safeParse({
       themeId: validInput.themeId,
       groomName: validInput.groomName,
