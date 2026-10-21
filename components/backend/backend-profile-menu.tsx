@@ -37,12 +37,7 @@ export function BackendProfileMenu({
   const isAdmin = role === "admin";
   const fallbackName = isAdmin ? "Admin" : "User";
   const initials =
-    profile?.full_name
-      ?.split(" ")
-      .map((part) => part[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2) ||
+    profile?.full_name?.split(" ").map((part) => part[0]).join("").toUpperCase().slice(0, 2) ||
     user.email?.[0].toUpperCase() ||
     (isAdmin ? "A" : "U");
   const basePath = isAdmin ? "/admin" : "/dashboard";
@@ -54,10 +49,7 @@ export function BackendProfileMenu({
         <DropdownMenuLabel className="flex items-center gap-4">
           <div className="relative">
             <Avatar className="size-10">
-              <AvatarImage
-                src={profile?.avatar_url || ""}
-                alt={profile?.full_name || fallbackName}
-              />
+              <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || fallbackName} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
             <span className="absolute bottom-0 right-0 size-2 rounded-full bg-green-600" />
@@ -72,12 +64,14 @@ export function BackendProfileMenu({
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10">
-            <Link href={`${basePath}/account`} className="flex items-center gap-2">
-              <UserIcon className="size-5" />
-              <span>My Account</span>
-            </Link>
-          </DropdownMenuItem>
+          {!isAdmin && (
+            <DropdownMenuItem asChild className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10">
+              <Link href="/dashboard/account" className="flex items-center gap-2">
+                <UserIcon className="size-5" />
+                <span>My Account</span>
+              </Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem asChild className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10">
             <Link href={`${basePath}/settings`} className="flex items-center gap-2">
               <SettingsIcon className="size-5" />
