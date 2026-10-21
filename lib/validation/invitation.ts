@@ -18,7 +18,6 @@ export const invitationSettingsSchema = z.object({
   groomNickname: z.string().trim().min(1).max(60),
   brideName: z.string().trim().min(1).max(120),
   brideNickname: z.string().trim().min(1).max(60),
-  eventDate: invitationDateSchema,
 });
 
 export function normalizeSlug(value: string) {
