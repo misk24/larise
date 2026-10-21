@@ -40,10 +40,10 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="backend-content space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold md:text-3xl">Dashboard</h1>
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Dashboard</h1>
           <p className="mt-1 text-muted-foreground">Ringkasan dan pintasan untuk semua undangan Anda.</p>
         </div>
         <Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="mr-2 size-4" />Buat Undangan</Link></Button>
