@@ -40,7 +40,7 @@ export default async function InvitationsPage() {
               <Card key={invitation.id}>
                 <div className="flex aspect-4/3 items-center justify-center bg-secondary/40">
                   <div className="text-center">
-                    <p className="font-serif text-2xl">
+                    <p className="text-2xl font-semibold tracking-tight">
                       {theme?.name ?? "Tanpa tema"}
                     </p>
                     <p className="mt-1 text-sm text-muted-foreground">
