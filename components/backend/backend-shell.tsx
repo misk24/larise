@@ -25,7 +25,7 @@ export function BackendShell({
     <div
       className={cn(
         "backend-shell flex w-full",
-        variant === "dashboard" && "min-h-screen bg-primary/10",
+        "min-h-screen bg-background",
         className,
       )}
     >
