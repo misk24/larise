@@ -94,18 +94,16 @@ export function BackendBreadcrumb({ role }: BackendBreadcrumbProps) {
     return () => controller.abort();
   }, [pathname, role]);
 
-  let pathAccumulator = "";
   const navItems = role === "admin" ? adminNavs : userNavs;
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
         {segments.map((segment, index) => {
-          pathAccumulator += `/${segment}`;
-          const currentPath = pathAccumulator;
+          const currentPath = `/${segments.slice(0, index + 1).join("/")}`;
           const isLast = index === segments.length - 1;
           const match = navItems.find((item) => item.href === currentPath);
-          let label =
+          const label =
             dynamicLabels[currentPath] ||
             match?.label ||
             (role === "user" ? subpageNavs[segment] : undefined) ||
