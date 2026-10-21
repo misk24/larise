@@ -22,18 +22,28 @@ export default function CreateThemePage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="backend-content w-full max-w-lg space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Buat Tema</h1>
+    <div className="backend-content space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Buat Tema</h1>
+        <p className="mt-1 text-muted-foreground">
+          Beri nama tema sebelum mengatur section undangan.
+        </p>
+      </div>
 
-      <Input
-        placeholder="Nama tema"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="border p-2 w-full"
-        required
-      />
-
-      <Button>Simpan dan Lanjutkan</Button>
-    </form>
+      <form onSubmit={handleSubmit} className="backend-surface w-full max-w-2xl space-y-5 p-4 sm:p-6">
+        <div className="space-y-2">
+          <label htmlFor="theme-name" className="text-sm font-medium">Nama tema</label>
+          <Input
+            id="theme-name"
+            placeholder="Contoh: Minimalis Modern"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full"
+            required
+          />
+        </div>
+        <Button type="submit">Simpan dan Lanjutkan</Button>
+      </form>
+    </div>
   );
 }
