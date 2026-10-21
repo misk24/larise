@@ -19,14 +19,14 @@ export default async function GalleryPage() {
 
   if (!invitation) {
     return (
-      <div className="space-y-6">
+      <div className="backend-content space-y-6">
         <div>
-          <span className="text-2xl md:text-3xl font-medium">Galeri Foto</span>
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Galeri Foto</h1>
           <p className="text-muted-foreground">
             Kelola foto-foto untuk undangan Anda
           </p>
         </div>
-        <Card className="border-border bg-sidebar">
+        <Card className="border-border bg-card">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">
               Buat undangan terlebih dahulu untuk mengelola galeri.
@@ -38,9 +38,9 @@ export default async function GalleryPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">
+        <h1 className="text-2xl md:text-3xl font-semibold">
           Galeri Foto
         </h1>
         <p className="text-muted-foreground">
