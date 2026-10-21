@@ -13,7 +13,6 @@ const validInput = {
   brideName: "Putri Ayu Lestari",
   brideNickname: "Putri",
   nameOrder: "groom_first" as const,
-  eventDate: "2027-06-12",
 };
 
 describe("invitation creation validation", () => {
@@ -35,7 +34,6 @@ describe("invitation creation validation", () => {
   it("rejects invalid order, missing nicknames, and malformed dates", () => {
     expect(invitationInputSchema.safeParse({ ...validInput, nameOrder: "random" }).success).toBe(false);
     expect(invitationInputSchema.safeParse({ ...validInput, groomNickname: " " }).success).toBe(false);
-    expect(invitationInputSchema.safeParse({ ...validInput, eventDate: "12/06/2027" }).success).toBe(false);
   });
 
   it("does not accept slug or name order in settings updates", () => {
@@ -51,7 +49,6 @@ describe("invitation creation validation", () => {
       groomNickname: validInput.groomNickname,
       brideName: validInput.brideName,
       brideNickname: validInput.brideNickname,
-      eventDate: validInput.eventDate,
     }).success).toBe(true);
   });
 });
