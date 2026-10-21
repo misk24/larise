@@ -17,7 +17,7 @@ export default async function GuestsPage() {
 
   if (invitationError) {
     return (
-      <div className="space-y-6">
+      <div className="backend-content space-y-6">
         <h1 className="text-2xl font-semibold">Daftar Tamu</h1>
         <Card className="border-border/50">
           <CardContent className="p-8 text-sm text-destructive">
@@ -30,12 +30,12 @@ export default async function GuestsPage() {
 
   if (!invitation) {
     return (
-      <div className="space-y-6">
+      <div className="backend-content space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Daftar Tamu</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold">Daftar Tamu</h1>
           <p className="text-muted-foreground">Kelola daftar tamu undangan Anda</p>
         </div>
-        <Card className="border-border bg-sidebar">
+        <Card className="border-border bg-card">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk mengelola daftar tamu.</p>
           </CardContent>
@@ -51,9 +51,9 @@ export default async function GuestsPage() {
     .order("name");
 
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Daftar Tamu</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold">Daftar Tamu</h1>
         <p className="text-muted-foreground">Kelola kontak, tautan personal, dan konfirmasi kehadiran.</p>
       </div>
       {guestsError ? (
