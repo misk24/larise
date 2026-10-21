@@ -12,12 +12,12 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function AdminSettingsPage() {
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div>
-        <span className="text-2xl md:text-3xl font-medium">Pengaturan</span>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Pengaturan</h1>
         <p className="text-muted-foreground">Konfigurasi website dan sistem</p>
       </div>
-      <Card className="border-border bg-sidebar">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle>Informasi Website</CardTitle>
           <CardDescription>Pengaturan umum website</CardDescription>
@@ -50,7 +50,7 @@ export default function AdminSettingsPage() {
           <Button>Simpan Pengaturan</Button>
         </CardContent>
       </Card>
-      <Card className="border-border bg-sidebar">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle>Informasi Pembayaran</CardTitle>
           <CardDescription>
