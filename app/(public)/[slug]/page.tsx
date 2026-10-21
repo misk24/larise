@@ -8,8 +8,10 @@ interface PageProps {
   searchParams: Promise<{ to?: string }>;
 }
 
-function invitationTitle(invitation: { groom_name: string; bride_name: string }) {
-  return `Undangan Pernikahan ${invitation.groom_name} & ${invitation.bride_name}`;
+function invitationTitle(invitation: { groom_name: string; bride_name: string; name_order?: string }) {
+  const firstName = invitation.name_order === "bride_first" ? invitation.bride_name : invitation.groom_name;
+  const secondName = invitation.name_order === "bride_first" ? invitation.groom_name : invitation.bride_name;
+  return `Undangan Pernikahan ${firstName} & ${secondName}`;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -17,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const supabase = await createClient();
   const { data: invitation } = await supabase
     .from("invitations")
-    .select("slug, status, is_published, groom_name, bride_name")
+    .select("slug, status, is_published, groom_name, bride_name, name_order")
     .eq("slug", slug)
     .maybeSingle();
 
