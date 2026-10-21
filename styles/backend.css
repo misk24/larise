@@ -1,13 +1,32 @@
-/* Backend application design layer
- * Dashboard and admin UI only.
- * Keep public/invitation presentation rules out of this file.
- */
+/* Application UI typography.
+ * Dashboard and admin use Geist for a neutral, product-focused interface. */
 
 @layer components {
   .backend-shell {
+    --font-heading: var(--font-geist-sans);
+    --font-body: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
     min-height: 100vh;
     background: var(--background);
     color: var(--foreground);
+    font-family: var(--font-geist-sans), sans-serif;
+    font-feature-settings: "ss01" on;
+  }
+
+  .backend-shell h1,
+  .backend-shell h2,
+  .backend-shell h3,
+  .backend-shell h4 {
+    font-family: var(--font-geist-sans), sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  .backend-shell code,
+  .backend-shell pre,
+  .backend-shell kbd,
+  .backend-shell samp,
+  .backend-shell .font-mono {
+    font-family: var(--font-geist-mono), monospace;
   }
 
   .backend-page {

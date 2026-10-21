@@ -1,16 +1,31 @@
-/* Landing page design layer
- * Product marketing UI only.
- * Published invitations must be styled by their selected theme. */
+/* Marketing and brand-facing UI typography.
+ * Published invitations remain controlled by their selected theme. */
 
 @layer components {
+  .frontend-shell,
+  .auth-editorial {
+    --font-heading: var(--font-rosehot);
+    --font-body: var(--font-satoshi);
+    font-family: var(--font-satoshi), sans-serif;
+  }
+
   .frontend-shell {
     min-height: 100vh;
     background: var(--background);
     color: var(--foreground);
   }
 
+  .frontend-shell h1,
+  .frontend-shell h2,
+  .frontend-shell h3,
+  .frontend-shell h4,
+  .auth-editorial .auth-editorial-title,
+  .auth-editorial [data-slot="card-title"] {
+    font-family: var(--font-rosehot), Georgia, serif;
+  }
+
   .frontend-display {
-    font-family: var(--font-heading);
+    font-family: var(--font-rosehot), Georgia, serif;
     letter-spacing: -0.025em;
   }
 
