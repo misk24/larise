@@ -88,18 +88,18 @@ export function BackendSidebar({ items }: BackendSidebarProps) {
                   </SidebarMenuButton>
                 );
 
-                if (!collapsed) {
-                  return <SidebarMenuItem key={item.href}>{menu}</SidebarMenuItem>;
-                }
-
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>{menu}</TooltipTrigger>
-                        <TooltipContent side="right">{item.label}</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    {collapsed ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>{menu}</TooltipTrigger>
+                          <TooltipContent side="right">{item.label}</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      menu
+                    )}
                   </SidebarMenuItem>
                 );
               })}
