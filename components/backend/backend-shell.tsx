@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 interface BackendShellProps {
   sidebar: ReactNode;
   header: ReactNode;
+  breadcrumbs: ReactNode;
   footer: ReactNode;
   children: ReactNode;
   variant: "dashboard" | "admin";
@@ -14,6 +15,7 @@ interface BackendShellProps {
 export function BackendShell({
   sidebar,
   header,
+  breadcrumbs,
   footer,
   children,
   variant,
@@ -38,6 +40,7 @@ export function BackendShell({
                 : "backend-page"
             }
           >
+            <div className="mb-6 min-w-0">{breadcrumbs}</div>
             {children}
           </main>
           {footer}
