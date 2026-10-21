@@ -27,16 +27,16 @@ export default async function AdminUsersPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div>
-        <span className="text-2xl md:text-3xl font-medium">
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
           Kelola Pengguna
-        </span>
+        </h1>
         <p className="text-muted-foreground">
           Lihat dan kelola semua pengguna terdaftar
         </p>
       </div>
-      <Card className="border-border bg-sidebar">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle>Daftar Pengguna</CardTitle>
           <CardDescription>
@@ -47,21 +47,21 @@ export default async function AdminUsersPage() {
           {users && users.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
-                <TableHeader className="bg-primary">
+                <TableHeader className="bg-muted">
                   <TableRow>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Nama
                     </TableHead>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Email
                     </TableHead>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Role
                     </TableHead>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Undangan
                     </TableHead>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Tanggal Daftar
                     </TableHead>
                   </TableRow>
