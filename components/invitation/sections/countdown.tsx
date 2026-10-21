@@ -5,7 +5,7 @@ import type { SectionContext } from "./section-registry";
 import { SectionShell } from "./section-shell";
 import { contentValue } from "./content-utils";
 
-export function CountdownSection({ section, invitation }: SectionContext) {
+export function CountdownSection({ section }: SectionContext) {
   const target = contentValue(section.content, "target_date") || "";
   const [now, setNow] = useState(0);
 
