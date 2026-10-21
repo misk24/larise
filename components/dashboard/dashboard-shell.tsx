@@ -18,7 +18,7 @@ export function DashboardShell({
   className,
 }: DashboardShellProps) {
   return (
-    <div className={cn("flex min-h-screen w-full bg-primary/10", className)}>
+    <div className={cn("backend-shell flex min-h-screen w-full bg-primary/10", className)}>
       <SidebarProvider>
         {sidebar}
         <div className="min-w-0 flex flex-1 flex-col">
