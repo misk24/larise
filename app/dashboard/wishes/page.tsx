@@ -24,7 +24,7 @@ export default async function WishesPage() {
           <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ucapan & Doa</h1>
           <p className="text-muted-foreground">Moderasi ucapan dari tamu undangan</p>
         </div>
-        <Card className="border-border bg-card">
+        <Card className="shadow-none">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk melihat ucapan.</p>
           </CardContent>
@@ -46,7 +46,7 @@ export default async function WishesPage() {
         <p className="text-muted-foreground">Tampilkan atau sembunyikan ucapan, dan hapus spam.</p>
       </div>
       {error ? (
-        <Card className="border-border/50">
+        <Card className="shadow-none">
           <CardContent className="p-8 text-sm text-destructive">
             Ucapan gagal dimuat. Coba muat ulang halaman.
           </CardContent>

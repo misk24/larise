@@ -29,7 +29,7 @@ export default async function AdminOrdersPage() {
     switch (status) {
       case "paid":
         return (
-          <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">
+          <Badge className="border-chart-3/30 bg-chart-3/20 text-chart-3">
             Lunas
           </Badge>
         );
@@ -48,16 +48,16 @@ export default async function AdminOrdersPage() {
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Pesanan</h1>
         <p className="text-muted-foreground">Lihat dan kelola semua pesanan</p>
       </div>
-      <Card className="border-border bg-card">
+      <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Pesanan</CardTitle>
           <CardDescription>Total {orders?.length || 0} pesanan</CardDescription>
         </CardHeader>
         <CardContent>
           {orders && orders.length > 0 ? (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="backend-table-container">
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-muted/70">
                   <TableRow>
                     <TableHead>ID Pesanan</TableHead>
                     <TableHead>Pelanggan</TableHead>
@@ -97,8 +97,8 @@ export default async function AdminOrdersPage() {
               </Table>
             </div>
           ) : (
-            <div className="text-center py-12">
-              <ShoppingCartIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
+            <div className="py-12 text-center">
+              <ShoppingCartIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
               <p className="text-muted-foreground">Belum ada pesanan</p>
             </div>
           )}

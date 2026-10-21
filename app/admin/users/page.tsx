@@ -36,7 +36,7 @@ export default async function AdminUsersPage() {
           Lihat dan kelola semua pengguna terdaftar
         </p>
       </div>
-      <Card className="border-border bg-card">
+      <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Pengguna</CardTitle>
           <CardDescription>
@@ -45,9 +45,9 @@ export default async function AdminUsersPage() {
         </CardHeader>
         <CardContent>
           {users && users.length > 0 ? (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="backend-table-container">
               <Table>
-                <TableHeader className="bg-muted">
+                <TableHeader className="bg-muted/70">
                   <TableRow>
                     <TableHead className="text-foreground">
                       Nama
@@ -92,8 +92,8 @@ export default async function AdminUsersPage() {
               </Table>
             </div>
           ) : (
-            <div className="text-center py-12">
-              <UsersIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
+            <div className="py-12 text-center">
+              <UsersIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
               <p className="text-muted-foreground">
                 Belum ada pengguna terdaftar
               </p>

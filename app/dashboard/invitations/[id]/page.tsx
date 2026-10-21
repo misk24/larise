@@ -12,5 +12,5 @@ export default async function EditInvitationPage({params}:{params:Promise<{id:st
     supabase.from("themes").select("id,name,slug,description,category,features,price,is_premium").eq("is_active",true).order("name"),
   ]);
   if(!invitation) notFound();
-  return <div className="backend-content mx-auto max-w-4xl space-y-6"><div className="flex flex-col justify-between gap-3 md:flex-row md:items-end"><div><h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Edit Undangan</h1><p className="text-muted-foreground">Kelola slug, tema, lifecycle, dan isi undangan.</p></div><Button asChild><Link href={`/dashboard/invitations/${invitation.id}/builder`}>Buka Builder</Link></Button></div><EditInvitationForm invitation={invitation} themes={themes??[]}/></div>;
+  return <div className="backend-content mx-auto w-full max-w-4xl space-y-6"><div className="flex flex-col justify-between gap-3 md:flex-row md:items-end"><div><h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Edit Undangan</h1><p className="text-muted-foreground">Kelola slug, tema, lifecycle, dan isi undangan.</p></div><Button asChild><Link href={`/dashboard/invitations/${invitation.id}/builder`}>Buka Builder</Link></Button></div><EditInvitationForm invitation={invitation} themes={themes??[]}/></div>;
 }
