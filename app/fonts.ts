@@ -1,3 +1,4 @@
+import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
 export const rosehot = localFont({
@@ -8,7 +9,7 @@ export const rosehot = localFont({
       style: "normal",
     },
   ],
-  variable: "--font-heading",
+  variable: "--font-rosehot",
   display: "swap",
 });
 
@@ -20,6 +21,18 @@ export const satoshi = localFont({
       style: "normal",
     },
   ],
-  variable: "--font-body",
+  variable: "--font-satoshi",
+  display: "swap",
+});
+
+export const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+export const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
   display: "swap",
 });
