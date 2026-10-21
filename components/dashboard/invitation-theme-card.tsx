@@ -48,7 +48,7 @@ export function InvitationThemeCard({
         <div className="relative flex h-full flex-col justify-between">
           <span className="text-xs font-medium uppercase tracking-[0.2em]">{theme.category}</span>
           <div className="text-center">
-            <p className="font-serif text-2xl">{theme.name}</p>
+            <p className="text-2xl font-medium tracking-tight">{theme.name}</p>
             <p className="mt-1 text-xs opacity-70">LARISÉ</p>
           </div>
           <div className="flex items-center justify-between text-xs">
