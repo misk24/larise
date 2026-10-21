@@ -88,7 +88,7 @@ export default async function AdminDashboardPage() {
         </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 col-span-full">
+      <div className="col-span-full grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <StatsCard
             key={index}
@@ -102,8 +102,8 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="border-border bg-card overflow-hidden">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card className="overflow-hidden shadow-none">
           <CardHeader>
             <CardTitle className="text-lg">Pengguna Terbaru</CardTitle>
             <CardDescription>5 pengguna yang baru mendaftar</CardDescription>
@@ -113,14 +113,14 @@ export default async function AdminDashboardPage() {
             {recentUsers && recentUsers.length > 0 ? (
               <RecentUsersTable data={recentUsers ?? []} />
             ) : (
-              <p className="text-muted-foreground text-center py-8">
+              <p className="py-8 text-center text-muted-foreground">
                 Belum ada pengguna
               </p>
             )}
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card">
+        <Card className="shadow-none">
           <CardHeader>
             <CardTitle className="text-lg">Pesanan Terbaru</CardTitle>
             <CardDescription>5 pesanan terakhir</CardDescription>
