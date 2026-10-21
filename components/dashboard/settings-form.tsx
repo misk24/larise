@@ -50,7 +50,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card className="border-border bg-sidebar">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle>Informasi Profil</CardTitle>
           <CardDescription>Perbarui informasi akun Anda</CardDescription>
