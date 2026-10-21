@@ -15,10 +15,10 @@ export default async function InvitationsPage() {
     .order("created_at", { ascending: false });
   if (error) throw new Error("Gagal memuat undangan.");
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold md:text-3xl">Undangan Saya</h1>
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Undangan Saya</h1>
           <p className="text-muted-foreground">
             Kelola draft, tema, duplikasi, dan status publikasi.
           </p>

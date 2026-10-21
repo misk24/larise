@@ -43,12 +43,12 @@ export default async function AdminOrdersPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div>
-        <span className="text-2xl md:text-3xl font-medium">Kelola Pesanan</span>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Pesanan</h1>
         <p className="text-muted-foreground">Lihat dan kelola semua pesanan</p>
       </div>
-      <Card className="border-border bg-sidebar">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle>Daftar Pesanan</CardTitle>
           <CardDescription>Total {orders?.length || 0} pesanan</CardDescription>

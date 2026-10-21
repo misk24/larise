@@ -37,8 +37,45 @@
     display: flex;
     flex: 1;
     flex-direction: column;
-    overflow: hidden;
-    padding: 1.5rem;
+    overflow-x: clip;
+    padding: 1rem;
+  }
+
+  .backend-content {
+    width: 100%;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .backend-page {
+      padding: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .backend-page {
+      padding: 2rem;
+    }
+  }
+
+  .backend-shell main h1 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+
+  @media (min-width: 768px) {
+    .backend-shell main h1 {
+      font-size: 1.875rem;
+      line-height: 1.2;
+    }
+  }
+
+  .backend-shell main p.text-muted-foreground {
+    color: var(--muted-foreground);
   }
 
   .backend-surface {

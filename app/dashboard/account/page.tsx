@@ -20,7 +20,7 @@ export default async function MyAccountPage() {
 
   if (error || !profile) {
     return (
-      <div className="mx-auto w-full max-w-4xl space-y-6">
+      <div className="backend-content mx-auto w-full max-w-4xl space-y-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">My Account</h1>
           <p className="mt-1 text-sm text-muted-foreground">Kelola profil dan akses akun LARISÉ Anda.</p>
@@ -41,7 +41,7 @@ export default async function MyAccountPage() {
   }).format(new Date(profile.created_at));
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-7">
+    <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
       <div className="space-y-1">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Account</p>
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">My Account</h1>

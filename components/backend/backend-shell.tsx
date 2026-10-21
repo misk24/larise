@@ -18,14 +18,13 @@ export function BackendShell({
   breadcrumbs,
   footer,
   children,
-  variant,
   className,
 }: BackendShellProps) {
   return (
     <div
       className={cn(
         "backend-shell flex w-full",
-        variant === "dashboard" && "min-h-screen bg-primary/10",
+        "min-h-screen bg-background",
         className,
       )}
     >
@@ -34,11 +33,7 @@ export function BackendShell({
         <div className="min-w-0 flex flex-1 flex-col">
           {header}
           <main
-            className={
-              variant === "dashboard"
-                ? "mx-auto flex w-full min-w-0 max-w-7xl flex-1 flex-col overflow-hidden p-6"
-                : "backend-page"
-            }
+            className="backend-page"
           >
             <div className="mb-6 min-w-0">{breadcrumbs}</div>
             {children}

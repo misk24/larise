@@ -19,12 +19,12 @@ export default async function WishesPage() {
 
   if (!invitation) {
     return (
-      <div className="space-y-6">
+      <div className="backend-content space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Ucapan & Doa</h1>
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ucapan & Doa</h1>
           <p className="text-muted-foreground">Moderasi ucapan dari tamu undangan</p>
         </div>
-        <Card className="border-border bg-sidebar">
+        <Card className="border-border bg-card">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk melihat ucapan.</p>
           </CardContent>
@@ -40,9 +40,9 @@ export default async function WishesPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Ucapan & Doa</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ucapan & Doa</h1>
         <p className="text-muted-foreground">Tampilkan atau sembunyikan ucapan, dan hapus spam.</p>
       </div>
       {error ? (

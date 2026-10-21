@@ -40,8 +40,8 @@ export default async function RsvpDashboardPage() {
   const invitationById = new Map(list.map((invitation) => [invitation.id, invitation]));
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-2xl font-semibold md:text-3xl">Ringkasan RSVP</h1><p className="mt-1 text-muted-foreground">Pantau respons kehadiran dari semua undangan Anda.</p></div>
+    <div className="backend-content space-y-6">
+      <div><h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ringkasan RSVP</h1><p className="mt-1 text-muted-foreground">Pantau respons kehadiran dari semua undangan Anda.</p></div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => <Card key={metric.label} className="shadow-none"><CardContent className="flex items-center gap-4 p-5"><div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><metric.icon className="size-5" /></div><div><p className="text-2xl font-semibold tabular-nums">{metric.value.toLocaleString("id-ID")}</p><p className="text-sm text-muted-foreground">{metric.label}</p></div></CardContent></Card>)}
       </div>

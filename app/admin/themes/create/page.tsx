@@ -22,18 +22,18 @@ export default function CreateThemePage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
-      <div className="text-2xl md:text-3xl font-medium">Create Theme</div>
+    <form onSubmit={handleSubmit} className="backend-content w-full max-w-lg space-y-6">
+      <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Buat Tema</h1>
 
       <Input
-        placeholder="Theme name"
+        placeholder="Nama tema"
         value={name}
         onChange={(e) => setName(e.target.value)}
         className="border p-2 w-full"
         required
       />
 
-      <Button>Save & Continue</Button>
+      <Button>Simpan dan Lanjutkan</Button>
     </form>
   );
 }
