@@ -23,17 +23,17 @@ export default async function ThemeDetailPage({
 
   return (
     <div className="backend-content grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-[minmax(220px,1fr)_minmax(0,3fr)]">
-      <aside className="backend-surface min-w-0 p-4">
+      <aside className="backend-surface min-w-0 space-y-4 p-4 sm:p-5">
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Sections</h1>
-        <ul className="space-y-1">
+        <ul className="space-y-2 text-sm text-muted-foreground">
           {sections?.map((s) => (
-            <li key={s.id}>{s.section_key}</li>
+            <li key={s.id} className="rounded-md bg-muted/60 px-3 py-2">{s.section_key}</li>
           ))}
         </ul>
       </aside>
 
-      <section className="backend-surface min-w-0 p-4">
-        <div className="text-xl font-semibold">{theme?.name}</div>
+      <section className="backend-surface min-w-0 space-y-4 p-4 sm:p-6">
+        <h2 className="text-xl font-semibold tracking-tight">{theme?.name}</h2>
         <p className="text-muted-foreground">Theme section builder</p>
 
         <SectionForm id={id} />
