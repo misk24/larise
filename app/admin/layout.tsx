@@ -3,7 +3,6 @@ import { BackendHeader } from "@/components/backend/backend-header";
 import { BackendShell } from "@/components/backend/backend-shell";
 import { BackendSidebar } from "@/components/backend/backend-sidebar";
 import { Footer } from "@/components/shared/footer";
-import { adminNavs } from "@/config/navigation";
 import { getUser, getUserProfile } from "@/lib/actions/auth";
 import type { Viewport } from "next";
 import { redirect } from "next/navigation";
@@ -24,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <BackendShell
       variant="admin"
-      sidebar={<BackendSidebar items={adminNavs} />}
+      sidebar={<BackendSidebar role="admin" />}
       header={<BackendHeader user={user} profile={profile} role="admin" />}
       breadcrumbs={<BackendBreadcrumb role="admin" />}
       footer={<Footer />}
