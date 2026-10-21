@@ -19,25 +19,20 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { adminNavs, userNavs } from "@/config/navigation";
 import { cn } from "@/lib/utils";
-import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export interface BackendNavItem {
-  href: string;
-  label: string;
-  icon: LucideIcon;
-}
-
 interface BackendSidebarProps {
-  items: BackendNavItem[];
+  role: "user" | "admin";
 }
 
-export function BackendSidebar({ items }: BackendSidebarProps) {
+export function BackendSidebar({ role }: BackendSidebarProps) {
   const pathname = usePathname();
   const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
+  const items = role === "admin" ? adminNavs : userNavs;
 
   return (
     <Sidebar collapsible="icon">
