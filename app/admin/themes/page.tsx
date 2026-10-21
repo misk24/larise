@@ -28,21 +28,21 @@ export default async function AdminThemesPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="space-y-6">
+    <div className="backend-content space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="text-2xl md:text-3xl font-medium">Kelola Tema</div>
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Tema</h1>
           <p className="text-muted-foreground">
             Kelola tema undangan yang tersedia
           </p>
         </div>
         <Button asChild>
           <Link href="/admin/themes/create" className="flex items-center gap-2">
-            Create Theme
+            Buat Tema
           </Link>
         </Button>
       </div>
-      <Card className="border-border bg-sidebar">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle>Daftar Tema</CardTitle>
           <CardDescription>
@@ -53,21 +53,21 @@ export default async function AdminThemesPage() {
           {themes && themes.length > 0 ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
-                <TableHeader className="bg-primary">
+                <TableHeader className="bg-muted">
                   <TableRow>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Nama Tema
                     </TableHead>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Kategori
                     </TableHead>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Harga
                     </TableHead>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Status
                     </TableHead>
-                    <TableHead className="text-primary-foreground">
+                    <TableHead className="text-foreground">
                       Aksi
                     </TableHead>
                   </TableRow>
