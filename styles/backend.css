@@ -5,7 +5,7 @@
   .backend-shell {
     --font-heading: var(--font-geist-sans);
     --font-body: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
+    --font-code: var(--font-geist-mono);
     min-height: 100vh;
     background: var(--background);
     color: var(--foreground);
@@ -19,6 +19,11 @@
   .backend-shell h4 {
     font-family: var(--font-geist-sans), sans-serif;
     letter-spacing: -0.025em;
+  }
+
+  /* Tailwind font-serif utilities must not leak editorial fonts into app UI. */
+  .backend-shell .font-serif {
+    font-family: var(--font-geist-sans), sans-serif;
   }
 
   .backend-shell code,
