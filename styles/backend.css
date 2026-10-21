@@ -85,14 +85,6 @@
   }
 }
 
-.backend-shell main p {
-  color: inherit;
-}
-
 .backend-shell main p.text-muted-foreground {
   color: var(--muted-foreground);
-}
-
-.backend-shell main .border-border\/50 {
-  border-color: var(--border);
 }
