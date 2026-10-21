@@ -21,11 +21,6 @@
     letter-spacing: -0.025em;
   }
 
-  /* Tailwind font-serif utilities must not leak editorial fonts into app UI. */
-  .backend-shell .font-serif {
-    font-family: var(--font-geist-sans), sans-serif;
-  }
-
   .backend-shell code,
   .backend-shell pre,
   .backend-shell kbd,
@@ -51,4 +46,10 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
   }
+}
+
+/* Keep any legacy serif utility in dashboard/admin UI on the Geist family.
+ * This unlayered guard takes precedence over Tailwind's layered utilities. */
+.backend-shell .font-serif {
+  font-family: var(--font-geist-sans), sans-serif;
 }
