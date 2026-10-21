@@ -17,7 +17,7 @@ export default function AdminSettingsPage() {
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Pengaturan</h1>
         <p className="text-muted-foreground">Konfigurasi website dan sistem</p>
       </div>
-      <Card className="border-border bg-card">
+      <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Informasi Website</CardTitle>
           <CardDescription>Pengaturan umum website</CardDescription>
@@ -50,7 +50,7 @@ export default function AdminSettingsPage() {
           <Button>Simpan Pengaturan</Button>
         </CardContent>
       </Card>
-      <Card className="border-border bg-card">
+      <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Informasi Pembayaran</CardTitle>
           <CardDescription>
