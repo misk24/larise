@@ -13,7 +13,7 @@ export default async function DashboardPage() {
 
   const { data: invitations, error } = await supabase
     .from("invitations")
-    .select("id, slug, groom_name, bride_name, resepsi_date, status, is_published, view_count, created_at, themes(name), guests(count), wishes(count)")
+    .select("id, slug, groom_name, bride_name, name_order, event_date, resepsi_date, status, is_published, view_count, created_at, themes(name), guests(count), wishes(count)")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -85,9 +85,9 @@ export default async function DashboardPage() {
                 <CardContent className="space-y-4 p-5">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
-                      <h3 className="truncate font-semibold">{invitation.groom_name || "Mempelai pria"} &amp; {invitation.bride_name || "mempelai wanita"}</h3>
+                      <h3 className="truncate font-semibold">{invitation.name_order === "bride_first" ? invitation.bride_name || "Mempelai wanita" : invitation.groom_name || "Mempelai pria"} &amp; {invitation.name_order === "bride_first" ? invitation.groom_name || "mempelai pria" : invitation.bride_name || "mempelai wanita"}</h3>
                       <p className="mt-1 text-sm text-muted-foreground">{theme?.name ?? "Tema belum dipilih"} · /{invitation.slug}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">{invitation.resepsi_date ? new Date(invitation.resepsi_date).toLocaleDateString("id-ID", { dateStyle: "long" }) : "Tanggal acara belum diatur"}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{(invitation.event_date || invitation.resepsi_date) ? new Date(`${invitation.event_date || invitation.resepsi_date}T00:00:00`).toLocaleDateString("id-ID", { dateStyle: "long" }) : "Tanggal acara belum diatur"}</p>
                     </div>
                     <span className={invitation.is_published ? "w-fit rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300" : "w-fit rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"}>{invitation.is_published ? "Dipublikasikan" : invitation.status === "unpublished" ? "Tidak dipublikasikan" : "Draft"}</span>
                   </div>
