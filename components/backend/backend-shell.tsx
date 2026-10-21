@@ -18,7 +18,6 @@ export function BackendShell({
   breadcrumbs,
   footer,
   children,
-  variant,
   className,
 }: BackendShellProps) {
   return (
