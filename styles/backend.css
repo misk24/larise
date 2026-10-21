@@ -29,6 +29,11 @@
     font-family: var(--font-geist-mono), monospace;
   }
 
+  .backend-content {
+    width: 100%;
+    min-width: 0;
+  }
+
   .backend-page {
     width: 100%;
     min-width: 0;
