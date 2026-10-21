@@ -3,7 +3,6 @@ import { BackendHeader } from "@/components/backend/backend-header";
 import { BackendShell } from "@/components/backend/backend-shell";
 import { BackendSidebar } from "@/components/backend/backend-sidebar";
 import { Footer } from "@/components/shared/footer";
-import { userNavs } from "@/config/navigation";
 import { getUser, getUserProfile } from "@/lib/actions/auth";
 import type { Viewport } from "next";
 import { redirect } from "next/navigation";
@@ -24,7 +23,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <BackendShell
       variant="dashboard"
-      sidebar={<BackendSidebar items={userNavs} />}
+      sidebar={<BackendSidebar role="user" />}
       header={<BackendHeader user={user} profile={profile} role="user" />}
       breadcrumbs={<BackendBreadcrumb role="user" />}
       footer={<Footer />}
