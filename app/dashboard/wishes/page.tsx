@@ -21,7 +21,7 @@ export default async function WishesPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-semibold">Ucapan & Doa</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold">Ucapan & Doa</h1>
           <p className="text-muted-foreground">Moderasi ucapan dari tamu undangan</p>
         </div>
         <Card className="border-border bg-sidebar">
@@ -42,7 +42,7 @@ export default async function WishesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif font-semibold">Ucapan & Doa</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold">Ucapan & Doa</h1>
         <p className="text-muted-foreground">Tampilkan atau sembunyikan ucapan, dan hapus spam.</p>
       </div>
       {error ? (
