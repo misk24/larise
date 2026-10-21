@@ -26,12 +26,12 @@ describe("invitation creation validation", () => {
     expect(buildInvitationSlug("Rizky", "")).toBe("");
   });
 
-  it("accepts valid invitation identity and event date", () => {
+  it("accepts valid invitation identity without event details", () => {
     expect(invitationInputSchema.safeParse(validInput).success).toBe(true);
     expect(invitationNameOrderSchema.safeParse("bride_first").success).toBe(true);
   });
 
-  it("rejects invalid order, missing nicknames, and malformed dates", () => {
+  it("rejects invalid order and missing nicknames", () => {
     expect(invitationInputSchema.safeParse({ ...validInput, nameOrder: "random" }).success).toBe(false);
     expect(invitationInputSchema.safeParse({ ...validInput, groomNickname: " " }).success).toBe(false);
   });
