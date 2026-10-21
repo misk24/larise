@@ -22,9 +22,9 @@ export default async function ThemeDetailPage({
     .order("position");
 
   return (
-    <div className="grid grid-cols-4 gap-6">
-      <aside className="col-span-1 border p-4">
-        <div className="text-2xl md:text-3xl font-medium">Sections</div>
+    <div className="backend-content grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-[minmax(220px,1fr)_minmax(0,3fr)]">
+      <aside className="backend-surface min-w-0 p-4">
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Sections</h1>
         <ul className="space-y-1">
           {sections?.map((s) => (
             <li key={s.id}>{s.section_key}</li>
@@ -32,12 +32,12 @@ export default async function ThemeDetailPage({
         </ul>
       </aside>
 
-      <main className="col-span-3 border p-4">
+      <section className="backend-surface min-w-0 p-4">
         <div className="text-xl font-semibold">{theme?.name}</div>
         <p className="text-muted-foreground">Theme section builder</p>
 
         <SectionForm id={id} />
-      </main>
+      </section>
     </div>
   );
 }
