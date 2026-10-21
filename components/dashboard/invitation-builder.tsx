@@ -54,7 +54,7 @@ const fieldConfig: Record<string, Array<{ key: string; label: string; multiline?
   ],
   event: [
     { key: "title", label: "Judul" },
-    { key: "date", label: "Tanggal" },
+    { key: "date", label: "Tanggal", type: "date" },
     { key: "time", label: "Waktu" },
     { key: "venue", label: "Tempat" },
     { key: "address", label: "Alamat", multiline: true },
