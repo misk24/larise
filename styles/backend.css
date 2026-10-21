@@ -47,3 +47,9 @@
     border-radius: var(--radius-lg);
   }
 }
+
+/* Keep any legacy serif utility in dashboard/admin UI on the Geist family.
+ * This unlayered guard takes precedence over Tailwind's layered utilities. */
+.backend-shell .font-serif {
+  font-family: var(--font-geist-sans), sans-serif;
+}
