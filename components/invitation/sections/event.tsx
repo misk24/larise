@@ -1,4 +1,23 @@
 import type { SectionContext } from "./section-registry";
 import { SectionShell } from "./section-shell";
 import { contentValue } from "./content-utils";
-export function EventSection({section,invitation}:SectionContext) { const c=section.content; const date=contentValue(c,"date",invitation.resepsi_date||invitation.akad_date||""); return <SectionShell className="text-center"><h2 className="text-3xl md:text-4xl font-serif font-semibold">{contentValue(c,"title","Acara")}</h2><div className="mt-8 space-y-3 text-muted-foreground"><p>{date}</p><p>{contentValue(c,"time",invitation.resepsi_time||invitation.akad_time||"")}</p><p className="font-medium text-foreground">{contentValue(c,"venue",invitation.resepsi_location||invitation.akad_location||"")}</p><p>{contentValue(c,"address",invitation.resepsi_address||invitation.akad_address||"")}</p></div></SectionShell>; }
+
+export function EventSection({ section, invitation }: SectionContext) {
+  const content = section.content;
+  const date = contentValue(content, "date") || invitation.event_date || invitation.resepsi_date || invitation.akad_date || "";
+  const time = contentValue(content, "time") || invitation.resepsi_time || invitation.akad_time || "";
+  const venue = contentValue(content, "venue") || invitation.resepsi_location || invitation.akad_location || "";
+  const address = contentValue(content, "address") || invitation.resepsi_address || invitation.akad_address || "";
+
+  return (
+    <SectionShell className="text-center">
+      <h2 className="font-serif text-3xl font-semibold md:text-4xl">{contentValue(content, "title", "Acara")}</h2>
+      <div className="mt-8 space-y-3 text-muted-foreground">
+        <p>{date}</p>
+        <p>{time}</p>
+        <p className="font-medium text-foreground">{venue}</p>
+        <p>{address}</p>
+      </div>
+    </SectionShell>
+  );
+}
