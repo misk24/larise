@@ -33,7 +33,6 @@ export function CreateInvitationForm({ themes }: { themes: Theme[] }) {
   const [brideName, setBrideName] = useState("");
   const [brideNickname, setBrideNickname] = useState("");
   const [nameOrder, setNameOrder] = useState<NameOrder>("groom_first");
-  const [eventDate, setEventDate] = useState("");
   const [loading, setLoading] = useState(false);
 
   const generatedSlug = useMemo(
@@ -46,7 +45,7 @@ export function CreateInvitationForm({ themes }: { themes: Theme[] }) {
 
   function continueToThemes(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!groomName.trim() || !groomNickname.trim() || !brideName.trim() || !brideNickname.trim() || !eventDate) {
+    if (!groomName.trim() || !groomNickname.trim() || !brideName.trim() || !brideNickname.trim()) {
       toast.error("Lengkapi informasi dasar terlebih dahulu.");
       return;
     }
@@ -68,7 +67,6 @@ export function CreateInvitationForm({ themes }: { themes: Theme[] }) {
         brideName,
         brideNickname,
         nameOrder,
-        eventDate,
       });
       if (result?.error) toast.error(result.error);
     } catch (error) {
@@ -100,7 +98,7 @@ export function CreateInvitationForm({ themes }: { themes: Theme[] }) {
             <CardHeader>
               <CardTitle>Informasi dasar</CardTitle>
               <CardDescription>
-                Isi identitas kedua mempelai. Informasi lain bisa dilengkapi setelah draft dibuat.
+                Isi identitas kedua mempelai. Tanggal dan detail acara diatur nanti melalui builder.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -152,12 +150,6 @@ export function CreateInvitationForm({ themes }: { themes: Theme[] }) {
                     <Input id="brideNickname" value={brideNickname} onChange={(event) => setBrideNickname(event.target.value)} maxLength={60} required placeholder="Nama yang biasa digunakan" />
                   </div>
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="eventDate">Tanggal acara utama</Label>
-                <Input id="eventDate" type="date" value={eventDate} onChange={(event) => setEventDate(event.target.value)} required />
-                <p className="text-xs text-muted-foreground">Tanggal bisa diperbarui nanti. Jadwal akad dan resepsi dapat diatur di editor.</p>
               </div>
 
               <div className="space-y-2">
