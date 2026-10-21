@@ -29,7 +29,7 @@ export default async function AdminThemesPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Tema</h1>
           <p className="text-muted-foreground">
@@ -51,9 +51,9 @@ export default async function AdminThemesPage() {
         </CardHeader>
         <CardContent>
           {themes && themes.length > 0 ? (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="backend-table-container">
               <Table>
-                <TableHeader className="bg-muted">
+                <TableHeader className="bg-muted/70">
                   <TableRow>
                     <TableHead className="text-foreground">
                       Nama Tema
@@ -102,7 +102,7 @@ export default async function AdminThemesPage() {
               </Table>
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="py-12 text-center">
               <PaletteIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">Belum ada tema</p>
             </div>

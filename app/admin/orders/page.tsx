@@ -55,9 +55,9 @@ export default async function AdminOrdersPage() {
         </CardHeader>
         <CardContent>
           {orders && orders.length > 0 ? (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="backend-table-container">
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-muted/70">
                   <TableRow>
                     <TableHead>ID Pesanan</TableHead>
                     <TableHead>Pelanggan</TableHead>
@@ -97,7 +97,7 @@ export default async function AdminOrdersPage() {
               </Table>
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="py-12 text-center">
               <ShoppingCartIcon className="size-12 text-muted-foreground/50 mx-auto mb-4" />
               <p className="text-muted-foreground">Belum ada pesanan</p>
             </div>

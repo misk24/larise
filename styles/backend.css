@@ -83,6 +83,24 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
   }
+
+  /* Shared wrapper for dense data tables. Keep wide tables scrollable on
+   * small screens without forcing the entire backend page to overflow. */
+  .backend-table-container {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+
+  .backend-table-container table {
+    min-width: 40rem;
+  }
+
+  .backend-table-container th {
+    white-space: nowrap;
+  }
 }
 
 /* Keep any legacy serif utility in dashboard/admin UI on the Geist family.

@@ -26,7 +26,7 @@ export default async function GalleryPage() {
             Kelola foto-foto untuk undangan Anda
           </p>
         </div>
-        <Card className="border-border bg-card">
+        <Card className="shadow-none">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">
               Buat undangan terlebih dahulu untuk mengelola galeri.
@@ -47,10 +47,10 @@ export default async function GalleryPage() {
           Kelola foto-foto untuk undangan Anda
         </p>
       </div>
-      <Card className="border-border/50">
+      <Card className="shadow-none">
         <CardContent className="p-12 text-center">
-          <ImageIcon className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
-          <h3 className="font-semibold mb-2">Fitur Upload Foto</h3>
+          <ImageIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
+          <h3 className="mb-2 font-semibold">Fitur Upload Foto</h3>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
             Fitur upload foto akan menggunakan Supabase Storage. Untuk saat ini,
             Anda dapat menambahkan URL foto melalui halaman edit undangan.
