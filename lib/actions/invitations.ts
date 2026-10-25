@@ -106,7 +106,7 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
 
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/invitations");
-    redirect(`/dashboard/invitations/${invitation.id}`);
+    redirect(`/dashboard/invitations/${invitation.id}/builder`);
   } catch (error) {
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) throw error;
     console.error("createInvitation unexpected error", error);
