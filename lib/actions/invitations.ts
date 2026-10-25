@@ -48,7 +48,7 @@ async function uniqueSlug(
 
 export async function createInvitation(input: z.input<typeof invitationInputSchema>) {
   const parsed = invitationInputSchema.safeParse(input);
-  if (!parsed.success) return { error: "Data undangan belum lengkap." };
+  if (!parsed.success) return { error: "Data undangan belum lengkap atau tidak valid." };
 
   const { supabase, user } = await requireUser();
   if (!user) return { error: "Sesi login tidak valid." };
@@ -63,10 +63,13 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
   if (themeError || !theme) return { error: "Tema tidak tersedia." };
 
   try {
-    const slug = await uniqueSlug(
-      supabase,
-      parsed.data.slug || buildInvitationSlug(parsed.data.groomName, parsed.data.brideName),
-    );
+    const firstNickname = parsed.data.nameOrder === "groom_first"
+      ? parsed.data.groomNickname
+      : parsed.data.brideNickname;
+    const secondNickname = parsed.data.nameOrder === "groom_first"
+      ? parsed.data.brideNickname
+      : parsed.data.groomNickname;
+    const slug = await uniqueSlug(supabase, buildInvitationSlug(firstNickname, secondNickname));
 
     const { data: invitation, error } = await supabase
       .from("invitations")
@@ -74,6 +77,11 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
         user_id: user.id,
         theme_id: theme.id,
         slug,
+        groom_name: parsed.data.groomName,
+        groom_nickname: parsed.data.groomNickname,
+        bride_name: parsed.data.brideName,
+        bride_nickname: parsed.data.brideNickname,
+        name_order: parsed.data.nameOrder,
         status: "draft",
         is_published: false,
       })
@@ -98,7 +106,7 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
 
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/invitations");
-    redirect(`/dashboard/invitations/${invitation.id}`);
+    redirect(`/dashboard/invitations/${invitation.id}/builder`);
   } catch (error) {
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) throw error;
     console.error("createInvitation unexpected error", error);
@@ -128,8 +136,6 @@ export async function updateInvitation(
   if (!theme) return { error: "Tema tidak tersedia." };
 
   try {
-    const slug = await uniqueSlug(supabase, parsed.data.slug, invitationId);
-
     const { data: current } = await supabase
       .from("invitations")
       .select("theme_id")
@@ -141,7 +147,13 @@ export async function updateInvitation(
 
     const { error } = await supabase
       .from("invitations")
-      .update({ theme_id: theme.id, slug, groom_name: parsed.data.groomName, bride_name: parsed.data.brideName })
+      .update({
+        theme_id: theme.id,
+        groom_name: parsed.data.groomName,
+        groom_nickname: parsed.data.groomNickname,
+        bride_name: parsed.data.brideName,
+        bride_nickname: parsed.data.brideNickname,
+      })
       .eq("id", invitationId)
       .eq("user_id", user.id);
 
@@ -238,7 +250,7 @@ export async function duplicateInvitation(invitationId: string) {
 
   const { data: source } = await supabase
     .from("invitations")
-    .select("id, theme_id, slug")
+    .select("id,theme_id,slug,groom_name,groom_nickname,bride_name,bride_nickname,name_order,event_date")
     .eq("id", invitationId)
     .eq("user_id", user.id)
     .single();
@@ -254,6 +266,12 @@ export async function duplicateInvitation(invitationId: string) {
         user_id: user.id,
         theme_id: source.theme_id,
         slug,
+        groom_name: source.groom_name,
+        groom_nickname: source.groom_nickname,
+        bride_name: source.bride_name,
+        bride_nickname: source.bride_nickname,
+        name_order: source.name_order,
+        event_date: source.event_date,
         status: "draft",
         is_published: false,
       })

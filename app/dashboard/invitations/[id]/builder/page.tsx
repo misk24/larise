@@ -39,7 +39,9 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
         <div>
           <p className="text-sm text-muted-foreground">Builder</p>
           <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            {invitation.groom_name} &amp; {invitation.bride_name}
+            {invitation.name_order === "bride_first"
+              ? `${invitation.bride_name} & ${invitation.groom_name}`
+              : `${invitation.groom_name} & ${invitation.bride_name}`}
           </h1>
           <p className="text-muted-foreground">Edit konten, visibility, urutan, lalu preview sebelum publish.</p>
         </div>

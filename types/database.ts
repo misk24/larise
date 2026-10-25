@@ -1,5 +1,6 @@
 export type UserRole = "user" | "admin";
 export type InvitationStatus = "draft" | "published" | "unpublished";
+export type InvitationNameOrder = "groom_first" | "bride_first";
 export type RSVPStatus = "pending" | "attending" | "not_attending";
 export type WishVisibility = "visible" | "hidden";
 export type PaymentStatus = "pending" | "paid" | "expired" | "refunded";
@@ -57,15 +58,19 @@ export interface Invitation {
   user_id: string;
   theme_id: string | null;
   slug: string;
+  name_order: InvitationNameOrder;
   groom_name: string;
+  groom_nickname: string;
   groom_father: string | null;
   groom_mother: string | null;
   groom_photo_url: string | null;
   bride_name: string;
+  bride_nickname: string;
   bride_father: string | null;
   bride_mother: string | null;
   bride_photo_url: string | null;
   couple_photo_url: string | null;
+  event_date: string | null;
   akad_date: string | null;
   akad_time: string | null;
   akad_location: string | null;
