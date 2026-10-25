@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { duplicateInvitation, deleteInvitation, setInvitationPublished } from "@/lib/actions/invitations";
-import { Copy, Eye, Loader2, Trash2 } from "lucide-react";
+import { Copy, Eye, Loader2, Pencil, PanelsTopLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -36,7 +36,10 @@ export function InvitationActions({
   return (
     <div className="flex flex-wrap gap-2">
       <Button variant="outline" size="sm" asChild>
-        <Link href={`/dashboard/invitations/${invitationId}`}>Edit</Link>
+        <Link href={`/dashboard/invitations/${invitationId}`}><Pencil className="mr-2 size-3" />Edit info dasar</Link>
+      </Button>
+      <Button size="sm" asChild>
+        <Link href={`/dashboard/invitations/${invitationId}/builder`}><PanelsTopLeft className="mr-2 size-3" />Edit keseluruhan</Link>
       </Button>
       <Button variant="outline" size="sm" disabled={loading !== null} onClick={() => run(() => duplicateInvitation(invitationId))}>
         {loading ? <Loader2 className="mr-2 size-3 animate-spin" /> : <Copy className="mr-2 size-3" />}
