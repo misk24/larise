@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,7 @@ import { setInvitationPublished } from "@/lib/actions/invitations";
 import { SharedInvitationRenderer } from "@/components/invitation/shared-renderer";
 import { InvitationMediaUploader } from "@/components/dashboard/invitation-media-uploader";
 import type { Invitation, InvitationMedia, InvitationSection, Theme, Wish } from "@/types/database";
-import { ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, Loader2, Save } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, GripVertical, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
 type BuilderInvitation = Invitation & { themes?: Theme | null };
@@ -112,17 +113,13 @@ export function InvitationBuilder({
   media: InvitationMedia[];
 }) {
   const [sections, setSections] = useState(() => [...initialSections].sort((a, b) => a.position - b.position));
-  const [selectedId, setSelectedId] = useState(initialSections[0]?.id ?? "");
+  const [expandedId, setExpandedId] = useState(initialSections[0]?.id ?? "");
+  const [activeTab, setActiveTab] = useState<"sections" | "preview">("sections");
+  const [draggedId, setDraggedId] = useState<string | null>(null);
   const [status, setStatus] = useState<"saved" | "dirty" | "saving">("saved");
-  const [mobileView, setMobileView] = useState<"sections" | "editor" | "preview">("sections");
   const [published, setPublished] = useState(invitation.is_published);
   const [isPending, startTransition] = useTransition();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const selected = useMemo(
-    () => sections.find((section) => section.id === selectedId) ?? sections[0] ?? null,
-    [sections, selectedId],
-  );
 
   function persist(nextSections: InvitationSection[]) {
     setStatus("dirty");
@@ -157,13 +154,14 @@ export function InvitationBuilder({
     persist(normalized);
   }
 
-  function moveSelected(direction: -1 | 1) {
-    if (!selected) return;
-    const index = sections.findIndex((section) => section.id === selected.id);
-    const target = index + direction;
-    if (index < 0 || target < 0 || target >= sections.length) return;
+  function reorderSections(sourceId: string, targetId: string) {
+    if (sourceId === targetId) return;
+    const from = sections.findIndex((section) => section.id === sourceId);
+    const to = sections.findIndex((section) => section.id === targetId);
+    if (from < 0 || to < 0) return;
     const next = [...sections];
-    [next[index], next[target]] = [next[target], next[index]];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
     applySections(next);
   }
 
@@ -245,137 +243,208 @@ export function InvitationBuilder({
           {published ? "Unpublish" : "Publish"}
         </Button>
       </div>
-      <div className="grid grid-cols-3 gap-1 rounded-lg border bg-muted p-1 xl:hidden">
-        {([["sections","Sections"],["editor","Editor"],["preview","Preview"]] as const).map(([value, label]) => (
-          <button key={value} type="button" onClick={() => setMobileView(value)} className={`rounded-md px-3 py-2 text-sm font-medium ${mobileView === value ? "bg-background shadow-sm" : "text-muted-foreground"}`}>
+
+      <div className="grid grid-cols-2 gap-1 rounded-lg border bg-muted p-1">
+        {([
+          ["sections", "Sections"],
+          ["preview", "Preview"],
+        ] as const).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setActiveTab(value)}
+            aria-pressed={activeTab === value}
+            className={`flex items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${activeTab === value ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            {value === "sections" ? <GripVertical className="size-4" /> : <Eye className="size-4" />}
             {label}
           </button>
         ))}
       </div>
-      <div className="grid gap-4 xl:grid-cols-[220px_minmax(320px,420px)_minmax(360px,1fr)]">
-      <Card className={`h-fit xl:sticky xl:top-4 ${mobileView === "sections" ? "block" : "hidden"} xl:block`}>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Sections</CardTitle>
-          <CardDescription>Urutkan dan pilih bagian undangan.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {sections.map((section, index) => (
-            <button
-              key={section.id}
-              type="button"
-              onClick={() => setSelectedId(section.id)}
-              className={`flex w-full items-center gap-2 rounded-md border p-2 text-left text-sm ${selected?.id === section.id ? "border-primary bg-primary/5" : "hover:bg-muted"}`}
-            >
-              <GripVertical className="size-4 text-muted-foreground" />
-              <span className="min-w-0 flex-1 truncate">{labels[section.section_type] ?? section.section_key}</span>
-              {!section.is_visible && <EyeOff className="size-4 text-muted-foreground" />}
-              <span className="text-xs text-muted-foreground">{index + 1}</span>
-            </button>
-          ))}
-        </CardContent>
-      </Card>
 
-      <Card className={`h-fit ${mobileView === "editor" ? "block" : "hidden"} xl:block`}>
-        <CardHeader>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <CardTitle className="text-base">{selected ? labels[selected.section_type] ?? selected.section_key : "Editor"}</CardTitle>
-              <CardDescription>Konten terstruktur. Tidak perlu menyentuh HTML, karena manusia sudah cukup menderita.</CardDescription>
-            </div>
-            {selected && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => toggleVisibility(selected)}
-                aria-label={selected.is_visible ? "Sembunyikan section" : "Tampilkan section"}
-              >
-                {selected.is_visible ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
-              </Button>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent>
-          {selected ? (
-            selected.section_type === "gallery" ? (
-              <div className="space-y-5">
-                <div className="space-y-2">
-                  <Label>Judul</Label>
-                  <Input value={displayValue(selected, "title")} onChange={(event) => updateSelected(updateContent(selected, "title", event.target.value))} />
-                </div>
-                <InvitationMediaUploader invitationId={invitation.id} initialMedia={media} onChange={(nextMedia) => {
-                  const urls = nextMedia.map((item) => (item as InvitationMedia & { public_url?: string }).public_url ?? "").filter(Boolean);
-                  updateSelected({ ...selected, content: { ...selected.content, images: urls } });
-                }} />
-                <div className="flex flex-wrap gap-2 pt-2">
-                  <Button variant="outline" size="sm" onClick={() => moveSelected(-1)} disabled={sections[0]?.id === selected.id}><ArrowUp className="size-4" />Naik</Button>
-                  <Button variant="outline" size="sm" onClick={() => moveSelected(1)} disabled={sections[sections.length - 1]?.id === selected.id}><ArrowDown className="size-4" />Turun</Button>
-                </div>
-              </div>
-            ) : selected.section_type === "rsvp" || selected.section_type === "wishes" ? (
-              <p className="rounded-md bg-muted p-4 text-sm text-muted-foreground">
-                Section ini tidak punya field konten. Pengaturan RSVP dan ucapan dikelola dari data guest/public flow.
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {(fieldConfig[selected.section_type] ?? []).map((field) => (
-                  <div className="space-y-2" key={field.key}>
-                    <Label htmlFor={`section-${selected.id}-${field.key}`}>{field.label}</Label>
-                    {field.multiline ? (
-                      <Textarea
-                        id={`section-${selected.id}-${field.key}`}
-                        value={displayValue(selected, field.key)}
-                        onChange={(event) => updateSelected(updateContent(selected, field.key, event.target.value))}
-                        rows={field.key === "body" || field.key === "images" ? 6 : 4}
-                      />
-                    ) : (
-                      <Input
-                        id={`section-${selected.id}-${field.key}`}
-                        type={field.type ?? "text"}
-                        value={displayValue(selected, field.key)}
-                        onChange={(event) => updateSelected(updateContent(selected, field.key, event.target.value))}
-                      />
-                    )}
+      {activeTab === "sections" ? (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Sections</CardTitle>
+            <CardDescription>Atur urutan dan edit konten langsung di setiap bagian.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {sections.length ? sections.map((section, index) => {
+              const expanded = expandedId === section.id;
+              const fields = fieldConfig[section.section_type] ?? [];
+              return (
+                <motion.div
+                  key={section.id}
+                  layout
+                  transition={{ layout: { type: "spring", stiffness: 420, damping: 34 } }}
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    if (draggedId) reorderSections(draggedId, section.id);
+                    setDraggedId(null);
+                  }}
+                  className={`overflow-hidden rounded-lg border bg-background transition-colors ${draggedId === section.id ? "border-primary/60 opacity-60" : "border-border"}`}
+                >
+                  <div className="flex items-center gap-2 p-3">
+                    <button
+                      type="button"
+                      draggable
+                      onDragStart={(event) => {
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", section.id);
+                        setDraggedId(section.id);
+                      }}
+                      onDragEnd={() => setDraggedId(null)}
+                      onKeyDown={(event) => {
+                        if (event.altKey && event.key === "ArrowUp") {
+                          event.preventDefault();
+                          const target = sections[index - 1];
+                          if (target) reorderSections(section.id, target.id);
+                        }
+                        if (event.altKey && event.key === "ArrowDown") {
+                          event.preventDefault();
+                          const target = sections[index + 1];
+                          if (target) reorderSections(section.id, target.id);
+                        }
+                      }}
+                      aria-label={`Pindahkan ${labels[section.section_type] ?? section.section_key}. Gunakan Alt plus panah atas atau bawah untuk mengurutkan dengan keyboard.`}
+                      title="Drag untuk mengurutkan. Alt + ↑/↓ untuk keyboard."
+                      className="flex size-9 shrink-0 cursor-grab items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground active:cursor-grabbing"
+                    >
+                      <GripVertical className="size-4" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      onClick={() => setExpandedId(expanded ? "" : section.id)}
+                      className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                    >
+                      <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs tabular-nums text-muted-foreground">{index + 1}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium">{labels[section.section_type] ?? section.section_key}</span>
+                        <span className="block text-xs text-muted-foreground">{section.is_visible ? "Tampil di undangan" : "Disembunyikan"}</span>
+                      </span>
+                      <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform duration-200 ${expanded ? "rotate-180" : ""}`} />
+                    </button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-9 shrink-0"
+                      onClick={() => toggleVisibility(section)}
+                      aria-label={section.is_visible ? "Sembunyikan section" : "Tampilkan section"}
+                      title={section.is_visible ? "Sembunyikan section" : "Tampilkan section"}
+                    >
+                      {section.is_visible ? <Eye className="size-4" /> : <EyeOff className="size-4 text-muted-foreground" />}
+                    </Button>
                   </div>
-                ))}
-                <div className="flex flex-wrap gap-2 pt-2">
-                  <Button variant="outline" size="sm" onClick={() => moveSelected(-1)} disabled={sections[0]?.id === selected.id}>
-                    <ArrowUp className="size-4" />Naik
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => moveSelected(1)} disabled={sections[sections.length - 1]?.id === selected.id}>
-                    <ArrowDown className="size-4" />Turun
-                  </Button>
-                </div>
-              </div>
-            )
-          ) : (
-            <p className="text-sm text-muted-foreground">Belum ada section.</p>
-          )}
-        </CardContent>
-      </Card>
 
-      <Card className={`overflow-hidden xl:sticky xl:top-4 xl:h-[calc(100vh-2rem)] ${mobileView === "preview" ? "block" : "hidden"} xl:block`}>
-        <CardHeader className="flex-row items-center justify-between gap-3 border-b">
-          <div>
-            <CardTitle className="text-base">Preview</CardTitle>
-            <CardDescription>Renderer yang sama dengan halaman publik.</CardDescription>
+                  <AnimatePresence initial={false}>
+                    {expanded && (
+                      <motion.div
+                        key="section-editor"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="space-y-4 border-t px-4 pb-4 pt-4">
+                          {section.section_type === "gallery" ? (
+                            <>
+                              <div className="space-y-2">
+                                <Label htmlFor={`section-${section.id}-title`}>Judul</Label>
+                                <Input
+                                  id={`section-${section.id}-title`}
+                                  value={displayValue(section, "title")}
+                                  onChange={(event) => updateSelected(updateContent(section, "title", event.target.value))}
+                                />
+                              </div>
+                              <InvitationMediaUploader
+                                invitationId={invitation.id}
+                                initialMedia={media}
+                                onChange={(nextMedia) => {
+                                  const urls = nextMedia
+                                    .map((item) => (item as InvitationMedia & { public_url?: string }).public_url ?? "")
+                                    .filter(Boolean);
+                                  updateSelected({ ...section, content: { ...section.content, images: urls } });
+                                }}
+                              />
+                            </>
+                          ) : section.section_type === "rsvp" || section.section_type === "wishes" ? (
+                            <p className="rounded-md bg-muted p-4 text-sm text-muted-foreground">
+                              Section ini tidak punya field konten. Pengaturan RSVP dan ucapan dikelola dari data guest/public flow.
+                            </p>
+                          ) : fields.length ? (
+                            <div className="space-y-4">
+                              {fields.map((field) => (
+                                <div className="space-y-2" key={field.key}>
+                                  <Label htmlFor={`section-${section.id}-${field.key}`}>{field.label}</Label>
+                                  {field.multiline ? (
+                                    <Textarea
+                                      id={`section-${section.id}-${field.key}`}
+                                      value={displayValue(section, field.key)}
+                                      onChange={(event) => updateSelected(updateContent(section, field.key, event.target.value))}
+                                      rows={field.key === "body" || field.key === "images" ? 6 : 4}
+                                    />
+                                  ) : (
+                                    <Input
+                                      id={`section-${section.id}-${field.key}`}
+                                      type={field.type ?? "text"}
+                                      value={displayValue(section, field.key)}
+                                      onChange={(event) => updateSelected(updateContent(section, field.key, event.target.value))}
+                                    />
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="rounded-md bg-muted p-4 text-sm text-muted-foreground">
+                              Belum ada field editor untuk section ini.
+                            </p>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            }) : (
+              <p className="rounded-md bg-muted p-6 text-center text-sm text-muted-foreground">Belum ada section untuk undangan ini.</p>
+            )}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
+              <p className="text-xs text-muted-foreground">Perubahan tersimpan otomatis. Drag pegangan untuk mengurutkan.</p>
+              <Button onClick={saveNow} disabled={isPending || status === "saved"} size="sm">
+                {status === "saving" ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+                {status === "saving" ? "Menyimpan..." : status === "dirty" ? "Simpan sekarang" : "Tersimpan"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="overflow-hidden">
+          <CardHeader className="flex-row items-center justify-between gap-3 border-b">
+            <div>
+              <CardTitle className="text-base">Preview</CardTitle>
+              <CardDescription>Renderer yang sama dengan halaman publik.</CardDescription>
+            </div>
+            <Button onClick={saveNow} disabled={isPending || status === "saved"} size="sm">
+              {status === "saving" ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+              {status === "saving" ? "Menyimpan..." : status === "dirty" ? "Simpan sekarang" : "Tersimpan"}
+            </Button>
+          </CardHeader>
+          <div className="bg-muted/30 p-2 md:p-4">
+            <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
+              <SharedInvitationRenderer
+                invitation={invitation}
+                sections={sections}
+                guestName="Tamu Undangan"
+                wishes={wishes}
+              />
+            </div>
           </div>
-          <Button onClick={saveNow} disabled={isPending || status === "saved"} size="sm">
-            {status === "saving" ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-            {status === "saving" ? "Menyimpan..." : status === "dirty" ? "Simpan sekarang" : "Tersimpan"}
-          </Button>
-        </CardHeader>
-        <div className="h-[calc(100%-81px)] overflow-auto bg-muted/30 p-2 md:p-4">
-          <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
-            <SharedInvitationRenderer
-              invitation={invitation}
-              sections={sections}
-              guestName="Tamu Undangan"
-              wishes={wishes}
-            />
-          </div>
-        </div>
-      </Card>
-      </div>
+        </Card>
+      )}
     </div>
   );
 }
