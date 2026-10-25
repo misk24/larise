@@ -82,6 +82,27 @@ export async function saveInvitationSections(input: z.input<typeof saveSectionsS
     }
   }
 
+  // Keep the invitation-level date in sync with the builder's event section.
+  // The dashboard summary reads invitations.event_date, while the builder edits section content.
+  const eventSection = parsed.data.sections.find((section) => section.section_type === "event");
+  if (eventSection) {
+    const eventDate = typeof eventSection.content.date === "string" && eventSection.content.date
+      ? eventSection.content.date
+      : null;
+    const { error: dateSyncError } = await supabase
+      .from("invitations")
+      .update({ event_date: eventDate })
+      .eq("id", parsed.data.invitationId)
+      .eq("user_id", user.id);
+
+    if (dateSyncError) {
+      console.error("saveInvitationSections event date sync failed", dateSyncError);
+      return { error: "Tanggal acara gagal disinkronkan." };
+    }
+  }
+
+  revalidatePath(`/dashboard`);
+  revalidatePath(`/dashboard/invitations`);
   revalidatePath(`/dashboard/invitations/${parsed.data.invitationId}`);
   revalidatePath(`/dashboard/invitations/${parsed.data.invitationId}/builder`);
   revalidatePath(`/${(await supabase.from("invitations").select("slug").eq("id", parsed.data.invitationId).single()).data?.slug ?? ""}`);
