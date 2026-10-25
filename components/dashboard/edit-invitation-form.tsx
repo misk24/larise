@@ -48,7 +48,7 @@ export function EditInvitationForm({ invitation, themes }: { invitation: Invitat
 
   function continueToThemes(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!groomName.trim() || !groomNickname.trim() || !brideName.trim() || !brideNickname.trim()) {
+    if (!groomName.trim() || !brideName.trim()) {
       toast.error("Lengkapi informasi kedua mempelai terlebih dahulu.");
       return;
     }
@@ -75,6 +75,7 @@ export function EditInvitationForm({ invitation, themes }: { invitation: Invitat
         return;
       }
       toast.success("Perubahan undangan tersimpan.");
+      router.push("/dashboard/invitations");
       router.refresh();
     } finally {
       setSaving(false);
@@ -114,7 +115,7 @@ export function EditInvitationForm({ invitation, themes }: { invitation: Invitat
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="groomNickname">Nama panggilan mempelai laki-laki</Label>
-                  <Input id="groomNickname" value={groomNickname} onChange={(event) => setGroomNickname(event.target.value)} maxLength={60} required />
+                  <Input id="groomNickname" value={groomNickname} disabled readOnly />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="brideName">Nama lengkap mempelai wanita</Label>
@@ -122,7 +123,7 @@ export function EditInvitationForm({ invitation, themes }: { invitation: Invitat
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="brideNickname">Nama panggilan mempelai wanita</Label>
-                  <Input id="brideNickname" value={brideNickname} onChange={(event) => setBrideNickname(event.target.value)} maxLength={60} required />
+                  <Input id="brideNickname" value={brideNickname} disabled readOnly />
                 </div>
               </div>
 
@@ -168,7 +169,7 @@ export function EditInvitationForm({ invitation, themes }: { invitation: Invitat
             <Button type="button" variant="outline" onClick={() => setStep(1)} disabled={saving}>
               <ArrowLeft className="mr-2 size-4" /> Kembali
             </Button>
-            <Button type="button" onClick={save} disabled={saving || !themeId || !groomName.trim() || !groomNickname.trim() || !brideName.trim() || !brideNickname.trim()}>
+            <Button type="button" onClick={save} disabled={saving || !themeId || !groomName.trim() || !brideName.trim()}>
               {saving ? <Loader2 className="mr-2 size-4 animate-spin" /> : <><Check className="mr-2 size-4" /><Save className="mr-2 size-4" /></>}
               Simpan perubahan
             </Button>
