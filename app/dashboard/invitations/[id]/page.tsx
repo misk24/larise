@@ -1,4 +1,7 @@
 import { EditInvitationForm } from "@/components/dashboard/edit-invitation-form";
+import { Button } from "@/components/ui/button";
+import { PanelsTopLeft } from "lucide-react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 
@@ -26,9 +29,14 @@ export default async function EditInvitationPage({ params }: { params: Promise<{
 
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Edit Undangan</h1>
-        <p className="text-muted-foreground">Perbarui identitas dan tema dalam dua langkah. Detail acara dikelola melalui builder.</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Edit Info Dasar</h1>
+          <p className="text-muted-foreground">Perbarui nama mempelai dan tema. Untuk mengedit seluruh isi undangan, gunakan builder.</p>
+        </div>
+        <Button asChild>
+          <Link href={`/dashboard/invitations/${id}/builder`}><PanelsTopLeft className="mr-2 size-4" />Edit keseluruhan di Builder</Link>
+        </Button>
       </div>
       <EditInvitationForm invitation={invitation} themes={themes ?? []} />
     </div>
