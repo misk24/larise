@@ -104,7 +104,7 @@ export function EditInvitationForm({ invitation, themes }: { invitation: Invitat
             <CardHeader>
               <CardTitle>Informasi dasar</CardTitle>
               <CardDescription>
-                Perbarui nama mempelai jika diperlukan. Slug dan urutan nama tetap terkunci; tanggal acara dikelola di builder.
+                Perbarui nama lengkap dan nama panggilan mempelai jika diperlukan. Slug dan urutan nama tetap terkunci; tanggal acara dikelola di builder.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -115,7 +115,7 @@ export function EditInvitationForm({ invitation, themes }: { invitation: Invitat
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="groomNickname">Nama panggilan mempelai laki-laki</Label>
-                  <Input id="groomNickname" value={groomNickname} disabled readOnly />
+                  <Input id="groomNickname" value={groomNickname} onChange={(event) => setGroomNickname(event.target.value)} maxLength={60} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="brideName">Nama lengkap mempelai wanita</Label>
@@ -123,7 +123,7 @@ export function EditInvitationForm({ invitation, themes }: { invitation: Invitat
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="brideNickname">Nama panggilan mempelai wanita</Label>
-                  <Input id="brideNickname" value={brideNickname} disabled readOnly />
+                  <Input id="brideNickname" value={brideNickname} onChange={(event) => setBrideNickname(event.target.value)} maxLength={60} required />
                 </div>
               </div>
 
