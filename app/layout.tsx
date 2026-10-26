@@ -7,7 +7,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "LARISÉ",
   description:
-    "Buat undangan pernikahan digital yang elegan dan personal. Fitur lengkap: RSVP, galeri foto, ucapan & hadiah, countdown, dan musik latar.",
+    "Buat undangan pernikahan digital yang elegan dan personal. Kelola RSVP, galeri foto, ucapan, hadiah, dan detail acara dalam satu tempat.",
   keywords: [
     "undangan pernikahan digital",
     "wedding invitation",
