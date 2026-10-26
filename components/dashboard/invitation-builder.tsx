@@ -144,7 +144,9 @@ export function InvitationBuilder({
   const [activeTab, setActiveTab] = useState<"sections" | "preview">("sections");
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [status, setStatus] = useState<"saved" | "dirty" | "saving">("saved");
-  const [published, setPublished] = useState(invitation.is_published);\n  const [backgroundMusicUrl, setBackgroundMusicUrl] = useState(invitation.background_music_url ?? "");\n  const [isSavingMusic, setIsSavingMusic] = useState(false);
+  const [published, setPublished] = useState(invitation.is_published);
+  const [backgroundMusicUrl, setBackgroundMusicUrl] = useState(invitation.background_music_url ?? "");
+  const [isSavingMusic, setIsSavingMusic] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const changeVersion = useRef(0);
