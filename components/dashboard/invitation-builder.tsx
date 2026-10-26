@@ -7,12 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { saveInvitationSections } from "@/lib/actions/invitation-builder";
 import { setInvitationPublished } from "@/lib/actions/invitations";
 import { SharedInvitationRenderer } from "@/components/invitation/shared-renderer";
 import { InvitationMediaUploader } from "@/components/dashboard/invitation-media-uploader";
 import type { Invitation, InvitationMedia, InvitationSection, Theme, Wish } from "@/types/database";
-import { ChevronDown, Eye, EyeOff, GripVertical, Loader2, Save } from "lucide-react";
+import { ChevronDown, Eye, GripVertical, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 type BuilderInvitation = Invitation & { themes?: Theme | null };
@@ -23,7 +24,6 @@ const labels: Record<string, string> = {
   couple: "Mempelai",
   quote: "Kutipan",
   event: "Acara",
-  countdown: "Countdown",
   gallery: "Galeri",
   location: "Lokasi",
   closing: "Penutup",
@@ -31,6 +31,21 @@ const labels: Record<string, string> = {
   wishes: "Ucapan",
   gift: "Hadiah",
 };
+
+const fixedSectionTypes = new Set(["cover", "opening", "closing"]);
+const sectionOrder = ["cover", "opening", "quote", "couple", "event", "location", "gallery", "rsvp", "wishes", "gift", "closing"];
+
+function normalizeSectionOrder(items: InvitationSection[]) {
+  const fixedStart = items.filter((item) => item.section_type === "cover" || item.section_type === "opening");
+  const fixedEnd = items.filter((item) => item.section_type === "closing");
+  const movable = items.filter((item) => !fixedSectionTypes.has(item.section_type)).sort((a, b) => {
+    const aOrder = sectionOrder.indexOf(a.section_type);
+    const bOrder = sectionOrder.indexOf(b.section_type);
+    if (aOrder >= 0 && bOrder >= 0 && aOrder !== bOrder) return aOrder - bOrder;
+    return a.position - b.position;
+  });
+  return [...fixedStart, ...movable, ...fixedEnd].map((item, position) => ({ ...item, position }));
+}
 
 const fieldConfig: Record<string, Array<{ key: string; label: string; multiline?: boolean; type?: string }>> = {
   cover: [
@@ -112,12 +127,13 @@ export function InvitationBuilder({
   wishes: Wish[];
   media: InvitationMedia[];
 }) {
-  const [sections, setSections] = useState(() => [...initialSections].sort((a, b) => a.position - b.position));
+  const [sections, setSections] = useState(() => normalizeSectionOrder([...initialSections].sort((a, b) => a.position - b.position)));
   const [expandedId, setExpandedId] = useState(initialSections[0]?.id ?? "");
   const [activeTab, setActiveTab] = useState<"sections" | "preview">("sections");
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [status, setStatus] = useState<"saved" | "dirty" | "saving">("saved");
   const [published, setPublished] = useState(invitation.is_published);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [isPending, startTransition] = useTransition();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -159,14 +175,18 @@ export function InvitationBuilder({
     const from = sections.findIndex((section) => section.id === sourceId);
     const to = sections.findIndex((section) => section.id === targetId);
     if (from < 0 || to < 0) return;
-    const next = [...sections];
-    const [moved] = next.splice(from, 1);
-    next.splice(to, 0, moved);
-    applySections(next);
+    if (fixedSectionTypes.has(sections[from].section_type) || fixedSectionTypes.has(sections[to].section_type)) return;
+    const movable = sections.filter((section) => !fixedSectionTypes.has(section.section_type));
+    const sourceIndex = movable.findIndex((section) => section.id === sourceId);
+    const targetIndex = movable.findIndex((section) => section.id === targetId);
+    if (sourceIndex < 0 || targetIndex < 0) return;
+    const [moved] = movable.splice(sourceIndex, 1);
+    movable.splice(targetIndex, 0, moved);
+    applySections(normalizeSectionOrder(movable));
   }
 
-  function toggleVisibility(section: InvitationSection) {
-    applySections(sections.map((item) => item.id === section.id ? { ...item, is_visible: !item.is_visible } : item));
+  function toggleVisibility(section: InvitationSection, isVisible: boolean) {
+    applySections(sections.map((item) => item.id === section.id ? { ...item, is_visible: isVisible } : item));
   }
 
   function updateSelected(next: InvitationSection) {
@@ -211,19 +231,25 @@ export function InvitationBuilder({
   }, [status]);
 
   async function togglePublish() {
+    if (isPublishing) return;
     if (status !== "saved") {
       toast.error("Simpan perubahan terlebih dahulu sebelum publish.");
       saveNow();
       return;
     }
     const next = !published;
-    const result = await setInvitationPublished(invitation.id, next);
-    if (result.error) {
-      toast.error(result.error);
-      return;
+    setIsPublishing(true);
+    try {
+      const result = await setInvitationPublished(invitation.id, next);
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+      setPublished(next);
+      toast.success(next ? "Undangan dipublish." : "Undangan di-unpublish.");
+    } finally {
+      setIsPublishing(false);
     }
-    setPublished(next);
-    toast.success(next ? "Undangan dipublish." : "Undangan di-unpublish.");
   }
 
   useEffect(() => () => {
@@ -238,8 +264,8 @@ export function InvitationBuilder({
           <span className="text-muted-foreground">{published ? "Published" : "Draft"}</span>
           {status !== "saved" && <span className="ml-2 text-amber-600">• Belum tersimpan</span>}
         </div>
-        <Button onClick={togglePublish} disabled={isPending || status === "saving"} variant={published ? "outline" : "default"}>
-          {isPending && <Loader2 className="size-4 animate-spin" />}
+        <Button onClick={togglePublish} disabled={isPublishing || status !== "saved"} variant={published ? "outline" : "default"}>
+          {isPublishing && <Loader2 className="size-4 animate-spin" />}
           {published ? "Unpublish" : "Publish"}
         </Button>
       </div>
@@ -286,33 +312,39 @@ export function InvitationBuilder({
                   className={`overflow-hidden rounded-lg border bg-background transition-colors ${draggedId === section.id ? "border-primary/60 opacity-60" : "border-border"}`}
                 >
                   <div className="flex items-center gap-2 p-3">
-                    <button
-                      type="button"
-                      draggable
-                      onDragStart={(event) => {
-                        event.dataTransfer.effectAllowed = "move";
-                        event.dataTransfer.setData("text/plain", section.id);
-                        setDraggedId(section.id);
-                      }}
-                      onDragEnd={() => setDraggedId(null)}
-                      onKeyDown={(event) => {
-                        if (event.altKey && event.key === "ArrowUp") {
-                          event.preventDefault();
-                          const target = sections[index - 1];
-                          if (target) reorderSections(section.id, target.id);
-                        }
-                        if (event.altKey && event.key === "ArrowDown") {
-                          event.preventDefault();
-                          const target = sections[index + 1];
-                          if (target) reorderSections(section.id, target.id);
-                        }
-                      }}
-                      aria-label={`Pindahkan ${labels[section.section_type] ?? section.section_key}. Gunakan Alt plus panah atas atau bawah untuk mengurutkan dengan keyboard.`}
-                      title="Drag untuk mengurutkan. Alt + ↑/↓ untuk keyboard."
-                      className="flex size-9 shrink-0 cursor-grab items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground active:cursor-grabbing"
-                    >
-                      <GripVertical className="size-4" />
-                    </button>
+                    {fixedSectionTypes.has(section.section_type) ? (
+                      <span className="flex size-9 shrink-0 items-center justify-center text-muted-foreground" title="Posisi section dikunci">
+                        <GripVertical className="size-4 opacity-30" />
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        draggable
+                        onDragStart={(event) => {
+                          event.dataTransfer.effectAllowed = "move";
+                          event.dataTransfer.setData("text/plain", section.id);
+                          setDraggedId(section.id);
+                        }}
+                        onDragEnd={() => setDraggedId(null)}
+                        onKeyDown={(event) => {
+                          if (event.altKey && event.key === "ArrowUp") {
+                            event.preventDefault();
+                            const target = sections.slice(0, index).reverse().find((item) => !fixedSectionTypes.has(item.section_type));
+                            if (target) reorderSections(section.id, target.id);
+                          }
+                          if (event.altKey && event.key === "ArrowDown") {
+                            event.preventDefault();
+                            const target = sections.slice(index + 1).find((item) => !fixedSectionTypes.has(item.section_type));
+                            if (target) reorderSections(section.id, target.id);
+                          }
+                        }}
+                        aria-label={`Pindahkan ${labels[section.section_type] ?? section.section_key}. Gunakan Alt plus panah atas atau bawah untuk mengurutkan dengan keyboard.`}
+                        title="Drag untuk mengurutkan. Alt + ↑/↓ untuk keyboard."
+                        className="flex size-9 shrink-0 cursor-grab items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground active:cursor-grabbing"
+                      >
+                        <GripVertical className="size-4" />
+                      </button>
+                    )}
                     <button
                       type="button"
                       aria-expanded={expanded}
@@ -326,17 +358,6 @@ export function InvitationBuilder({
                       </span>
                       <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform duration-200 ${expanded ? "rotate-180" : ""}`} />
                     </button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="size-9 shrink-0"
-                      onClick={() => toggleVisibility(section)}
-                      aria-label={section.is_visible ? "Sembunyikan section" : "Tampilkan section"}
-                      title={section.is_visible ? "Sembunyikan section" : "Tampilkan section"}
-                    >
-                      {section.is_visible ? <Eye className="size-4" /> : <EyeOff className="size-4 text-muted-foreground" />}
-                    </Button>
                   </div>
 
                   <AnimatePresence initial={false}>
@@ -350,6 +371,18 @@ export function InvitationBuilder({
                         className="overflow-hidden"
                       >
                         <div className="space-y-4 border-t px-4 pb-4 pt-4">
+                          <div className="flex items-center justify-between gap-3 rounded-md bg-muted/50 px-3 py-2.5">
+                            <div className="space-y-0.5">
+                              <Label htmlFor={`section-${section.id}-visibility`} className="text-sm font-medium">Tampilkan section</Label>
+                              <p className="text-xs text-muted-foreground">{section.is_visible ? "Section tampil di undangan." : "Section disembunyikan dari undangan."}</p>
+                            </div>
+                            <Switch
+                              id={`section-${section.id}-visibility`}
+                              checked={section.is_visible}
+                              onCheckedChange={(checked) => toggleVisibility(section, checked)}
+                              aria-label={`Tampilkan ${labels[section.section_type] ?? section.section_key}`}
+                            />
+                          </div>
                           {section.section_type === "gallery" ? (
                             <>
                               <div className="space-y-2">
@@ -412,26 +445,16 @@ export function InvitationBuilder({
             }) : (
               <p className="rounded-md bg-muted p-6 text-center text-sm text-muted-foreground">Belum ada section untuk undangan ini.</p>
             )}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-              <p className="text-xs text-muted-foreground">Perubahan tersimpan otomatis. Drag pegangan untuk mengurutkan.</p>
-              <Button onClick={saveNow} disabled={isPending || status === "saved"} size="sm">
-                {status === "saving" ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-                {status === "saving" ? "Menyimpan..." : status === "dirty" ? "Simpan sekarang" : "Tersimpan"}
-              </Button>
-            </div>
+            <p className="border-t pt-4 text-xs text-muted-foreground">
+              Perubahan tersimpan otomatis. Drag untuk mengurutkan section; Cover, Opening, dan Closing terkunci posisinya.
+            </p>
           </CardContent>
         </Card>
       ) : (
         <Card className="overflow-hidden">
-          <CardHeader className="flex-row items-center justify-between gap-3 border-b">
-            <div>
-              <CardTitle className="text-base">Preview</CardTitle>
-              <CardDescription>Renderer yang sama dengan halaman publik.</CardDescription>
-            </div>
-            <Button onClick={saveNow} disabled={isPending || status === "saved"} size="sm">
-              {status === "saving" ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-              {status === "saving" ? "Menyimpan..." : status === "dirty" ? "Simpan sekarang" : "Tersimpan"}
-            </Button>
+          <CardHeader className="border-b">
+            <CardTitle className="text-base">Preview</CardTitle>
+            <CardDescription>Renderer yang sama dengan halaman publik.</CardDescription>
           </CardHeader>
           <div className="bg-muted/30 p-2 md:p-4">
             <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
