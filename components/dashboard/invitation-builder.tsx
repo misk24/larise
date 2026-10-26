@@ -27,13 +27,12 @@ const labels: Record<string, string> = {
   location: "Location",
   gallery: "Gallery",
   rsvp: "RSVP",
-  wishes: "Wishes",
   gift: "Gift",
   closing: "Closing",
 };
 
 const fixedSectionTypes = new Set(["cover", "opening", "closing"]);
-const sectionOrder = ["cover", "opening", "quote", "couple", "event", "location", "gallery", "rsvp", "wishes", "gift", "closing"];
+const sectionOrder = ["cover", "opening", "quote", "couple", "event", "location", "gallery", "rsvp", "gift", "closing"];
 
 function normalizeSectionOrder(items: InvitationSection[], sortMovable = false) {
   const fixedStart = [
@@ -385,9 +384,9 @@ export function InvitationBuilder({
                                 }}
                               />
                             </>
-                          ) : section.section_type === "rsvp" || section.section_type === "wishes" ? (
+                          ) : section.section_type === "rsvp" ? (
                             <p className="rounded-md bg-muted p-4 text-sm text-muted-foreground">
-                              Section ini tidak punya field konten. Pengaturan RSVP dan ucapan dikelola dari data guest/public flow.
+                              Form RSVP dan ucapan digabung menjadi satu section pada undangan publik.
                             </p>
                           ) : fields.length ? (
                             <div className="space-y-4">
