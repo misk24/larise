@@ -73,10 +73,10 @@ These journeys express product intent. Their implementation status is documented
 - Let owners edit section content, visibility, and order; preview before publishing.
 - Keep the Cover and Opening at the beginning and Closing at the end.
 - Provide event details, location, gallery, RSVP/wishes, gift details, and closing content.
-- Provide a countdown to the event as part of the intended invitation feature set.
+- Keep countdown as a planned feature, deferred from the current implementation scope until a later phase.
 - Save changes with clear feedback and avoid claiming publication until it succeeds.
 
-**Verified source status:** PR #48 is merged into `main`. The current builder list in `components/dashboard/invitation-builder.tsx` filters editable sections to ten types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing. RSVP and wishes are combined in the guest-facing flow. The validation schema still recognizes a `countdown` section type, but the builder's current filter excludes it. Countdown is therefore recorded as a product/implementation mismatch requiring a product decision, not as a completed feature or a removed requirement.
+**Verified source status:** PR #48 is merged into `main`. The current builder list in `components/dashboard/invitation-builder.tsx` filters editable sections to ten types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing. RSVP and wishes are combined in the guest-facing flow. The validation schema still recognizes a `countdown` section type, but the builder's current filter excludes it. Countdown is intentionally deferred to a later phase by product decision. It is not a current acceptance criterion for this phase, and it must not be described as implemented. Revisit it when the later phase is planned.
 
 ### Guests and content
 - Support guest response management and wishes/messages where enabled.
