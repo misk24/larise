@@ -215,8 +215,7 @@ export function InvitationBuilder({
   async function togglePublish() {
     if (isPublishing) return;
     if (status !== "saved") {
-      toast.error("Simpan perubahan terlebih dahulu sebelum publish.");
-      saveNow();
+      toast.error("Tunggu sampai perubahan selesai tersimpan sebelum publish.");
       return;
     }
     const next = !published;
