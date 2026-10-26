@@ -218,7 +218,22 @@ export function InvitationBuilder({
     return () => window.removeEventListener("beforeunload", handler);
   }, [status]);
 
-  async function saveBackgroundMusic() {\n    if (isSavingMusic) return;\n    setIsSavingMusic(true);\n    try {\n      const result = await saveInvitationBackgroundMusic(invitation.id, backgroundMusicUrl.trim());\n      if (result.error) {\n        toast.error(result.error);\n        return;\n      }\n      toast.success(backgroundMusicUrl.trim() ? "URL musik latar tersimpan." : "Musik latar dihapus.");\n    } finally {\n      setIsSavingMusic(false);\n    }\n  }\n\n  async function togglePublish() {
+  async function saveBackgroundMusic() {
+    if (isSavingMusic) return;
+    setIsSavingMusic(true);
+    try {
+      const result = await saveInvitationBackgroundMusic(invitation.id, backgroundMusicUrl.trim());
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+      toast.success(backgroundMusicUrl.trim() ? "URL musik latar tersimpan." : "Musik latar dihapus.");
+    } finally {
+      setIsSavingMusic(false);
+    }
+  }
+
+  async function togglePublish() {
     if (isPublishing) return;
     if (status !== "saved") {
       toast.error("Tunggu sampai perubahan selesai tersimpan sebelum publish.");
@@ -245,6 +260,36 @@ export function InvitationBuilder({
 
   return (
     <div className="space-y-4">
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base"><Music2 className="size-4" /> Musik latar</CardTitle>
+          <CardDescription>Masukkan URL langsung ke file audio HTTPS. Tamu perlu menekan tombol putar sendiri.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="space-y-2">
+            <Label htmlFor="background-music-url">URL audio</Label>
+            <Input
+              id="background-music-url"
+              type="url"
+              inputMode="url"
+              autoComplete="url"
+              placeholder="https://contoh.com/musik.mp3"
+              value={backgroundMusicUrl}
+              maxLength={2048}
+              onChange={(event) => setBackgroundMusicUrl(event.target.value)}
+              aria-describedby="background-music-help"
+            />
+            <p id="background-music-help" className="text-xs text-muted-foreground">Gunakan tautan file audio langsung, bukan tautan halaman YouTube, Spotify, atau Google Drive. Kosongkan untuk menghapus musik.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button onClick={saveBackgroundMusic} disabled={isSavingMusic}>
+              {isSavingMusic && <Loader2 className="size-4 animate-spin" />}
+              Simpan musik
+            </Button>
+            {backgroundMusicUrl.trim() && <Button type="button" variant="outline" onClick={() => setBackgroundMusicUrl("")} disabled={isSavingMusic}>Hapus URL</Button>}
+          </div>
+        </CardContent>
+      </Card>
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-background p-3">
         <div className="text-sm">
           <span className="font-medium">Status:</span>{" "}
