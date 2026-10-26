@@ -8,12 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { saveInvitationSections } from "@/lib/actions/invitation-builder";
+import { saveInvitationBackgroundMusic, saveInvitationSections } from "@/lib/actions/invitation-builder";
 import { setInvitationPublished } from "@/lib/actions/invitations";
 import { SharedInvitationRenderer } from "@/components/invitation/shared-renderer";
 import { InvitationMediaUploader } from "@/components/dashboard/invitation-media-uploader";
 import type { Invitation, InvitationMedia, InvitationSection, Theme, Wish } from "@/types/database";
-import { ChevronDown, Eye, GripVertical, Loader2 } from "lucide-react";
+import { ChevronDown, Eye, GripVertical, Loader2, Music2 } from "lucide-react";
 import { toast } from "sonner";
 
 type BuilderInvitation = Invitation & { themes?: Theme | null };
@@ -144,7 +144,7 @@ export function InvitationBuilder({
   const [activeTab, setActiveTab] = useState<"sections" | "preview">("sections");
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [status, setStatus] = useState<"saved" | "dirty" | "saving">("saved");
-  const [published, setPublished] = useState(invitation.is_published);
+  const [published, setPublished] = useState(invitation.is_published);\n  const [backgroundMusicUrl, setBackgroundMusicUrl] = useState(invitation.background_music_url ?? "");\n  const [isSavingMusic, setIsSavingMusic] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const changeVersion = useRef(0);
@@ -218,7 +218,7 @@ export function InvitationBuilder({
     return () => window.removeEventListener("beforeunload", handler);
   }, [status]);
 
-  async function togglePublish() {
+  async function saveBackgroundMusic() {\n    if (isSavingMusic) return;\n    setIsSavingMusic(true);\n    try {\n      const result = await saveInvitationBackgroundMusic(invitation.id, backgroundMusicUrl.trim());\n      if (result.error) {\n        toast.error(result.error);\n        return;\n      }\n      toast.success(backgroundMusicUrl.trim() ? "URL musik latar tersimpan." : "Musik latar dihapus.");\n    } finally {\n      setIsSavingMusic(false);\n    }\n  }\n\n  async function togglePublish() {
     if (isPublishing) return;
     if (status !== "saved") {
       toast.error("Tunggu sampai perubahan selesai tersimpan sebelum publish.");
