@@ -20,16 +20,16 @@ type BuilderInvitation = Invitation & { themes?: Theme | null };
 
 const labels: Record<string, string> = {
   cover: "Cover",
-  opening: "Pembuka",
-  couple: "Mempelai",
-  quote: "Kutipan",
-  event: "Acara",
-  gallery: "Galeri",
-  location: "Lokasi",
-  closing: "Penutup",
+  opening: "Opening",
+  quote: "Quote",
+  couple: "Couple",
+  event: "Event",
+  location: "Location",
+  gallery: "Gallery",
   rsvp: "RSVP",
-  wishes: "Ucapan",
-  gift: "Hadiah",
+  wishes: "Wishes",
+  gift: "Gift",
+  closing: "Closing",
 };
 
 const fixedSectionTypes = new Set(["cover", "opening", "closing"]);
