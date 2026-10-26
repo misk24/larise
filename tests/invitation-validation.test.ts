@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  backgroundMusicUrlSchema,
   buildInvitationSlug,
   invitationInputSchema,
   invitationNameOrderSchema,
@@ -50,5 +51,32 @@ describe("invitation creation validation", () => {
       brideName: validInput.brideName,
       brideNickname: validInput.brideNickname,
     }).success).toBe(true);
+  });
+});
+
+
+describe("background music URL validation", () => {
+  it("accepts an empty value to remove music and valid HTTPS URLs", () => {
+    expect(backgroundMusicUrlSchema.safeParse("").success).toBe(true);
+    expect(backgroundMusicUrlSchema.safeParse(" https://cdn.example.com/audio.mp3 ").success).toBe(true);
+    expect(backgroundMusicUrlSchema.parse(" https://cdn.example.com/audio.mp3 ")).toBe("https://cdn.example.com/audio.mp3");
+  });
+
+  it("rejects insecure, malformed, credentialed, and local URLs", () => {
+    for (const value of [
+      "http://cdn.example.com/audio.mp3",
+      "javascript:alert(1)",
+      "not a URL",
+      "https://user:password@cdn.example.com/audio.mp3",
+      "https://localhost/audio.mp3",
+      "https://music.local/audio.mp3",
+      "https://127.0.0.1/audio.mp3",
+    ]) {
+      expect(backgroundMusicUrlSchema.safeParse(value).success, value).toBe(false);
+    }
+  });
+
+  it("rejects URLs longer than the supported limit", () => {
+    expect(backgroundMusicUrlSchema.safeParse(`https://cdn.example.com/${"a".repeat(2050)}`).success).toBe(false);
   });
 });
