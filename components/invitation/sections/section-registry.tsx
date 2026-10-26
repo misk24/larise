@@ -11,7 +11,6 @@ import { GallerySection } from "./gallery";
 import { LocationSection } from "./location";
 import { ClosingSection } from "./closing";
 import { RsvpSection } from "./rsvp";
-import { WishesSection } from "./wishes";
 import { GiftSection } from "./gift";
 
 export interface SectionContext {
@@ -26,5 +25,5 @@ export type SectionComponent = ComponentType<SectionContext>;
 export const sectionRegistry: Record<SectionType, SectionComponent> = {
   cover:CoverSection, opening:OpeningSection, couple:CoupleSection, quote:QuoteSection,
   event:EventSection, countdown:CountdownSection, gallery:GallerySection, location:LocationSection,
-  closing:ClosingSection, rsvp:RsvpSection, wishes:WishesSection, gift:GiftSection,
+  closing:ClosingSection, rsvp:RsvpSection, gift:GiftSection,
 };
