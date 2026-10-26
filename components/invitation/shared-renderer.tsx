@@ -18,7 +18,21 @@ export function SharedInvitationRenderer({ invitation, sections, guestName, wish
     .sort((a, b) => a.position - b.position);
 
   return (
-    <main className="min-h-screen">\n      {invitation.background_music_url && (\n        <div className="mx-auto flex max-w-3xl flex-col items-center gap-3 px-4 py-6 text-center">\n          <p className="text-sm font-medium">Musik Latar</p>\n          <audio\n            controls\n            preload="none"\n            src={invitation.background_music_url}\n            aria-label="Musik latar undangan"\n            className="w-full max-w-md"\n          >\n            Browser Anda tidak mendukung pemutar audio.\n          </audio>\n        </div>\n      )}
+    <main className="min-h-screen">
+      {invitation.background_music_url && (
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-3 px-4 py-6 text-center">
+          <p className="text-sm font-medium">Musik Latar</p>
+          <audio
+            controls
+            preload="none"
+            src={invitation.background_music_url}
+            aria-label="Musik latar undangan"
+            className="w-full max-w-md"
+          >
+            Browser Anda tidak mendukung pemutar audio.
+          </audio>
+        </div>
+      )}
       {ordered.map((section) => {
         const Component = sectionRegistry[section.section_type as keyof typeof sectionRegistry];
         if (!Component) return null;
