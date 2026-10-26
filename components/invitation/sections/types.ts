@@ -12,7 +12,7 @@ export const sectionContentSchemas: Record<SectionType, z.ZodTypeAny> = {
  event: base.extend({ title:z.string().optional(), date:z.string().optional(), time:z.string().optional(), venue:z.string().optional(), address:z.string().optional() }),
  countdown: base.extend({ title:z.string().optional(), target_date:z.string().optional() }),
  gallery: base.extend({ title:z.string().optional(), images:z.array(z.string()).optional() }),
- location: base.extend({ title:z.string().optional(), venue:z.string().optional(), address:z.string().optional(), maps_url:z.string().url().optional() }),
+ location: base.extend({ title:z.string().optional(), venue:z.string().optional(), address:z.string().optional(), maps_url:z.union([z.string().url(), z.literal("")]).optional() }),
  closing: base.extend({ title:z.string().optional(), body:z.string().optional() }),
  rsvp: base,
  gift: base.extend({ bank_name:z.string().optional(), account_number:z.string().optional(), account_name:z.string().optional() }),
