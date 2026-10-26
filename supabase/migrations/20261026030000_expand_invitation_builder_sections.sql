@@ -35,9 +35,7 @@ set position = desired_order.position
 from desired_order
 where ts.section_type = desired_order.section_type;
 
--- Countdown is no longer part of the supported builder section set.
-delete from public.invitation_sections where section_type = 'countdown';
-delete from public.theme_sections where section_type = 'countdown';
+-- Preserve any legacy section data; this migration only adds the supported sections.
 
 -- Existing invitations inherit any newly supported section missing from their theme clone.
 insert into public.invitation_sections
