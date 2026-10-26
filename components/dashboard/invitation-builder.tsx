@@ -132,8 +132,15 @@ export function InvitationBuilder({
   wishes: Wish[];
   media: InvitationMedia[];
 }) {
-  const [sections, setSections] = useState(() => normalizeSectionOrder([...initialSections].sort((a, b) => a.position - b.position), true));
-  const [expandedId, setExpandedId] = useState(initialSections[0]?.id ?? "");
+  const [sections, setSections] = useState(() => normalizeSectionOrder(
+    initialSections
+      .filter((section) => sectionOrder.includes(section.section_type))
+      .sort((a, b) => a.position - b.position),
+    true,
+  ));
+  const [expandedId, setExpandedId] = useState(
+    initialSections.find((section) => sectionOrder.includes(section.section_type))?.id ?? "",
+  );
   const [activeTab, setActiveTab] = useState<"sections" | "preview">("sections");
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [status, setStatus] = useState<"saved" | "dirty" | "saving">("saved");
