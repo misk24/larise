@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,18 +35,21 @@ const labels: Record<string, string> = {
 const fixedSectionTypes = new Set(["cover", "opening", "closing"]);
 const sectionOrder = ["cover", "opening", "quote", "couple", "event", "location", "gallery", "rsvp", "wishes", "gift", "closing"];
 
-function normalizeSectionOrder(items: InvitationSection[]) {
+function normalizeSectionOrder(items: InvitationSection[], sortMovable = false) {
   const fixedStart = [
     ...items.filter((item) => item.section_type === "cover"),
     ...items.filter((item) => item.section_type === "opening"),
   ];
   const fixedEnd = items.filter((item) => item.section_type === "closing");
-  const movable = items.filter((item) => !fixedSectionTypes.has(item.section_type)).sort((a, b) => {
-    const aOrder = sectionOrder.indexOf(a.section_type);
-    const bOrder = sectionOrder.indexOf(b.section_type);
-    if (aOrder >= 0 && bOrder >= 0 && aOrder !== bOrder) return aOrder - bOrder;
-    return a.position - b.position;
-  });
+  const movable = items.filter((item) => !fixedSectionTypes.has(item.section_type));
+  if (sortMovable) {
+    movable.sort((a, b) => {
+      const aOrder = sectionOrder.indexOf(a.section_type);
+      const bOrder = sectionOrder.indexOf(b.section_type);
+      if (aOrder >= 0 && bOrder >= 0 && aOrder !== bOrder) return aOrder - bOrder;
+      return a.position - b.position;
+    });
+  }
   return [...fixedStart, ...movable, ...fixedEnd].map((item, position) => ({ ...item, position }));
 }
 
@@ -130,40 +133,40 @@ export function InvitationBuilder({
   wishes: Wish[];
   media: InvitationMedia[];
 }) {
-  const [sections, setSections] = useState(() => normalizeSectionOrder([...initialSections].sort((a, b) => a.position - b.position)));
+  const [sections, setSections] = useState(() => normalizeSectionOrder([...initialSections].sort((a, b) => a.position - b.position), true));
   const [expandedId, setExpandedId] = useState(initialSections[0]?.id ?? "");
   const [activeTab, setActiveTab] = useState<"sections" | "preview">("sections");
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [status, setStatus] = useState<"saved" | "dirty" | "saving">("saved");
   const [published, setPublished] = useState(invitation.is_published);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const changeVersion = useRef(0);
 
   function persist(nextSections: InvitationSection[]) {
+    const version = ++changeVersion.current;
     setStatus("dirty");
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
+    saveTimer.current = setTimeout(async () => {
       setStatus("saving");
-      startTransition(async () => {
-        const result = await saveInvitationSections({
-          invitationId: invitation.id,
-          sections: nextSections.map(({ id, section_key, section_type, position, content, is_visible }) => ({
-            id,
-            section_key,
-            section_type: section_type as never,
-            position,
-            content,
-            is_visible,
-          })),
-        });
-        if (result.error) {
-          setStatus("dirty");
-          toast.error(result.error);
-          return;
-        }
-        setStatus("saved");
+      const result = await saveInvitationSections({
+        invitationId: invitation.id,
+        sections: nextSections.map(({ id, section_key, section_type, position, content, is_visible }) => ({
+          id,
+          section_key,
+          section_type: section_type as never,
+          position,
+          content,
+          is_visible,
+        })),
       });
+      if (version !== changeVersion.current) return;
+      if (result.error) {
+        setStatus("dirty");
+        toast.error(result.error);
+        return;
+      }
+      setStatus("saved");
     }, 800);
   }
 
@@ -198,30 +201,6 @@ export function InvitationBuilder({
     persist(nextSections);
   }
 
-  function saveNow() {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    setStatus("saving");
-    startTransition(async () => {
-      const result = await saveInvitationSections({
-        invitationId: invitation.id,
-        sections: sections.map(({ id, section_key, section_type, position, content, is_visible }) => ({
-          id,
-          section_key,
-          section_type: section_type as never,
-          position,
-          content,
-          is_visible,
-        })),
-      });
-      if (result.error) {
-        setStatus("dirty");
-        toast.error(result.error);
-        return;
-      }
-      setStatus("saved");
-      toast.success("Perubahan tersimpan.");
-    });
-  }
 
   useEffect(() => {
     if (status === "saved") return;
