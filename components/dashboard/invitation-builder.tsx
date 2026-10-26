@@ -491,7 +491,7 @@ export function InvitationBuilder({
           <div className="bg-muted/30 p-2 md:p-4">
             <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
               <SharedInvitationRenderer
-                invitation={invitation}
+                invitation={{ ...invitation, background_music_url: backgroundMusicUrl.trim() || null }}
                 sections={sections}
                 guestName="Tamu Undangan"
                 wishes={wishes}
