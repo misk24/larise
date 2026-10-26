@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const sectionTypeSchema = z.enum(["cover","opening","couple","quote","event","countdown","gallery","location","closing","rsvp","wishes","gift"]);
+export const sectionTypeSchema = z.enum(["cover","opening","couple","quote","event","countdown","gallery","location","closing","rsvp","gift"]);
 export type SectionType = z.infer<typeof sectionTypeSchema>;
 
 const base = z.object({}).passthrough();
@@ -15,7 +15,6 @@ export const sectionContentSchemas: Record<SectionType, z.ZodTypeAny> = {
  location: base.extend({ title:z.string().optional(), venue:z.string().optional(), address:z.string().optional(), maps_url:z.string().url().optional() }),
  closing: base.extend({ title:z.string().optional(), body:z.string().optional() }),
  rsvp: base,
- wishes: base,
  gift: base.extend({ bank_name:z.string().optional(), account_number:z.string().optional(), account_name:z.string().optional() }),
 };
 
