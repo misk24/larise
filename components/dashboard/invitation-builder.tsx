@@ -36,7 +36,10 @@ const fixedSectionTypes = new Set(["cover", "opening", "closing"]);
 const sectionOrder = ["cover", "opening", "quote", "couple", "event", "location", "gallery", "rsvp", "wishes", "gift", "closing"];
 
 function normalizeSectionOrder(items: InvitationSection[]) {
-  const fixedStart = items.filter((item) => item.section_type === "cover" || item.section_type === "opening");
+  const fixedStart = [
+    ...items.filter((item) => item.section_type === "cover"),
+    ...items.filter((item) => item.section_type === "opening"),
+  ];
   const fixedEnd = items.filter((item) => item.section_type === "closing");
   const movable = items.filter((item) => !fixedSectionTypes.has(item.section_type)).sort((a, b) => {
     const aOrder = sectionOrder.indexOf(a.section_type);
@@ -182,7 +185,7 @@ export function InvitationBuilder({
     if (sourceIndex < 0 || targetIndex < 0) return;
     const [moved] = movable.splice(sourceIndex, 1);
     movable.splice(targetIndex, 0, moved);
-    applySections(normalizeSectionOrder(movable));
+    applySections(normalizeSectionOrder([...sections.filter((section) => fixedSectionTypes.has(section.section_type)), ...movable]));
   }
 
   function toggleVisibility(section: InvitationSection, isVisible: boolean) {
