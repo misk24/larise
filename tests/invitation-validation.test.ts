@@ -36,6 +36,21 @@ describe("invitation creation validation", () => {
     expect(invitationInputSchema.safeParse({ ...validInput, groomNickname: " " }).success).toBe(false);
   });
 
+  it("allows nickname edits while keeping slug and name order outside settings updates", () => {
+    const nicknameEdit = invitationSettingsSchema.safeParse({
+      ...validInput,
+      groomNickname: "Riz",
+      brideNickname: "Ayu",
+    });
+    expect(nicknameEdit.success).toBe(true);
+    if (nicknameEdit.success) {
+      expect(nicknameEdit.data.groomNickname).toBe("Riz");
+      expect(nicknameEdit.data.brideNickname).toBe("Ayu");
+      expect(nicknameEdit.data).not.toHaveProperty("slug");
+      expect(nicknameEdit.data).not.toHaveProperty("nameOrder");
+    }
+  });
+
   it("does not accept slug or name order in settings updates", () => {
     const parsed = invitationSettingsSchema.safeParse({ ...validInput, nameOrder: "bride_first", slug: "another-slug" });
     expect(parsed.success).toBe(true);

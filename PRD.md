@@ -63,11 +63,11 @@ These journeys express product intent. Their implementation status is documented
 ### Invitation creation and editing
 - Create an invitation through a two-step flow: basic couple information, then theme selection.
 - Generate a unique slug from nicknames in the chosen name order.
-- Lock slug and name order after draft creation.
+- Lock slug and name order after draft creation; keep both nicknames editable without regenerating the existing slug.
 - Keep event date out of create/edit forms; manage it through the builder.
 - Let owners edit allowed invitation content and select an active theme.
 
-**Verified source status:** PR #47 is merged into `main`; the create/edit UI and server action follow the two-step flow. The edit UI treats slug, nickname, and name order as locked. The builder's Event section edits the event date, and its save action synchronizes that value to `invitations.event_date`.
+**Verified source status:** PR #47 is merged into `main`; the create/edit UI and server action follow the two-step flow. The edit UI allows both full names and nicknames to be edited while keeping the existing slug and name order locked. Nickname edits do not regenerate the slug. The builder's Event section edits the event date, and its save action synchronizes that value to `invitations.event_date`.
 
 ### Invitation builder and published content
 - Let owners edit section content, visibility, and order; preview before publishing.

@@ -48,7 +48,7 @@ These boundaries are approved conventions, not proof that every existing screen 
 ## 5. Invitation flow verified in source
 
 - Invitation creation and editing use a two-step flow: couple information, then theme selection.
-- Slug and name order are established when a draft is created and are treated as locked in the edit UI.
+- Slug and name order are established when a draft is created and remain locked in the edit UI. Full names and nicknames remain editable; changing a nickname does not regenerate the slug.
 - Event date is edited through the builder's Event section; builder save logic also synchronizes it to the invitation-level `event_date` used by dashboard summaries.
 - The current builder's configurable section order is defined in `components/dashboard/invitation-builder.tsx`. Its current public builder list contains ten section types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing.
 - RSVP and guest wishes are presented as a combined guest-facing flow according to the merged builder work.
