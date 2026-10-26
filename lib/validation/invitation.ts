@@ -33,3 +33,25 @@ export function buildInvitationSlug(firstNickname: string, secondNickname: strin
   if (!firstNickname.trim() || !secondNickname.trim()) return "";
   return normalizeSlug(`${firstNickname}-${secondNickname}`);
 }
+
+
+/**
+ * Background music must be an HTTPS audio URL supplied by the invitation owner.
+ * The app never fetches this URL server-side, so it cannot be used for server-side requests.
+ */
+export const backgroundMusicUrlSchema = z.string().trim().max(2048).refine((value) => {
+  if (!value) return true;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:"
+      && !url.username
+      && !url.password
+      && url.hostname.includes(".")
+      && !/^(?:\d{1,3}\.){3}\d{1,3}$/.test(url.hostname)
+      && url.hostname !== "localhost"
+      && !url.hostname.endsWith(".localhost")
+      && !url.hostname.endsWith(".local");
+  } catch {
+    return false;
+  }
+}, "Gunakan URL audio HTTPS yang valid.");

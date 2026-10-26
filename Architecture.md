@@ -52,6 +52,7 @@ These boundaries are approved conventions, not proof that every existing screen 
 - Event date is edited through the builder's Event section; builder save logic also synchronizes it to the invitation-level `event_date` used by dashboard summaries.
 - The current builder's configurable section order is defined in `components/dashboard/invitation-builder.tsx`. Its current public builder list contains ten section types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing.
 - RSVP and guest wishes are presented as a combined guest-facing flow according to the merged builder work.
+- Background music is an invitation-level `background_music_url` field already present in the foundation migration. The owner edits it in the builder through an authenticated server action with HTTPS URL validation; the public shared renderer shows a native audio control only when a URL exists. Playback is user-initiated because autoplay is not reliable across browsers.
 - The section validation schema also recognizes a `countdown` type, but the current builder filters its editable section list to the ten types above. Product decision: countdown remains planned but is deferred to a later phase. Do not treat it as an acceptance criterion for the current phase or describe it as implemented. Reassess it when the deferred phase is planned.
 
 This section records observable source behavior, not a guarantee that all migrations are applied to production or all paths have passed E2E tests.

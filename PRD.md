@@ -72,11 +72,11 @@ These journeys express product intent. Their implementation status is documented
 ### Invitation builder and published content
 - Let owners edit section content, visibility, and order; preview before publishing.
 - Keep the Cover and Opening at the beginning and Closing at the end.
-- Provide event details, location, gallery, RSVP/wishes, gift details, and closing content.
+- Provide event details, location, gallery, RSVP/wishes, gift details, closing content, and optional background music from an owner-supplied HTTPS audio URL.
 - Keep countdown as a planned feature, deferred from the current implementation scope until a later phase.
 - Save changes with clear feedback and avoid claiming publication until it succeeds.
 
-**Verified source status:** PR #48 is merged into `main`. The current builder list in `components/dashboard/invitation-builder.tsx` filters editable sections to ten types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing. RSVP and wishes are combined in the guest-facing flow. The validation schema still recognizes a `countdown` section type, but the builder's current filter excludes it. Countdown is intentionally deferred to a later phase by product decision. It is not a current acceptance criterion for this phase, and it must not be described as implemented. Revisit it when the later phase is planned.
+**Verified source status:** PR #48 is merged into `main`. The current builder list in `components/dashboard/invitation-builder.tsx` filters editable sections to ten types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing. RSVP and wishes are combined in the guest-facing flow. The validation schema still recognizes a `countdown` section type, but the builder's current filter excludes it. Countdown is intentionally deferred to a later phase by product decision. It is not a current acceptance criterion for this phase, and it must not be described as implemented. Revisit it when the later phase is planned. Background music is stored on the invitation record (not as a reorderable section), can be cleared by removing the URL, and uses an explicit player control rather than relying on browser-blocked autoplay.
 
 ### Guests and content
 - Support guest response management and wishes/messages where enabled.

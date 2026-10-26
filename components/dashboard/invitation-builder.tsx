@@ -8,12 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { saveInvitationSections } from "@/lib/actions/invitation-builder";
+import { saveInvitationBackgroundMusic, saveInvitationSections } from "@/lib/actions/invitation-builder";
 import { setInvitationPublished } from "@/lib/actions/invitations";
 import { SharedInvitationRenderer } from "@/components/invitation/shared-renderer";
 import { InvitationMediaUploader } from "@/components/dashboard/invitation-media-uploader";
 import type { Invitation, InvitationMedia, InvitationSection, Theme, Wish } from "@/types/database";
-import { ChevronDown, Eye, GripVertical, Loader2 } from "lucide-react";
+import { ChevronDown, Eye, GripVertical, Loader2, Music2 } from "lucide-react";
 import { toast } from "sonner";
 
 type BuilderInvitation = Invitation & { themes?: Theme | null };
@@ -145,6 +145,8 @@ export function InvitationBuilder({
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [status, setStatus] = useState<"saved" | "dirty" | "saving">("saved");
   const [published, setPublished] = useState(invitation.is_published);
+  const [backgroundMusicUrl, setBackgroundMusicUrl] = useState(invitation.background_music_url ?? "");
+  const [isSavingMusic, setIsSavingMusic] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const changeVersion = useRef(0);
@@ -218,6 +220,21 @@ export function InvitationBuilder({
     return () => window.removeEventListener("beforeunload", handler);
   }, [status]);
 
+  async function saveBackgroundMusic() {
+    if (isSavingMusic) return;
+    setIsSavingMusic(true);
+    try {
+      const result = await saveInvitationBackgroundMusic(invitation.id, backgroundMusicUrl.trim());
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+      toast.success(backgroundMusicUrl.trim() ? "URL musik latar tersimpan." : "Musik latar dihapus.");
+    } finally {
+      setIsSavingMusic(false);
+    }
+  }
+
   async function togglePublish() {
     if (isPublishing) return;
     if (status !== "saved") {
@@ -245,6 +262,36 @@ export function InvitationBuilder({
 
   return (
     <div className="space-y-4">
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base"><Music2 className="size-4" /> Musik latar</CardTitle>
+          <CardDescription>Masukkan URL langsung ke file audio HTTPS. Tamu perlu menekan tombol putar sendiri.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="space-y-2">
+            <Label htmlFor="background-music-url">URL audio</Label>
+            <Input
+              id="background-music-url"
+              type="url"
+              inputMode="url"
+              autoComplete="url"
+              placeholder="https://contoh.com/musik.mp3"
+              value={backgroundMusicUrl}
+              maxLength={2048}
+              onChange={(event) => setBackgroundMusicUrl(event.target.value)}
+              aria-describedby="background-music-help"
+            />
+            <p id="background-music-help" className="text-xs text-muted-foreground">Gunakan tautan file audio langsung, bukan tautan halaman YouTube, Spotify, atau Google Drive. Kosongkan untuk menghapus musik.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button onClick={saveBackgroundMusic} disabled={isSavingMusic}>
+              {isSavingMusic && <Loader2 className="size-4 animate-spin" />}
+              Simpan musik
+            </Button>
+            {backgroundMusicUrl.trim() && <Button type="button" variant="outline" onClick={() => setBackgroundMusicUrl("")} disabled={isSavingMusic}>Hapus URL</Button>}
+          </div>
+        </CardContent>
+      </Card>
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-background p-3">
         <div className="text-sm">
           <span className="font-medium">Status:</span>{" "}
@@ -446,7 +493,7 @@ export function InvitationBuilder({
           <div className="bg-muted/30 p-2 md:p-4">
             <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
               <SharedInvitationRenderer
-                invitation={invitation}
+                invitation={{ ...invitation, background_music_url: backgroundMusicUrl.trim() || null }}
                 sections={sections}
                 guestName="Tamu Undangan"
                 wishes={wishes}
