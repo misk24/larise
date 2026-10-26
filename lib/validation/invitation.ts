@@ -47,6 +47,7 @@ export const backgroundMusicUrlSchema = z.string().trim().max(2048).refine((valu
       && !url.username
       && !url.password
       && url.hostname.includes(".")
+      && !/^(?:\d{1,3}\.){3}\d{1,3}$/.test(url.hostname)
       && url.hostname !== "localhost"
       && !url.hostname.endsWith(".localhost")
       && !url.hostname.endsWith(".local");
