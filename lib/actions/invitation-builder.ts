@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { invitationSectionSchema, sectionContentSchemas } from "@/components/invitation/sections/types";
+import { backgroundMusicUrlSchema } from "@/lib/validation/invitation";
 
 const sectionUpdateSchema = z.object({
   id: z.string().uuid(),
@@ -108,4 +109,46 @@ export async function saveInvitationSections(input: z.input<typeof saveSectionsS
   revalidatePath(`/${(await supabase.from("invitations").select("slug").eq("id", parsed.data.invitationId).single()).data?.slug ?? ""}`);
 
   return { success: true, savedAt: new Date().toISOString() };
+}
+
+
+const backgroundMusicInputSchema = z.object({
+  invitationId: z.string().uuid(),
+  backgroundMusicUrl: backgroundMusicUrlSchema,
+});
+
+export async function saveInvitationBackgroundMusic(
+  invitationId: string,
+  backgroundMusicUrl: string,
+) {
+  const parsed = backgroundMusicInputSchema.safeParse({ invitationId, backgroundMusicUrl });
+  if (!parsed.success) return { error: "URL musik latar tidak valid. Gunakan URL HTTPS." };
+
+  const { supabase, user, invitation } = await requireOwner(parsed.data.invitationId);
+  if (!user || !invitation) return { error: "Undangan tidak ditemukan." };
+
+  const { error } = await supabase
+    .from("invitations")
+    .update({ background_music_url: parsed.data.backgroundMusicUrl || null })
+    .eq("id", parsed.data.invitationId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error("saveInvitationBackgroundMusic failed", error);
+    return { error: "Musik latar gagal disimpan." };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/invitations");
+  revalidatePath(`/dashboard/invitations/${parsed.data.invitationId}/builder`);
+
+  const { data: savedInvitation } = await supabase
+    .from("invitations")
+    .select("slug")
+    .eq("id", parsed.data.invitationId)
+    .eq("user_id", user.id)
+    .single();
+  if (savedInvitation?.slug) revalidatePath(`/${savedInvitation.slug}`);
+
+  return { success: true };
 }
