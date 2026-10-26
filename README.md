@@ -41,7 +41,7 @@ Some checks may require local environment variables or configured external servi
 
 ## Project Documentation
 
-- `PRD.md`: approved product intent and requirements.
+- `PRD.md`: approved product intent, current scope, and implementation status.
 - `Design_System.md`: visual direction, typography, and frontend/backend component boundaries.
 - `Architecture.md`: verified implementation boundaries, auth/data guidance, and architecture notes.
 - `Agents.md`: required Plan → Implement → Verify → Review workflow and rules for handling requirement mismatches.
