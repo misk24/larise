@@ -145,6 +145,17 @@ export async function updateInvitation(
 
     if (!current) return { error: "Undangan tidak ditemukan." };
 
+    if (current.theme_id !== theme.id) {
+      const { error: cloneError } = await supabase.rpc(
+        "clone_theme_sections_to_invitation",
+        { p_theme_id: theme.id, p_invitation_id: invitationId },
+      );
+      if (cloneError) {
+        console.error("updateInvitation clone failed", cloneError);
+        return { error: "Struktur tema gagal diperbarui. Tema sebelumnya tetap digunakan." };
+      }
+    }
+
     const { error } = await supabase
       .from("invitations")
       .update({
@@ -159,15 +170,7 @@ export async function updateInvitation(
 
     if (error) {
       console.error("updateInvitation failed", error);
-      return { error: "Undangan gagal disimpan." };
-    }
-
-    if (current.theme_id !== theme.id) {
-      const { error: cloneError } = await supabase.rpc(
-        "clone_theme_sections_to_invitation",
-        { p_theme_id: theme.id, p_invitation_id: invitationId },
-      );
-      if (cloneError) return { error: "Struktur tema gagal diperbarui." };
+      return { error: "Undangan gagal disimpan. Jika tema berubah, periksa kembali struktur tema sebelum melanjutkan." };
     }
 
     revalidatePath("/dashboard");
