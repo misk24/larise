@@ -155,24 +155,31 @@ export function InvitationBuilder({
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       setStatus("saving");
-      const result = await saveInvitationSections({
-        invitationId: invitation.id,
-        sections: nextSections.map(({ id, section_key, section_type, position, content, is_visible }) => ({
-          id,
-          section_key,
-          section_type: section_type as never,
-          position,
-          content,
-          is_visible,
-        })),
-      });
-      if (version !== changeVersion.current) return;
-      if (result.error) {
+      try {
+        const result = await saveInvitationSections({
+          invitationId: invitation.id,
+          sections: nextSections.map(({ id, section_key, section_type, position, content, is_visible }) => ({
+            id,
+            section_key,
+            section_type: section_type as never,
+            position,
+            content,
+            is_visible,
+          })),
+        });
+        if (version !== changeVersion.current) return;
+        if (result.error) {
+          setStatus("dirty");
+          toast.error(result.error);
+          return;
+        }
+        setStatus("saved");
+      } catch (error) {
+        console.error("Invitation builder autosave failed unexpectedly", error);
+        if (version !== changeVersion.current) return;
         setStatus("dirty");
-        toast.error(result.error);
-        return;
+        toast.error("Gagal menyimpan perubahan karena koneksi bermasalah. Periksa koneksi lalu coba lagi.");
       }
-      setStatus("saved");
     }, 800);
   }
 
