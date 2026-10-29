@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(20);
+select plan(21);
 
 select ok(
   (select relrowsecurity from pg_class where oid = 'public.profiles'::regclass),
@@ -65,6 +65,17 @@ select ok(
 select ok(
   exists(select 1 from pg_policies where schemaname='public' and tablename='invitation_media' and policyname='Owners manage media for own invitations'),
   'invitation media owner policy exists'
+);
+
+select ok(
+  exists(
+    select 1 from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public'
+      and p.proname = 'save_invitation_sections_atomic'
+      and p.prosecdef = false
+  ),
+  'atomic builder save function exists and runs with caller privileges'
 );
 
 select * from finish();
