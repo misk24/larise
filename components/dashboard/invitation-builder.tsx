@@ -148,38 +148,61 @@ export function InvitationBuilder({
   const [isPublishing, setIsPublishing] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const changeVersion = useRef(0);
+  const pendingSave = useRef<{ version: number; sections: InvitationSection[] } | null>(null);
+  const saveInFlight = useRef(false);
+
+  async function flushPendingSave() {
+    if (saveInFlight.current) return;
+    saveInFlight.current = true;
+
+    try {
+      while (pendingSave.current) {
+        const current = pendingSave.current;
+        pendingSave.current = null;
+        setStatus("saving");
+
+        try {
+          const result = await saveInvitationSections({
+            invitationId: invitation.id,
+            sections: current.sections.map(({ id, section_key, section_type, position, content, is_visible }) => ({
+              id,
+              section_key,
+              section_type: section_type as never,
+              position,
+              content,
+              is_visible,
+            })),
+          });
+
+          if (current.version !== changeVersion.current) continue;
+          if (result.error) {
+            setStatus("dirty");
+            toast.error(result.error);
+            continue;
+          }
+          setStatus("saved");
+        } catch (error) {
+          console.error("Invitation builder autosave failed unexpectedly", error);
+          if (current.version === changeVersion.current) {
+            setStatus("dirty");
+            toast.error("Gagal menyimpan perubahan karena koneksi bermasalah. Periksa koneksi lalu coba lagi.");
+          }
+        }
+      }
+    } finally {
+      saveInFlight.current = false;
+      // A save may have been queued between the loop's final check and cleanup.
+      if (pendingSave.current) void flushPendingSave();
+    }
+  }
 
   function persist(nextSections: InvitationSection[]) {
     const version = ++changeVersion.current;
     setStatus("dirty");
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
-      setStatus("saving");
-      try {
-        const result = await saveInvitationSections({
-          invitationId: invitation.id,
-          sections: nextSections.map(({ id, section_key, section_type, position, content, is_visible }) => ({
-            id,
-            section_key,
-            section_type: section_type as never,
-            position,
-            content,
-            is_visible,
-          })),
-        });
-        if (version !== changeVersion.current) return;
-        if (result.error) {
-          setStatus("dirty");
-          toast.error(result.error);
-          return;
-        }
-        setStatus("saved");
-      } catch (error) {
-        console.error("Invitation builder autosave failed unexpectedly", error);
-        if (version !== changeVersion.current) return;
-        setStatus("dirty");
-        toast.error("Gagal menyimpan perubahan karena koneksi bermasalah. Periksa koneksi lalu coba lagi.");
-      }
+    saveTimer.current = setTimeout(() => {
+      pendingSave.current = { version, sections: nextSections };
+      void flushPendingSave();
     }, 800);
   }
 
