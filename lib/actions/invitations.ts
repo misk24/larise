@@ -250,7 +250,7 @@ export async function duplicateInvitation(invitationId: string) {
 
   const { data: source } = await supabase
     .from("invitations")
-    .select("id,theme_id,slug,groom_name,groom_nickname,bride_name,bride_nickname,name_order,event_date")
+    .select("id,theme_id,slug,groom_name,groom_nickname,bride_name,bride_nickname,name_order")
     .eq("id", invitationId)
     .eq("user_id", user.id)
     .single();
@@ -271,7 +271,6 @@ export async function duplicateInvitation(invitationId: string) {
         bride_name: source.bride_name,
         bride_nickname: source.bride_nickname,
         name_order: source.name_order,
-        event_date: source.event_date,
         status: "draft",
         is_published: false,
       })
