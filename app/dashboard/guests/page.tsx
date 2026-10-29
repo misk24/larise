@@ -50,7 +50,6 @@ export default async function GuestsPage({ searchParams }: GuestsPageProps) {
           ) : null}
           <Card className="shadow-none"><CardContent className="p-4 sm:p-6">
             <p className="mb-4 text-sm text-muted-foreground">Undangan: <span className="font-medium text-foreground">/{invitation.slug}</span></p>
-            {(() => null)()}
             <GuestData invitationId={invitation.id} invitationSlug={invitation.slug} />
           </CardContent></Card>
         </>
