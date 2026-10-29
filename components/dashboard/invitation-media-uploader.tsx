@@ -43,6 +43,7 @@ export function InvitationMediaUploader({
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return;
     setUploading(true);
+    let currentMedia = media;
     try {
       for (const file of Array.from(files)) {
         if (!ACCEPTED.includes(file.type as typeof ACCEPTED[number])) {
@@ -92,7 +93,8 @@ export function InvitationMediaUploader({
           continue;
         }
 
-        update([...media, { ...result.media, public_url: data.publicUrl } as InvitationMedia]);
+        currentMedia = [...currentMedia, { ...result.media, public_url: data.publicUrl } as InvitationMedia];
+        update(currentMedia);
       }
       toast.success("Upload selesai.");
     } catch (error) {
