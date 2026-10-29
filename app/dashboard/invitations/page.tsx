@@ -7,11 +7,15 @@ import Link from "next/link";
 
 export default async function InvitationsPage() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
   const { data: invitations, error } = await supabase
     .from("invitations")
     .select(
       "id,theme_id,slug,status,is_published,created_at,updated_at,view_count,themes(name,category,is_premium)",
     )
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
   if (error) throw new Error("Gagal memuat undangan.");
   return (
