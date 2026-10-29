@@ -46,24 +46,35 @@ export function InvitationMediaUploader({
     if (!files?.length) return;
     setUploading(true);
     let currentMedia = media;
+    let uploadedCount = 0;
+    let failedCount = 0;
     try {
       for (const file of Array.from(files)) {
         if (!ACCEPTED.includes(file.type as typeof ACCEPTED[number])) {
+          failedCount += 1;
           toast.error(`${file.name}: format harus JPG, PNG, atau WebP.`);
           continue;
         }
         if (file.size > MAX_BYTES) {
+          failedCount += 1;
           toast.error(`${file.name}: ukuran maksimum 5 MB.`);
           continue;
         }
 
-        const dimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
-          const url = URL.createObjectURL(file);
-          const image = new Image();
-          image.onload = () => { URL.revokeObjectURL(url); resolve({ width: image.naturalWidth, height: image.naturalHeight }); };
-          image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Gambar tidak dapat dibaca.")); };
-          image.src = url;
-        });
+        let dimensions: { width: number; height: number };
+        try {
+          dimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+            const url = URL.createObjectURL(file);
+            const image = new Image();
+            image.onload = () => { URL.revokeObjectURL(url); resolve({ width: image.naturalWidth, height: image.naturalHeight }); };
+            image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Gambar tidak dapat dibaca.")); };
+            image.src = url;
+          });
+        } catch {
+          failedCount += 1;
+          toast.error(`${file.name}: gambar tidak dapat dibaca.`);
+          continue;
+        }
 
         const path = `${invitationId}/${crypto.randomUUID()}.${extensionFor(file.type)}`;
         const { data: auth } = await supabase.auth.getUser();
@@ -75,6 +86,7 @@ export function InvitationMediaUploader({
           .upload(storagePath, file, { contentType: file.type, upsert: false, cacheControl: "31536000" });
 
         if (uploadError) {
+          failedCount += 1;
           toast.error(`${file.name}: upload gagal.`);
           continue;
         }
@@ -91,15 +103,25 @@ export function InvitationMediaUploader({
         });
 
         if (result.error || !result.media) {
-          toast.error(result.error ?? "Metadata gambar gagal disimpan.");
+          failedCount += 1;
+          toast.error(`${file.name}: ${result.error ?? "Metadata gambar gagal disimpan."}`);
           continue;
         }
 
         currentMedia = [...currentMedia, { ...result.media, public_url: data.publicUrl }];
+        uploadedCount += 1;
         update(currentMedia);
       }
-      toast.success("Upload selesai.");
+
+      if (uploadedCount > 0 && failedCount === 0) {
+        toast.success(`${uploadedCount} gambar berhasil diunggah.`);
+      } else if (uploadedCount > 0) {
+        toast.warning?.(`${uploadedCount} berhasil, ${failedCount} gagal.`);
+      } else if (failedCount > 0) {
+        toast.error(`Semua file gagal diunggah (${failedCount} file).`);
+      }
     } catch (error) {
+      failedCount += 1;
       toast.error(error instanceof Error ? error.message : "Upload gagal.");
     } finally {
       setUploading(false);
