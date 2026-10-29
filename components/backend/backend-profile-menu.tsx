@@ -13,7 +13,7 @@ import {
 import { signOut } from "@/lib/actions/auth";
 import type { Profile } from "@/types/database";
 import type { User } from "@supabase/supabase-js";
-import { LogOutIcon, PengaturanIcon, UserIcon } from "lucide-react";
+import { LogOutIcon, SettingsIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
