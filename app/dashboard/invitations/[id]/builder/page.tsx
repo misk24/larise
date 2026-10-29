@@ -1,4 +1,5 @@
 import { InvitationBuilder } from "@/components/dashboard/invitation-builder";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 
@@ -101,12 +102,12 @@ function BuilderLoadError({ retryHref, resources }: { retryHref: string; resourc
             : "Data undangan tidak berhasil dimuat. Coba muat ulang halaman."}
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <a href={retryHref} className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted">
+          <Link href={retryHref} className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted">
             Muat ulang halaman
-          </a>
-          <a href="/dashboard/invitations" className="inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium hover:bg-muted">
+          </Link>
+          <Link href="/dashboard/invitations" className="inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium hover:bg-muted">
             Kembali ke undangan
-          </a>
+          </Link>
         </div>
       </div>
     </div>
