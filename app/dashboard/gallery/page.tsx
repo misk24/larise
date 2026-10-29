@@ -81,7 +81,7 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
       {invitationList.length > 1 ? (
         <form action="/dashboard/gallery" method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <label htmlFor="gallery-invitation" className="text-sm font-medium">Pilih undangan</label>
-          <select id="gallery-invitation" name="invitation" defaultValue={selectedInvitation.id} onChange={undefined} className="h-10 min-w-0 rounded-md border border-input bg-background px-3 text-sm sm:min-w-72">
+          <select id="gallery-invitation" name="invitation" defaultValue={selectedInvitation.id} className="h-10 min-w-0 rounded-md border border-input bg-background px-3 text-sm sm:min-w-72">
             {invitationList.map((invitation) => (
               <option key={invitation.id} value={invitation.id}>
                 {invitation.name_order === "bride_first" ? invitation.bride_name : invitation.groom_name} & {invitation.name_order === "bride_first" ? invitation.groom_name : invitation.bride_name} · /{invitation.slug}
