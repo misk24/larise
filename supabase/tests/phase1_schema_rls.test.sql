@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(21);
+select plan(22);
 
 select ok(
   (select relrowsecurity from pg_class where oid = 'public.profiles'::regclass),
@@ -76,6 +76,18 @@ select ok(
       and p.prosecdef = false
   ),
   'atomic builder save function exists and runs with caller privileges'
+);
+
+select ok(
+  exists (
+    select 1 from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public'
+      and p.proname = 'update_invitation_settings_atomic'
+      and p.prosecdef = false
+      and has_function_privilege('authenticated', p.oid, 'EXECUTE')
+  ),
+  'atomic invitation settings function exists, is invoker-security, and is executable by authenticated users'
 );
 
 select * from finish();
