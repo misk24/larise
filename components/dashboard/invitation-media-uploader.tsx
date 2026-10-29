@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
+type InvitationMediaWithUrl = InvitationMedia & { public_url: string };
+
 const MAX_BYTES = 5 * 1024 * 1024;
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp"] as const;
 
@@ -26,15 +28,15 @@ export function InvitationMediaUploader({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
-  const withPublicUrls = (items: InvitationMedia[]) => items.map((item) => ({
+  const withPublicUrls = (items: InvitationMedia[]): InvitationMediaWithUrl[] => items.map((item) => ({
     ...item,
     public_url: supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl,
   }));
-  const [media, setMedia] = useState(() => withPublicUrls(initialMedia));
+  const [media, setMedia] = useState<InvitationMediaWithUrl[]>(() => withPublicUrls(initialMedia));
   const [pending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
 
-  function update(next: InvitationMedia[]) {
+  function update(next: InvitationMediaWithUrl[]) {
     const enriched = withPublicUrls(next);
     setMedia(enriched);
     onChange?.(enriched as InvitationMedia[]);
@@ -93,7 +95,7 @@ export function InvitationMediaUploader({
           continue;
         }
 
-        currentMedia = [...currentMedia, { ...result.media, public_url: data.publicUrl } as InvitationMedia];
+        currentMedia = [...currentMedia, { ...result.media, public_url: data.publicUrl }];
         update(currentMedia);
       }
       toast.success("Upload selesai.");
@@ -125,7 +127,7 @@ export function InvitationMediaUploader({
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {media.map((item) => (
             <div key={item.id} className="group relative overflow-hidden rounded-md border bg-muted">
-              <img src={(item as InvitationMedia & { public_url?: string }).public_url ?? supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl} alt={item.file_name} className="aspect-square w-full object-cover" />
+              <img src={item.public_url ?? supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl} alt={item.file_name} className="aspect-square w-full object-cover" />
               <button type="button" onClick={() => remove(item)} disabled={pending} className="absolute right-1 top-1 rounded-md bg-background/90 p-1.5 opacity-0 shadow transition group-hover:opacity-100" aria-label={`Hapus ${item.file_name}`}>
                 <Trash2 className="size-4 text-destructive" />
               </button>
