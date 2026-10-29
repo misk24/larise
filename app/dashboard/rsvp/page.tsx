@@ -43,9 +43,9 @@ export default async function RsvpDashboardPage() {
     { label: "Total respons", value: rows.length, icon: UsersIcon },
   ];
 
-  const { data: guests } = rows.length
+  const { data: guests, error: guestsError } = rows.length
     ? await supabase.from("guests").select("id,name,phone").in("id", rows.map((row) => row.guest_id))
-    : { data: [] };
+    : { data: [], error: null };
   const guestById = new Map((guests ?? []).map((guest) => [guest.id, guest]));
   const invitationById = new Map(list.map((invitation) => [invitation.id, invitation]));
 
@@ -58,7 +58,7 @@ export default async function RsvpDashboardPage() {
       <Card className="shadow-none">
         <CardHeader><CardTitle>Respons terbaru</CardTitle><CardDescription>Respons tamu yang terkait dengan undangan milik Anda.</CardDescription></CardHeader>
         <CardContent>
-          {rsvpError ? <p className="text-sm text-destructive">Data RSVP gagal dimuat. Periksa koneksi database dan kebijakan akses.</p> : rows.length ? (
+          {rsvpError ? <p className="text-sm text-destructive">Data RSVP gagal dimuat. Periksa koneksi database dan kebijakan akses.</p> : guestsError ? <p className="text-sm text-destructive">Respons RSVP tersedia, tetapi data tamu gagal dimuat. Periksa kebijakan akses database.</p> : rows.length ? (
             <div className="space-y-0">
               {rows.map((row) => {
                 const guest = guestById.get(row.guest_id);
