@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(18);
+select plan(20);
 
 select ok(
   (select relrowsecurity from pg_class where oid = 'public.profiles'::regclass),
@@ -56,6 +56,15 @@ select ok(
 select ok(
   exists(select 1 from pg_policies where schemaname='public' and tablename='rsvps' and policyname='Users manage own rsvps'),
   'RSVP ownership policy exists'
+);
+
+select ok(
+  exists(select 1 from pg_policies where schemaname='public' and tablename='invitation_sections' and policyname='Owners manage sections for own invitations'),
+  'invitation section owner policy exists'
+);
+select ok(
+  exists(select 1 from pg_policies where schemaname='public' and tablename='invitation_media' and policyname='Owners manage media for own invitations'),
+  'invitation media owner policy exists'
 );
 
 select * from finish();
