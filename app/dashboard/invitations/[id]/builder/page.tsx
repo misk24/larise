@@ -37,7 +37,7 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
       invitationId: id,
       code: invitationResult.error.code,
     });
-    return <BuilderLoadError />;
+    return <BuilderLoadError retryHref={`/dashboard/invitations/${id}/builder`} />;
   }
 
   const invitation = invitationResult.data;
@@ -56,7 +56,7 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
       wishesError: wishesResult.error?.code,
       mediaError: mediaResult.error?.code,
     });
-    return <BuilderLoadError resources={failedResource as string[]} />;
+    return <BuilderLoadError retryHref={`/dashboard/invitations/${id}/builder`} resources={failedResource as string[]} />;
   }
 
   return (
@@ -90,7 +90,7 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
   );
 }
 
-function BuilderLoadError({ resources }: { resources?: string[] }) {
+function BuilderLoadError({ retryHref, resources }: { retryHref: string; resources?: string[] }) {
   return (
     <div className="backend-content mx-auto max-w-2xl space-y-4">
       <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 p-5">
@@ -101,8 +101,7 @@ function BuilderLoadError({ resources }: { resources?: string[] }) {
             : "Data undangan tidak berhasil dimuat. Coba muat ulang halaman."}
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <a href={typeof window === "undefined" ? "#" : "#"} className="hidden" aria-hidden="true">Retry</a>
-          <a href="" className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted">
+          <a href={retryHref} className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted">
             Muat ulang halaman
           </a>
           <a href="/dashboard/invitations" className="inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium hover:bg-muted">
