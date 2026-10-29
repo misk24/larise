@@ -33,9 +33,9 @@ export default async function DashboardPage() {
 
   const invitationList = invitations ?? [];
   const invitationIds = invitationList.map((item) => item.id);
-  const { data: rsvps } = invitationIds.length
+  const { data: rsvps, error: rsvpsError } = invitationIds.length
     ? await supabase.from("rsvps").select("invitation_id, status, attendee_count").in("invitation_id", invitationIds)
-    : { data: [] };
+    : { data: [], error: null };
 
   const totalGuests = invitationList.reduce((sum, item) => sum + (item.guests?.[0]?.count ?? 0), 0);
   const totalWishes = invitationList.reduce((sum, item) => sum + (item.wishes?.[0]?.count ?? 0), 0);
@@ -123,10 +123,12 @@ export default async function DashboardPage() {
           <Card className="shadow-none">
             <CardHeader><CardTitle className="text-base">Ringkasan RSVP</CardTitle><CardDescription>Respons tamu dari seluruh undangan.</CardDescription></CardHeader>
             <CardContent className="space-y-3">
+              {rsvpsError ? <p className="text-sm text-destructive">Ringkasan RSVP gagal dimuat. Buka halaman RSVP untuk memeriksa detailnya.</p> : <>
               <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Hadir</span><strong>{attendingPeople}</strong></div>
               <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Tidak hadir</span><strong>{(rsvps ?? []).filter((rsvp) => rsvp.status === "not_attending").length}</strong></div>
               <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Menunggu</span><strong>{(rsvps ?? []).filter((rsvp) => rsvp.status === "pending").length}</strong></div>
               <div className="flex items-center justify-between border-t pt-3 text-sm"><span className="text-muted-foreground">Total ucapan</span><strong>{totalWishes}</strong></div>
+              </>}
               <Button variant="link" className="h-auto px-0" asChild><Link href="/dashboard/rsvp">Lihat detail RSVP <ArrowRightIcon className="ml-2 size-3.5" /></Link></Button>
             </CardContent>
           </Card>
