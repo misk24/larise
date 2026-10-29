@@ -92,17 +92,30 @@ export function InvitationMediaUploader({
         }
 
         const { data } = supabase.storage.from("invitation-media").getPublicUrl(storagePath);
-        const result = await registerInvitationMedia({
-          invitationId,
-          storagePath,
-          fileName: file.name,
-          mimeType: file.type as "image/jpeg" | "image/png" | "image/webp",
-          fileSizeBytes: file.size,
-          width: dimensions.width,
-          height: dimensions.height,
-        });
+        let result: Awaited<ReturnType<typeof registerInvitationMedia>>;
+        try {
+          result = await registerInvitationMedia({
+            invitationId,
+            storagePath,
+            fileName: file.name,
+            mimeType: file.type as "image/jpeg" | "image/png" | "image/webp",
+            fileSizeBytes: file.size,
+            width: dimensions.width,
+            height: dimensions.height,
+          });
+        } catch (error) {
+          // The upload may have succeeded even if the metadata request failed.
+          // Best-effort cleanup prevents orphaned storage objects.
+          await supabase.storage.from("invitation-media").remove([storagePath]);
+          failedCount += 1;
+          toast.error(`${file.name}: ${error instanceof Error ? error.message : "Metadata gambar gagal disimpan."}`);
+          continue;
+        }
 
         if (result.error || !result.media) {
+          // The server action normally cleans this up, but retry cleanup in case
+          // its response was lost after the storage upload succeeded.
+          await supabase.storage.from("invitation-media").remove([storagePath]);
           failedCount += 1;
           toast.error(`${file.name}: ${result.error ?? "Metadata gambar gagal disimpan."}`);
           continue;
@@ -140,7 +153,7 @@ export function InvitationMediaUploader({
 
   return (
     <div className="space-y-3">
-      <input ref={inputRef} type="file" accept={ACCEPTED.join(",")} multiple hidden onChange={(e) => handleFiles(e.target.files)} />
+      <input ref={inputRef} type="file" accept={ACCEPTED.join(",")} multiple hidden onChange={(e) => { const files = e.target.files; void handleFiles(files); e.currentTarget.value = ""; }} />
       <Button type="button" variant="outline" onClick={() => inputRef.current?.click()} disabled={uploading || pending}>
         {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
         {uploading ? "Mengunggah..." : "Upload gambar"}
