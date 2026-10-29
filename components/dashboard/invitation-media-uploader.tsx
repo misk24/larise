@@ -133,7 +133,8 @@ export function InvitationMediaUploader({
       const result = await deleteInvitationMedia(item.id);
       if (result.error) { toast.error(result.error); return; }
       update(media.filter((entry) => entry.id !== item.id));
-      toast.success("Gambar dihapus.");
+      if (result.warning) toast.warning(result.warning);
+      else toast.success("Gambar dihapus.");
     });
   }
 
