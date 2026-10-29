@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
+type InvitationMediaWithUrl = InvitationMedia & { public_url: string };
+
 const MAX_BYTES = 5 * 1024 * 1024;
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp"] as const;
 
@@ -26,15 +28,15 @@ export function InvitationMediaUploader({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
-  const withPublicUrls = (items: InvitationMedia[]) => items.map((item) => ({
+  const withPublicUrls = (items: InvitationMedia[]): InvitationMediaWithUrl[] => items.map((item) => ({
     ...item,
     public_url: supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl,
   }));
-  const [media, setMedia] = useState(() => withPublicUrls(initialMedia));
+  const [media, setMedia] = useState<InvitationMediaWithUrl[]>(() => withPublicUrls(initialMedia));
   const [pending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
 
-  function update(next: InvitationMedia[]) {
+  function update(next: InvitationMediaWithUrl[]) {
     const enriched = withPublicUrls(next);
     setMedia(enriched);
     onChange?.(enriched as InvitationMedia[]);
@@ -43,24 +45,36 @@ export function InvitationMediaUploader({
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return;
     setUploading(true);
+    let currentMedia = media;
+    let uploadedCount = 0;
+    let failedCount = 0;
     try {
       for (const file of Array.from(files)) {
         if (!ACCEPTED.includes(file.type as typeof ACCEPTED[number])) {
+          failedCount += 1;
           toast.error(`${file.name}: format harus JPG, PNG, atau WebP.`);
           continue;
         }
         if (file.size > MAX_BYTES) {
+          failedCount += 1;
           toast.error(`${file.name}: ukuran maksimum 5 MB.`);
           continue;
         }
 
-        const dimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
-          const url = URL.createObjectURL(file);
-          const image = new Image();
-          image.onload = () => { URL.revokeObjectURL(url); resolve({ width: image.naturalWidth, height: image.naturalHeight }); };
-          image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Gambar tidak dapat dibaca.")); };
-          image.src = url;
-        });
+        let dimensions: { width: number; height: number };
+        try {
+          dimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+            const url = URL.createObjectURL(file);
+            const image = new Image();
+            image.onload = () => { URL.revokeObjectURL(url); resolve({ width: image.naturalWidth, height: image.naturalHeight }); };
+            image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Gambar tidak dapat dibaca.")); };
+            image.src = url;
+          });
+        } catch {
+          failedCount += 1;
+          toast.error(`${file.name}: gambar tidak dapat dibaca.`);
+          continue;
+        }
 
         const path = `${invitationId}/${crypto.randomUUID()}.${extensionFor(file.type)}`;
         const { data: auth } = await supabase.auth.getUser();
@@ -72,30 +86,55 @@ export function InvitationMediaUploader({
           .upload(storagePath, file, { contentType: file.type, upsert: false, cacheControl: "31536000" });
 
         if (uploadError) {
+          failedCount += 1;
           toast.error(`${file.name}: upload gagal.`);
           continue;
         }
 
         const { data } = supabase.storage.from("invitation-media").getPublicUrl(storagePath);
-        const result = await registerInvitationMedia({
-          invitationId,
-          storagePath,
-          fileName: file.name,
-          mimeType: file.type as "image/jpeg" | "image/png" | "image/webp",
-          fileSizeBytes: file.size,
-          width: dimensions.width,
-          height: dimensions.height,
-        });
-
-        if (result.error || !result.media) {
-          toast.error(result.error ?? "Metadata gambar gagal disimpan.");
+        let result: Awaited<ReturnType<typeof registerInvitationMedia>>;
+        try {
+          result = await registerInvitationMedia({
+            invitationId,
+            storagePath,
+            fileName: file.name,
+            mimeType: file.type as "image/jpeg" | "image/png" | "image/webp",
+            fileSizeBytes: file.size,
+            width: dimensions.width,
+            height: dimensions.height,
+          });
+        } catch (error) {
+          // The upload may have succeeded even if the metadata request failed.
+          // Best-effort cleanup prevents orphaned storage objects.
+          await supabase.storage.from("invitation-media").remove([storagePath]);
+          failedCount += 1;
+          toast.error(`${file.name}: ${error instanceof Error ? error.message : "Metadata gambar gagal disimpan."}`);
           continue;
         }
 
-        update([...media, { ...result.media, public_url: data.publicUrl } as InvitationMedia]);
+        if (result.error || !result.media) {
+          // The server action normally cleans this up, but retry cleanup in case
+          // its response was lost after the storage upload succeeded.
+          await supabase.storage.from("invitation-media").remove([storagePath]);
+          failedCount += 1;
+          toast.error(`${file.name}: ${result.error ?? "Metadata gambar gagal disimpan."}`);
+          continue;
+        }
+
+        currentMedia = [...currentMedia, { ...result.media, public_url: data.publicUrl }];
+        uploadedCount += 1;
+        update(currentMedia);
       }
-      toast.success("Upload selesai.");
+
+      if (uploadedCount > 0 && failedCount === 0) {
+        toast.success(`${uploadedCount} gambar berhasil diunggah.`);
+      } else if (uploadedCount > 0) {
+        toast.warning?.(`${uploadedCount} berhasil, ${failedCount} gagal.`);
+      } else if (failedCount > 0) {
+        toast.error(`Semua file gagal diunggah (${failedCount} file).`);
+      }
     } catch (error) {
+      failedCount += 1;
       toast.error(error instanceof Error ? error.message : "Upload gagal.");
     } finally {
       setUploading(false);
@@ -107,13 +146,14 @@ export function InvitationMediaUploader({
       const result = await deleteInvitationMedia(item.id);
       if (result.error) { toast.error(result.error); return; }
       update(media.filter((entry) => entry.id !== item.id));
-      toast.success("Gambar dihapus.");
+      if (result.warning) toast.warning(result.warning);
+      else toast.success("Gambar dihapus.");
     });
   }
 
   return (
     <div className="space-y-3">
-      <input ref={inputRef} type="file" accept={ACCEPTED.join(",")} multiple hidden onChange={(e) => handleFiles(e.target.files)} />
+      <input ref={inputRef} type="file" accept={ACCEPTED.join(",")} multiple hidden onChange={(e) => { const files = e.target.files; void handleFiles(files); e.currentTarget.value = ""; }} />
       <Button type="button" variant="outline" onClick={() => inputRef.current?.click()} disabled={uploading || pending}>
         {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
         {uploading ? "Mengunggah..." : "Upload gambar"}
@@ -123,7 +163,7 @@ export function InvitationMediaUploader({
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {media.map((item) => (
             <div key={item.id} className="group relative overflow-hidden rounded-md border bg-muted">
-              <img src={(item as InvitationMedia & { public_url?: string }).public_url ?? supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl} alt={item.file_name} className="aspect-square w-full object-cover" />
+              <img src={item.public_url ?? supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl} alt={item.file_name} className="aspect-square w-full object-cover" />
               <button type="button" onClick={() => remove(item)} disabled={pending} className="absolute right-1 top-1 rounded-md bg-background/90 p-1.5 opacity-0 shadow transition group-hover:opacity-100" aria-label={`Hapus ${item.file_name}`}>
                 <Trash2 className="size-4 text-destructive" />
               </button>

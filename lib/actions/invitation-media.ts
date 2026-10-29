@@ -85,25 +85,37 @@ export async function deleteInvitationMedia(mediaId: string) {
 
   if (!media) return { error: "Media tidak ditemukan." };
 
-  const { error: storageError } = await supabase.storage
-    .from("invitation-media")
-    .remove([media.storage_path]);
-
-  if (storageError) {
-    console.error("deleteInvitationMedia storage failed", storageError);
-    return { error: "File gambar gagal dihapus." };
-  }
-
-  const { error } = await supabase.from("invitation_media").delete().eq("id", media.id);
-  if (error) return { error: "Metadata gambar gagal dihapus." };
-
   const invitation = Array.isArray(media.invitations)
     ? media.invitations[0]
     : media.invitations;
 
   if (!invitation) return { error: "Undangan tidak ditemukan." };
 
+  // Remove the database record first so a storage failure cannot leave a broken
+  // media entry visible in the builder. A failed storage cleanup is reported as
+  // a warning because the user-facing media record has already been removed.
+  const { error } = await supabase
+    .from("invitation_media")
+    .delete()
+    .eq("id", media.id)
+    .eq("invitation_id", media.invitation_id);
+
+  if (error) {
+    console.error("deleteInvitationMedia metadata failed", error);
+    return { error: "Metadata gambar gagal dihapus." };
+  }
+
+  const { error: storageError } = await supabase.storage
+    .from("invitation-media")
+    .remove([media.storage_path]);
+
   revalidatePath(`/dashboard/invitations/${media.invitation_id}/builder`);
   revalidatePath(`/${invitation.slug}`);
+
+  if (storageError) {
+    console.error("deleteInvitationMedia storage cleanup failed", storageError);
+    return { success: true, warning: "Data gambar dihapus, tetapi file penyimpanan gagal dibersihkan." };
+  }
+
   return { success: true };
 }

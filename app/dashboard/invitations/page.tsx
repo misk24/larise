@@ -2,18 +2,30 @@ import { InvitationActions } from "@/components/dashboard/invitation-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 
 export default async function InvitationsPage() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
   const { data: invitations, error } = await supabase
     .from("invitations")
     .select(
-      "id,theme_id,slug,status,is_published,created_at,updated_at,view_count,themes(name,category,is_premium)",
+      "id,theme_id,slug,status,is_published,created_at,updated_at,view_count,groom_name,bride_name,name_order,themes(name,category,is_premium)",
     )
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
-  if (error) throw new Error("Gagal memuat undangan.");
+  if (error) {
+    return (
+      <div className="backend-content space-y-6">
+        <div><h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Undangan Saya</h1><p className="text-muted-foreground">Kelola draft, tema, duplikasi, dan status publikasi.</p></div>
+        <Card className="shadow-none"><CardContent className="p-6 text-sm text-destructive">Daftar undangan gagal dimuat. Muat ulang halaman atau periksa koneksi database.</CardContent></Card>
+      </div>
+    );
+  }
   return (
     <div className="backend-content space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -41,13 +53,14 @@ export default async function InvitationsPage() {
                 <div className="flex aspect-4/3 items-center justify-center bg-muted/70 p-4">
                   <div className="text-center">
                     <p className="text-2xl font-semibold tracking-tight">
-                      {theme?.name ?? "Tanpa tema"}
+                      {invitation.name_order === "bride_first" ? `${invitation.bride_name || "Mempelai wanita"} & ${invitation.groom_name || "Mempelai pria"}` : `${invitation.groom_name || "Mempelai pria"} & ${invitation.bride_name || "Mempelai wanita"}`}
                     </p>
+                    <p className="mt-2 text-sm text-muted-foreground">{theme?.name ?? "Tanpa tema"}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {invitation.slug}
                     </p>
                     <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">
-                      {invitation.status}
+                      {invitation.is_published ? "Dipublikasikan" : invitation.status === "unpublished" ? "Tidak dipublikasikan" : "Draft"}
                     </p>
                   </div>
                 </div>
