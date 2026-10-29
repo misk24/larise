@@ -2,6 +2,7 @@ import { InvitationActions } from "@/components/dashboard/invitation-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 
