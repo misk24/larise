@@ -17,74 +17,52 @@ import { createClient } from "@/lib/supabase/client";
 interface InvitationRsvpProps {
   invitationId: string;
   guestName: string;
+  guestToken: string | null;
   wishes: Wish[];
   onWishAdded?: (wish: Wish) => void;
 }
 
-export function InvitationRsvp({ invitationId, guestName, wishes, onWishAdded }: InvitationRsvpProps) {
+export function InvitationRsvp({ invitationId, guestName, guestToken, wishes, onWishAdded }: InvitationRsvpProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
-    name: guestName !== "Tamu Undangan" ? guestName : "",
     status: "attending",
     guestCount: "1",
     message: "",
   });
   const supabase = createClient();
+  const hasValidGuest = Boolean(guestToken && guestName !== "Tamu Undangan");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!guestToken || !hasValidGuest) {
+      toast.error("Gunakan tautan undangan pribadi untuk mengirim RSVP.");
+      return;
+    }
     setIsLoading(true);
 
     try {
-      const name = formData.name.trim();
-      if (!name) throw new Error("Nama wajib diisi.");
       const attendeeCount = formData.status === "attending" ? Number.parseInt(formData.guestCount, 10) : 0;
       if (formData.status === "attending" && (!Number.isInteger(attendeeCount) || attendeeCount < 1 || attendeeCount > 10)) {
         throw new Error("Jumlah tamu harus antara 1 sampai 10.");
       }
 
-      const { data: existingGuest, error: guestLookupError } = await supabase
-        .from("guests").select("id").eq("invitation_id", invitationId).eq("name", name).maybeSingle();
-      if (guestLookupError) throw guestLookupError;
-
-      let guestId = existingGuest?.id;
-      if (!guestId) {
-        const { data: newGuest, error } = await supabase
-          .from("guests").insert({ invitation_id: invitationId, name }).select("id").single();
-        if (error) throw error;
-        guestId = newGuest.id;
-      }
-
-      const { data: existingRsvp, error: rsvpLookupError } = await supabase
-        .from("rsvps").select("id").eq("guest_id", guestId).maybeSingle();
-      if (rsvpLookupError) throw rsvpLookupError;
-
-      if (existingRsvp) {
-        const { error } = await supabase.from("rsvps").update({
-          status: formData.status,
-          attendee_count: attendeeCount,
-        }).eq("id", existingRsvp.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("rsvps").insert({
-          invitation_id: invitationId,
-          guest_id: guestId,
-          status: formData.status,
-          attendee_count: attendeeCount,
-        });
-        if (error) throw error;
-      }
+      const { error: rsvpError } = await supabase.rpc("submit_guest_rsvp", {
+        p_invitation_id: invitationId,
+        p_guest_token: guestToken,
+        p_status: formData.status,
+        p_attendee_count: attendeeCount,
+      });
+      if (rsvpError) throw rsvpError;
 
       if (formData.message.trim()) {
-        const { data: newWish, error } = await supabase.from("wishes").insert({
-          invitation_id: invitationId,
-          guest_name: name,
-          message: formData.message.trim(),
-          visibility: "visible",
-        }).select().single();
-        if (error) throw error;
-        onWishAdded?.(newWish);
+        const { data: newWish, error: wishError } = await supabase.rpc("submit_guest_wish", {
+          p_invitation_id: invitationId,
+          p_guest_token: guestToken,
+          p_message: formData.message.trim(),
+        });
+        if (wishError) throw wishError;
+        if (newWish) onWishAdded?.(newWish as Wish);
       }
 
       setIsSubmitted(true);
@@ -113,53 +91,59 @@ export function InvitationRsvp({ invitationId, guestName, wishes, onWishAdded }:
                   <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-chart-3/20">
                     <Check className="size-8 text-chart-3" />
                   </div>
-                  <h3 className="mb-2 text-xl font-semibold text-foreground">Terima kasih, {formData.name.trim()}!</h3>
+                  <h3 className="mb-2 text-xl font-semibold text-foreground">Terima kasih, {guestName}!</h3>
                   <p className="text-muted-foreground">Konfirmasi kehadiran dan ucapan Anda sudah kami terima.</p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor={`rsvp-name-${invitationId}`}>Nama</Label>
-                    <Input id={`rsvp-name-${invitationId}`} value={formData.name}
-                      onChange={(event) => setFormData((prev) => ({ ...prev, name: event.target.value }))}
-                      placeholder="Masukkan nama lengkap" autoComplete="name" maxLength={120} required />
-                  </div>
+                <>
+                  {!hasValidGuest ? (
+                    <div className="rounded-lg border border-border bg-muted/40 p-4 text-center text-sm text-muted-foreground">
+                      Untuk mengirim konfirmasi kehadiran dan ucapan, buka undangan melalui tautan pribadi yang dibagikan kepada Anda.
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor={`rsvp-name-${invitationId}`}>Nama</Label>
+                        <Input id={`rsvp-name-${invitationId}`} value={guestName} readOnly disabled aria-readonly="true" />
+                      </div>
 
-                  <div className="space-y-3">
-                    <Label>Kehadiran</Label>
-                    <RadioGroup value={formData.status} onValueChange={(value) => setFormData((prev) => ({
-                      ...prev, status: value, guestCount: value === "attending" ? (prev.guestCount === "0" ? "1" : prev.guestCount) : "0",
-                    }))} className="grid grid-cols-2 gap-3">
-                      <Label htmlFor={`attending-${invitationId}`} className={`flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all ${formData.status === "attending" ? "border-chart-3 bg-chart-3/10" : "border-border hover:border-chart-3/50"}`}>
-                        <RadioGroupItem value="attending" id={`attending-${invitationId}`} className="sr-only" />
-                        <UserCheck className="size-6 text-chart-3" /><span className="text-sm font-medium">Hadir</span>
-                      </Label>
-                      <Label htmlFor={`not-attending-${invitationId}`} className={`flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all ${formData.status === "not_attending" ? "border-destructive bg-destructive/10" : "border-border hover:border-destructive/50"}`}>
-                        <RadioGroupItem value="not_attending" id={`not-attending-${invitationId}`} className="sr-only" />
-                        <UserX className="size-6 text-destructive" /><span className="text-sm font-medium">Tidak hadir</span>
-                      </Label>
-                    </RadioGroup>
-                  </div>
+                      <div className="space-y-3">
+                        <Label>Kehadiran</Label>
+                        <RadioGroup value={formData.status} onValueChange={(value) => setFormData((prev) => ({
+                          ...prev, status: value, guestCount: value === "attending" ? (prev.guestCount === "0" ? "1" : prev.guestCount) : "0",
+                        }))} className="grid grid-cols-2 gap-3">
+                          <Label htmlFor={`attending-${invitationId}`} className={`flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all ${formData.status === "attending" ? "border-chart-3 bg-chart-3/10" : "border-border hover:border-chart-3/50"}`}>
+                            <RadioGroupItem value="attending" id={`attending-${invitationId}`} className="sr-only" />
+                            <UserCheck className="size-6 text-chart-3" /><span className="text-sm font-medium">Hadir</span>
+                          </Label>
+                          <Label htmlFor={`not-attending-${invitationId}`} className={`flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all ${formData.status === "not_attending" ? "border-destructive bg-destructive/10" : "border-border hover:border-destructive/50"}`}>
+                            <RadioGroupItem value="not_attending" id={`not-attending-${invitationId}`} className="sr-only" />
+                            <UserX className="size-6 text-destructive" /><span className="text-sm font-medium">Tidak hadir</span>
+                          </Label>
+                        </RadioGroup>
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor={`rsvp-count-${invitationId}`}>Jumlah tamu</Label>
-                    <Input id={`rsvp-count-${invitationId}`} type="number" min={formData.status === "attending" ? 1 : 0} max="10"
-                      value={formData.status === "attending" ? formData.guestCount : "0"} disabled={formData.status !== "attending"}
-                      onChange={(event) => setFormData((prev) => ({ ...prev, guestCount: event.target.value }))} required />
-                    <p className="text-xs text-muted-foreground">Termasuk Anda, maksimal 10 orang. Jika tidak hadir, jumlah tamu menjadi 0.</p>
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`rsvp-count-${invitationId}`}>Jumlah tamu</Label>
+                        <Input id={`rsvp-count-${invitationId}`} type="number" min={formData.status === "attending" ? 1 : 0} max="10"
+                          value={formData.status === "attending" ? formData.guestCount : "0"} disabled={formData.status !== "attending"}
+                          onChange={(event) => setFormData((prev) => ({ ...prev, guestCount: event.target.value }))} required />
+                        <p className="text-xs text-muted-foreground">Termasuk Anda, maksimal 10 orang. Jika tidak hadir, jumlah tamu menjadi 0.</p>
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor={`rsvp-message-${invitationId}`}>Ucapan & doa <span className="font-normal text-muted-foreground">(opsional)</span></Label>
-                    <Textarea id={`rsvp-message-${invitationId}`} value={formData.message}
-                      onChange={(event) => setFormData((prev) => ({ ...prev, message: event.target.value }))}
-                      placeholder="Tuliskan ucapan dan doa untuk kedua mempelai..." rows={4} maxLength={1000} />
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`rsvp-message-${invitationId}`}>Ucapan & doa <span className="font-normal text-muted-foreground">(opsional)</span></Label>
+                        <Textarea id={`rsvp-message-${invitationId}`} value={formData.message}
+                          onChange={(event) => setFormData((prev) => ({ ...prev, message: event.target.value }))}
+                          placeholder="Tuliskan ucapan dan doa untuk kedua mempelai..." rows={4} maxLength={1000} />
+                      </div>
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Send className="mr-2 size-4" />}Kirim
-                  </Button>
-                </form>
+                      <Button type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Send className="mr-2 size-4" />}Kirim
+                      </Button>
+                    </form>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
