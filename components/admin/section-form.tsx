@@ -20,17 +20,16 @@ interface Props {
 
 const SECTION_TYPES = [
   "cover",
-  "hero",
+  "opening",
   "quote",
+  "couple",
   "event",
-  "countdown",
-  "story",
+  "location",
   "gallery",
-  "gift",
   "rsvp",
-  "wish",
+  "wishes",
+  "gift",
   "closing",
-  "footer",
 ];
 
 export default function SectionForm({ id }: Props) {
@@ -88,10 +87,10 @@ export default function SectionForm({ id }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 rounded border p-4">
-      <div className="font-semibold">Add Section</div>
+      <div className="font-semibold">Tambah Section</div>
 
       <Input
-        placeholder="section_key (e.g. hero, event)"
+        placeholder="section_key (contoh: cover, event)"
         value={sectionKey}
         onChange={(e) => setSectionKey(e.target.value)}
         className="w-full border p-2"
@@ -100,9 +99,8 @@ export default function SectionForm({ id }: Props) {
 
       <Select value={sectionType} onValueChange={setSectionType}>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Pilih section type" />
+          <SelectValue placeholder="Pilih tipe section" />
         </SelectTrigger>
-
         <SelectContent>
           {SECTION_TYPES.map((type) => (
             <SelectItem key={type} value={type}>
@@ -124,7 +122,7 @@ export default function SectionForm({ id }: Props) {
 
       <Button disabled={loading}>
         {loading && <Loader2Icon className="mr-2 size-4 animate-spin" />}
-        {loading ? "Saving..." : "Add Section"}
+        {loading ? "Menyimpan..." : "Tambah Section"}
       </Button>
     </form>
   );
