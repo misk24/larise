@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ to?: string }>;
+  searchParams: Promise<{ to?: string; guest?: string }>;
 }
 
 function invitationTitle(invitation: { groom_name: string; bride_name: string; name_order?: string }) {
@@ -23,71 +23,40 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .eq("slug", slug)
     .maybeSingle();
 
-  // Draft and unpublished invitations must not leak names through social previews.
   if (!invitation || invitation.status !== "published" || !invitation.is_published) {
-    return {
-      title: "Undangan Tidak Ditemukan",
-      robots: { index: false, follow: false },
-    };
+    return { title: "Undangan Tidak Ditemukan", robots: { index: false, follow: false } };
   }
 
   const title = invitationTitle(invitation);
   const description = `Anda diundang untuk merayakan pernikahan ${invitation.groom_name} & ${invitation.bride_name}.`;
-
   return {
-    title,
-    description,
-    robots: { index: true, follow: true },
-    openGraph: {
-      type: "website",
-      locale: "id_ID",
-      title,
-      description,
-      siteName: "LARISÉ",
-    },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
+    title, description, robots: { index: true, follow: true },
+    openGraph: { type: "website", locale: "id_ID", title, description, siteName: "LARISÉ" },
+    twitter: { card: "summary", title, description },
   };
 }
 
 export default async function InvitationPage({ params, searchParams }: PageProps) {
-  const [{ slug }, { to }] = await Promise.all([params, searchParams]);
+  const [{ slug }, { guest }] = await Promise.all([params, searchParams]);
   const supabase = await createClient();
-
   const { data: invitation } = await supabase
-    .from("invitations")
-    .select("*, themes(*)")
-    .eq("slug", slug)
-    .maybeSingle();
+    .from("invitations").select("*, themes(*)").eq("slug", slug).maybeSingle();
 
-  // Check both fields: the explicit lifecycle status is authoritative too.
-  if (!invitation || invitation.status !== "published" || !invitation.is_published) {
-    notFound();
-  }
+  if (!invitation || invitation.status !== "published" || !invitation.is_published) notFound();
 
-  const [{ data: sections }, { data: wishes }] = await Promise.all([
-    supabase
-      .from("invitation_sections")
-      .select("*")
-      .eq("invitation_id", invitation.id)
-      .order("position"),
-    supabase
-      .from("wishes")
-      .select("*")
-      .eq("invitation_id", invitation.id)
-      .eq("visibility", "visible")
-      .order("created_at", { ascending: false })
-      .limit(50),
+  const [{ data: sections }, { data: wishes }, guestResult] = await Promise.all([
+    supabase.from("invitation_sections").select("*").eq("invitation_id", invitation.id).order("position"),
+    supabase.from("wishes").select("*").eq("invitation_id", invitation.id).eq("visibility", "visible").order("created_at", { ascending: false }).limit(50),
+    guest ? supabase.rpc("resolve_public_guest", { p_invitation_id: invitation.id, p_guest_token: guest }) : Promise.resolve({ data: null, error: null }),
   ]);
 
+  const validGuest = !guestResult.error && guestResult.data?.[0];
   return (
     <InvitationView
       invitation={invitation}
       sections={sections ?? []}
-      guestName={to?.trim() || "Tamu Undangan"}
+      guestName={validGuest?.guest_name ?? "Tamu Undangan"}
+      guestToken={validGuest ? guest! : null}
       wishes={wishes ?? []}
     />
   );
