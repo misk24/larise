@@ -27,7 +27,7 @@ export default async function AdminDashboardPage() {
         .limit(5),
       supabase
         .from("invitations")
-        .select("id,title,slug,status,created_at,profiles(full_name,email)")
+        .select("id,groom_name,bride_name,slug,status,created_at,profiles(full_name,email)")
         .order("created_at", { ascending: false })
         .limit(5),
     ]);
@@ -146,7 +146,7 @@ export default async function AdminDashboardPage() {
                   return (
                     <li key={invitation.id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{invitation.title || invitation.slug}</p>
+                        <p className="truncate text-sm font-medium">{invitation.groom_name} & {invitation.bride_name}</p>
                         <p className="truncate text-xs text-muted-foreground">
                           {owner?.full_name || owner?.email || "Pemilik tidak diketahui"}
                         </p>

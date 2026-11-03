@@ -10,7 +10,7 @@ type SearchParams = Promise<{ q?: string; status?: string }>;
 const statuses = ["draft", "published", "unpublished"] as const;
 
 function sanitizeSearch(value: string | undefined) {
-  return value?.trim().slice(0, 80).replace(/[,%_().\\]/g, " ").replace(/\\s+/g, " ") ?? "";
+  return value?.trim().slice(0, 80).replace(/[,%_().\\]/g, " ").replace(/\s+/g, " ") ?? "";
 }
 
 function statusVariant(status: string) {
@@ -27,11 +27,11 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
   const supabase = createAdminClient();
   let request = supabase
     .from("invitations")
-    .select("id,title,slug,status,created_at,profiles(full_name,email),themes(name)", { count: "exact" })
+    .select("id,groom_name,bride_name,slug,status,created_at,profiles(full_name,email),themes(name)", { count: "exact" })
     .order("created_at", { ascending: false })
     .limit(100);
   if (status) request = request.eq("status", status);
-  if (query) request = request.or(`title.ilike.%${query}%,slug.ilike.%${query}%`);
+  if (query) request = request.or(`slug.ilike.%${query}%,groom_name.ilike.%${query}%,bride_name.ilike.%${query}%`);
   const { data: invitations, count, error } = await request;
 
   return (
@@ -74,7 +74,7 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
                     return (
                       <TableRow key={invitation.id}>
                         <TableCell className="min-w-44">
-                          <p className="font-medium">{invitation.title || "Tanpa judul"}</p>
+                          <p className="font-medium">{invitation.groom_name} & {invitation.bride_name}</p>
                           <Link href={`/${invitation.slug}`} target="_blank" rel="noreferrer" className="text-xs text-muted-foreground hover:text-primary hover:underline">{invitation.slug}</Link>
                         </TableCell>
                         <TableCell>{owner?.full_name || owner?.email || "Pengguna"}</TableCell>
