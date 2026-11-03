@@ -5,8 +5,8 @@ import { z } from "zod";
 const sectionSchema = z.object({
   section_key: z.string().trim().min(1).max(80).regex(/^[a-z][a-z0-9_-]*$/),
   section_type: z.enum([
-    "cover", "hero", "quote", "event", "countdown", "story",
-    "gallery", "gift", "rsvp", "wish", "closing", "footer",
+    "cover", "opening", "quote", "couple", "event", "location",
+    "gallery", "rsvp", "wishes", "gift", "closing",
   ]),
   default_content: z.record(z.string(), z.unknown()),
 });
@@ -55,7 +55,13 @@ export async function POST(
     .single();
 
   if (error) {
-    return NextResponse.json({ error: "Section gagal dibuat." }, { status: 400 });
+    if (error.code === "23505") {
+      return NextResponse.json({ error: "Section dengan key tersebut sudah ada pada tema ini." }, { status: 409 });
+    }
+    if (error.code === "23503") {
+      return NextResponse.json({ error: "Tema tidak ditemukan." }, { status: 404 });
+    }
+    return NextResponse.json({ error: "Section gagal dibuat." }, { status: 500 });
   }
 
   return NextResponse.json(data, { status: 201 });
