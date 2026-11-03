@@ -3,12 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UsersTable, type AdminUserRow } from "@/components/admin/tables/users/users-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
+import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
 
 type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 
-function sanitizeSearch(value: string | undefined) {
-  return value?.trim().slice(0, 80).replace(/[,%_().\\]/g, " ").replace(/\s+/g, " ") ?? "";
-}
 
 function positiveInteger(value: string | undefined, fallback: number, max: number) {
   const parsed = Number(value);

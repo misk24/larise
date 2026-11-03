@@ -3,15 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ThemesTable, type AdminThemeRow } from "@/components/admin/tables/themes/themes-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
+import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PaletteIcon } from "lucide-react";
 
 type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 
-function sanitizeSearch(value: string | undefined) {
-  return value?.trim().slice(0, 80).replace(/[,%_().\\]/g, " ").replace(/\s+/g, " ") ?? "";
-}
 
 function positiveInteger(value: string | undefined, fallback: number, max: number) {
   const parsed = Number(value);

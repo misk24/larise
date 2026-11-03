@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, Search } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +38,8 @@ export function AdminDataTable<TData>({
   const currentQuery = searchParams.get("q") ?? "";
   const [searchTerm, setSearchTerm] = useState(currentQuery);
   const debouncedSearchTerm = useDebounce(searchTerm.trim(), 350);
+  const hasLocalEdits = useRef(false);
+  const lastSyncedQuery = useRef(currentQuery);
 
   const updateParams = useCallback((updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -46,12 +48,24 @@ export function AdminDataTable<TData>({
       else params.set(key, value);
     }
     const query = params.toString();
-    router.push(query ? `${pathname}?${query}` : pathname);
+    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
   }, [pathname, router, searchParams]);
 
+  // Ignore URL updates caused by an older debounced value while newer text is being typed.
   useEffect(() => {
-    setSearchTerm(currentQuery);
-  }, [currentQuery]);
+    if (hasLocalEdits.current) {
+      if (currentQuery === searchTerm.trim()) {
+        hasLocalEdits.current = false;
+        lastSyncedQuery.current = currentQuery;
+      }
+      return;
+    }
+
+    if (lastSyncedQuery.current !== currentQuery) {
+      lastSyncedQuery.current = currentQuery;
+      setSearchTerm(currentQuery);
+    }
+  }, [currentQuery, searchTerm]);
 
   useEffect(() => {
     if (debouncedSearchTerm === currentQuery.trim()) return;
@@ -100,7 +114,10 @@ export function AdminDataTable<TData>({
           <Input
             type="search"
             value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
+            onChange={(event) => {
+              hasLocalEdits.current = true;
+              setSearchTerm(event.target.value);
+            }}
             placeholder={searchPlaceholder}
             aria-label={searchPlaceholder}
             className="w-full pl-9"

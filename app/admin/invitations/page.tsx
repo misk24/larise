@@ -3,13 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { InvitationsTable, type AdminInvitationRow } from "@/components/admin/tables/invitations/invitations-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
+import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
 
 type SearchParams = Promise<{ q?: string; status?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 const statuses = ["draft", "published", "unpublished"] as const;
 
-function sanitizeSearch(value: string | undefined) {
-  return value?.trim().slice(0, 80).replace(/[,%_().\\]/g, " ").replace(/\s+/g, " ") ?? "";
-}
 
 function positiveInteger(value: string | undefined, fallback: number, max: number) {
   const parsed = Number(value);
