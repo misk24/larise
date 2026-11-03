@@ -1,55 +1,26 @@
-import SectionForm from "@/components/admin/section-form";
+import ThemeSettingsForm from "@/components/admin/theme-settings-form";
+import ThemeSectionsBuilder from "@/components/admin/theme-sections-builder";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 
-export default async function ThemeDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function ThemeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   await requireAdmin();
-
   if (!z.string().uuid().safeParse(id).success) notFound();
-
   const supabase = createAdminClient();
-  const { data: theme, error: themeError } = await supabase
-    .from("themes")
-    .select("id,name")
-    .eq("id", id)
-    .maybeSingle();
-
+  const [{ data: theme, error: themeError }, { data: sections, error: sectionsError }] = await Promise.all([
+    supabase.from("themes").select("id,name,slug,description,thumbnail_url,preview_url,price,category,features,is_active,is_premium").eq("id",id).maybeSingle(),
+    supabase.from("theme_sections").select("id,section_key,section_type,position,default_content,is_required,is_visible").eq("theme_id",id).order("position"),
+  ]);
   if (themeError || !theme) notFound();
-
-  const { data: sections, error: sectionsError } = await supabase
-    .from("theme_sections")
-    .select("id,section_key,position")
-    .eq("theme_id", id)
-    .order("position");
-
-  return (
-    <div className="backend-content grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-[minmax(220px,1fr)_minmax(0,3fr)]">
-      <aside className="backend-surface min-w-0 space-y-4 p-4 sm:p-5">
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Sections</h1>
-        {sectionsError ? (
-          <p role="alert" className="text-sm text-destructive">Daftar section gagal dimuat. Muat ulang halaman untuk mencoba lagi.</p>
-        ) : (
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            {sections?.map((section) => (
-              <li key={section.id} className="rounded-md bg-muted/60 px-3 py-2">{section.section_key}</li>
-            ))}
-            {!sections?.length && <li className="text-muted-foreground">Belum ada section.</li>}
-          </ul>
-        )}
-      </aside>
-
-      <section className="backend-surface min-w-0 space-y-4 p-4 sm:p-6">
-        <h2 className="text-xl font-semibold tracking-tight">{theme.name}</h2>
-        <p className="text-muted-foreground">Theme section builder</p>
-        <SectionForm id={id} />
-      </section>
-    </div>
-  );
+  return <div className="backend-content space-y-6">
+    <div className="space-y-2"><Link href="/admin/themes" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ChevronLeft className="size-4"/>Kembali ke daftar tema</Link><div><h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{theme.name}</h1><p className="mt-1 text-muted-foreground">Atur konfigurasi visual dan struktur konten tema undangan.</p></div></div>
+    <Card className="shadow-none"><CardHeader><CardTitle>Konfigurasi tema</CardTitle><CardDescription>Informasi, harga, kategori, dan aset pratinjau tema.</CardDescription></CardHeader><CardContent><ThemeSettingsForm theme={{...theme,features:Array.isArray(theme.features)?theme.features as string[]:[]}}/></CardContent></Card>
+    <Card className="shadow-none"><CardHeader><CardTitle>Theme section builder</CardTitle><CardDescription>Kelola isi, visibilitas, dan urutan section. Perubahan di sini mengubah template default, bukan konten undangan yang sudah dibuat.</CardDescription></CardHeader><CardContent>{sectionsError?<p role="alert" className="text-sm text-destructive">Section tema gagal dimuat. Muat ulang halaman untuk mencoba lagi.</p>:<ThemeSectionsBuilder themeId={id} initialSections={(sections??[]) as never}/>}</CardContent></Card>
+  </div>;
 }
