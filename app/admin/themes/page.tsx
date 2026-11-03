@@ -1,30 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ThemeActions } from "@/components/admin/theme-actions";
 import { createClient } from "@/lib/supabase/server";
 import { PaletteIcon } from "lucide-react";
 import Link from "next/link";
 
 export default async function AdminThemesPage() {
   const supabase = await createClient();
-
-  const { data: themes } = await supabase
+  const { data: themes, error, count } = await supabase
     .from("themes")
-    .select("*")
+    .select("id,name,slug,category,price,is_active,created_at", { count: "exact" })
     .order("created_at", { ascending: false });
 
   return (
@@ -32,69 +19,50 @@ export default async function AdminThemesPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Tema</h1>
-          <p className="text-muted-foreground">
-            Kelola tema undangan yang tersedia
-          </p>
+          <p className="text-muted-foreground">Kelola tema undangan yang tersedia untuk pengguna.</p>
         </div>
         <Button asChild>
-          <Link href="/admin/themes/create" className="flex items-center gap-2">
-            Buat Tema
-          </Link>
+          <Link href="/admin/themes/create">Buat Tema</Link>
         </Button>
       </div>
+
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Tema</CardTitle>
-          <CardDescription>
-            Total {themes?.length || 0} tema tersedia
-          </CardDescription>
+          <CardDescription>{error ? "Jumlah tema tidak dapat dimuat." : `Total ${(count ?? 0).toLocaleString("id-ID")} tema`}</CardDescription>
         </CardHeader>
         <CardContent>
-          {themes && themes.length > 0 ? (
+          {error ? (
+            <p role="alert" className="py-8 text-center text-sm text-destructive">Data tema gagal dimuat. Periksa izin baca admin pada database.</p>
+          ) : themes?.length ? (
             <div className="backend-table-container">
               <Table>
                 <TableHeader className="bg-muted/70">
                   <TableRow>
-                    <TableHead className="text-foreground">
-                      Nama Tema
-                    </TableHead>
-                    <TableHead className="text-foreground">
-                      Kategori
-                    </TableHead>
-                    <TableHead className="text-foreground">
-                      Harga
-                    </TableHead>
-                    <TableHead className="text-foreground">
-                      Status
-                    </TableHead>
-                    <TableHead className="text-foreground">
-                      Aksi
-                    </TableHead>
+                    <TableHead>Nama tema</TableHead>
+                    <TableHead>Kategori</TableHead>
+                    <TableHead>Harga</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {themes.map((theme) => (
                     <TableRow key={theme.id}>
-                      <TableCell className="font-medium">
-                        {theme.name}
+                      <TableCell className="min-w-36">
+                        <Link href={`/admin/themes/${theme.id}`} className="font-medium hover:text-primary hover:underline">{theme.name}</Link>
+                        <p className="text-xs text-muted-foreground">{theme.slug}</p>
                       </TableCell>
-                      <TableCell>{theme.category}</TableCell>
+                      <TableCell className="capitalize">{theme.category || "—"}</TableCell>
+                      <TableCell>{theme.price ? `Rp ${theme.price.toLocaleString("id-ID")}` : "Gratis"}</TableCell>
                       <TableCell>
-                        {theme.price
-                          ? `Rp ${theme.price.toLocaleString("id-ID")}`
-                          : "Gratis"}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={theme.is_active ? "default" : "secondary"}
-                        >
-                          {theme.is_active ? "Aktif" : "Nonaktif"}
-                        </Badge>
+                        <Badge variant={theme.is_active ? "default" : "secondary"}>{theme.is_active ? "Aktif" : "Nonaktif"}</Badge>
                       </TableCell>
                       <TableCell>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/admin/themes/${theme.id}`}>Edit</Link>
-                        </Button>
+                        <div className="flex flex-col gap-2">
+                          <Button size="sm" variant="outline" asChild><Link href={`/admin/themes/${theme.id}`}>Edit</Link></Button>
+                          <ThemeActions id={theme.id} active={theme.is_active} name={theme.name} />
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -103,8 +71,8 @@ export default async function AdminThemesPage() {
             </div>
           ) : (
             <div className="py-12 text-center">
-              <PaletteIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
-              <p className="text-muted-foreground">Belum ada tema</p>
+              <PaletteIcon aria-hidden="true" className="mx-auto mb-4 size-10 text-muted-foreground/50" />
+              <p className="text-sm text-muted-foreground">Belum ada tema.</p>
             </div>
           )}
         </CardContent>

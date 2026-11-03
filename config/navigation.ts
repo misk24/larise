@@ -12,10 +12,11 @@ import {
 
 export const adminNavs = [
   { href: "/admin", icon: LayoutDashboardIcon, label: "Dashboard" },
-  { href: "/admin/users", icon: UsersIcon, label: "Users" },
-  { href: "/admin/themes", icon: PaletteIcon, label: "Themes" },
-  { href: "/admin/orders", icon: ShoppingCartIcon, label: "Orders" },
-  { href: "/admin/settings", icon: SettingsIcon, label: "Settings" },
+  { href: "/admin/users", icon: UsersIcon, label: "Pengguna" },
+  { href: "/admin/invitations", icon: FileTextIcon, label: "Undangan" },
+  { href: "/admin/themes", icon: PaletteIcon, label: "Tema" },
+  { href: "/admin/orders", icon: ShoppingCartIcon, label: "Pesanan" },
+  { href: "/admin/settings", icon: SettingsIcon, label: "Pengaturan" },
 ];
 
 export const userNavs = [
