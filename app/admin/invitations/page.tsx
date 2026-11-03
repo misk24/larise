@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { InvitationsTable, type AdminInvitationRow } from "@/components/admin/tables/invitations/invitations-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
-import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
+import { normalizeAdminSearchTerm, sanitizeAdminSearch } from "@/lib/utils/admin-search";
 
 type SearchParams = Promise<{ q?: string; status?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 const statuses = ["draft", "published", "unpublished"] as const;
@@ -15,8 +15,10 @@ function positiveInteger(value: string | undefined, fallback: number, max: numbe
 
 export default async function AdminInvitationsPage({ searchParams }: { searchParams: SearchParams }) {
   await requireAdmin();
+
   const params = await searchParams;
   const query = sanitizeAdminSearch(params.q);
+  const normalizedQuery = normalizeAdminSearchTerm(query);
   const status = statuses.find((value) => value === params.status) ?? "";
   const pageSize = [10, 20, 50].includes(Number(params.size)) ? Number(params.size) : 20;
   const sortFields = ["created_at", "status", "slug"] as const;
@@ -25,82 +27,31 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
   const requestedPage = positiveInteger(params.page, 1, 1_000_000);
   const supabase = createAdminClient();
 
-  let matchingInvitationIds: string[] | null = null;
-  if (query) {
-    // Search invitation-owned fields, plus text columns from the related owner
-    // and theme records. PostgREST cannot OR across embedded relations in one
-    // filter, so collect matching invitation IDs and union them explicitly.
-    const [ownMatches, ownerMatches, themeMatches] = await Promise.all([
-      supabase.from("invitations").select("id")
-        .or(`slug.ilike.%${query}%,groom_name.ilike.%${query}%,bride_name.ilike.%${query}%,status.ilike.%${query}%`)
-        .limit(10000),
-      supabase.from("profiles").select("id")
-        .or(`full_name.ilike.%${query}%,email.ilike.%${query}%`)
-        .limit(10000),
-      supabase.from("themes").select("id")
-        .or(`name.ilike.%${query}%,slug.ilike.%${query}%`)
-        .limit(10000),
-    ]);
-
-    if (ownMatches.error || ownerMatches.error || themeMatches.error) {
-      return (
-        <div className="backend-content space-y-6">
-          <header>
-            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Undangan</h1>
-            <p className="text-muted-foreground">Cari dan pantau undangan yang dibuat pengguna.</p>
-          </header>
-          <Card className="shadow-none"><CardContent className="py-8">
-            <p role="alert" className="text-center text-sm text-destructive">Pencarian undangan gagal dilakukan. Periksa relasi pemilik dan tema pada database.</p>
-          </CardContent></Card>
-        </div>
-      );
-    }
-
-    const ownerIds = (ownerMatches.data ?? []).map((item) => item.id);
-    const themeIds = (themeMatches.data ?? []).map((item) => item.id);
-    const [ownerInvitations, themeInvitations] = await Promise.all([
-      ownerIds.length
-        ? supabase.from("invitations").select("id").in("user_id", ownerIds).limit(10000)
-        : Promise.resolve({ data: [], error: null }),
-      themeIds.length
-        ? supabase.from("invitations").select("id").in("theme_id", themeIds).limit(10000)
-        : Promise.resolve({ data: [], error: null }),
-    ]);
-    if (ownerInvitations.error || themeInvitations.error) {
-      return (
-        <div className="backend-content space-y-6">
-          <header>
-            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Undangan</h1>
-            <p className="text-muted-foreground">Cari dan pantau undangan yang dibuat pengguna.</p>
-          </header>
-          <Card className="shadow-none"><CardContent className="py-8">
-            <p role="alert" className="text-center text-sm text-destructive">Pencarian pemilik atau tema undangan gagal dilakukan.</p>
-          </CardContent></Card>
-        </div>
-      );
-    }
-
-    matchingInvitationIds = [...new Set([
-      ...(ownMatches.data ?? []).map((item) => item.id),
-      ...(ownerInvitations.data ?? []).map((item) => item.id),
-      ...(themeInvitations.data ?? []).map((item) => item.id),
-    ])];
-  }
-
+  // The database view joins invitation, owner, and theme fields before
+  // filtering. This avoids multiple 10k-limited queries and huge ID unions.
   let request = supabase
-    .from("invitations")
-    .select("id,groom_name,bride_name,slug,status,created_at,profiles(full_name,email),themes(name)", { count: "exact" })
+    .from("admin_invitation_search")
+    .select("id,groom_name,bride_name,slug,status,created_at,owner_name,owner_email,theme_name", { count: "exact" })
     .order(sort, { ascending: direction === "asc" })
     .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
   if (status) request = request.eq("status", status);
-  if (matchingInvitationIds !== null) {
-    if (matchingInvitationIds.length) request = request.in("id", matchingInvitationIds);
-    else request = request.eq("id", "00000000-0000-0000-0000-000000000000");
+  if (normalizedQuery) {
+    request = request.or([
+      "search_slug",
+      "search_groom_name",
+      "search_bride_name",
+      "search_owner_name",
+      "search_owner_email",
+      "search_theme_name",
+      "search_theme_slug",
+    ].map((field) => `${field}.ilike.%${normalizedQuery}%`).join(","));
   }
+
   const { data, count, error } = await request;
   const total = count ?? 0;
   const page = Math.min(requestedPage, Math.max(1, Math.ceil(total / pageSize)));
+
   if (!error && page !== requestedPage) {
     const next = new URLSearchParams();
     if (query) next.set("q", query);
@@ -135,8 +86,19 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
             </select>
             <button type="submit" className="h-10 rounded-md bg-secondary px-4 text-sm font-medium text-secondary-foreground">Terapkan filter</button>
           </form>
-          {error ? <p role="alert" className="py-8 text-center text-sm text-destructive">Data undangan gagal dimuat. Periksa izin baca admin dan relasi database.</p> : (
-            <InvitationsTable data={(data ?? []) as AdminInvitationRow[]} page={page} pageSize={pageSize} rowCount={total} sort={sort} direction={direction} />
+          {error ? (
+            <p role="alert" className="py-8 text-center text-sm text-destructive">
+              Data undangan gagal dimuat. Pastikan migration pencarian admin sudah diterapkan dan akses database tersedia.
+            </p>
+          ) : (
+            <InvitationsTable
+              data={(data ?? []) as AdminInvitationRow[]}
+              page={page}
+              pageSize={pageSize}
+              rowCount={total}
+              sort={sort}
+              direction={direction}
+            />
           )}
         </CardContent>
       </Card>
