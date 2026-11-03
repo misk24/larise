@@ -1,6 +1,5 @@
 import { getAdminApiContext } from "@/lib/admin/authorization";
 import { NextResponse } from "next/server";
-import slugify from "slugify";
 import { z } from "zod";
 
 const idSchema = z.string().uuid();
@@ -42,9 +41,18 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (!id) return NextResponse.json({ error: "ID tema tidak valid." }, { status: 400 });
 
   const body = await request.json().catch(() => null);
+  const statusOnly = statusSchema.safeParse(body);
+  if (statusOnly.success && Object.keys(body as Record<string, unknown>).length === 1) {
+    const { data, error } = await supabase.from("themes")
+      .update({ is_active: statusOnly.data.is_active, updated_at: new Date().toISOString() })
+      .eq("id", id).select("id,name,is_active").maybeSingle();
+    if (error) return NextResponse.json({ error: "Status tema gagal diperbarui." }, { status: 500 });
+    if (!data) return NextResponse.json({ error: "Tema tidak ditemukan." }, { status: 404 });
+    return NextResponse.json(data);
+  }
+
   const parsed = themeSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Data tema tidak valid." }, { status: 400 });
-
   const payload = {
     ...parsed.data,
     description: parsed.data.description || null,
@@ -59,20 +67,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (error.code === "23505") return NextResponse.json({ error: "Slug tema sudah digunakan." }, { status: 409 });
     return NextResponse.json({ error: "Konfigurasi tema gagal disimpan." }, { status: 500 });
   }
-  if (!data) return NextResponse.json({ error: "Tema tidak ditemukan." }, { status: 404 });
-  return NextResponse.json(data);
-}
-
-export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
-  const { supabase, response } = await getAdminApiContext();
-  if (response) return response;
-  const id = await getId(context.params);
-  if (!id) return NextResponse.json({ error: "ID tema tidak valid." }, { status: 400 });
-  const parsed = statusSchema.safeParse(await request.json().catch(() => null));
-  if (!parsed.success) return NextResponse.json({ error: "Status tema tidak valid." }, { status: 400 });
-  const { data, error } = await supabase.from("themes").update({ is_active: parsed.data.is_active, updated_at: new Date().toISOString() })
-    .eq("id", id).select("id,name,is_active").maybeSingle();
-  if (error) return NextResponse.json({ error: "Status tema gagal diperbarui." }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Tema tidak ditemukan." }, { status: 404 });
   return NextResponse.json(data);
 }
