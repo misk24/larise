@@ -9,8 +9,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp } from "lucide-react";
-import { useCallback, useMemo } from "react";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -34,6 +35,9 @@ export function AdminDataTable<TData>({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const currentQuery = searchParams.get("q") ?? "";
+  const [searchTerm, setSearchTerm] = useState(currentQuery);
+  const debouncedSearchTerm = useDebounce(searchTerm.trim(), 350);
 
   const updateParams = useCallback((updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -41,8 +45,25 @@ export function AdminDataTable<TData>({
       if (value === null || value === "") params.delete(key);
       else params.set(key, value);
     }
-    router.push(`${pathname}?${params.toString()}`);
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
   }, [pathname, router, searchParams]);
+
+  useEffect(() => {
+    setSearchTerm(currentQuery);
+  }, [currentQuery]);
+
+  useEffect(() => {
+    if (debouncedSearchTerm === currentQuery.trim()) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (debouncedSearchTerm) params.set("q", debouncedSearchTerm);
+    else params.delete("q");
+    params.set("page", "1");
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }, [currentQuery, debouncedSearchTerm, pathname, router, searchParams]);
 
   const sorting = useMemo<SortingState>(() => [{ id: sort, desc: direction === "desc" }], [sort, direction]);
   const pagination = useMemo<PaginationState>(() => ({ pageIndex: page - 1, pageSize }), [page, pageSize]);
@@ -73,11 +94,18 @@ export function AdminDataTable<TData>({
 
   return (
     <section className="space-y-4">
-      <form action={pathname} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        {Array.from(searchParams.entries()).filter(([key]) => !["q", "page"].includes(key)).map(([key, value]) => (
-          <input key={key} type="hidden" name={key} value={value} />
-        ))}
-        <Input name="q" defaultValue={searchParams.get("q") ?? ""} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="w-full sm:max-w-sm" />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:max-w-sm">
+          <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder={searchPlaceholder}
+            aria-label={searchPlaceholder}
+            className="w-full pl-9"
+          />
+        </div>
         <div className="flex items-center gap-2">
           <label htmlFor="admin-table-page-size" className="text-sm text-muted-foreground whitespace-nowrap">Baris per halaman</label>
           <Select value={String(pageSize)} onValueChange={(value) => updateParams({ size: value, page: "1" })}>
@@ -86,9 +114,8 @@ export function AdminDataTable<TData>({
               {[10, 20, 50].map((size) => <SelectItem key={size} value={String(size)}>{size}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Button type="submit" variant="secondary">Cari</Button>
         </div>
-      </form>
+      </div>
 
       <div className="overflow-x-auto rounded-lg border">
         <Table>
