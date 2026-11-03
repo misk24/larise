@@ -1,11 +1,13 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 import { useMemo } from "react";
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AdminDataTable } from "@/components/admin/data-table";
+import { AdminDataTable, type AdminTableFilter } from "@/components/admin/data-table";
 import { ThemeActions } from "@/components/admin/theme-actions";
 
 export type AdminThemeRow = {
@@ -19,6 +21,8 @@ export type AdminThemeRow = {
 };
 
 type Props = {
+  filters?: AdminTableFilter[];
+  toolbarContent?: ReactNode;
   data: AdminThemeRow[];
   page: number;
   pageSize: number;

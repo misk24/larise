@@ -1,9 +1,11 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { AdminDataTable } from "@/components/admin/data-table";
+import { AdminDataTable, type AdminTableFilter } from "@/components/admin/data-table";
 
 type OrderOwner = { full_name: string | null; email: string | null };
 
@@ -18,6 +20,8 @@ export type AdminOrderRow = {
 };
 
 type Props = {
+  filters?: AdminTableFilter[];
+  toolbarContent?: ReactNode;
   data: AdminOrderRow[];
   page: number;
   pageSize: number;

@@ -1,8 +1,10 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { AdminDataTable } from "@/components/admin/data-table";
+import { AdminDataTable, type AdminTableFilter } from "@/components/admin/data-table";
 
 export type AdminUserRow = {
   id: string;
@@ -13,6 +15,8 @@ export type AdminUserRow = {
 };
 
 type Props = {
+  filters?: AdminTableFilter[];
+  toolbarContent?: ReactNode;
   data: AdminUserRow[];
   page: number;
   pageSize: number;
