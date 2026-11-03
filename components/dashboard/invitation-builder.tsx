@@ -479,6 +479,7 @@ export function InvitationBuilder({
                 invitation={invitation}
                 sections={sections}
                 guestName="Tamu Undangan"
+                guestToken={null}
                 wishes={wishes}
               />
             </div>
