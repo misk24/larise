@@ -9,7 +9,8 @@ export function sanitizeAdminSearch(value: string | undefined): string {
     .trim()
     .slice(0, 80)
     .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .replace(/\s+/g, " ");
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 /**
