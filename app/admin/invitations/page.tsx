@@ -8,7 +8,6 @@ import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
 type SearchParams = Promise<{ q?: string; status?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 const statuses = ["draft", "published", "unpublished"] as const;
 
-
 function positiveInteger(value: string | undefined, fallback: number, max: number) {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, max) : fallback;
@@ -26,6 +25,68 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
   const requestedPage = positiveInteger(params.page, 1, 1_000_000);
   const supabase = createAdminClient();
 
+  let matchingInvitationIds: string[] | null = null;
+  if (query) {
+    // Search invitation-owned fields, plus text columns from the related owner
+    // and theme records. PostgREST cannot OR across embedded relations in one
+    // filter, so collect matching invitation IDs and union them explicitly.
+    const [ownMatches, ownerMatches, themeMatches] = await Promise.all([
+      supabase.from("invitations").select("id")
+        .or(`slug.ilike.%${query}%,groom_name.ilike.%${query}%,bride_name.ilike.%${query}%,status.ilike.%${query}%`)
+        .limit(10000),
+      supabase.from("profiles").select("id")
+        .or(`full_name.ilike.%${query}%,email.ilike.%${query}%`)
+        .limit(10000),
+      supabase.from("themes").select("id")
+        .or(`name.ilike.%${query}%,slug.ilike.%${query}%`)
+        .limit(10000),
+    ]);
+
+    if (ownMatches.error || ownerMatches.error || themeMatches.error) {
+      return (
+        <div className="backend-content space-y-6">
+          <header>
+            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Undangan</h1>
+            <p className="text-muted-foreground">Cari dan pantau undangan yang dibuat pengguna.</p>
+          </header>
+          <Card className="shadow-none"><CardContent className="py-8">
+            <p role="alert" className="text-center text-sm text-destructive">Pencarian undangan gagal dilakukan. Periksa relasi pemilik dan tema pada database.</p>
+          </CardContent></Card>
+        </div>
+      );
+    }
+
+    const ownerIds = (ownerMatches.data ?? []).map((item) => item.id);
+    const themeIds = (themeMatches.data ?? []).map((item) => item.id);
+    const [ownerInvitations, themeInvitations] = await Promise.all([
+      ownerIds.length
+        ? supabase.from("invitations").select("id").in("user_id", ownerIds).limit(10000)
+        : Promise.resolve({ data: [], error: null }),
+      themeIds.length
+        ? supabase.from("invitations").select("id").in("theme_id", themeIds).limit(10000)
+        : Promise.resolve({ data: [], error: null }),
+    ]);
+    if (ownerInvitations.error || themeInvitations.error) {
+      return (
+        <div className="backend-content space-y-6">
+          <header>
+            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Undangan</h1>
+            <p className="text-muted-foreground">Cari dan pantau undangan yang dibuat pengguna.</p>
+          </header>
+          <Card className="shadow-none"><CardContent className="py-8">
+            <p role="alert" className="text-center text-sm text-destructive">Pencarian pemilik atau tema undangan gagal dilakukan.</p>
+          </CardContent></Card>
+        </div>
+      );
+    }
+
+    matchingInvitationIds = [...new Set([
+      ...(ownMatches.data ?? []).map((item) => item.id),
+      ...(ownerInvitations.data ?? []).map((item) => item.id),
+      ...(themeInvitations.data ?? []).map((item) => item.id),
+    ])];
+  }
+
   let request = supabase
     .from("invitations")
     .select("id,groom_name,bride_name,slug,status,created_at,profiles(full_name,email),themes(name)", { count: "exact" })
@@ -33,7 +94,10 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
     .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
   if (status) request = request.eq("status", status);
-  if (query) request = request.or(`slug.ilike.%${query}%,groom_name.ilike.%${query}%,bride_name.ilike.%${query}%`);
+  if (matchingInvitationIds !== null) {
+    if (matchingInvitationIds.length) request = request.in("id", matchingInvitationIds);
+    else request = request.eq("id", "00000000-0000-0000-0000-000000000000");
+  }
   const { data, count, error } = await request;
   const total = count ?? 0;
   const page = Math.min(requestedPage, Math.max(1, Math.ceil(total / pageSize)));

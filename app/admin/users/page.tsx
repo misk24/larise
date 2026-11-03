@@ -7,7 +7,6 @@ import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
 
 type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 
-
 function positiveInteger(value: string | undefined, fallback: number, max: number) {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, max) : fallback;
@@ -31,6 +30,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
     .order(sort, { ascending: direction === "asc" })
     .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
+  // All user-facing text columns in this table are searchable.
   if (query) request = request.or(`full_name.ilike.%${query}%,email.ilike.%${query}%`);
   const { data, count, error } = await request;
   const total = count ?? 0;

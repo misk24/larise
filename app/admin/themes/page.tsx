@@ -10,7 +10,6 @@ import { PaletteIcon } from "lucide-react";
 
 type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 
-
 function positiveInteger(value: string | undefined, fallback: number, max: number) {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, max) : fallback;
@@ -33,7 +32,18 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
     .order(sort, { ascending: direction === "asc" })
     .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
-  if (query) request = request.or(`name.ilike.%${query}%,slug.ilike.%${query}%`);
+  if (query) {
+    const clauses = [
+      `name.ilike.%${query}%`,
+      `slug.ilike.%${query}%`,
+      `category.ilike.%${query}%`,
+    ];
+    const normalized = query.toLocaleLowerCase("id-ID");
+    if (["aktif", "active", "true", "yes"].includes(normalized)) clauses.push("is_active.eq.true");
+    if (["nonaktif", "inactive", "false", "no"].includes(normalized)) clauses.push("is_active.eq.false");
+    if (/^\d+(\.\d+)?$/.test(query)) clauses.push(`price.eq.${query}`);
+    request = request.or(clauses.join(","));
+  }
   const { data, error, count } = await request;
   const total = count ?? 0;
   const page = Math.min(requestedPage, Math.max(1, Math.ceil(total / pageSize)));
