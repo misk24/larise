@@ -46,8 +46,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     .select("id,name,is_active")
     .maybeSingle();
 
-  if (error) return NextResponse.json({ error: "Status tema gagal diperbarui." }, { status: 400 });
-  if (!data) return NextResponse.json({ error: "Tema tidak ditemukan atau akses ditolak." }, { status: 404 });
+  if (error) return NextResponse.json({ error: "Status tema gagal diperbarui." }, { status: 500 });
+  if (!data) return NextResponse.json({ error: "Tema tidak ditemukan." }, { status: 404 });
   return NextResponse.json(data);
 }
 
@@ -76,10 +76,17 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     );
   }
 
-  const { error } = await supabase.from("themes").delete().eq("id", id);
+  const { data: deleted, error } = await supabase
+    .from("themes")
+    .delete()
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+
   if (error) {
     return NextResponse.json({ error: "Tema gagal dihapus. Periksa kembali relasi data yang menggunakannya." }, { status: 409 });
   }
+  if (!deleted) return NextResponse.json({ error: "Tema tidak ditemukan." }, { status: 404 });
 
   return NextResponse.json({ success: true });
 }
