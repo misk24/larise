@@ -12,6 +12,7 @@ as $$
 declare
   existing_count integer;
   requested_count integer;
+  temporary_offset integer;
 begin
   if p_section_ids is null or cardinality(p_section_ids) = 0 then
     raise exception 'Section order cannot be empty';
@@ -38,8 +39,15 @@ begin
     raise exception 'Section order must contain every section exactly once';
   end if;
 
+  -- Move every row above the current range first. This avoids both unique-position
+  -- collisions and any non-negative position check constraint.
+  select coalesce(max(position), -1) + existing_count + 1
+  into temporary_offset
+  from public.theme_sections
+  where theme_id = p_theme_id;
+
   update public.theme_sections
-  set position = -position - 1
+  set position = position + temporary_offset
   where theme_id = p_theme_id;
 
   return query
