@@ -17,13 +17,14 @@ export interface SectionContext {
   invitation: Invitation & { themes?: Theme | null };
   section: InvitationSection;
   guestName: string;
+  guestToken: string | null;
   wishes: Wish[];
   onWishAdded?: (wish: Wish) => void;
 }
 
 export type SectionComponent = ComponentType<SectionContext>;
 export const sectionRegistry: Record<SectionType, SectionComponent> = {
-  cover:CoverSection, opening:OpeningSection, couple:CoupleSection, quote:QuoteSection,
-  event:EventSection, countdown:CountdownSection, gallery:GallerySection, location:LocationSection,
-  closing:ClosingSection, rsvp:RsvpSection, gift:GiftSection,
+  cover: CoverSection, opening: OpeningSection, couple: CoupleSection, quote: QuoteSection,
+  event: EventSection, countdown: CountdownSection, gallery: GallerySection, location: LocationSection,
+  closing: ClosingSection, rsvp: RsvpSection, gift: GiftSection,
 };
