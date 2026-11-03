@@ -1,33 +1,51 @@
-import { Badge } from "@/components/ui/badge";
+import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { UsersTable, type AdminUserRow } from "@/components/admin/tables/users/users-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
-import { UsersIcon } from "lucide-react";
 
-type SearchParams = Promise<{ q?: string }>;
+type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 
 function sanitizeSearch(value: string | undefined) {
   return value?.trim().slice(0, 80).replace(/[,%_().\\]/g, " ").replace(/\s+/g, " ") ?? "";
 }
 
+function positiveInteger(value: string | undefined, fallback: number, max: number) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, max) : fallback;
+}
+
 export default async function AdminUsersPage({ searchParams }: { searchParams: SearchParams }) {
+  await requireAdmin();
   const params = await searchParams;
   const query = sanitizeSearch(params.q);
-  await requireAdmin();
+  const pageSize = [10, 20, 50].includes(Number(params.size)) ? Number(params.size) : 20;
+  const sortFields = ["created_at", "full_name", "email"] as const;
+  const sort = sortFields.find((field) => field === params.sort) ?? "created_at";
+  const direction = params.direction === "asc" ? "asc" : "desc";
+  const requestedPage = positiveInteger(params.page, 1, 1_000_000);
   const supabase = createAdminClient();
 
   let request = supabase
     .from("profiles")
-    .select("id,full_name,email,role,created_at,invitations(count)", { count: "exact" })
+    .select("id,full_name,email,created_at,invitations(count)", { count: "exact" })
     .eq("role", "user")
-    .order("created_at", { ascending: false })
-    .limit(100);
+    .order(sort, { ascending: direction === "asc" })
+    .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
   if (query) request = request.or(`full_name.ilike.%${query}%,email.ilike.%${query}%`);
-
-  const { data: users, count, error } = await request;
+  const { data, count, error } = await request;
+  const total = count ?? 0;
+  const page = Math.min(requestedPage, Math.max(1, Math.ceil(total / pageSize)));
+  if (!error && page !== requestedPage) {
+    const next = new URLSearchParams();
+    if (query) next.set("q", query);
+    next.set("page", String(page));
+    next.set("size", String(pageSize));
+    next.set("sort", sort);
+    next.set("direction", direction);
+    redirect(`/admin/users?${next.toString()}`);
+  }
 
   return (
     <div className="backend-content space-y-6">
@@ -35,57 +53,14 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Pengguna</h1>
         <p className="text-muted-foreground">Cari dan tinjau akun pengguna yang terdaftar di LARISÉ.</p>
       </header>
-
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Pengguna</CardTitle>
-          <CardDescription>
-            {error ? "Jumlah pengguna tidak dapat dimuat." : `${(count ?? 0).toLocaleString("id-ID")} pengguna`}
-            {count !== null && count > 100 ? " · Menampilkan 100 hasil terbaru" : ""}
-          </CardDescription>
+          <CardDescription>{error ? "Jumlah pengguna tidak dapat dimuat." : `${total.toLocaleString("id-ID")} pengguna terdaftar`}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <form action="/admin/users" className="flex flex-col gap-2 sm:flex-row">
-            <Input name="q" defaultValue={query} placeholder="Cari nama atau email..." aria-label="Cari pengguna" />
-            <button type="submit" className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground">
-              Cari
-            </button>
-          </form>
-
-          {error ? (
-            <p role="alert" className="py-8 text-center text-sm text-destructive">
-              Data pengguna gagal dimuat. Periksa izin baca admin pada database.
-            </p>
-          ) : users?.length ? (
-            <div className="backend-table-container">
-              <Table>
-                <TableHeader className="bg-muted/70">
-                  <TableRow>
-                    <TableHead>Nama</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Undangan</TableHead>
-                    <TableHead>Tanggal daftar</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">{user.full_name || "Tanpa nama"}</TableCell>
-                      <TableCell>{user.email || "—"}</TableCell>
-                      <TableCell>{user.invitations?.[0]?.count ?? 0}</TableCell>
-                      <TableCell>{new Date(user.created_at).toLocaleDateString("id-ID")}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <div className="py-12 text-center">
-              <UsersIcon aria-hidden="true" className="mx-auto mb-4 size-10 text-muted-foreground/50" />
-              <p className="text-sm text-muted-foreground">
-                {query ? "Tidak ada pengguna yang cocok dengan pencarian." : "Belum ada pengguna terdaftar."}
-              </p>
-            </div>
+        <CardContent>
+          {error ? <p role="alert" className="py-8 text-center text-sm text-destructive">Data pengguna gagal dimuat. Periksa izin baca admin pada database.</p> : (
+            <UsersTable data={(data ?? []) as AdminUserRow[]} page={page} pageSize={pageSize} rowCount={total} sort={sort} direction={direction} />
           )}
         </CardContent>
       </Card>
