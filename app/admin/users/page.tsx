@@ -16,7 +16,7 @@ function positiveInteger(value: string | undefined, fallback: number, max: numbe
 export default async function AdminUsersPage({ searchParams }: { searchParams: SearchParams }) {
   await requireAdmin();
   const params = await searchParams;
-  const query = sanitizeSearch(params.q);
+  const query = sanitizeAdminSearch(params.q);
   const pageSize = [10, 20, 50].includes(Number(params.size)) ? Number(params.size) : 20;
   const sortFields = ["created_at", "full_name", "email"] as const;
   const sort = sortFields.find((field) => field === params.sort) ?? "created_at";
