@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminTableError } from "@/components/admin/table-states";
 import { UsersTable, type AdminUserRow } from "@/components/admin/tables/users/users-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
@@ -57,7 +58,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
           <CardDescription>{error ? "Jumlah pengguna tidak dapat dimuat." : `${total.toLocaleString("id-ID")} pengguna terdaftar`}</CardDescription>
         </CardHeader>
         <CardContent>
-          {error ? <p role="alert" className="py-8 text-center text-sm text-destructive">Data pengguna gagal dimuat. Periksa izin baca admin pada database.</p> : (
+          {error ? <AdminTableError title="Pengguna gagal dimuat" description="Periksa izin baca admin pada database." /> : (
             <UsersTable data={(data ?? []) as AdminUserRow[]} page={page} pageSize={pageSize} rowCount={total} sort={sort} direction={direction} />
           )}
         </CardContent>

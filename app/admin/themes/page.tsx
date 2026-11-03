@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminTableError } from "@/components/admin/table-states";
 import { ThemesTable, type AdminThemeRow } from "@/components/admin/tables/themes/themes-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
@@ -74,7 +75,7 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
         </CardHeader>
         <CardContent>
           {error ? (
-            <p role="alert" className="py-8 text-center text-sm text-destructive">Data tema gagal dimuat. Periksa izin baca admin pada database.</p>
+            <AdminTableError title="Tema gagal dimuat" description="Periksa izin baca admin pada database." />
           ) : (
             <ThemesTable
               data={(data ?? []) as AdminThemeRow[]}

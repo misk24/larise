@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AdminTableError } from "@/components/admin/table-states";
 import { OrdersTable, type AdminOrderRow } from "@/components/admin/tables/orders/orders-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
@@ -78,34 +78,8 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form action="/admin/orders" className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <input type="hidden" name="q" value={query} />
-            <label htmlFor="order-status" className="text-sm text-muted-foreground">Status pembayaran</label>
-            <Select name="status" defaultValue={status || "all"}>
-              <SelectTrigger id="order-status" className="w-full sm:w-52">
-                <SelectValue placeholder="Semua status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua status</SelectItem>
-                <SelectItem value="pending">Menunggu pembayaran</SelectItem>
-                <SelectItem value="paid">Lunas</SelectItem>
-                <SelectItem value="expired">Kedaluwarsa</SelectItem>
-                <SelectItem value="refunded">Dikembalikan</SelectItem>
-              </SelectContent>
-            </Select>
-            <button
-              type="submit"
-              className="h-9 rounded-md bg-secondary px-4 text-sm font-medium text-secondary-foreground"
-              formAction="/admin/orders"
-            >
-              Terapkan
-            </button>
-          </form>
-
           {error ? (
-            <p role="alert" className="py-8 text-center text-sm text-destructive">
-              Data pesanan gagal dimuat. Periksa izin baca admin dan relasi pengguna pada database.
-            </p>
+            <AdminTableError title="Pesanan gagal dimuat" description="Periksa izin akses admin dan relasi data pelanggan." />
           ) : (
             <OrdersTable
               data={(data ?? []) as AdminOrderRow[]}
@@ -114,6 +88,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
               rowCount={total}
               sort={sort}
               direction={direction}
+              filters={[{ key: "status", label: "Status pembayaran", value: status, options: [{ label: "Menunggu pembayaran", value: "pending" }, { label: "Lunas", value: "paid" }, { label: "Kedaluwarsa", value: "expired" }, { label: "Dikembalikan", value: "refunded" }] }]}
             />
           )}
         </CardContent>

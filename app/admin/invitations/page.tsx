@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminTableError } from "@/components/admin/table-states";
 import { InvitationsTable, type AdminInvitationRow } from "@/components/admin/tables/invitations/invitations-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
@@ -75,21 +76,8 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
           <CardDescription>{error ? "Jumlah undangan tidak dapat dimuat." : `${total.toLocaleString("id-ID")} undangan`}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form action="/admin/invitations" className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <input type="hidden" name="q" value={query} />
-            <label htmlFor="invitation-status" className="text-sm text-muted-foreground">Status</label>
-            <select id="invitation-status" name="status" defaultValue={status} className="h-10 rounded-md border border-input bg-background px-3 text-sm">
-              <option value="">Semua status</option>
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="unpublished">Unpublished</option>
-            </select>
-            <button type="submit" className="h-10 rounded-md bg-secondary px-4 text-sm font-medium text-secondary-foreground">Terapkan filter</button>
-          </form>
           {error ? (
-            <p role="alert" className="py-8 text-center text-sm text-destructive">
-              Data undangan gagal dimuat. Pastikan migration pencarian admin sudah diterapkan dan akses database tersedia.
-            </p>
+            <AdminTableError title="Undangan gagal dimuat" description="Periksa koneksi database dan migration pencarian admin." />
           ) : (
             <InvitationsTable
               data={(data ?? []) as AdminInvitationRow[]}
@@ -98,6 +86,7 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
               rowCount={total}
               sort={sort}
               direction={direction}
+              filters={[{ key: "status", label: "Status", value: status, options: [{ label: "Draft", value: "draft" }, { label: "Published", value: "published" }, { label: "Unpublished", value: "unpublished" }] }]}
             />
           )}
         </CardContent>
