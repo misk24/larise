@@ -20,11 +20,11 @@ declare
   v_guest_id uuid;
   v_rsvp_id uuid;
 begin
-  if p_guest_token is null or length(trim(p_guest_token)) < 20 then
+  if p_invitation_id is null or p_guest_token is null or length(trim(p_guest_token)) < 20 or length(p_guest_token) > 128 then
     raise exception 'Token tamu tidak valid.' using errcode = '22023';
   end if;
 
-  if p_status not in ('attending', 'not_attending') then
+  if p_status is null or p_status not in ('attending', 'not_attending') then
     raise exception 'Status RSVP tidak valid.' using errcode = '22023';
   end if;
 
@@ -114,6 +114,10 @@ declare
   v_guest public.guests%rowtype;
   v_wish public.wishes%rowtype;
 begin
+  if p_invitation_id is null or p_guest_token is null or length(trim(p_guest_token)) < 20 or length(p_guest_token) > 128 then
+    raise exception 'Token tamu tidak valid.' using errcode = '22023';
+  end if;
+
   if p_message is null or length(trim(p_message)) < 1 or length(p_message) > 1000 then
     raise exception 'Ucapan wajib diisi dan maksimal 1000 karakter.' using errcode = '22023';
   end if;
