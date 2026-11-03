@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/actions/auth";
 import Link from "next/link";
 
 type SearchParams = Promise<{ q?: string; status?: string }>;
@@ -22,7 +23,8 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
   const params = await searchParams;
   const query = sanitizeSearch(params.q);
   const status = statuses.find((value) => value === params.status) ?? "";
-  const supabase = await createClient();
+  await requireAdmin();
+  const supabase = createAdminClient();
   let request = supabase
     .from("invitations")
     .select("id,title,slug,status,created_at,profiles(full_name,email),themes(name)", { count: "exact" })

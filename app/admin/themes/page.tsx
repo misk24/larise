@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ThemeActions } from "@/components/admin/theme-actions";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/actions/auth";
 import { PaletteIcon } from "lucide-react";
 import Link from "next/link";
 
 export default async function AdminThemesPage() {
-  const supabase = await createClient();
+  await requireAdmin();
+  const supabase = createAdminClient();
   const { data: themes, error, count } = await supabase
     .from("themes")
     .select("id,name,slug,category,price,is_active,created_at", { count: "exact" })

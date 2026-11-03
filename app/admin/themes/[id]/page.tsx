@@ -1,5 +1,6 @@
 import SectionForm from "@/components/admin/section-form";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/actions/auth";
 
 export default async function ThemeDetailPage({
   params,
@@ -7,7 +8,8 @@ export default async function ThemeDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = await createClient();
+  await requireAdmin();
+  const supabase = createAdminClient();
 
   const { data: theme } = await supabase
     .from("themes")

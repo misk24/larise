@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/actions/auth";
 import { UsersIcon } from "lucide-react";
 
 type SearchParams = Promise<{ q?: string }>;
@@ -14,7 +15,8 @@ function sanitizeSearch(value: string | undefined) {
 export default async function AdminUsersPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const query = sanitizeSearch(params.q);
-  const supabase = await createClient();
+  await requireAdmin();
+  const supabase = createAdminClient();
 
   let request = supabase
     .from("profiles")

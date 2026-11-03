@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/actions/auth";
 import { FileTextIcon, PaletteIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -9,7 +10,8 @@ function formatDate(value: string | null) {
 }
 
 export default async function AdminDashboardPage() {
-  const supabase = await createClient();
+  await requireAdmin();
+  const supabase = createAdminClient();
 
   const [usersResult, invitationsResult, publishedResult, themesResult, recentUsersResult, recentInvitationsResult] =
     await Promise.all([
