@@ -29,10 +29,11 @@ begin
   end if;
 
   if (p_status = 'attending' and (p_attendee_count is null or p_attendee_count < 1 or p_attendee_count > 10))
-     or (p_status = 'not_attending' and p_attendee_count <> 0) then
+     or (p_status = 'not_attending' and (p_attendee_count is null or p_attendee_count <> 0)) then
     raise exception 'Jumlah tamu tidak valid.' using errcode = '22023';
   end if;
 
+  -- Lock the guest row so concurrent submissions for the same token serialize.
   select g.id into v_guest_id
   from public.guests g
   join public.invitations i on i.id = g.invitation_id
@@ -46,13 +47,22 @@ begin
     raise exception 'Link tamu tidak valid atau undangan belum diterbitkan.' using errcode = '42501';
   end if;
 
-  insert into public.rsvps (invitation_id, guest_id, status, attendee_count)
-  values (p_invitation_id, v_guest_id, p_status, p_attendee_count)
-  on conflict (guest_id) do update
-    set status = excluded.status,
-        attendee_count = excluded.attendee_count,
+  select r.id into v_rsvp_id
+  from public.rsvps r
+  where r.guest_id = v_guest_id
+  for update;
+
+  if v_rsvp_id is null then
+    insert into public.rsvps (invitation_id, guest_id, status, attendee_count)
+    values (p_invitation_id, v_guest_id, p_status, p_attendee_count)
+    returning id into v_rsvp_id;
+  else
+    update public.rsvps
+    set status = p_status,
+        attendee_count = p_attendee_count,
         updated_at = now()
-  returning id into v_rsvp_id;
+    where id = v_rsvp_id;
+  end if;
 
   return v_rsvp_id;
 end;
