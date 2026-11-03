@@ -6,7 +6,6 @@ import { requireAdmin } from "@/lib/actions/auth";
 import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PaletteIcon } from "lucide-react";
 
 type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 
@@ -76,13 +75,15 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
         <CardContent>
           {error ? (
             <p role="alert" className="py-8 text-center text-sm text-destructive">Data tema gagal dimuat. Periksa izin baca admin pada database.</p>
-          ) : total > 0 ? (
-            <ThemesTable data={(data ?? []) as AdminThemeRow[]} page={page} pageSize={pageSize} rowCount={total} sort={sort} direction={direction} />
           ) : (
-            <div className="py-12 text-center">
-              <PaletteIcon aria-hidden="true" className="mx-auto mb-4 size-10 text-muted-foreground/50" />
-              <p className="text-sm text-muted-foreground">{query ? "Tidak ada tema yang cocok dengan pencarian." : "Belum ada tema."}</p>
-            </div>
+            <ThemesTable
+              data={(data ?? []) as AdminThemeRow[]}
+              page={page}
+              pageSize={pageSize}
+              rowCount={total}
+              sort={sort}
+              direction={direction}
+            />
           )}
         </CardContent>
       </Card>
