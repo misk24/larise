@@ -28,7 +28,10 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: "Tema gagal dibuat. Pastikan nama atau slug belum digunakan." }, { status: 409 });
+    if (error.code === "23505") {
+      return NextResponse.json({ error: "Nama atau slug tema sudah digunakan." }, { status: 409 });
+    }
+    return NextResponse.json({ error: "Terjadi kesalahan saat membuat tema." }, { status: 500 });
   }
 
   return NextResponse.json(data, { status: 201 });
