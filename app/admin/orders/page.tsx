@@ -1,106 +1,120 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { createClient } from "@/lib/supabase/server";
-import { ShoppingCartIcon } from "lucide-react";
+import { redirect } from "next/navigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { OrdersTable, type AdminOrderRow } from "@/components/admin/tables/orders/orders-table";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/actions/auth";
+import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
 
-export default async function AdminOrdersPage() {
-  const supabase = await createClient();
+type SearchParams = Promise<{
+  q?: string;
+  status?: string;
+  page?: string;
+  size?: string;
+  sort?: string;
+  direction?: string;
+}>;
 
-  const { data: orders } = await supabase
+const statuses = ["pending", "paid", "expired", "refunded"] as const;
+
+function positiveInteger(value: string | undefined, fallback: number, max: number) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, max) : fallback;
+}
+
+export default async function AdminOrdersPage({ searchParams }: { searchParams: SearchParams }) {
+  await requireAdmin();
+
+  const params = await searchParams;
+  const query = sanitizeAdminSearch(params.q);
+  const status = statuses.find((value) => value === params.status) ?? "";
+  const pageSize = [10, 20, 50].includes(Number(params.size)) ? Number(params.size) : 20;
+  const sortFields = ["created_at", "order_number", "amount", "payment_status"] as const;
+  const sort = sortFields.find((field) => field === params.sort) ?? "created_at";
+  const direction = params.direction === "asc" ? "asc" : "desc";
+  const requestedPage = positiveInteger(params.page, 1, 1_000_000);
+  const supabase = createAdminClient();
+
+  let request = supabase
     .from("orders")
-    .select("*, profiles(full_name, email)")
-    .order("created_at", { ascending: false });
+    .select("id,order_number,user_id,amount,payment_status,created_at,profiles(full_name,email)", { count: "exact" })
+    .order(sort, { ascending: direction === "asc" })
+    .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
-  function getStatusBadge(status: string) {
-    switch (status) {
-      case "paid":
-        return (
-          <Badge className="border-chart-3/30 bg-chart-3/20 text-chart-3">
-            Lunas
-          </Badge>
-        );
-      case "pending":
-        return <Badge variant="secondary">Menunggu</Badge>;
-      case "cancelled":
-        return <Badge variant="destructive">Batal</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
+  if (status) request = request.eq("payment_status", status);
+  if (query) {
+    request = request.or(
+      `order_number.ilike.%${query}%,payment_status.ilike.%${query}%`,
+    );
+  }
+
+  const { data, count, error } = await request;
+  const total = count ?? 0;
+  const page = Math.min(requestedPage, Math.max(1, Math.ceil(total / pageSize)));
+
+  if (!error && page !== requestedPage) {
+    const next = new URLSearchParams();
+    if (query) next.set("q", query);
+    if (status) next.set("status", status);
+    next.set("page", String(page));
+    next.set("size", String(pageSize));
+    next.set("sort", sort);
+    next.set("direction", direction);
+    redirect(`/admin/orders?${next.toString()}`);
   }
 
   return (
     <div className="backend-content space-y-6">
-      <div>
+      <header>
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Pesanan</h1>
-        <p className="text-muted-foreground">Lihat dan kelola semua pesanan</p>
-      </div>
+        <p className="text-muted-foreground">Pantau pesanan dan status pembayaran pengguna.</p>
+      </header>
+
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Pesanan</CardTitle>
-          <CardDescription>Total {orders?.length || 0} pesanan</CardDescription>
+          <CardDescription>
+            {error ? "Jumlah pesanan tidak dapat dimuat." : `${total.toLocaleString("id-ID")} pesanan`}
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          {orders && orders.length > 0 ? (
-            <div className="backend-table-container">
-              <Table>
-                <TableHeader className="bg-muted/70">
-                  <TableRow>
-                    <TableHead>ID Pesanan</TableHead>
-                    <TableHead>Pelanggan</TableHead>
-                    <TableHead>Paket</TableHead>
-                    <TableHead>Jumlah</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Tanggal</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orders.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-mono text-xs">
-                        {order.id.slice(0, 8)}...
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">
-                            {order.profiles?.full_name || "-"}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {order.profiles?.email}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>{order.package_name}</TableCell>
-                      <TableCell>
-                        Rp {order.amount?.toLocaleString("id-ID")}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(order.status)}</TableCell>
-                      <TableCell>
-                        {new Date(order.created_at).toLocaleDateString("id-ID")}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+        <CardContent className="space-y-4">
+          <form action="/admin/orders" className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <input type="hidden" name="q" value={query} />
+            <label htmlFor="order-status" className="text-sm text-muted-foreground">Status pembayaran</label>
+            <Select name="status" defaultValue={status || "all"}>
+              <SelectTrigger id="order-status" className="w-full sm:w-52">
+                <SelectValue placeholder="Semua status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua status</SelectItem>
+                <SelectItem value="pending">Menunggu pembayaran</SelectItem>
+                <SelectItem value="paid">Lunas</SelectItem>
+                <SelectItem value="expired">Kedaluwarsa</SelectItem>
+                <SelectItem value="refunded">Dikembalikan</SelectItem>
+              </SelectContent>
+            </Select>
+            <button
+              type="submit"
+              className="h-9 rounded-md bg-secondary px-4 text-sm font-medium text-secondary-foreground"
+              formAction="/admin/orders"
+            >
+              Terapkan
+            </button>
+          </form>
+
+          {error ? (
+            <p role="alert" className="py-8 text-center text-sm text-destructive">
+              Data pesanan gagal dimuat. Periksa izin baca admin dan relasi pengguna pada database.
+            </p>
           ) : (
-            <div className="py-12 text-center">
-              <ShoppingCartIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
-              <p className="text-muted-foreground">Belum ada pesanan</p>
-            </div>
+            <OrdersTable
+              data={(data ?? []) as AdminOrderRow[]}
+              page={page}
+              pageSize={pageSize}
+              rowCount={total}
+              sort={sort}
+              direction={direction}
+            />
           )}
         </CardContent>
       </Card>
