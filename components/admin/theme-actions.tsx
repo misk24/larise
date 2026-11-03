@@ -46,14 +46,14 @@ export function ThemeActions({ id, active, name }: { id: string; active: boolean
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-nowrap items-center gap-2 whitespace-nowrap">
       <Button type="button" size="sm" variant="outline" disabled={busy} onClick={toggleStatus}>
         {busy ? "Memproses..." : active ? "Nonaktifkan" : "Aktifkan"}
       </Button>
       <Button type="button" size="sm" variant="destructive" disabled={busy} onClick={deleteTheme}>
         Hapus
       </Button>
-      {message ? <p role="alert" className="w-full text-xs text-destructive">{message}</p> : null}
+      {message ? <p role="alert" className="absolute left-0 top-full mt-1 w-56 whitespace-normal text-xs text-destructive">{message}</p> : null}
     </div>
   );
 }

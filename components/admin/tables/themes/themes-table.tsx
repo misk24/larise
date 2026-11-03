@@ -75,7 +75,7 @@ export function ThemesTable(props: Props) {
       header: "Aksi",
       enableSorting: false,
       cell: ({ row }) => (
-        <div className="flex min-w-44 flex-col items-start gap-2">
+        <div className="flex min-w-max flex-row items-center gap-2 whitespace-nowrap">
           <Button size="sm" variant="outline" asChild>
             <Link href={`/admin/themes/${row.original.id}`}>Edit</Link>
           </Button>
