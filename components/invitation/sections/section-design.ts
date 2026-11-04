@@ -155,39 +155,34 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
 
 export function getSectionDesignAttributes(value: unknown): Record<string, string> {
   if (!isRecord(value)) return {};
-  const typography = isRecord(value.typography) ? value.typography : {};
-  const button = isRecord(value.button) ? value.button : {};
-  const image = isRecord(value.image) ? value.image : {};
-  const icon = isRecord(value.icon) ? value.icon : {};
-  const divider = isRecord(value.divider) ? value.divider : {};
-  const ornament = isRecord(value.ornament) ? value.ornament : {};
-  const layout = isRecord(value.layout) ? value.layout : {};
+  const resolvedStyle = getSectionDesignStyle(value) as CSSProperties & Record<`--${string}`, string>;
   const attributes: Record<string, string> = {};
-  const flags: Array<[string, unknown]> = [
-    ["data-design-heading-size", typography.headingFontSize],
-    ["data-design-body-size", typography.bodyFontSize],
-    ["data-design-heading-family", typography.headingFontFamily ?? typography.fontFamily],
-    ["data-design-body-family", typography.bodyFontFamily ?? typography.fontFamily],
-    ["data-design-heading-color", typography.headingColor ?? typography.color],
-    ["data-design-body-color", typography.bodyColor ?? typography.color],
-    ["data-design-heading-weight", typography.headingFontWeight ?? typography.fontWeight],
-    ["data-design-body-weight", typography.bodyFontWeight ?? typography.fontWeight],
-    ["data-design-heading-align", typography.headingAlignment ?? typography.alignment],
-    ["data-design-body-align", typography.bodyAlignment ?? typography.alignment],
+  const has = (...keys: Array<`--${string}`>) => keys.some((key) => resolvedStyle[key] !== undefined);
+  const flags: Array<[string, `--${string}`]> = [
+    ["data-design-heading-size", "--section-heading-size"],
+    ["data-design-body-size", "--section-body-size"],
+    ["data-design-heading-family", "--section-heading-font-family"],
+    ["data-design-body-family", "--section-body-font-family"],
+    ["data-design-heading-color", "--section-heading-color"],
+    ["data-design-body-color", "--section-body-color"],
+    ["data-design-heading-weight", "--section-heading-font-weight"],
+    ["data-design-body-weight", "--section-body-font-weight"],
+    ["data-design-heading-align", "--section-heading-align"],
+    ["data-design-body-align", "--section-body-align"],
   ];
-  if (Object.values(button).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-button"] = "true";
-  if (icon.size !== undefined) attributes["data-design-icon-size"] = "true";
-  if (icon.color !== undefined) attributes["data-design-icon-color"] = "true";
-  if (icon.strokeWidth !== undefined) attributes["data-design-icon-stroke"] = "true";
-  if (Object.values(image).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-image"] = "true";
-  if (Object.values(icon).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-icon"] = "true";
-  if (Object.values(divider).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-divider"] = "true";
-  if (Object.values(ornament).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-ornament"] = "true";
-  if (finiteNumber(layout.elementGap, 0, 96) !== undefined) attributes["data-design-element-gap"] = "true";
-  const resolvedBackground = getSectionDesignStyle(value);
-  if (resolvedBackground.backgroundColor || resolvedBackground.backgroundImage) attributes["data-design-background"] = "true";
-  for (const [key, item] of flags) {
-    if (item !== undefined && item !== null && item !== "") attributes[key] = "true";
+  if (has("--section-button-bg", "--section-button-text", "--section-button-border", "--section-button-radius", "--section-button-size", "--section-button-px", "--section-button-py")) {
+    attributes["data-design-button"] = "true";
+  }
+  if (has("--section-image-radius", "--section-image-ratio", "--section-image-fit", "--section-image-position")) {
+    attributes["data-design-image"] = "true";
+  }
+  if (has("--section-icon-color", "--section-icon-size", "--section-icon-stroke")) attributes["data-design-icon"] = "true";
+  if (has("--section-divider-color", "--section-divider-thickness", "--section-divider-width", "--section-divider-style", "--section-divider-spacing")) attributes["data-design-divider"] = "true";
+  if (has("--section-ornament-color", "--section-ornament-size", "--section-ornament-opacity", "--section-ornament-position")) attributes["data-design-ornament"] = "true";
+  if (has("--section-element-gap")) attributes["data-design-element-gap"] = "true";
+  if (resolvedStyle.backgroundColor || resolvedStyle.backgroundImage) attributes["data-design-background"] = "true";
+  for (const [attribute, token] of flags) {
+    if (resolvedStyle[token] !== undefined) attributes[attribute] = "true";
   }
   return attributes;
 }
