@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InfoIcon } from "lucide-react";
 import { requireAdmin } from "@/lib/actions/auth";
@@ -7,10 +8,7 @@ export default async function AdminOrdersPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Pesanan</h1>
-        <p className="text-muted-foreground">Pantau pesanan dan status pembayaran pengguna.</p>
-      </header>
+      <BackendPageHeader title="Kelola Pesanan" description="Pantau pesanan dan status pembayaran pengguna." />
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Data pesanan belum tersedia</CardTitle>
