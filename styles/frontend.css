@@ -152,11 +152,12 @@
   border-top: var(--section-divider-thickness, 1px) var(--section-divider-style, solid) var(--section-divider-color, currentColor);
   opacity: 0.65;
 }
-.section-design-scope[data-design-ornament="true"] {
+/* Place the ornament inside the actual section, above its background but below content. */
+.section-design-scope[data-design-ornament="true"] > section {
   position: relative;
   isolation: isolate;
 }
-.section-design-scope[data-design-ornament="true"]::after {
+.section-design-scope[data-design-ornament="true"] > section::after {
   content: "✦";
   position: absolute;
   top: 1.25rem;
@@ -168,10 +169,22 @@
   opacity: var(--section-ornament-opacity, 0.18);
   line-height: 1;
 }
-.section-design-scope[data-design-ornament-position="top-left"]::after { top: 1.25rem; right: auto; bottom: auto; left: 1.25rem; }
-.section-design-scope[data-design-ornament-position="top-right"]::after { top: 1.25rem; right: 1.25rem; bottom: auto; left: auto; }
-.section-design-scope[data-design-ornament-position="bottom-left"]::after { top: auto; right: auto; bottom: 1.25rem; left: 1.25rem; }
-.section-design-scope[data-design-ornament-position="bottom-right"]::after { top: auto; right: 1.25rem; bottom: 1.25rem; left: auto; }
+.section-design-scope[data-design-ornament="true"] > section > * {
+  position: relative;
+  z-index: 1;
+}
+.section-design-scope[data-design-ornament-position="top-left"] > section::after { top: 1.25rem; right: auto; bottom: auto; left: 1.25rem; }
+.section-design-scope[data-design-ornament-position="top-right"] > section::after { top: 1.25rem; right: 1.25rem; bottom: auto; left: auto; }
+.section-design-scope[data-design-ornament-position="bottom-left"] > section::after { top: auto; right: auto; bottom: 1.25rem; left: 1.25rem; }
+.section-design-scope[data-design-ornament-position="bottom-right"] > section::after { top: auto; right: 1.25rem; bottom: 1.25rem; left: auto; }
+
+/* Override the section's built-in vertical spacing rather than adding wrapper padding. */
+.section-design-scope[data-design-padding-top="true"] > section {
+  padding-top: var(--section-padding-top) !important;
+}
+.section-design-scope[data-design-padding-bottom="true"] > section {
+  padding-bottom: var(--section-padding-bottom) !important;
+}
 .section-design-scope[data-design-element-gap="true"] > section > .container,
 .section-design-scope[data-design-element-gap="true"] > .container {
   display: flex;
@@ -183,4 +196,4 @@
   margin-block: 0;
 }
 
-.section-design-scope[data-design-ornament="true"] > * { position: relative; z-index: 1; }
+
