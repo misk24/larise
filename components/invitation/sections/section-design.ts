@@ -158,17 +158,17 @@ export function getSectionDesignAttributes(value: unknown): Record<string, strin
   const resolvedStyle = getSectionDesignStyle(value) as CSSProperties & Record<`--${string}`, string>;
   const attributes: Record<string, string> = {};
   const has = (...keys: Array<`--${string}`>) => keys.some((key) => resolvedStyle[key] !== undefined);
-  const flags: Array<[string, `--${string}`]> = [
-    ["data-design-heading-size", "--section-heading-size"],
-    ["data-design-body-size", "--section-body-size"],
-    ["data-design-heading-family", "--section-heading-font-family"],
-    ["data-design-body-family", "--section-body-font-family"],
-    ["data-design-heading-color", "--section-heading-color"],
-    ["data-design-body-color", "--section-body-color"],
-    ["data-design-heading-weight", "--section-heading-font-weight"],
-    ["data-design-body-weight", "--section-body-font-weight"],
-    ["data-design-heading-align", "--section-heading-align"],
-    ["data-design-body-align", "--section-body-align"],
+  const flags: Array<[string, Array<`--${string}`>]> = [
+    ["data-design-heading-size", ["--section-heading-size"]],
+    ["data-design-body-size", ["--section-body-size"]],
+    ["data-design-heading-family", ["--section-heading-font-family", "--section-font-family"]],
+    ["data-design-body-family", ["--section-body-font-family", "--section-font-family"]],
+    ["data-design-heading-color", ["--section-heading-color", "--section-text-color"]],
+    ["data-design-body-color", ["--section-body-color", "--section-text-color"]],
+    ["data-design-heading-weight", ["--section-heading-font-weight", "--section-font-weight"]],
+    ["data-design-body-weight", ["--section-body-font-weight", "--section-font-weight"]],
+    ["data-design-heading-align", ["--section-heading-align", "--section-text-align"]],
+    ["data-design-body-align", ["--section-body-align", "--section-text-align"]],
   ];
   if (has("--section-button-bg", "--section-button-text", "--section-button-border", "--section-button-radius", "--section-button-size", "--section-button-px", "--section-button-py")) {
     attributes["data-design-button"] = "true";
@@ -183,8 +183,8 @@ export function getSectionDesignAttributes(value: unknown): Record<string, strin
   if (has("--section-ornament-color", "--section-ornament-size", "--section-ornament-opacity", "--section-ornament-position")) attributes["data-design-ornament"] = "true";
   if (has("--section-element-gap")) attributes["data-design-element-gap"] = "true";
   if (resolvedStyle.backgroundColor || resolvedStyle.backgroundImage) attributes["data-design-background"] = "true";
-  for (const [attribute, token] of flags) {
-    if (resolvedStyle[token] !== undefined) attributes[attribute] = "true";
+  for (const [attribute, tokens] of flags) {
+    if (has(...tokens)) attributes[attribute] = "true";
   }
   return attributes;
 }
