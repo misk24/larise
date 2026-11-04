@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { InvitationActions } from "@/components/dashboard/invitation-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,20 +17,7 @@ export default async function InvitationsPage() {
   if (error) throw new Error("Gagal memuat undangan.");
   return (
     <div className="backend-content space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Undangan Saya</h1>
-          <p className="text-muted-foreground">
-            Kelola draft, tema, duplikasi, dan status publikasi.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/dashboard/invitations/create">
-            <PlusIcon className="size-4" />
-            Buat Undangan
-          </Link>
-        </Button>
-      </div>
+      <BackendPageHeader title="Undangan Saya" description="Kelola draft, tema, duplikasi, dan status publikasi." actions={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>} />
       {invitations?.length ? (
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {invitations.map((invitation) => {
