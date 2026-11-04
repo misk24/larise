@@ -90,7 +90,7 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
   if (headingColor) cssVars["--section-heading-color"] = headingColor;
   const bodyColor = safeColor(typography.bodyColor);
   if (bodyColor) cssVars["--section-body-color"] = bodyColor;
-  if (typeof typography.headingFontFamily === "string" && /^[\\w ,\'"()-]{1,100}$/.test(typography.headingFontFamily)) cssVars["--section-heading-font-family"] = typography.headingFontFamily;
+  if (typeof typography.headingFontFamily === "string" && /^[\w ,\'"()-]{1,100}$/.test(typography.headingFontFamily)) cssVars["--section-heading-font-family"] = typography.headingFontFamily;
   if (typeof typography.bodyFontFamily === "string" && /^[\\w ,\'"()-]{1,100}$/.test(typography.bodyFontFamily)) cssVars["--section-body-font-family"] = typography.bodyFontFamily;
   const headingWeight = finiteNumber(typography.headingFontWeight, 100, 900);
   if (headingWeight) cssVars["--section-heading-font-weight"] = String(headingWeight);
@@ -116,4 +116,26 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
   if (paddingBottom !== undefined) style.paddingBottom = `${paddingBottom}px`;
 
   return style;
+}
+
+export function getSectionDesignAttributes(value: unknown): Record<string, string> {
+  if (!isRecord(value)) return {};
+  const typography = isRecord(value.typography) ? value.typography : {};
+  const attributes: Record<string, string> = {};
+  const flags: Array<[string, unknown]> = [
+    ["data-design-heading-size", typography.headingFontSize],
+    ["data-design-body-size", typography.bodyFontSize],
+    ["data-design-heading-family", typography.headingFontFamily ?? typography.fontFamily],
+    ["data-design-body-family", typography.bodyFontFamily ?? typography.fontFamily],
+    ["data-design-heading-color", typography.headingColor ?? typography.color],
+    ["data-design-body-color", typography.bodyColor ?? typography.color],
+    ["data-design-heading-weight", typography.headingFontWeight ?? typography.fontWeight],
+    ["data-design-body-weight", typography.bodyFontWeight ?? typography.fontWeight],
+    ["data-design-heading-align", typography.headingAlignment ?? typography.alignment],
+    ["data-design-body-align", typography.bodyAlignment ?? typography.alignment],
+  ];
+  for (const [key, item] of flags) {
+    if (item !== undefined && item !== null && item !== "") attributes[key] = "true";
+  }
+  return attributes;
 }
