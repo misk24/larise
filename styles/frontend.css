@@ -60,16 +60,18 @@
 .section-design-scope h4,
 .section-design-scope h5,
 .section-design-scope h6 {
-  font-family: var(--section-font-family, inherit) !important;
+  font-family: var(--section-heading-font-family, var(--section-font-family, inherit)) !important;
   font-size: var(--section-heading-size, inherit) !important;
-  font-weight: var(--section-font-weight, inherit) !important;
-  color: var(--section-text-color, inherit);
+  font-weight: var(--section-heading-font-weight, var(--section-font-weight, inherit)) !important;
+  text-align: var(--section-heading-align, var(--section-text-align, inherit));
+  color: var(--section-heading-color, var(--section-text-color, inherit));
 }
 .section-design-scope p,
 .section-design-scope li,
 .section-design-scope blockquote {
-  font-family: var(--section-font-family, inherit) !important;
+  font-family: var(--section-body-font-family, var(--section-font-family, inherit)) !important;
   font-size: var(--section-body-size, inherit) !important;
-  font-weight: var(--section-font-weight, inherit) !important;
-  color: var(--section-text-color, inherit);
+  font-weight: var(--section-body-font-weight, var(--section-font-weight, inherit)) !important;
+  text-align: var(--section-body-align, var(--section-text-align, inherit));
+  color: var(--section-body-color, var(--section-text-color, inherit));
 }
