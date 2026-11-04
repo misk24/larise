@@ -105,6 +105,10 @@ describe("invitation section design", () => {
     expect(attributes["data-design-icon"]).toBe("true");
     expect(attributes["data-design-divider"]).toBe("true");
     expect(attributes["data-design-ornament"]).toBe("true");
+    expect(attributes["data-design-ornament-position"]).toBe("bottom-right");
+    expect(attributes["data-design-icon-color"]).toBe("true");
+    expect(attributes["data-design-icon-size"]).toBe("true");
+    expect(attributes["data-design-icon-stroke"]).toBe("true");
     expect(attributes["data-design-element-gap"]).toBe("true");
   });
 
