@@ -100,10 +100,10 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
   const letterSpacing = finiteNumber(typography.letterSpacing, -5, 20);
   if (letterSpacing !== undefined) style.letterSpacing = `${letterSpacing}px`;
 
-  for (const [key, cssKey] of [["paddingTop", "paddingTop"], ["paddingBottom", "paddingBottom"]] as const) {
-    const number = finiteNumber(layout[key], 0, 400);
-    if (number !== undefined) style[cssKey] = `${number}px`;
-  }
+  const paddingTop = finiteNumber(layout.paddingTop, 0, 400);
+  const paddingBottom = finiteNumber(layout.paddingBottom, 0, 400);
+  cssVar(style, "--section-padding-top", paddingTop === undefined ? undefined : `${paddingTop}px`);
+  cssVar(style, "--section-padding-bottom", paddingBottom === undefined ? undefined : `${paddingBottom}px`);
   const elementGap = finiteNumber(layout.elementGap, 0, 96);
   cssVar(style, "--section-element-gap", elementGap === undefined ? undefined : `${elementGap}px`);
 
@@ -186,6 +186,8 @@ export function getSectionDesignAttributes(value: unknown): Record<string, strin
   if (has("--section-ornament-color", "--section-ornament-size", "--section-ornament-opacity", "--section-ornament-position")) attributes["data-design-ornament"] = "true";
   const ornamentPosition = resolvedStyle["--section-ornament-position"];
   if (ornamentPosition) attributes["data-design-ornament-position"] = ornamentPosition;
+  if (has("--section-padding-top")) attributes["data-design-padding-top"] = "true";
+  if (has("--section-padding-bottom")) attributes["data-design-padding-bottom"] = "true";
   if (has("--section-element-gap")) attributes["data-design-element-gap"] = "true";
   if (resolvedStyle.backgroundColor || resolvedStyle.backgroundImage) attributes["data-design-background"] = "true";
   for (const [attribute, tokens] of flags) {
