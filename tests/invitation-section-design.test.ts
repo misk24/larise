@@ -26,8 +26,11 @@ describe("invitation section design", () => {
     expect(style["--section-body-size"]).toBe("18px");
     expect(style["--section-heading-color"]).toBe("#34251f");
     expect(style["--section-heading-align"]).toBe("left");
-    expect(style.paddingTop).toBe("96px");
-    expect(style.paddingBottom).toBe("120px");
+    expect(style["--section-padding-top"]).toBe("96px");
+    expect(style["--section-padding-bottom"]).toBe("120px");
+    const attributes = getSectionDesignAttributes({ layout: { paddingTop: 96, paddingBottom: 120 } });
+    expect(attributes["data-design-padding-top"]).toBe("true");
+    expect(attributes["data-design-padding-bottom"]).toBe("true");
   });
 
   it("rejects unsafe background URLs and out-of-range values", () => {
