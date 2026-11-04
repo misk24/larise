@@ -36,7 +36,7 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent className="bg-sidebar text-sidebar-foreground">
+      <SidebarContent className="backend-sidebar bg-sidebar text-sidebar-foreground">
         <SidebarHeader>
           <div
             className={cn(
