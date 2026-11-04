@@ -179,8 +179,13 @@ export function getSectionDesignAttributes(value: unknown): Record<string, strin
   if (has("--section-image-fit")) attributes["data-design-image-fit"] = "true";
   if (has("--section-image-position")) attributes["data-design-image-position"] = "true";
   if (has("--section-icon-color", "--section-icon-size", "--section-icon-stroke")) attributes["data-design-icon"] = "true";
+  if (has("--section-icon-color")) attributes["data-design-icon-color"] = "true";
+  if (has("--section-icon-size")) attributes["data-design-icon-size"] = "true";
+  if (has("--section-icon-stroke")) attributes["data-design-icon-stroke"] = "true";
   if (has("--section-divider-color", "--section-divider-thickness", "--section-divider-width", "--section-divider-style", "--section-divider-spacing")) attributes["data-design-divider"] = "true";
   if (has("--section-ornament-color", "--section-ornament-size", "--section-ornament-opacity", "--section-ornament-position")) attributes["data-design-ornament"] = "true";
+  const ornamentPosition = resolvedStyle["--section-ornament-position"];
+  if (ornamentPosition) attributes["data-design-ornament-position"] = ornamentPosition;
   if (has("--section-element-gap")) attributes["data-design-element-gap"] = "true";
   if (resolvedStyle.backgroundColor || resolvedStyle.backgroundImage) attributes["data-design-background"] = "true";
   for (const [attribute, tokens] of flags) {
