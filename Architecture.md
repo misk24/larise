@@ -75,7 +75,7 @@ This section records observable source behavior, not a guarantee that all migrat
 
 Verify relevant migrations, RLS policies, and provider behavior before changing authentication or account data.
 
-## 7. Database and migrations
+## 8. Database and migrations
 
 Before changing the schema:
 1. Inspect current migrations and shared database types.
@@ -86,7 +86,7 @@ Before changing the schema:
 
 Do not claim a migration is deployed merely because it is merged.
 
-## 8. Environment and quality checks
+## 9. Environment and quality checks
 
 - Use local environment files for development; never commit real secrets.
 - Keep environment variable names consistent between application code, README, and CI configuration.
@@ -94,6 +94,6 @@ Do not claim a migration is deployed merely because it is merged.
 - Available scripts include `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:e2e`, and `npm run build`.
 - Report checks only when results are observed. Environment or service limitations must be stated explicitly.
 
-## 9. Change rules
+## 10. Change rules
 
 Prefer focused changes, reuse existing conventions, protect user data, and document consequential changes to routing, auth, data models, or integrations. If product intent and implementation disagree, preserve the requirement and request a decision rather than rewriting the requirement to match code.
