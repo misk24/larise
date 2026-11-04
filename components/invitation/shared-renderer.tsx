@@ -25,7 +25,7 @@ export function SharedInvitationRenderer({ invitation, sections, guestName, wish
         if (!Component) return null;
         const design = section.content.design;
         return (
-          <div key={section.id} style={getSectionDesignStyle(design)}>
+          <div key={section.id} className="section-design-scope" style={getSectionDesignStyle(design)}>
             <Component
               invitation={invitation}
               section={section}
