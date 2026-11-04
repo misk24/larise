@@ -77,4 +77,49 @@ describe("invitation section design", () => {
     expect(style["--section-image-fit"]).toBe("contain");
     expect(style["--section-image-position"]).toBe("top");
   });
+
+  it("creates decorative icon, divider, ornament, and element-gap tokens", () => {
+    const design = {
+      icon: { color: "#8b7565", size: 28, strokeWidth: 1.5 },
+      divider: { color: "#c8b8a8", thickness: 2, width: 60, style: "dotted", spacing: 24 },
+      ornament: { color: "#b89b7b", size: 44, opacity: 0.2, position: "bottom-right" },
+      layout: { elementGap: 32 },
+    };
+    const style = getSectionDesignStyle(design) as Record<string, string>;
+    const attributes = getSectionDesignAttributes(design);
+
+    expect(style["--section-icon-color"]).toBe("#8b7565");
+    expect(style["--section-icon-size"]).toBe("28px");
+    expect(style["--section-icon-stroke"]).toBe("1.5");
+    expect(style["--section-divider-style"]).toBe("dotted");
+    expect(style["--section-divider-width"]).toBe("60%");
+    expect(style["--section-ornament-position"]).toBe("bottom-right");
+    expect(style["--section-element-gap"]).toBe("32px");
+    expect(attributes["data-design-icon"]).toBe("true");
+    expect(attributes["data-design-divider"]).toBe("true");
+    expect(attributes["data-design-ornament"]).toBe("true");
+    expect(attributes["data-design-element-gap"]).toBe("true");
+  });
+
+  it("validates design configuration at the API boundary", () => {
+    expect(validateSectionDesign({
+      design: {
+        icon: { color: "#ffffff", size: 24 },
+        divider: { style: "dashed", width: 80 },
+        ornament: { opacity: 0.15, position: "top-left" },
+        layout: { elementGap: 24 },
+      },
+    }).success).toBe(true);
+
+    expect(validateSectionDesign({
+      design: { background: { type: "image", value: "javascript:alert(1)" } },
+    }).success).toBe(false);
+    expect(validateSectionDesign({
+      design: { ornament: { opacity: 3 } },
+    }).success).toBe(false);
+    expect(validateSectionDesign({
+      design: { icon: { onload: "alert(1)" } },
+    }).success).toBe(false);
+  });
+
 });
