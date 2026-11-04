@@ -138,6 +138,7 @@
   color: var(--section-icon-color, revert-layer);
   stroke-width: var(--section-icon-stroke, revert-layer);
 }
+.section-design-scope[data-design-divider="true"] h1::after,
 .section-design-scope[data-design-divider="true"] h2::after {
   content: "";
   display: block;
