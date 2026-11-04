@@ -4,7 +4,7 @@ import { AdminTableError } from "@/components/admin/table-states";
 import { UsersTable, type AdminUserRow } from "@/components/admin/tables/users/users-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
-import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
+import { postgrestIlikePattern, sanitizeAdminSearch } from "@/lib/utils/admin-search";
 
 type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 
@@ -32,7 +32,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
     .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
   // All user-facing text columns in this table are searchable.
-  if (query) request = request.or(`full_name.ilike.%${query}%,email.ilike.%${query}%`);
+  if (query) { const pattern = postgrestIlikePattern(query); request = request.or(`full_name.ilike.${pattern},email.ilike.${pattern}`); }
   const { data, count, error } = await request;
   const total = count ?? 0;
   const page = Math.min(requestedPage, Math.max(1, Math.ceil(total / pageSize)));
