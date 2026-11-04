@@ -150,3 +150,65 @@
 .dark .backend-profile-trigger:hover {
   background-color: #39272d !important;
 }
+
+
+/* Sidebar primitives also render in a mobile Radix sheet. Give the sidebar
+   its own semantic tokens so it does not depend on inherited shell variables. */
+.backend-sidebar {
+  --sidebar: #ffffff !important;
+  --sidebar-foreground: #252525 !important;
+  --sidebar-primary: #7a3448 !important;
+  --sidebar-primary-foreground: #ffffff !important;
+  --sidebar-accent: #f0e5e8 !important;
+  --sidebar-accent-foreground: #542333 !important;
+  --sidebar-border: #e7e7e5 !important;
+  --sidebar-ring: #9b6474 !important;
+  background: #ffffff !important;
+  color: #252525 !important;
+}
+.backend-sidebar [data-slot="sidebar-inner"],
+.backend-sidebar [data-slot="sidebar-content"] {
+  background: #ffffff !important;
+  color: #252525 !important;
+}
+.backend-sidebar [data-sidebar="menu-button"] {
+  color: #252525 !important;
+}
+.backend-sidebar [data-sidebar="menu-button"][data-active="true"],
+.backend-sidebar [data-sidebar="menu-button"].bg-sidebar-accent {
+  background: #f0e5e8 !important;
+  color: #542333 !important;
+}
+.backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
+  background: #f7f1f3 !important;
+  color: #542333 !important;
+}
+.dark .backend-sidebar {
+  --sidebar: #201e1d !important;
+  --sidebar-foreground: #f4f2f1 !important;
+  --sidebar-primary: #c58b9c !important;
+  --sidebar-primary-foreground: #28151b !important;
+  --sidebar-accent: #39272d !important;
+  --sidebar-accent-foreground: #f3dfe5 !important;
+  --sidebar-border: #403d3b !important;
+  --sidebar-ring: #c58b9c !important;
+  background: #201e1d !important;
+  color: #f4f2f1 !important;
+}
+.dark .backend-sidebar [data-slot="sidebar-inner"],
+.dark .backend-sidebar [data-slot="sidebar-content"] {
+  background: #201e1d !important;
+  color: #f4f2f1 !important;
+}
+.dark .backend-sidebar [data-sidebar="menu-button"] {
+  color: #f4f2f1 !important;
+}
+.dark .backend-sidebar [data-sidebar="menu-button"][data-active="true"],
+.dark .backend-sidebar [data-sidebar="menu-button"].bg-sidebar-accent {
+  background: #39272d !important;
+  color: #f3dfe5 !important;
+}
+.dark .backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
+  background: #302629 !important;
+  color: #f3dfe5 !important;
+}
