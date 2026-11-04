@@ -4,7 +4,7 @@ import { AdminTableError } from "@/components/admin/table-states";
 import { ThemesTable, type AdminThemeRow } from "@/components/admin/tables/themes/themes-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
-import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
+import { postgrestIlikePattern, sanitizeAdminSearch } from "@/lib/utils/admin-search";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -33,10 +33,11 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
     .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
   if (query) {
+    const pattern = postgrestIlikePattern(query);
     const clauses = [
-      `name.ilike.%${query}%`,
-      `slug.ilike.%${query}%`,
-      `category.ilike.%${query}%`,
+      `name.ilike.${pattern}`,
+      `slug.ilike.${pattern}`,
+      `category.ilike.${pattern}`,
     ];
     const normalized = query.toLocaleLowerCase("id-ID");
     if (["aktif", "active", "true", "yes"].includes(normalized)) clauses.push("is_active.eq.true");
