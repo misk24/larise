@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ThemeSectionLivePreview } from "@/components/admin/theme-section-live-preview";
+import { ThemeDecorationControls } from "@/components/admin/theme-decoration-controls";
 
 type Section = { id: string; section_key: string; section_type: string; position: number; default_content: Record<string, unknown>; is_required: boolean; is_visible: boolean };
 const types = ["cover","opening","quote","couple","event","location","gallery","rsvp","gift","closing"];
@@ -84,7 +85,7 @@ function readDesign(json: string): Record<string, any> {
   return parsed && typeof parsed==="object" && !Array.isArray(parsed) && parsed.design && typeof parsed.design==="object" ? parsed.design : {};
  } catch { return {}; }
 }
-function writeDesign(json: string, path: "background"|"typography"|"layout"|"button"|"image", key: string, value: unknown): string {
+function writeDesign(json: string, path: "background"|"typography"|"layout"|"button"|"image"|"icon"|"divider"|"ornament", key: string, value: unknown): string {
  let parsed: Record<string, any> = {};
  try { const current=JSON.parse(json); if(current && typeof current==="object" && !Array.isArray(current)) parsed=current; } catch {}
  const design=parsed.design && typeof parsed.design==="object" ? parsed.design : {};
@@ -143,6 +144,7 @@ function EditorForm({draft,setDraft,editing,busy,error,onSubmit,onCancel}:{draft
     <div className="space-y-1"><Label>Object fit</Label><Select value={image.objectFit??"cover"} onValueChange={value=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"image","objectFit",value)}))}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="cover">Cover</SelectItem><SelectItem value="contain">Contain</SelectItem></SelectContent></Select></div>
     <div className="space-y-1"><Label>Radius gambar (px)</Label><Input type="number" min="0" max="48" value={image.borderRadius??""} onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"image","borderRadius",Number(event.target.value))}))}/></div>
     <div className="space-y-1"><Label>Posisi gambar</Label><Select value={image.objectPosition??"center"} onValueChange={value=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"image","objectPosition",value)}))}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="center">Tengah</SelectItem><SelectItem value="top">Atas</SelectItem><SelectItem value="bottom">Bawah</SelectItem><SelectItem value="left">Kiri</SelectItem><SelectItem value="right">Kanan</SelectItem></SelectContent></Select></div>
+    <div className="sm:col-span-2"><ThemeDecorationControls value={draft.default_content} onChange={value=>update("default_content",value)}/></div>
 
     </div>
    </>; })()}
