@@ -8,7 +8,7 @@ export function sanitizeAdminSearch(value: string | undefined): string {
     .normalize("NFKC")
     .trim()
     .slice(0, 80)
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/[^\p{L}\p{N}\s@._+-]/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -19,4 +19,14 @@ export function sanitizeAdminSearch(value: string | undefined): string {
  */
 export function normalizeAdminSearchTerm(value: string): string {
   return value.normalize("NFKC").toLocaleLowerCase("id-ID").replace(/[^\p{L}\p{N}]/gu, "");
+}
+
+/**
+ * Quote a sanitized pattern before embedding it in a PostgREST .or() expression.
+ * This keeps punctuation such as email separators and order-number hyphens
+ * searchable without allowing commas or parentheses to alter filter grammar.
+ */
+export function postgrestIlikePattern(value: string): string {
+  const escaped = value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+  return `"%${escaped}%"`;
 }
