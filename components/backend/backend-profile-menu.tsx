@@ -72,7 +72,7 @@ export function BackendProfileMenu({
               </Link>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem asChild className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10">
+          <DropdownMenuItem asChild className="backend-profile-menu-item px-4 py-2">
             <Link href={`${basePath}/settings`} className="flex items-center gap-2">
               <SettingsIcon className="size-5" />
               <span>Settings</span>
