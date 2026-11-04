@@ -139,7 +139,7 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
     ["spacing", "--section-divider-spacing", 0, 160],
   ] as const) {
     const number = finiteNumber(divider[key], min, max);
-    cssVar(style, cssKey, number === undefined ? undefined : `${number}px`);
+    cssVar(style, cssKey, number === undefined ? undefined : key === "width" ? `${number}%` : `${number}px`);
   }
   if (["solid", "dashed", "dotted"].includes(String(divider.style))) cssVar(style, "--section-divider-style", String(divider.style));
 
@@ -176,11 +176,16 @@ export function getSectionDesignAttributes(value: unknown): Record<string, strin
     ["data-design-body-align", typography.bodyAlignment ?? typography.alignment],
   ];
   if (Object.values(button).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-button"] = "true";
+  if (icon.size !== undefined) attributes["data-design-icon-size"] = "true";
+  if (icon.color !== undefined) attributes["data-design-icon-color"] = "true";
+  if (icon.strokeWidth !== undefined) attributes["data-design-icon-stroke"] = "true";
   if (Object.values(image).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-image"] = "true";
   if (Object.values(icon).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-icon"] = "true";
   if (Object.values(divider).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-divider"] = "true";
   if (Object.values(ornament).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-ornament"] = "true";
   if (finiteNumber(layout.elementGap, 0, 96) !== undefined) attributes["data-design-element-gap"] = "true";
+  const resolvedBackground = getSectionDesignStyle(value);
+  if (resolvedBackground.backgroundColor || resolvedBackground.backgroundImage) attributes["data-design-background"] = "true";
   for (const [key, item] of flags) {
     if (item !== undefined && item !== null && item !== "") attributes[key] = "true";
   }
