@@ -49,29 +49,50 @@
 }
 
 
-/* Theme Builder section design tokens */
-.section-design-scope {
-  text-align: var(--section-text-align, inherit);
-  color: var(--section-text-color, inherit);
-}
-.section-design-scope h1,
-.section-design-scope h2,
-.section-design-scope h3,
-.section-design-scope h4,
-.section-design-scope h5,
-.section-design-scope h6 {
-  font-family: var(--section-heading-font-family, var(--section-font-family, inherit)) !important;
-  font-size: var(--section-heading-size, inherit) !important;
-  font-weight: var(--section-heading-font-weight, var(--section-font-weight, inherit)) !important;
-  text-align: var(--section-heading-align, var(--section-text-align, inherit));
-  color: var(--section-heading-color, var(--section-text-color, inherit));
-}
-.section-design-scope p,
-.section-design-scope li,
-.section-design-scope blockquote {
-  font-family: var(--section-body-font-family, var(--section-font-family, inherit)) !important;
-  font-size: var(--section-body-size, inherit) !important;
-  font-weight: var(--section-body-font-weight, var(--section-font-weight, inherit)) !important;
-  text-align: var(--section-body-align, var(--section-text-align, inherit));
-  color: var(--section-body-color, var(--section-text-color, inherit));
-}
+/* Theme Builder section design tokens: each rule is enabled only when configured. */
+.section-design-scope { text-align: var(--section-text-align, inherit); color: var(--section-text-color, inherit); }
+.section-design-scope[data-design-heading-family="true"] h1,
+.section-design-scope[data-design-heading-family="true"] h2,
+.section-design-scope[data-design-heading-family="true"] h3,
+.section-design-scope[data-design-heading-family="true"] h4,
+.section-design-scope[data-design-heading-family="true"] h5,
+.section-design-scope[data-design-heading-family="true"] h6 { font-family: var(--section-heading-font-family, var(--section-font-family)) !important; }
+.section-design-scope[data-design-heading-size="true"] h1,
+.section-design-scope[data-design-heading-size="true"] h2,
+.section-design-scope[data-design-heading-size="true"] h3,
+.section-design-scope[data-design-heading-size="true"] h4,
+.section-design-scope[data-design-heading-size="true"] h5,
+.section-design-scope[data-design-heading-size="true"] h6 { font-size: var(--section-heading-size) !important; }
+.section-design-scope[data-design-heading-weight="true"] h1,
+.section-design-scope[data-design-heading-weight="true"] h2,
+.section-design-scope[data-design-heading-weight="true"] h3,
+.section-design-scope[data-design-heading-weight="true"] h4,
+.section-design-scope[data-design-heading-weight="true"] h5,
+.section-design-scope[data-design-heading-weight="true"] h6 { font-weight: var(--section-heading-font-weight, var(--section-font-weight)) !important; }
+.section-design-scope[data-design-heading-color="true"] h1,
+.section-design-scope[data-design-heading-color="true"] h2,
+.section-design-scope[data-design-heading-color="true"] h3,
+.section-design-scope[data-design-heading-color="true"] h4,
+.section-design-scope[data-design-heading-color="true"] h5,
+.section-design-scope[data-design-heading-color="true"] h6 { color: var(--section-heading-color, var(--section-text-color)) !important; }
+.section-design-scope[data-design-heading-align="true"] h1,
+.section-design-scope[data-design-heading-align="true"] h2,
+.section-design-scope[data-design-heading-align="true"] h3,
+.section-design-scope[data-design-heading-align="true"] h4,
+.section-design-scope[data-design-heading-align="true"] h5,
+.section-design-scope[data-design-heading-align="true"] h6 { text-align: var(--section-heading-align, var(--section-text-align)) !important; }
+.section-design-scope[data-design-body-family="true"] p,
+.section-design-scope[data-design-body-family="true"] li,
+.section-design-scope[data-design-body-family="true"] blockquote { font-family: var(--section-body-font-family, var(--section-font-family)) !important; }
+.section-design-scope[data-design-body-size="true"] p,
+.section-design-scope[data-design-body-size="true"] li,
+.section-design-scope[data-design-body-size="true"] blockquote { font-size: var(--section-body-size) !important; }
+.section-design-scope[data-design-body-weight="true"] p,
+.section-design-scope[data-design-body-weight="true"] li,
+.section-design-scope[data-design-body-weight="true"] blockquote { font-weight: var(--section-body-font-weight, var(--section-font-weight)) !important; }
+.section-design-scope[data-design-body-color="true"] p,
+.section-design-scope[data-design-body-color="true"] li,
+.section-design-scope[data-design-body-color="true"] blockquote { color: var(--section-body-color, var(--section-text-color)) !important; }
+.section-design-scope[data-design-body-align="true"] p,
+.section-design-scope[data-design-body-align="true"] li,
+.section-design-scope[data-design-body-align="true"] blockquote { text-align: var(--section-body-align, var(--section-text-align)) !important; }
