@@ -1,4 +1,4 @@
-import { BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendPageHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { CheckCircle2Icon, Clock3Icon, UsersIcon, XCircleIcon } from "lucide-react";
@@ -51,7 +51,7 @@ export default async function RsvpDashboardPage() {
     <div className="backend-content space-y-6">
       <BackendPageHeader title="Ringkasan RSVP" description="Pantau respons kehadiran dari semua undangan Anda." />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {metrics.map((metric) => <Card key={metric.label} className="shadow-none"><CardContent className="flex items-center gap-4 p-5"><div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><metric.icon className="size-5" /></div><div><p className="text-2xl font-semibold tabular-nums">{metric.value.toLocaleString("id-ID")}</p><p className="text-sm text-muted-foreground">{metric.label}</p></div></CardContent></Card>)}
+        {metrics.map((metric) => <BackendStatCard key={metric.label} label={metric.label} value={metric.value.toLocaleString("id-ID")} icon={metric.icon} />)}
       </div>
       <Card className="shadow-none">
         <CardHeader><CardTitle>Respons terbaru</CardTitle><CardDescription>Respons tamu yang terkait dengan undangan milik Anda.</CardDescription></CardHeader>
@@ -64,11 +64,11 @@ export default async function RsvpDashboardPage() {
                 const status = row.status === "attending" ? "Hadir" : row.status === "not_attending" ? "Tidak hadir" : "Menunggu";
                 return <div key={row.id} className="flex flex-col gap-2 border-b py-4 last:border-0 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0"><p className="font-medium">{guest?.name ?? "Tamu"}</p><p className="text-sm text-muted-foreground">{invitation ? `${invitation.groom_name || "Mempelai"} & ${invitation.bride_name || "Mempelai"}` : "Undangan"} · {guest?.phone ?? "Tanpa nomor telepon"}</p>{row.message ? <p className="mt-2 text-sm">{row.message}</p> : null}</div>
-                  <div className="flex shrink-0 items-center gap-3"><span className={row.status === "attending" ? "rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300" : row.status === "not_attending" ? "rounded-full bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive" : "rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"}>{status}{row.status === "attending" && row.attendee_count > 1 ? ` · ${row.attendee_count} orang` : ""}</span><span className="text-xs text-muted-foreground">{new Date(row.updated_at).toLocaleDateString("id-ID")}</span></div>
+                  <div className="flex shrink-0 items-center gap-3"><BackendStatusBadge tone={row.status === "attending" ? "success" : row.status === "not_attending" ? "danger" : "neutral"}>{status}{row.status === "attending" && row.attendee_count > 1 ? ` · ${row.attendee_count} orang` : ""}</BackendStatusBadge><span className="text-xs text-muted-foreground">{new Date(row.updated_at).toLocaleDateString("id-ID")}</span></div>
                 </div>;
               })}
             </div>
-          ) : <div className="py-10 text-center"><UsersIcon className="mx-auto mb-3 size-9 text-muted-foreground/50" /><p className="font-medium">Belum ada respons RSVP</p><p className="mt-1 text-sm text-muted-foreground">Respons tamu akan muncul di sini setelah mereka mengisi RSVP dari undangan publik.</p></div>}
+          ) : <BackendEmptyState icon={UsersIcon} title="Belum ada respons RSVP" description="Respons tamu akan muncul di sini setelah mereka mengisi RSVP dari undangan publik." className="min-h-40 border-0 bg-transparent" />}
         </CardContent>
       </Card>
     </div>
