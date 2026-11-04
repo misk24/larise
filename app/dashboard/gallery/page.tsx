@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { ImageIcon } from "lucide-react";
@@ -20,12 +21,7 @@ export default async function GalleryPage() {
   if (!invitation) {
     return (
       <div className="backend-content space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Galeri Foto</h1>
-          <p className="text-muted-foreground">
-            Kelola foto-foto untuk undangan Anda
-          </p>
-        </div>
+        <BackendPageHeader title="Galeri Foto" description="Kelola foto-foto untuk undangan Anda." />
         <Card className="shadow-none">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">
@@ -39,14 +35,7 @@ export default async function GalleryPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-          Galeri Foto
-        </h1>
-        <p className="text-muted-foreground">
-          Kelola foto-foto untuk undangan Anda
-        </p>
-      </div>
+      <BackendPageHeader title="Galeri Foto" description="Kelola foto-foto untuk undangan Anda." />
       <Card className="shadow-none">
         <CardContent className="p-12 text-center">
           <ImageIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
