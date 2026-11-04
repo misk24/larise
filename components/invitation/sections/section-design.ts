@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 export type SectionDesign = {
   background?: {
     type?: "color" | "image" | "gradient";
@@ -44,7 +46,7 @@ function safeUrl(value: unknown): string | undefined {
   return undefined;
 }
 
-export function getSectionDesignStyle(value: unknown): React.CSSProperties {
+export function getSectionDesignStyle(value: unknown): CSSProperties {
   if (!isRecord(value)) return {};
   const background = isRecord(value.background) ? value.background : {};
   const typography = isRecord(value.typography) ? value.typography : {};
