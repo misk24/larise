@@ -47,3 +47,29 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Theme Builder section design tokens */
+.section-design-scope {
+  text-align: var(--section-text-align, inherit);
+  color: var(--section-text-color, inherit);
+}
+.section-design-scope h1,
+.section-design-scope h2,
+.section-design-scope h3,
+.section-design-scope h4,
+.section-design-scope h5,
+.section-design-scope h6 {
+  font-family: var(--section-font-family, inherit) !important;
+  font-size: var(--section-heading-size, inherit) !important;
+  font-weight: var(--section-font-weight, inherit) !important;
+  color: var(--section-text-color, inherit);
+}
+.section-design-scope p,
+.section-design-scope li,
+.section-design-scope blockquote {
+  font-family: var(--section-font-family, inherit) !important;
+  font-size: var(--section-body-size, inherit) !important;
+  font-weight: var(--section-font-weight, inherit) !important;
+  color: var(--section-text-color, inherit);
+}
