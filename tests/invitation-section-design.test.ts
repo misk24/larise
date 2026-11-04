@@ -40,6 +40,13 @@ describe("invitation section design", () => {
     expect(style.backgroundImage).toBeUndefined();
     expect(style["--section-heading-size"]).toBeUndefined();
     expect(style["--section-button-radius"]).toBeUndefined();
+    const attributes = getSectionDesignAttributes({
+      typography: { headingFontSize: 500 },
+      image: { aspectRatio: "square" },
+    });
+    expect(attributes["data-design-heading-size"]).toBeUndefined();
+    expect(attributes["data-design-image-ratio"]).toBe("true");
+    expect(attributes["data-design-image-fit"]).toBeUndefined();
   });
 
   it("exposes scoped button and image controls only when configured", () => {
