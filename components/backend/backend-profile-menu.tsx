@@ -82,7 +82,7 @@ export function BackendProfileMenu({
 
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10"
+          className="backend-profile-menu-item px-4 py-2"
           onClick={() => signOut()}
         >
           <LogOutIcon className="size-5" />
