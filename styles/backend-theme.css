@@ -74,6 +74,9 @@
   --popover-foreground: #252525;
   --accent: #f0e5e8;
   --accent-foreground: #542333;
+  --border: #e7e7e5;
+  --muted-foreground: #70706d;
+  --destructive: #b42318;
   background: var(--popover);
   color: var(--popover-foreground);
   border-color: #e7e7e5;
@@ -122,6 +125,9 @@
   --popover-foreground: #f4f2f1;
   --accent: #39272d;
   --accent-foreground: #f3dfe5;
+  --border: #403d3b;
+  --muted-foreground: #b4afad;
+  --destructive: #f87171;
   border-color: #403d3b;
   box-shadow: 0 12px 32px rgb(0 0 0 / 28%);
 }
