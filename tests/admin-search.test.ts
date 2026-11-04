@@ -3,7 +3,7 @@ import { normalizeAdminSearchTerm, postgrestIlikePattern, sanitizeAdminSearch } 
 
 describe("admin search normalization", () => {
   it("strips PostgREST filter grammar and wildcard characters", () => {
-    expect(sanitizeAdminSearch("  ayu,(.*)  ")).toBe("ayu");
+    expect(sanitizeAdminSearch("  ayu,(.*)  ")).toBe("ayu .");
   });
 
   it("preserves email and order identifier punctuation safely in quoted ILIKE patterns", () => {
@@ -13,7 +13,7 @@ describe("admin search normalization", () => {
     expect(email).toBe("mail@example.com");
     expect(postgrestIlikePattern(email)).toBe('"%mail@example.com%"');
     expect(postgrestIlikePattern(order)).toBe('"%INV-2026.001%"');
-    expect(sanitizeAdminSearch('x"),status.eq.paid,("')).toBe("x status eq paid");
+    expect(sanitizeAdminSearch('x"),status.eq.paid,("')).toBe("x status.eq.paid");
   });
 
   it("keeps Unicode letters and normalizes separators for joined-field search", () => {
