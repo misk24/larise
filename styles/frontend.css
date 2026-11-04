@@ -114,13 +114,19 @@
   padding-top: var(--section-button-py, revert-layer);
   padding-bottom: var(--section-button-py, revert-layer);
 }
-.section-design-scope[data-design-image="true"] .section-design-image {
-  aspect-ratio: var(--section-image-ratio, 1 / 1) !important;
-  border-radius: var(--section-image-radius, inherit);
+.section-design-scope[data-design-image-ratio="true"] .section-design-image {
+  aspect-ratio: var(--section-image-ratio) !important;
+}
+.section-design-scope[data-design-image-radius="true"] .section-design-image {
+  border-radius: var(--section-image-radius);
+}
+.section-design-scope[data-design-image-fit="true"] .section-design-image img {
+  object-fit: var(--section-image-fit) !important;
+}
+.section-design-scope[data-design-image-position="true"] .section-design-image img {
+  object-position: var(--section-image-position) !important;
 }
 .section-design-scope[data-design-image="true"] .section-design-image img {
-  object-fit: var(--section-image-fit, cover) !important;
-  object-position: var(--section-image-position, center) !important;
   border-radius: inherit;
 }
 
