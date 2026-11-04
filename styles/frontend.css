@@ -96,3 +96,27 @@
 .section-design-scope[data-design-body-align="true"] p,
 .section-design-scope[data-design-body-align="true"] li,
 .section-design-scope[data-design-body-align="true"] blockquote { text-align: var(--section-body-align, var(--section-text-align)) !important; }
+
+
+/* Scoped controls configured by the Theme Builder. */
+.section-design-scope[data-design-button="true"] a,
+.section-design-scope[data-design-button="true"] button {
+  background-color: var(--section-button-bg, revert-layer);
+  color: var(--section-button-text, inherit);
+  border-color: var(--section-button-border, currentColor);
+  border-radius: var(--section-button-radius, inherit);
+  font-size: var(--section-button-size, inherit);
+  padding-left: var(--section-button-px, revert-layer);
+  padding-right: var(--section-button-px, revert-layer);
+  padding-top: var(--section-button-py, revert-layer);
+  padding-bottom: var(--section-button-py, revert-layer);
+}
+.section-design-scope[data-design-image="true"] .section-design-image {
+  aspect-ratio: var(--section-image-ratio, 1 / 1) !important;
+  border-radius: var(--section-image-radius, inherit);
+}
+.section-design-scope[data-design-image="true"] .section-design-image img {
+  object-fit: var(--section-image-fit, cover) !important;
+  object-position: var(--section-image-position, center) !important;
+  border-radius: inherit;
+}
