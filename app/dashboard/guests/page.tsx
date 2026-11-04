@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { GuestManager } from "@/components/dashboard/guest-manager";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
@@ -18,7 +19,7 @@ export default async function GuestsPage() {
   if (invitationError) {
     return (
       <div className="backend-content space-y-6">
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Daftar Tamu</h1>
+        <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
         <Card className="shadow-none">
           <CardContent className="p-8 text-sm text-destructive">
             Data undangan gagal dimuat. Muat ulang halaman atau periksa koneksi database.
@@ -31,10 +32,7 @@ export default async function GuestsPage() {
   if (!invitation) {
     return (
       <div className="backend-content space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Daftar Tamu</h1>
-          <p className="text-muted-foreground">Kelola daftar tamu undangan Anda</p>
-        </div>
+        <BackendPageHeader title="Daftar Tamu" description="Kelola daftar tamu undangan Anda." />
         <Card className="shadow-none">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk mengelola daftar tamu.</p>
@@ -52,10 +50,7 @@ export default async function GuestsPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Daftar Tamu</h1>
-        <p className="text-muted-foreground">Kelola kontak, tautan personal, dan konfirmasi kehadiran.</p>
-      </div>
+      <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
       {guestsError ? (
         <Card className="border-border/50">
           <CardContent className="p-8 text-sm text-destructive">
