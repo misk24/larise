@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { validateSectionDesign } from "@/lib/validation/section-design";
 import {
   getSectionDesignAttributes,
   getSectionDesignStyle,
