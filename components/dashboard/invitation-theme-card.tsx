@@ -15,12 +15,12 @@ type Theme = {
 };
 
 const categoryStyles: Record<string, string> = {
-  elegant: "bg-stone-100 text-stone-800",
-  minimalist: "bg-slate-100 text-slate-800",
-  traditional: "bg-amber-100 text-amber-900",
-  modern: "bg-zinc-100 text-zinc-900",
-  rustic: "bg-orange-100 text-orange-900",
-  floral: "bg-rose-100 text-rose-900",
+  elegant: "bg-muted text-muted-foreground",
+  minimalist: "bg-card text-foreground",
+  traditional: "bg-secondary text-secondary-foreground",
+  modern: "bg-accent text-accent-foreground",
+  rustic: "bg-muted/80 text-foreground",
+  floral: "bg-primary/10 text-primary",
 };
 
 export function InvitationThemeCard({
@@ -43,7 +43,7 @@ export function InvitationThemeCard({
         selected ? "border-primary ring-2 ring-primary/20" : "border-border",
       )}
     >
-      <div className={cn("relative aspect-[4/3] p-5", categoryStyles[theme.category] ?? "bg-muted")}>
+      <div className={cn("relative aspect-[4/3] p-5", categoryStyles[theme.category] ?? "bg-muted text-muted-foreground")}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,white/70,transparent_35%)]" />
         <div className="relative flex h-full flex-col justify-between">
           <span className="text-xs font-medium uppercase tracking-[0.2em]">{theme.category}</span>
