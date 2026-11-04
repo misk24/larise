@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { getSectionDesignStyle } from "@/components/invitation/sections/section-design";
+import { getSectionDesignAttributes, getSectionDesignStyle } from "@/components/invitation/sections/section-design";
 
 type Section = { id: string; section_key: string; section_type: string; position: number; default_content: Record<string, unknown>; is_required: boolean; is_visible: boolean };
 const types = ["cover","opening","quote","couple","event","location","gallery","rsvp","gift","closing"];
@@ -102,7 +102,7 @@ function EditorForm({draft,setDraft,editing,busy,error,onSubmit,onCancel}:{draft
   </div>
   <div className="space-y-2 rounded-lg border p-4">
    <div><h5 className="text-sm font-semibold">Live preview</h5><p className="text-xs text-muted-foreground">Pratinjau representatif berdasarkan konfigurasi desain saat ini. Tampilan final mengikuti konten dan struktur masing-masing section.</p></div>
-   {(() => { const design=readDesign(draft.default_content); const style=getSectionDesignStyle(design); const title=draft.section_type==="cover"?"Nama Pasangan":draft.section_type==="quote"?"Kutipan pilihan":draft.section_type==="event"?"Detail Acara":"Judul Section"; const body=draft.section_type==="cover"?"Sebuah kisah yang kami rayakan bersama":"Contoh teks untuk melihat ukuran, warna, dan jenis huruf pada section."; return <div className="section-design-scope mx-auto flex min-h-40 max-w-xl flex-col items-center justify-center gap-3 overflow-hidden rounded-md border px-6 py-8 text-center" style={style}><p className="text-xs uppercase tracking-widest opacity-70">The Wedding of</p><h3>{title}</h3><p>{body}</p><span className="rounded-full border px-4 py-2 text-xs">Contoh tombol</span></div>; })()}
+   {(() => { const design=readDesign(draft.default_content); const style=getSectionDesignStyle(design); const title=draft.section_type==="cover"?"Nama Pasangan":draft.section_type==="quote"?"Kutipan pilihan":draft.section_type==="event"?"Detail Acara":"Judul Section"; const body=draft.section_type==="cover"?"Sebuah kisah yang kami rayakan bersama":"Contoh teks untuk melihat ukuran, warna, dan jenis huruf pada section."; return <div className="section-design-scope mx-auto flex min-h-40 max-w-xl flex-col items-center justify-center gap-3 overflow-hidden rounded-md border px-6 py-8 text-center" {...getSectionDesignAttributes(design)} style={style}><p className="text-xs uppercase tracking-widest opacity-70">The Wedding of</p><h3>{title}</h3><p>{body}</p><span className="rounded-full border px-4 py-2 text-xs">Contoh tombol</span></div>; })()}
   </div>
   <div className="space-y-3 rounded-lg border p-4">
    <div><h5 className="text-sm font-semibold">Pengaturan desain</h5><p className="text-xs text-muted-foreground">Tersimpan dalam properti design. Nilai yang kosong memakai styling bawaan section.</p></div>
