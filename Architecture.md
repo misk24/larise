@@ -56,7 +56,16 @@ These boundaries are approved conventions, not proof that every existing screen 
 
 This section records observable source behavior, not a guarantee that all migrations are applied to production or all paths have passed E2E tests.
 
-## 6. Authentication and account security
+## 6. Theme section design configuration
+
+- Store optional section-level design settings in `theme_sections.default_content.design`; do not add invitation-specific design columns or a separate table for these tokens.
+- Resolve design settings through `components/invitation/sections/section-design.ts` and apply them on a wrapper around the registered section renderer. Missing or invalid values must leave the renderer's defaults intact.
+- Keep CSS selectors scoped to `.section-design-scope` and opt-in data attributes. Button controls must target explicit action elements, not every anchor or button in a section.
+- Validate the design object at both admin section create and update API boundaries using `lib/validation/section-design.ts`; retain the existing 64 KB section-content limit.
+- The Theme Builder preview uses the real `sectionRegistry` renderer with sample invitation data. RSVP and Gift remain disabled in preview to avoid real submissions or exposing private data.
+- Decorative settings cover icon styling, heading dividers, a lightweight ornament, and spacing between section-level elements. They are opt-in and do not add content fields to invitation data.
+
+## 7. Authentication and account security
 
 - Auth flows are implemented in `lib/actions/auth.ts` and use Supabase Auth.
 - Role checks and protected actions must be enforced server-side; inspect the current helpers before altering them.
