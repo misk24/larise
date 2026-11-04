@@ -21,14 +21,14 @@ export const adminNavs = [
 
 export const userNavs = [
   { href: "/dashboard", icon: LayoutDashboardIcon, label: "Dashboard" },
-  { href: "/dashboard/invitations", icon: FileTextIcon, label: "Invitations" },
-  { href: "/dashboard/guests", icon: UsersIcon, label: "Guests" },
+  { href: "/dashboard/invitations", icon: FileTextIcon, label: "Undangan Saya" },
+  { href: "/dashboard/guests", icon: UsersIcon, label: "Daftar Tamu" },
   { href: "/dashboard/rsvp", icon: CalendarCheckIcon, label: "RSVP" },
-  { href: "/dashboard/wishes", icon: MessageSquareHeartIcon, label: "Wishes" },
-  { href: "/dashboard/gallery", icon: ImageIcon, label: "Gallery" },
-  { href: "/dashboard/settings", icon: SettingsIcon, label: "Settings" },
+  { href: "/dashboard/wishes", icon: MessageSquareHeartIcon, label: "Ucapan & Doa" },
+  { href: "/dashboard/gallery", icon: ImageIcon, label: "Galeri Foto" },
+  { href: "/dashboard/settings", icon: SettingsIcon, label: "Pengaturan" },
 ];
 
 export const subpageNavs: Record<string, string> = {
-  create: "Create",
+  create: "Buat Undangan",
 };

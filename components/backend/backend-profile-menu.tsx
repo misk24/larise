@@ -68,7 +68,7 @@ export function BackendProfileMenu({
             <DropdownMenuItem asChild className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10">
               <Link href="/dashboard/account" className="flex items-center gap-2">
                 <UserIcon className="size-5" />
-                <span>My Account</span>
+                <span>Akun Saya</span>
               </Link>
             </DropdownMenuItem>
           )}
@@ -86,7 +86,7 @@ export function BackendProfileMenu({
           onClick={() => signOut()}
         >
           <LogOutIcon className="size-5" />
-          <span>Logout</span>
+          <span>Keluar</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

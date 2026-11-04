@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 const settingsItems = [
   {
-    title: "Preferensi undangan",
+    title: "Preferensi Undangan",
     description: "Kelola detail acara, RSVP, galeri, backsound, dan informasi lainnya dari masing-masing undangan.",
     href: "/dashboard/invitations",
     label: "Buka undangan",
@@ -22,7 +22,7 @@ const settingsItems = [
     disabled: true,
   },
   {
-    title: "Privasi dan keamanan",
+    title: "Privasi & Keamanan",
     description: "Kelola informasi profil dan metode login melalui halaman My Account.",
     href: "/dashboard/account",
     label: "Kelola akun",
@@ -39,8 +39,8 @@ export default async function SettingsPage() {
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
       <div className="space-y-1">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Preferences</p>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Settings</h1>
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Akun & Aplikasi</p>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Pengaturan</h1>
         <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
           Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing.
         </p>

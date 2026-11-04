@@ -52,53 +52,21 @@ export async function saveInvitationSections(input: z.input<typeof saveSectionsS
     }
   }
 
-  const { data: existing, error: existingError } = await supabase
-    .from("invitation_sections")
-    .select("id, invitation_id")
-    .eq("invitation_id", parsed.data.invitationId);
+  const { error: saveError } = await supabase.rpc("save_invitation_sections_atomic", {
+    p_invitation_id: parsed.data.invitationId,
+    p_sections: parsed.data.sections.map((section) => ({
+      id: section.id,
+      section_key: section.section_key,
+      section_type: section.section_type,
+      position: section.position,
+      content: section.content,
+      is_visible: section.is_visible,
+    })),
+  });
 
-  if (existingError) return { error: "Gagal memuat struktur section." };
-
-  const existingIds = new Set((existing ?? []).map((row) => row.id));
-  if (parsed.data.sections.some((section) => !existingIds.has(section.id))) {
-    return { error: "Section tidak dikenali untuk undangan ini." };
-  }
-
-  for (const section of parsed.data.sections) {
-    const { error } = await supabase
-      .from("invitation_sections")
-      .update({
-        section_key: section.section_key,
-        position: section.position,
-        content: section.content,
-        is_visible: section.is_visible,
-      })
-      .eq("id", section.id)
-      .eq("invitation_id", parsed.data.invitationId);
-
-    if (error) {
-      console.error("saveInvitationSections failed", error);
-      return { error: "Perubahan section gagal disimpan." };
-    }
-  }
-
-  // Keep the invitation-level date in sync with the builder's event section.
-  // The dashboard summary reads invitations.event_date, while the builder edits section content.
-  const eventSection = parsed.data.sections.find((section) => section.section_type === "event");
-  if (eventSection) {
-    const eventDate = typeof eventSection.content.date === "string" && eventSection.content.date
-      ? eventSection.content.date
-      : null;
-    const { error: dateSyncError } = await supabase
-      .from("invitations")
-      .update({ event_date: eventDate })
-      .eq("id", parsed.data.invitationId)
-      .eq("user_id", user.id);
-
-    if (dateSyncError) {
-      console.error("saveInvitationSections event date sync failed", dateSyncError);
-      return { error: "Tanggal acara gagal disinkronkan." };
-    }
+  if (saveError) {
+    console.error("saveInvitationSections atomic save failed", saveError);
+    return { error: "Perubahan section gagal disimpan. Tidak ada perubahan yang diterapkan." };
   }
 
   revalidatePath(`/dashboard`);

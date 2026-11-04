@@ -126,53 +126,25 @@ export async function updateInvitation(
   const { supabase, user } = await requireUser();
   if (!user) return { error: "Sesi login tidak valid." };
 
-  const { data: theme } = await supabase
-    .from("themes")
-    .select("id")
-    .eq("id", parsed.data.themeId)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (!theme) return { error: "Tema tidak tersedia." };
-
   try {
-    const { data: current } = await supabase
-      .from("invitations")
-      .select("theme_id")
-      .eq("id", invitationId)
-      .eq("user_id", user.id)
-      .single();
+    const { data, error } = await supabase.rpc("update_invitation_settings_atomic", {
+      p_invitation_id: invitationId,
+      p_theme_id: parsed.data.themeId,
+      p_groom_name: parsed.data.groomName,
+      p_groom_nickname: parsed.data.groomNickname,
+      p_bride_name: parsed.data.brideName,
+      p_bride_nickname: parsed.data.brideNickname,
+    });
 
-    if (!current) return { error: "Undangan tidak ditemukan." };
-
-    const { error } = await supabase
-      .from("invitations")
-      .update({
-        theme_id: theme.id,
-        groom_name: parsed.data.groomName,
-        groom_nickname: parsed.data.groomNickname,
-        bride_name: parsed.data.brideName,
-        bride_nickname: parsed.data.brideNickname,
-      })
-      .eq("id", invitationId)
-      .eq("user_id", user.id);
-
-    if (error) {
-      console.error("updateInvitation failed", error);
-      return { error: "Undangan gagal disimpan." };
-    }
-
-    if (current.theme_id !== theme.id) {
-      const { error: cloneError } = await supabase.rpc(
-        "clone_theme_sections_to_invitation",
-        { p_theme_id: theme.id, p_invitation_id: invitationId },
-      );
-      if (cloneError) return { error: "Struktur tema gagal diperbarui." };
+    if (error || data !== true) {
+      console.error("updateInvitation atomic save failed", error);
+      return { error: "Undangan gagal disimpan. Perubahan tema dan data dasar dibatalkan jika proses tidak berhasil." };
     }
 
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/invitations");
     revalidatePath(`/dashboard/invitations/${invitationId}`);
+    revalidatePath(`/dashboard/invitations/${invitationId}/builder`);
     return { success: true };
   } catch (error) {
     console.error("updateInvitation unexpected error", error);
@@ -250,7 +222,7 @@ export async function duplicateInvitation(invitationId: string) {
 
   const { data: source } = await supabase
     .from("invitations")
-    .select("id,theme_id,slug,groom_name,groom_nickname,bride_name,bride_nickname,name_order,event_date")
+    .select("id,theme_id,slug,groom_name,groom_nickname,bride_name,bride_nickname,name_order")
     .eq("id", invitationId)
     .eq("user_id", user.id)
     .single();
@@ -271,7 +243,6 @@ export async function duplicateInvitation(invitationId: string) {
         bride_name: source.bride_name,
         bride_nickname: source.bride_nickname,
         name_order: source.name_order,
-        event_date: source.event_date,
         status: "draft",
         is_published: false,
       })
