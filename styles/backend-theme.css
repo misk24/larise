@@ -1,16 +1,14 @@
-/* Backend-only color tokens for the user dashboard and admin.
- * Scoped to .backend-shell so marketing/frontend and invitation themes remain untouched.
- */
+/* Backend-only neutral and burgundy tokens. */
 .backend-shell {
   color-scheme: light;
   --background: #f8f8f7;
   --foreground: #252525;
-  --card: #ffffff;
+  --card: #fff;
   --card-foreground: #252525;
-  --popover: #ffffff;
+  --popover: #fff;
   --popover-foreground: #252525;
   --primary: #7a3448;
-  --primary-foreground: #ffffff;
+  --primary-foreground: #fff;
   --secondary: #f0e5e8;
   --secondary-foreground: #542333;
   --accent: #f0e5e8;
@@ -26,10 +24,10 @@
   --chart-3: #64748b;
   --chart-4: #b78a4a;
   --chart-5: #9a6b88;
-  --sidebar: #ffffff;
+  --sidebar: #fff;
   --sidebar-foreground: #252525;
   --sidebar-primary: #7a3448;
-  --sidebar-primary-foreground: #ffffff;
+  --sidebar-primary-foreground: #fff;
   --sidebar-accent: #f0e5e8;
   --sidebar-accent-foreground: #542333;
   --sidebar-border: #e7e7e5;
@@ -70,131 +68,74 @@
   --sidebar-ring: #c58b9c;
 }
 
-
-/* Explicit backend surfaces for portal-rendered profile menus and sidebar.
- * Radix portals mount under document.body, outside .backend-shell, so scoped
- * design tokens alone cannot reach the profile dropdown. */
-/* Sidebar styles are defined below with component-level semantic tokens. */
-
+/* Portal surfaces are outside .backend-shell, so they carry local semantic tokens. */
 .backend-profile-menu {
-  background-color: #ffffff !important;
-  color: #252525 !important;
-  border: 1px solid #e7e7e5 !important;
-  box-shadow: 0 12px 32px rgb(37 37 37 / 12%) !important;
+  --popover: #fff;
+  --popover-foreground: #252525;
+  --accent: #f0e5e8;
+  --accent-foreground: #542333;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border-color: #e7e7e5;
+  box-shadow: 0 12px 32px rgb(37 37 37 / 12%);
 }
-.backend-profile-name { color: #252525 !important; }
-.backend-profile-email { color: #70706d !important; }
-.backend-profile-avatar {
-  background-color: #f0e5e8 !important;
-  color: #542333 !important;
-}
-.backend-profile-menu-item {
-  color: #542333 !important;
-}
+.backend-profile-name { color: var(--popover-foreground); }
+.backend-profile-email { color: #70706d; }
+.backend-profile-avatar { background: #f0e5e8; color: #542333; }
+.backend-profile-menu-item { color: #542333; }
 .backend-profile-menu-item:focus,
 .backend-profile-menu-item[data-highlighted] {
-  background-color: #f0e5e8 !important;
-  color: #542333 !important;
+  background: var(--accent);
+  color: var(--accent-foreground);
 }
-.backend-profile-trigger:hover {
-  background-color: #f0e5e8 !important;
-}
-.dark .backend-sidebar {
-  background-color: #201e1d !important;
-  color: #f4f2f1 !important;
-  border-color: #403d3b !important;
-}
-.dark .backend-sidebar [data-sidebar="menu-button"][data-active="true"] {
-  background-color: #39272d !important;
-  color: #f3dfe5 !important;
-}
-.dark .backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
-  background-color: #302629 !important;
-  color: #f3dfe5 !important;
-}
-.dark .backend-sidebar [data-sidebar="group-label"] {
-  color: #b4afad !important;
-}
-.dark .backend-profile-menu {
-  background-color: #242221 !important;
-  color: #f4f2f1 !important;
-  border-color: #403d3b !important;
-  box-shadow: 0 12px 32px rgb(0 0 0 / 28%) !important;
-}
-.dark .backend-profile-name { color: #f4f2f1 !important; }
-.dark .backend-profile-email { color: #b4afad !important; }
-.dark .backend-profile-avatar {
-  background-color: #39272d !important;
-  color: #f3dfe5 !important;
-}
-.dark .backend-profile-menu-item { color: #f3dfe5 !important; }
-.dark .backend-profile-menu-item:focus,
-.dark .backend-profile-menu-item[data-highlighted] {
-  background-color: #39272d !important;
-  color: #f3dfe5 !important;
-}
-.dark .backend-profile-trigger:hover {
-  background-color: #39272d !important;
-}
+.backend-profile-trigger:hover { background: #f0e5e8; }
 
-
-/* Sidebar primitives also render in a mobile Radix sheet. Give the sidebar
-   its own semantic tokens so it does not depend on inherited shell variables. */
 .backend-sidebar {
-  --sidebar: #ffffff !important;
-  --sidebar-foreground: #252525 !important;
-  --sidebar-primary: #7a3448 !important;
-  --sidebar-primary-foreground: #ffffff !important;
-  --sidebar-accent: #f0e5e8 !important;
-  --sidebar-accent-foreground: #542333 !important;
-  --sidebar-border: #e7e7e5 !important;
-  --sidebar-ring: #9b6474 !important;
-  background: #ffffff !important;
-  color: #252525 !important;
+  --sidebar: #fff;
+  --sidebar-foreground: #252525;
+  --sidebar-primary: #7a3448;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #f0e5e8;
+  --sidebar-accent-foreground: #542333;
+  --sidebar-border: #e7e7e5;
+  --sidebar-ring: #9b6474;
+  background: var(--sidebar);
+  color: var(--sidebar-foreground);
 }
 .backend-sidebar [data-slot="sidebar-inner"],
 .backend-sidebar [data-slot="sidebar-content"] {
-  background: #ffffff !important;
-  color: #252525 !important;
+  background: var(--sidebar);
+  color: var(--sidebar-foreground);
 }
-.backend-sidebar [data-sidebar="menu-button"] {
-  color: #252525 !important;
-}
+.backend-sidebar [data-sidebar="menu-button"] { color: var(--sidebar-foreground); }
 .backend-sidebar [data-sidebar="menu-button"][data-active="true"],
 .backend-sidebar [data-sidebar="menu-button"].bg-sidebar-accent {
-  background: #f0e5e8 !important;
-  color: #542333 !important;
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
 }
 .backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
-  background: #f7f1f3 !important;
-  color: #542333 !important;
+  background: color-mix(in srgb, var(--sidebar-accent) 55%, var(--sidebar));
+  color: var(--sidebar-accent-foreground);
 }
+.dark .backend-profile-menu {
+  --popover: #242221;
+  --popover-foreground: #f4f2f1;
+  --accent: #39272d;
+  --accent-foreground: #f3dfe5;
+  border-color: #403d3b;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 28%);
+}
+.dark .backend-profile-email { color: #b4afad; }
+.dark .backend-profile-avatar { background: #39272d; color: #f3dfe5; }
+.dark .backend-profile-menu-item { color: #f3dfe5; }
+.dark .backend-profile-trigger:hover { background: #39272d; }
 .dark .backend-sidebar {
-  --sidebar: #201e1d !important;
-  --sidebar-foreground: #f4f2f1 !important;
-  --sidebar-primary: #c58b9c !important;
-  --sidebar-primary-foreground: #28151b !important;
-  --sidebar-accent: #39272d !important;
-  --sidebar-accent-foreground: #f3dfe5 !important;
-  --sidebar-border: #403d3b !important;
-  --sidebar-ring: #c58b9c !important;
-  background: #201e1d !important;
-  color: #f4f2f1 !important;
-}
-.dark .backend-sidebar [data-slot="sidebar-inner"],
-.dark .backend-sidebar [data-slot="sidebar-content"] {
-  background: #201e1d !important;
-  color: #f4f2f1 !important;
-}
-.dark .backend-sidebar [data-sidebar="menu-button"] {
-  color: #f4f2f1 !important;
-}
-.dark .backend-sidebar [data-sidebar="menu-button"][data-active="true"],
-.dark .backend-sidebar [data-sidebar="menu-button"].bg-sidebar-accent {
-  background: #39272d !important;
-  color: #f3dfe5 !important;
-}
-.dark .backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
-  background: #302629 !important;
-  color: #f3dfe5 !important;
+  --sidebar: #201e1d;
+  --sidebar-foreground: #f4f2f1;
+  --sidebar-primary: #c58b9c;
+  --sidebar-primary-foreground: #28151b;
+  --sidebar-accent: #39272d;
+  --sidebar-accent-foreground: #f3dfe5;
+  --sidebar-border: #403d3b;
+  --sidebar-ring: #c58b9c;
 }
