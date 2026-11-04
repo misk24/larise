@@ -33,7 +33,7 @@ export function InvitationGallery({ images }: InvitationGalleryProps) {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="aspect-square relative overflow-hidden rounded-lg cursor-pointer group"
+              className="section-design-image aspect-square relative overflow-hidden rounded-lg cursor-pointer group"
               onClick={() => setSelectedImage(image)}
             >
               <Image

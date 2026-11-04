@@ -56,7 +56,16 @@ These boundaries are approved conventions, not proof that every existing screen 
 
 This section records observable source behavior, not a guarantee that all migrations are applied to production or all paths have passed E2E tests.
 
-## 6. Authentication and account security
+## 6. Theme section design configuration
+
+- Store optional section-level design settings in `theme_sections.default_content.design`; do not add invitation-specific design columns or a separate table for these tokens.
+- Resolve design settings through `components/invitation/sections/section-design.ts` and apply them on a wrapper around the registered section renderer. Missing or invalid values must leave the renderer's defaults intact.
+- Keep CSS selectors scoped to `.section-design-scope` and opt-in data attributes. Button controls must target explicit action elements, not every anchor or button in a section.
+- Validate the design object at both admin section create and update API boundaries using `lib/validation/section-design.ts`; retain the existing 64 KB section-content limit.
+- The Theme Builder preview uses the real `sectionRegistry` renderer with sample invitation data. RSVP and Gift remain disabled in preview to avoid real submissions or exposing private data.
+- Decorative settings cover icon styling, heading dividers, a lightweight ornament, and spacing between section-level elements. They are opt-in and do not add content fields to invitation data.
+
+## 7. Authentication and account security
 
 - Auth flows are implemented in `lib/actions/auth.ts` and use Supabase Auth.
 - Role checks and protected actions must be enforced server-side; inspect the current helpers before altering them.
@@ -66,7 +75,7 @@ This section records observable source behavior, not a guarantee that all migrat
 
 Verify relevant migrations, RLS policies, and provider behavior before changing authentication or account data.
 
-## 7. Database and migrations
+## 8. Database and migrations
 
 Before changing the schema:
 1. Inspect current migrations and shared database types.
@@ -77,7 +86,7 @@ Before changing the schema:
 
 Do not claim a migration is deployed merely because it is merged.
 
-## 8. Environment and quality checks
+## 9. Environment and quality checks
 
 - Use local environment files for development; never commit real secrets.
 - Keep environment variable names consistent between application code, README, and CI configuration.
@@ -85,6 +94,6 @@ Do not claim a migration is deployed merely because it is merged.
 - Available scripts include `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:e2e`, and `npm run build`.
 - Report checks only when results are observed. Environment or service limitations must be stated explicitly.
 
-## 9. Change rules
+## 10. Change rules
 
 Prefer focused changes, reuse existing conventions, protect user data, and document consequential changes to routing, auth, data models, or integrations. If product intent and implementation disagree, preserve the requirement and request a decision rather than rewriting the requirement to match code.

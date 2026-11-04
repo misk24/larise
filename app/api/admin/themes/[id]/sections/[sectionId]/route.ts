@@ -1,6 +1,7 @@
 import { getAdminApiContext } from "@/lib/admin/authorization";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { validateSectionDesign } from "@/lib/validation/section-design";
 
 const uuid = z.string().uuid();
 const sectionSchema = z.object({
@@ -18,6 +19,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const parsed = sectionSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Data section tidak valid." }, { status: 400 });
   if (JSON.stringify(parsed.data.default_content).length > 65536) return NextResponse.json({ error: "Konten section maksimal 64 KB." }, { status: 413 });
+  const designValidation = validateSectionDesign(parsed.data.default_content);
+  if (!designValidation.success) return NextResponse.json({ error: designValidation.error.issues[0]?.message ?? "Konfigurasi desain tidak valid." }, { status: 400 });
   const { data, error } = await supabase.from("theme_sections").update({ ...parsed.data })
     .eq("id", sectionId).eq("theme_id", id)
     .select("id,theme_id,section_key,section_type,position,default_content,is_required,is_visible").maybeSingle();

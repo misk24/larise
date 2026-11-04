@@ -47,3 +47,153 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Theme Builder section design tokens: each rule is enabled only when configured. */
+.section-design-scope { text-align: var(--section-text-align, inherit); color: var(--section-text-color, inherit); }
+.section-design-scope[data-design-background="true"] > section { background: transparent !important; }
+
+.section-design-scope[data-design-heading-family="true"] h1,
+.section-design-scope[data-design-heading-family="true"] h2,
+.section-design-scope[data-design-heading-family="true"] h3,
+.section-design-scope[data-design-heading-family="true"] h4,
+.section-design-scope[data-design-heading-family="true"] h5,
+.section-design-scope[data-design-heading-family="true"] h6 { font-family: var(--section-heading-font-family, var(--section-font-family)) !important; }
+.section-design-scope[data-design-heading-size="true"] h1,
+.section-design-scope[data-design-heading-size="true"] h2,
+.section-design-scope[data-design-heading-size="true"] h3,
+.section-design-scope[data-design-heading-size="true"] h4,
+.section-design-scope[data-design-heading-size="true"] h5,
+.section-design-scope[data-design-heading-size="true"] h6 { font-size: var(--section-heading-size) !important; }
+.section-design-scope[data-design-heading-weight="true"] h1,
+.section-design-scope[data-design-heading-weight="true"] h2,
+.section-design-scope[data-design-heading-weight="true"] h3,
+.section-design-scope[data-design-heading-weight="true"] h4,
+.section-design-scope[data-design-heading-weight="true"] h5,
+.section-design-scope[data-design-heading-weight="true"] h6 { font-weight: var(--section-heading-font-weight, var(--section-font-weight)) !important; }
+.section-design-scope[data-design-heading-color="true"] h1,
+.section-design-scope[data-design-heading-color="true"] h2,
+.section-design-scope[data-design-heading-color="true"] h3,
+.section-design-scope[data-design-heading-color="true"] h4,
+.section-design-scope[data-design-heading-color="true"] h5,
+.section-design-scope[data-design-heading-color="true"] h6 { color: var(--section-heading-color, var(--section-text-color)) !important; }
+.section-design-scope[data-design-heading-align="true"] h1,
+.section-design-scope[data-design-heading-align="true"] h2,
+.section-design-scope[data-design-heading-align="true"] h3,
+.section-design-scope[data-design-heading-align="true"] h4,
+.section-design-scope[data-design-heading-align="true"] h5,
+.section-design-scope[data-design-heading-align="true"] h6 { text-align: var(--section-heading-align, var(--section-text-align)) !important; }
+.section-design-scope[data-design-body-family="true"] p,
+.section-design-scope[data-design-body-family="true"] li,
+.section-design-scope[data-design-body-family="true"] blockquote { font-family: var(--section-body-font-family, var(--section-font-family)) !important; }
+.section-design-scope[data-design-body-size="true"] p,
+.section-design-scope[data-design-body-size="true"] li,
+.section-design-scope[data-design-body-size="true"] blockquote { font-size: var(--section-body-size) !important; }
+.section-design-scope[data-design-body-weight="true"] p,
+.section-design-scope[data-design-body-weight="true"] li,
+.section-design-scope[data-design-body-weight="true"] blockquote { font-weight: var(--section-body-font-weight, var(--section-font-weight)) !important; }
+.section-design-scope[data-design-body-color="true"] p,
+.section-design-scope[data-design-body-color="true"] li,
+.section-design-scope[data-design-body-color="true"] blockquote { color: var(--section-body-color, var(--section-text-color)) !important; }
+.section-design-scope[data-design-body-align="true"] p,
+.section-design-scope[data-design-body-align="true"] li,
+.section-design-scope[data-design-body-align="true"] blockquote { text-align: var(--section-body-align, var(--section-text-align)) !important; }
+
+
+/* Scoped controls configured by the Theme Builder. */
+.section-design-scope[data-design-button="true"] a.section-design-button,
+.section-design-scope[data-design-button="true"] button.section-design-button,
+.section-design-scope[data-design-button="true"] [data-section-action] {
+  background-color: var(--section-button-bg, revert-layer);
+  color: var(--section-button-text, revert-layer);
+  border-color: var(--section-button-border, revert-layer);
+  border-radius: var(--section-button-radius, revert-layer);
+  font-size: var(--section-button-size, revert-layer);
+  padding-left: var(--section-button-px, revert-layer);
+  padding-right: var(--section-button-px, revert-layer);
+  padding-top: var(--section-button-py, revert-layer);
+  padding-bottom: var(--section-button-py, revert-layer);
+}
+.section-design-scope[data-design-image-ratio="true"] .section-design-image {
+  aspect-ratio: var(--section-image-ratio) !important;
+}
+.section-design-scope[data-design-image-radius="true"] .section-design-image {
+  border-radius: var(--section-image-radius);
+}
+.section-design-scope[data-design-image-fit="true"] .section-design-image img {
+  object-fit: var(--section-image-fit) !important;
+}
+.section-design-scope[data-design-image-position="true"] .section-design-image img {
+  object-position: var(--section-image-position) !important;
+}
+.section-design-scope[data-design-image="true"] .section-design-image img {
+  border-radius: inherit;
+}
+
+
+/* Optional decorative controls. Every rule is opt-in through validated design tokens. */
+.section-design-scope[data-design-icon-size="true"] svg.lucide {
+  width: var(--section-icon-size) !important;
+  height: var(--section-icon-size) !important;
+}
+.section-design-scope[data-design-icon-color="true"] svg.lucide {
+  color: var(--section-icon-color) !important;
+}
+.section-design-scope[data-design-icon-stroke="true"] svg.lucide {
+  stroke-width: var(--section-icon-stroke) !important;
+}
+.section-design-scope[data-design-divider="true"] h1::after,
+.section-design-scope[data-design-divider="true"] h2::after {
+  content: "";
+  display: block;
+  width: var(--section-divider-width, 48px);
+  max-width: 100%;
+  margin: var(--section-divider-spacing, 20px) auto;
+  border-top: var(--section-divider-thickness, 1px) var(--section-divider-style, solid) var(--section-divider-color, currentColor);
+  opacity: 0.65;
+}
+/* Place the ornament inside the actual section, above its background but below content. */
+.section-design-scope[data-design-ornament="true"] > section {
+  position: relative;
+  isolation: isolate;
+}
+.section-design-scope[data-design-ornament="true"] > section::after {
+  content: "✦";
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 0;
+  pointer-events: none;
+  color: var(--section-ornament-color, currentColor);
+  font-size: var(--section-ornament-size, 32px);
+  opacity: var(--section-ornament-opacity, 0.18);
+  line-height: 1;
+}
+.section-design-scope[data-design-ornament="true"] > section > * {
+  position: relative;
+  z-index: 1;
+}
+.section-design-scope[data-design-ornament-position="top-left"] > section::after { top: 1.25rem; right: auto; bottom: auto; left: 1.25rem; }
+.section-design-scope[data-design-ornament-position="top-right"] > section::after { top: 1.25rem; right: 1.25rem; bottom: auto; left: auto; }
+.section-design-scope[data-design-ornament-position="bottom-left"] > section::after { top: auto; right: auto; bottom: 1.25rem; left: 1.25rem; }
+.section-design-scope[data-design-ornament-position="bottom-right"] > section::after { top: auto; right: 1.25rem; bottom: 1.25rem; left: auto; }
+
+/* Override the section's built-in vertical spacing rather than adding wrapper padding. */
+.section-design-scope[data-design-padding-top="true"] > section {
+  padding-top: var(--section-padding-top) !important;
+}
+.section-design-scope[data-design-padding-bottom="true"] > section {
+  padding-bottom: var(--section-padding-bottom) !important;
+}
+.section-design-scope[data-design-element-gap="true"] > section > .container,
+.section-design-scope[data-design-element-gap="true"] > .container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-element-gap);
+}
+.section-design-scope[data-design-element-gap="true"] > section > .container > *,
+.section-design-scope[data-design-element-gap="true"] > .container > * {
+  margin-block: 0;
+}
+
+

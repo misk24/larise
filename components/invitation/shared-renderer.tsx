@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { Invitation, InvitationSection, Theme, Wish } from "@/types/database";
 import { sectionRegistry } from "./sections/section-registry";
 import { invitationSectionSchema } from "./sections/types";
+import { getSectionDesignAttributes, getSectionDesignStyle } from "./sections/section-design";
 
 interface Props {
   invitation: Invitation & { themes?: Theme | null };
@@ -22,15 +23,17 @@ export function SharedInvitationRenderer({ invitation, sections, guestName, wish
       {ordered.map((section) => {
         const Component = sectionRegistry[section.section_type as keyof typeof sectionRegistry];
         if (!Component) return null;
+        const design = section.content.design;
         return (
-          <Component
-            key={section.id}
-            invitation={invitation}
-            section={section}
-            guestName={guestName}
-            wishes={wishes}
-            onWishAdded={(wish) => setWishes((prev) => [wish, ...prev])}
-          />
+          <div key={section.id} className="section-design-scope" {...getSectionDesignAttributes(design)} style={getSectionDesignStyle(design)}>
+            <Component
+              invitation={invitation}
+              section={section}
+              guestName={guestName}
+              wishes={wishes}
+              onWishAdded={(wish) => setWishes((prev) => [wish, ...prev])}
+            />
+          </div>
         );
       })}
     </main>
