@@ -44,7 +44,7 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
               collapsed ? "scale-90 opacity-0" : "scale-100 opacity-100",
             )}
           >
-            <Logo variant="footer" />
+            <Logo />
           </div>
         </SidebarHeader>
 
