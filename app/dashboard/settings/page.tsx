@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { ArrowUpRightIcon, BellIcon, FileTextIcon, ShieldCheckIcon } from "lucide-react";
@@ -38,13 +39,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
-      <div className="space-y-1">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Preferences</p>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Settings</h1>
-        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-          Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing.
-        </p>
-      </div>
+      <BackendPageHeader title="Settings" description="Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing." />
 
       <div className="grid gap-4">
         {settingsItems.map((item) => (
