@@ -132,16 +132,14 @@
 
 
 /* Optional decorative controls. Every rule is opt-in through validated design tokens. */
-.section-design-scope[data-design-icon-size="true"] svg.section-design-icon,
-.section-design-scope[data-design-icon-size="true"] .section-design-icon svg {
+.section-design-scope[data-design-icon-size="true"] svg.lucide {
   width: var(--section-icon-size) !important;
   height: var(--section-icon-size) !important;
 }
-.section-design-scope[data-design-icon-color="true"] .section-design-icon,
-.section-design-scope[data-design-icon-color="true"] .section-design-icon svg {
+.section-design-scope[data-design-icon-color="true"] svg.lucide {
   color: var(--section-icon-color) !important;
 }
-.section-design-scope[data-design-icon-stroke="true"] .section-design-icon svg {
+.section-design-scope[data-design-icon-stroke="true"] svg.lucide {
   stroke-width: var(--section-icon-stroke) !important;
 }
 .section-design-scope[data-design-divider="true"] h1::after,
