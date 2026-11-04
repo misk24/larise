@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminTableError } from "@/components/admin/table-states";
@@ -61,13 +62,7 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
 
   return (
     <div className="backend-content space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Tema</h1>
-          <p className="text-muted-foreground">Kelola tema undangan yang tersedia untuk pengguna.</p>
-        </div>
-        <Button asChild><Link href="/admin/themes/create">Buat Tema</Link></Button>
-      </div>
+      <BackendPageHeader title="Kelola Tema" description="Kelola tema undangan yang tersedia untuk pengguna." actions={<Button asChild><Link href="/admin/themes/create">Buat Tema</Link></Button>} />
 
       <Card className="shadow-none">
         <CardHeader>
