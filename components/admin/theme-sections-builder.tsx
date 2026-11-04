@@ -93,6 +93,7 @@ function writeDesign(json: string, path: "background"|"typography"|"layout", key
  return JSON.stringify(parsed,null,2);
 }
 function EditorForm({draft,setDraft,editing,busy,error,onSubmit,onCancel}:{draft:ReturnType<typeof blank>;setDraft:React.Dispatch<React.SetStateAction<ReturnType<typeof blank>>>;editing:string|null;busy:boolean;error:string;onSubmit:(event:React.FormEvent<HTMLFormElement>)=>void;onCancel:()=>void}){
+ const [previewMode,setPreviewMode]=useState<"desktop"|"mobile">("desktop");
  const update=<K extends keyof ReturnType<typeof blank>>(key:K,value:ReturnType<typeof blank>[K])=>setDraft(current=>({...current,[key]:value}));
  return <form onSubmit={onSubmit} className="space-y-4">
   <h4 className="font-medium">{editing?"Edit section":"Section baru"}</h4>
@@ -100,9 +101,11 @@ function EditorForm({draft,setDraft,editing,busy,error,onSubmit,onCancel}:{draft
    <div className="space-y-2"><Label htmlFor="section-key">Section key</Label><Input id="section-key" value={draft.section_key} onChange={e=>update("section_key",e.target.value)} placeholder="contoh: cover" pattern="[a-z][a-z0-9_-]*" required maxLength={80}/></div>
    <div className="space-y-2"><Label htmlFor="section-type">Tipe section</Label><Select value={draft.section_type} onValueChange={value=>update("section_type",value)}><SelectTrigger id="section-type"><SelectValue/></SelectTrigger><SelectContent>{types.map(type=><SelectItem key={type} value={type}>{type}</SelectItem>)}</SelectContent></Select></div>
   </div>
-  <div className="space-y-2 rounded-lg border p-4">
-   <div><h5 className="text-sm font-semibold">Live preview</h5><p className="text-xs text-muted-foreground">Menggunakan komponen section undangan yang sama dengan halaman publik. Data pasangan dan acara memakai data contoh.</p></div>
-   <ThemeSectionLivePreview sectionKey={draft.section_key || "preview"} sectionType={draft.section_type} content={(() => { try { const value=JSON.parse(draft.default_content); return value && typeof value==="object" && !Array.isArray(value) ? value : {}; } catch { return {}; } })()} />
+  <div className="space-y-3 rounded-lg border p-4">
+   <div className="flex flex-wrap items-center justify-between gap-2"><div><h5 className="text-sm font-semibold">Live preview</h5><p className="text-xs text-muted-foreground">Renderer section asli dengan data contoh.</p></div><div className="flex gap-1"><Button type="button" size="sm" variant={previewMode==="desktop"?"default":"outline"} onClick={()=>setPreviewMode("desktop")}>Desktop</Button><Button type="button" size="sm" variant={previewMode==="mobile"?"default":"outline"} onClick={()=>setPreviewMode("mobile")}>Mobile</Button></div></div>
+   <div className={previewMode==="mobile"?"mx-auto max-h-[640px] w-[390px] max-w-full overflow-auto rounded-xl border-4 border-foreground/15 bg-background shadow-inner":"w-full overflow-hidden rounded-md border bg-background"}>
+    <ThemeSectionLivePreview sectionKey={draft.section_key || "preview"} sectionType={draft.section_type} content={(() => { try { const value=JSON.parse(draft.default_content); return value && typeof value==="object" && !Array.isArray(value) ? value : {}; } catch { return {}; } })()} />
+   </div>
   </div>
   <div className="space-y-3 rounded-lg border p-4">
    <div><h5 className="text-sm font-semibold">Pengaturan desain</h5><p className="text-xs text-muted-foreground">Tersimpan dalam properti design. Nilai yang kosong memakai styling bawaan section.</p></div>
