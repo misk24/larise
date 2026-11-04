@@ -90,11 +90,7 @@ as $$
   from public.guests g
   join public.invitations i on i.id = g.invitation_id
   where g.invitation_id = p_invitation_id
-    and p_guest_token ~ '^[0-9a-f]{36}
-    and i.status = 'published'
-    and i.is_published = true
-  limit 1;
-$$;
+    and p_guest_token ~ '^[0-9a-f]{36}$'
     and g.public_token = p_guest_token
     and i.status = 'published'
     and i.is_published = true
