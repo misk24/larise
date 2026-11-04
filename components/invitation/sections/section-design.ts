@@ -91,7 +91,7 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
   const bodyColor = safeColor(typography.bodyColor);
   if (bodyColor) cssVars["--section-body-color"] = bodyColor;
   if (typeof typography.headingFontFamily === "string" && /^[\w ,\'"()-]{1,100}$/.test(typography.headingFontFamily)) cssVars["--section-heading-font-family"] = typography.headingFontFamily;
-  if (typeof typography.bodyFontFamily === "string" && /^[\\w ,\'"()-]{1,100}$/.test(typography.bodyFontFamily)) cssVars["--section-body-font-family"] = typography.bodyFontFamily;
+  if (typeof typography.bodyFontFamily === "string" && /^[\w ,\'"()-]{1,100}$/.test(typography.bodyFontFamily)) cssVars["--section-body-font-family"] = typography.bodyFontFamily;
   const headingWeight = finiteNumber(typography.headingFontWeight, 100, 900);
   if (headingWeight) cssVars["--section-heading-font-weight"] = String(headingWeight);
   const bodyWeight = finiteNumber(typography.bodyFontWeight, 100, 900);
