@@ -77,6 +77,20 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
     {!sections.length?<p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">Belum ada section. Tambahkan section pertama untuk membangun struktur tema.</p>:null}
   </div>;
 }
+function readDesign(json: string): Record<string, any> {
+ try {
+  const parsed=JSON.parse(json);
+  return parsed && typeof parsed==="object" && !Array.isArray(parsed) && parsed.design && typeof parsed.design==="object" ? parsed.design : {};
+ } catch { return {}; }
+}
+function writeDesign(json: string, path: "background"|"typography"|"layout", key: string, value: unknown): string {
+ let parsed: Record<string, any> = {};
+ try { const current=JSON.parse(json); if(current && typeof current==="object" && !Array.isArray(current)) parsed=current; } catch {}
+ const design=parsed.design && typeof parsed.design==="object" ? parsed.design : {};
+ const group=design[path] && typeof design[path]==="object" ? design[path] : {};
+ parsed.design={...design,[path]:{...group,[key]:value}};
+ return JSON.stringify(parsed,null,2);
+}
 function EditorForm({draft,setDraft,editing,busy,error,onSubmit,onCancel}:{draft:ReturnType<typeof blank>;setDraft:React.Dispatch<React.SetStateAction<ReturnType<typeof blank>>>;editing:string|null;busy:boolean;error:string;onSubmit:(event:React.FormEvent<HTMLFormElement>)=>void;onCancel:()=>void}){
  const update=<K extends keyof ReturnType<typeof blank>>(key:K,value:ReturnType<typeof blank>[K])=>setDraft(current=>({...current,[key]:value}));
  return <form onSubmit={onSubmit} className="space-y-4">
@@ -84,6 +98,25 @@ function EditorForm({draft,setDraft,editing,busy,error,onSubmit,onCancel}:{draft
   <div className="grid gap-4 sm:grid-cols-2">
    <div className="space-y-2"><Label htmlFor="section-key">Section key</Label><Input id="section-key" value={draft.section_key} onChange={e=>update("section_key",e.target.value)} placeholder="contoh: cover" pattern="[a-z][a-z0-9_-]*" required maxLength={80}/></div>
    <div className="space-y-2"><Label htmlFor="section-type">Tipe section</Label><Select value={draft.section_type} onValueChange={value=>update("section_type",value)}><SelectTrigger id="section-type"><SelectValue/></SelectTrigger><SelectContent>{types.map(type=><SelectItem key={type} value={type}>{type}</SelectItem>)}</SelectContent></Select></div>
+  </div>
+  <div className="space-y-3 rounded-lg border p-4">
+   <div><h5 className="text-sm font-semibold">Pengaturan desain</h5><p className="text-xs text-muted-foreground">Tersimpan dalam properti design. Nilai yang kosong memakai styling bawaan section.</p></div>
+   {(() => { const design=readDesign(draft.default_content); const bg=design.background??{}; const typo=design.typography??{}; const layout=design.layout??{}; return <>
+    <div className="grid gap-3 sm:grid-cols-2">
+     <div className="space-y-1"><Label>Jenis background</Label><Select value={bg.type??"none"} onValueChange={value=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"background","type",value==="none"?undefined:value)}))}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="none">Default</SelectItem><SelectItem value="color">Warna</SelectItem><SelectItem value="image">Gambar</SelectItem><SelectItem value="gradient">Gradient</SelectItem></SelectContent></Select></div>
+     <div className="space-y-1"><Label>Warna / URL / gradient</Label><Input value={bg.value??""} placeholder="#f8f4ef atau https://..." onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"background","value",event.target.value)}))}/></div>
+     <div className="space-y-1"><Label>Posisi gambar</Label><Input value={bg.position??"center"} placeholder="center" onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"background","position",event.target.value)}))}/></div>
+     <div className="space-y-1"><Label>Ukuran gambar</Label><Select value={bg.size??"cover"} onValueChange={value=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"background","size",value)}))}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="cover">Cover</SelectItem><SelectItem value="contain">Contain</SelectItem><SelectItem value="auto">Auto</SelectItem></SelectContent></Select></div>
+     <div className="space-y-1"><Label>Overlay gelap (0–1)</Label><Input type="number" min="0" max="1" step="0.05" value={bg.overlay??0} onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"background","overlay",Number(event.target.value))}))}/></div>
+     <div className="space-y-1"><Label>Font family</Label><Input value={typo.fontFamily??""} placeholder="Georgia, serif" onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"typography","fontFamily",event.target.value)}))}/></div>
+     <div className="space-y-1"><Label>Ukuran font (px)</Label><Input type="number" min="8" max="120" value={typo.fontSize??""} onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"typography","fontSize",Number(event.target.value))}))}/></div>
+     <div className="space-y-1"><Label>Warna font</Label><Input value={typo.color??""} placeholder="#2b2927" onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"typography","color",event.target.value)}))}/></div>
+     <div className="space-y-1"><Label>Ketebalan font</Label><Select value={String(typo.fontWeight??600)} onValueChange={value=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"typography","fontWeight",Number(value))}))}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{[300,400,500,600,700,800].map(weight=><SelectItem key={weight} value={String(weight)}>{weight}</SelectItem>)}</SelectContent></Select></div>
+     <div className="space-y-1"><Label>Alignment teks</Label><Select value={typo.alignment??"center"} onValueChange={value=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"typography","alignment",value)}))}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="left">Kiri</SelectItem><SelectItem value="center">Tengah</SelectItem><SelectItem value="right">Kanan</SelectItem></SelectContent></Select></div>
+     <div className="space-y-1"><Label>Padding atas (px)</Label><Input type="number" min="0" max="400" value={layout.paddingTop??""} onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"layout","paddingTop",Number(event.target.value))}))}/></div>
+     <div className="space-y-1"><Label>Padding bawah (px)</Label><Input type="number" min="0" max="400" value={layout.paddingBottom??""} onChange={event=>setDraft(current=>({...current,default_content:writeDesign(current.default_content,"layout","paddingBottom",Number(event.target.value))}))}/></div>
+    </div>
+   </>; })()}
   </div>
   <div className="space-y-2"><Label htmlFor="section-content">Konten default (JSON)</Label><Textarea id="section-content" value={draft.default_content} onChange={e=>update("default_content",e.target.value)} rows={10} className="font-mono text-xs" spellCheck={false}/><p className="text-xs text-muted-foreground">Objek JSON maksimal 64 KB. Struktur field mengikuti renderer section terkait.</p></div>
   <div className="flex flex-wrap gap-6 rounded-md bg-muted/40 p-3">
