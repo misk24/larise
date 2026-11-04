@@ -132,11 +132,17 @@
 
 
 /* Optional decorative controls. Every rule is opt-in through validated design tokens. */
-.section-design-scope[data-design-icon="true"] svg {
-  width: var(--section-icon-size, revert-layer);
-  height: var(--section-icon-size, revert-layer);
-  color: var(--section-icon-color, revert-layer);
-  stroke-width: var(--section-icon-stroke, revert-layer);
+.section-design-scope[data-design-icon-size="true"] svg.section-design-icon,
+.section-design-scope[data-design-icon-size="true"] .section-design-icon svg {
+  width: var(--section-icon-size) !important;
+  height: var(--section-icon-size) !important;
+}
+.section-design-scope[data-design-icon-color="true"] .section-design-icon,
+.section-design-scope[data-design-icon-color="true"] .section-design-icon svg {
+  color: var(--section-icon-color) !important;
+}
+.section-design-scope[data-design-icon-stroke="true"] .section-design-icon svg {
+  stroke-width: var(--section-icon-stroke) !important;
 }
 .section-design-scope[data-design-divider="true"] h1::after,
 .section-design-scope[data-design-divider="true"] h2::after {
@@ -164,10 +170,10 @@
   opacity: var(--section-ornament-opacity, 0.18);
   line-height: 1;
 }
-.section-design-scope[data-design-ornament="true"][style*="--section-ornament-position: top-left"]::after { top: 1.25rem; left: 1.25rem; }
-.section-design-scope[data-design-ornament="true"][style*="--section-ornament-position: top-right"]::after { top: 1.25rem; right: 1.25rem; }
-.section-design-scope[data-design-ornament="true"][style*="--section-ornament-position: bottom-left"]::after { bottom: 1.25rem; left: 1.25rem; }
-.section-design-scope[data-design-ornament="true"][style*="--section-ornament-position: bottom-right"]::after { bottom: 1.25rem; right: 1.25rem; }
+.section-design-scope[data-design-ornament-position="top-left"]::after { top: 1.25rem; right: auto; bottom: auto; left: 1.25rem; }
+.section-design-scope[data-design-ornament-position="top-right"]::after { top: 1.25rem; right: 1.25rem; bottom: auto; left: auto; }
+.section-design-scope[data-design-ornament-position="bottom-left"]::after { top: auto; right: auto; bottom: 1.25rem; left: 1.25rem; }
+.section-design-scope[data-design-ornament-position="bottom-right"]::after { top: auto; right: 1.25rem; bottom: 1.25rem; left: auto; }
 .section-design-scope[data-design-element-gap="true"] > section > .container,
 .section-design-scope[data-design-element-gap="true"] > .container {
   display: flex;
