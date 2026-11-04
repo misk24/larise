@@ -51,6 +51,8 @@
 
 /* Theme Builder section design tokens: each rule is enabled only when configured. */
 .section-design-scope { text-align: var(--section-text-align, inherit); color: var(--section-text-color, inherit); }
+.section-design-scope[data-design-background="true"] > section { background: transparent !important; }
+
 .section-design-scope[data-design-heading-family="true"] h1,
 .section-design-scope[data-design-heading-family="true"] h2,
 .section-design-scope[data-design-heading-family="true"] h3,
@@ -103,10 +105,10 @@
 .section-design-scope[data-design-button="true"] button.section-design-button,
 .section-design-scope[data-design-button="true"] [data-section-action] {
   background-color: var(--section-button-bg, revert-layer);
-  color: var(--section-button-text, inherit);
-  border-color: var(--section-button-border, currentColor);
-  border-radius: var(--section-button-radius, inherit);
-  font-size: var(--section-button-size, inherit);
+  color: var(--section-button-text, revert-layer);
+  border-color: var(--section-button-border, revert-layer);
+  border-radius: var(--section-button-radius, revert-layer);
+  font-size: var(--section-button-size, revert-layer);
   padding-left: var(--section-button-px, revert-layer);
   padding-right: var(--section-button-px, revert-layer);
   padding-top: var(--section-button-py, revert-layer);
@@ -125,10 +127,10 @@
 
 /* Optional decorative controls. Every rule is opt-in through validated design tokens. */
 .section-design-scope[data-design-icon="true"] svg {
-  width: var(--section-icon-size, 1em);
-  height: var(--section-icon-size, 1em);
-  color: var(--section-icon-color, currentColor);
-  stroke-width: var(--section-icon-stroke, 2);
+  width: var(--section-icon-size, revert-layer);
+  height: var(--section-icon-size, revert-layer);
+  color: var(--section-icon-color, revert-layer);
+  stroke-width: var(--section-icon-stroke, revert-layer);
 }
 .section-design-scope[data-design-divider="true"] h2::after {
   content: "";
@@ -146,6 +148,8 @@
 .section-design-scope[data-design-ornament="true"]::after {
   content: "✦";
   position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
   z-index: 0;
   pointer-events: none;
   color: var(--section-ornament-color, currentColor);
