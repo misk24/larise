@@ -30,6 +30,21 @@ export type SectionDesign = {
     paddingTop?: number;
     paddingBottom?: number;
   };
+  button?: {
+    backgroundColor?: string;
+    textColor?: string;
+    borderColor?: string;
+    borderRadius?: number;
+    fontSize?: number;
+    paddingX?: number;
+    paddingY?: number;
+  };
+  image?: {
+    borderRadius?: number;
+    aspectRatio?: "square" | "portrait" | "landscape";
+    objectFit?: "cover" | "contain";
+    objectPosition?: string;
+  };
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -60,6 +75,8 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
   const background = isRecord(value.background) ? value.background : {};
   const typography = isRecord(value.typography) ? value.typography : {};
   const layout = isRecord(value.layout) ? value.layout : {};
+  const button = isRecord(value.button) ? value.button : {};
+  const image = isRecord(value.image) ? value.image : {};
   const style: CSSProperties = {};
   const cssVars = style as CSSProperties & Record<`--${string}`, string>;
 
@@ -115,12 +132,37 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
   if (paddingTop !== undefined) style.paddingTop = `${paddingTop}px`;
   if (paddingBottom !== undefined) style.paddingBottom = `${paddingBottom}px`;
 
+  const buttonBackground = safeColor(button.backgroundColor);
+  if (buttonBackground) cssVars["--section-button-bg"] = buttonBackground;
+  const buttonText = safeColor(button.textColor);
+  if (buttonText) cssVars["--section-button-text"] = buttonText;
+  const buttonBorder = safeColor(button.borderColor);
+  if (buttonBorder) cssVars["--section-button-border"] = buttonBorder;
+  const buttonRadius = finiteNumber(button.borderRadius, 0, 48);
+  if (buttonRadius !== undefined) cssVars["--section-button-radius"] = `${buttonRadius}px`;
+  const buttonFontSize = finiteNumber(button.fontSize, 10, 32);
+  if (buttonFontSize !== undefined) cssVars["--section-button-size"] = `${buttonFontSize}px`;
+  const buttonPaddingX = finiteNumber(button.paddingX, 0, 64);
+  if (buttonPaddingX !== undefined) cssVars["--section-button-px"] = `${buttonPaddingX}px`;
+  const buttonPaddingY = finiteNumber(button.paddingY, 0, 40);
+  if (buttonPaddingY !== undefined) cssVars["--section-button-py"] = `${buttonPaddingY}px`;
+
+  const imageRadius = finiteNumber(image.borderRadius, 0, 48);
+  if (imageRadius !== undefined) cssVars["--section-image-radius"] = `${imageRadius}px`;
+  if (image.aspectRatio === "square") cssVars["--section-image-ratio"] = "1 / 1";
+  if (image.aspectRatio === "portrait") cssVars["--section-image-ratio"] = "3 / 4";
+  if (image.aspectRatio === "landscape") cssVars["--section-image-ratio"] = "4 / 3";
+  if (image.objectFit === "cover" || image.objectFit === "contain") cssVars["--section-image-fit"] = image.objectFit;
+  if (typeof image.objectPosition === "string" && /^(center|top|bottom|left|right|\d{1,3}%\s+\d{1,3}%)$/.test(image.objectPosition)) cssVars["--section-image-position"] = image.objectPosition;
+
   return style;
 }
 
 export function getSectionDesignAttributes(value: unknown): Record<string, string> {
   if (!isRecord(value)) return {};
   const typography = isRecord(value.typography) ? value.typography : {};
+  const button = isRecord(value.button) ? value.button : {};
+  const image = isRecord(value.image) ? value.image : {};
   const attributes: Record<string, string> = {};
   const flags: Array<[string, unknown]> = [
     ["data-design-heading-size", typography.headingFontSize],
@@ -134,6 +176,8 @@ export function getSectionDesignAttributes(value: unknown): Record<string, strin
     ["data-design-heading-align", typography.headingAlignment ?? typography.alignment],
     ["data-design-body-align", typography.bodyAlignment ?? typography.alignment],
   ];
+  if (Object.values(button).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-button"] = "true";
+  if (Object.values(image).some(item => item !== undefined && item !== null && item !== "")) attributes["data-design-image"] = "true";
   for (const [key, item] of flags) {
     if (item !== undefined && item !== null && item !== "") attributes[key] = "true";
   }
