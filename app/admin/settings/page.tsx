@@ -1,13 +1,11 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InfoIcon } from "lucide-react";
 
 export default function AdminSettingsPage() {
   return (
     <div className="backend-content space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Pengaturan Platform</h1>
-        <p className="text-muted-foreground">Konfigurasi operasional LARISÉ.</p>
-      </header>
+      <BackendPageHeader title="Pengaturan Platform" description="Konfigurasi operasional LARISÉ." />
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Pengaturan umum</CardTitle>
