@@ -62,6 +62,7 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
                     pathname.startsWith(`${item.href}/`));
                 const menu = (
                   <SidebarMenuButton
+                    isActive={isActive}
                     className={cn(
                       "rounded-md transition-colors",
                       isActive
