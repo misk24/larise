@@ -51,7 +51,7 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
   const background = isRecord(value.background) ? value.background : {};
   const typography = isRecord(value.typography) ? value.typography : {};
   const layout = isRecord(value.layout) ? value.layout : {};
-  const style: React.CSSProperties = {};
+  const style: CSSProperties = {};
 
   const bgType = background.type;
   const bgValue = typeof background.value === "string" ? background.value.trim() : "";
