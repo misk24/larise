@@ -4,7 +4,7 @@ import { AdminTableError } from "@/components/admin/table-states";
 import { OrdersTable, type AdminOrderRow } from "@/components/admin/tables/orders/orders-table";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
-import { sanitizeAdminSearch } from "@/lib/utils/admin-search";
+import { postgrestIlikePattern, sanitizeAdminSearch } from "@/lib/utils/admin-search";
 
 type SearchParams = Promise<{
   q?: string;
@@ -43,9 +43,8 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
 
   if (status) request = request.eq("payment_status", status);
   if (query) {
-    request = request.or(
-      `order_number.ilike.%${query}%,payment_status.ilike.%${query}%`,
-    );
+    const pattern = postgrestIlikePattern(query);
+    request = request.or(`order_number.ilike.${pattern},payment_status.ilike.${pattern}`);
   }
 
   const { data, count, error } = await request;
