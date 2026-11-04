@@ -10,7 +10,8 @@ export type SectionDesign = {
   };
   typography?: {
     fontFamily?: string;
-    fontSize?: number;
+    headingFontSize?: number;
+    bodyFontSize?: number;
     fontWeight?: number;
     color?: string;
     alignment?: "left" | "center" | "right";
@@ -74,13 +75,15 @@ export function getSectionDesignStyle(value: unknown): CSSProperties {
   }
 
   const color = safeColor(typography.color);
-  if (color) style.color = color;
-  if (typeof typography.fontFamily === "string" && /^[\w ,"'()-]{1,100}$/.test(typography.fontFamily)) style.fontFamily = typography.fontFamily;
-  const fontSize = finiteNumber(typography.fontSize, 8, 120);
-  if (fontSize) style.fontSize = `${fontSize}px`;
+  if (color) style.setProperty("--section-text-color", color);
+  if (typeof typography.fontFamily === "string" && /^[\w ,"'()-]{1,100}$/.test(typography.fontFamily)) style.setProperty("--section-font-family", typography.fontFamily);
+  const headingFontSize = finiteNumber(typography.headingFontSize, 12, 120);
+  if (headingFontSize) style.setProperty("--section-heading-size", `${headingFontSize}px`);
+  const bodyFontSize = finiteNumber(typography.bodyFontSize, 8, 48);
+  if (bodyFontSize) style.setProperty("--section-body-size", `${bodyFontSize}px`);
   const fontWeight = finiteNumber(typography.fontWeight, 100, 900);
-  if (fontWeight) style.fontWeight = fontWeight;
-  if (["left", "center", "right"].includes(String(typography.alignment))) style.textAlign = typography.alignment as CSSProperties["textAlign"];
+  if (fontWeight) style.setProperty("--section-font-weight", String(fontWeight));
+  if (["left", "center", "right"].includes(String(typography.alignment))) style.setProperty("--section-text-align", String(typography.alignment));
   const lineHeight = finiteNumber(typography.lineHeight, 0.8, 3);
   if (lineHeight) style.lineHeight = lineHeight;
   const letterSpacing = finiteNumber(typography.letterSpacing, -5, 20);
