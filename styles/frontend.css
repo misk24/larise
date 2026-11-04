@@ -99,8 +99,9 @@
 
 
 /* Scoped controls configured by the Theme Builder. */
-.section-design-scope[data-design-button="true"] a,
-.section-design-scope[data-design-button="true"] button {
+.section-design-scope[data-design-button="true"] a.section-design-button,
+.section-design-scope[data-design-button="true"] button.section-design-button,
+.section-design-scope[data-design-button="true"] [data-section-action] {
   background-color: var(--section-button-bg, revert-layer);
   color: var(--section-button-text, inherit);
   border-color: var(--section-button-border, currentColor);
@@ -145,7 +146,7 @@
 .section-design-scope[data-design-ornament="true"]::after {
   content: "✦";
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
   color: var(--section-ornament-color, currentColor);
   font-size: var(--section-ornament-size, 32px);
@@ -179,3 +180,5 @@
   padding-top: var(--section-button-py, revert-layer);
   padding-bottom: var(--section-button-py, revert-layer);
 }
+
+.section-design-scope[data-design-ornament="true"] > * { position: relative; z-index: 1; }
