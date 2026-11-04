@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { CheckCircle2Icon, Clock3Icon, UsersIcon, XCircleIcon } from "lucide-react";
@@ -15,10 +16,7 @@ export default async function RsvpDashboardPage() {
   if (invitationsError) {
     return (
       <div className="backend-content space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ringkasan RSVP</h1>
-          <p className="mt-1 text-muted-foreground">Pantau respons kehadiran dari semua undangan Anda.</p>
-        </div>
+        <BackendPageHeader title="Ringkasan RSVP" description="Pantau respons kehadiran dari semua undangan Anda." />
         <Card className="shadow-none">
           <CardContent className="p-6 text-sm text-destructive">Data undangan gagal dimuat. Coba muat ulang halaman.</CardContent>
         </Card>
@@ -51,7 +49,7 @@ export default async function RsvpDashboardPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <div><h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ringkasan RSVP</h1><p className="mt-1 text-muted-foreground">Pantau respons kehadiran dari semua undangan Anda.</p></div>
+      <BackendPageHeader title="Ringkasan RSVP" description="Pantau respons kehadiran dari semua undangan Anda." />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => <Card key={metric.label} className="shadow-none"><CardContent className="flex items-center gap-4 p-5"><div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><metric.icon className="size-5" /></div><div><p className="text-2xl font-semibold tabular-nums">{metric.value.toLocaleString("id-ID")}</p><p className="text-sm text-muted-foreground">{metric.label}</p></div></CardContent></Card>)}
       </div>
