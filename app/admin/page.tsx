@@ -1,167 +1,177 @@
-import RecentUsersTable from "@/components/admin/recent-users";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { StatsCard } from "@/components/ui/stats-card";
-import { createClient } from "@/lib/supabase/server";
-import {
-  FileTextIcon,
-  ShoppingCartIcon,
-  TrendingUpIcon,
-  UsersIcon,
-} from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/actions/auth";
+import { FileTextIcon, PaletteIcon, UsersIcon } from "lucide-react";
+import Link from "next/link";
+
+function formatDate(value: string | null) {
+  if (!value) return "Tanggal tidak tersedia";
+  return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date(value));
+}
 
 export default async function AdminDashboardPage() {
-  const supabase = await createClient();
+  await requireAdmin();
+  const supabase = createAdminClient();
 
-  const { count: usersCount } = await supabase
-    .from("profiles")
-    .select("*", { count: "exact", head: true })
-    .eq("role", "user");
+  const [usersResult, invitationsResult, publishedResult, themesResult, recentUsersResult, recentInvitationsResult] =
+    await Promise.all([
+      supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "user"),
+      supabase.from("invitations").select("id", { count: "exact", head: true }),
+      supabase.from("invitations").select("id", { count: "exact", head: true }).eq("status", "published"),
+      supabase.from("themes").select("id", { count: "exact", head: true }),
+      supabase
+        .from("profiles")
+        .select("id,full_name,email,created_at")
+        .eq("role", "user")
+        .order("created_at", { ascending: false })
+        .limit(5),
+      supabase
+        .from("invitations")
+        .select("id,groom_name,bride_name,slug,status,created_at,profiles(full_name,email)")
+        .order("created_at", { ascending: false })
+        .limit(5),
+    ]);
 
-  const { count: invitationsCount } = await supabase
-    .from("invitations")
-    .select("*", { count: "exact", head: true });
-
-  const { count: ordersCount } = await supabase
-    .from("orders")
-    .select("*", { count: "exact", head: true });
-
-  const { data: recentOrders } = await supabase
-    .from("orders")
-    .select("*, profiles(full_name, email)")
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  const { data: recentUsers } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("role", "user")
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  const stats = [
+  const metrics = [
     {
-      title: "Total Pengguna",
-      value: usersCount || 0,
+      label: "Pengguna",
+      value: usersResult.error ? null : usersResult.count ?? 0,
+      detail: "Akun pengguna terdaftar",
+      href: "/admin/users",
       icon: UsersIcon,
-      change: 3,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
     },
     {
-      title: "Total Undangan",
-      value: invitationsCount || 0,
+      label: "Total undangan",
+      value: invitationsResult.error ? null : invitationsResult.count ?? 0,
+      detail: "Semua status",
+      href: "/admin/invitations",
       icon: FileTextIcon,
-      change: 1,
-      color: "text-chart-2",
-      bgColor: "bg-chart-2/10",
     },
     {
-      title: "Total Pesanan",
-      value: ordersCount || 0,
-      icon: ShoppingCartIcon,
-      change: 6,
-      color: "text-chart-3",
-      bgColor: "bg-chart-3/10",
+      label: "Undangan terbit",
+      value: publishedResult.error ? null : publishedResult.count ?? 0,
+      detail: "Status published",
+      href: "/admin/invitations?status=published",
+      icon: FileTextIcon,
     },
     {
-      title: "Pendapatan",
-      value: "Rp 0",
-      icon: TrendingUpIcon,
-      change: 4,
-      color: "text-chart-4",
-      bgColor: "bg-chart-4/10",
+      label: "Tema",
+      value: themesResult.error ? null : themesResult.count ?? 0,
+      detail: "Aktif dan nonaktif",
+      href: "/admin/themes",
+      icon: PaletteIcon,
     },
   ];
 
+  const metricErrors = [usersResult.error, invitationsResult.error, publishedResult.error, themesResult.error].filter(Boolean);
+
   return (
     <div className="backend-content space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Selamat datang di panel administrasi LARISÉ
+      <header>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ringkasan Admin</h1>
+        <p className="text-muted-foreground">Pantau kondisi platform berdasarkan data database saat ini.</p>
+      </header>
+
+      {metricErrors.length > 0 ? (
+        <p role="alert" className="text-sm text-destructive">
+          Sebagian statistik gagal dimuat. Nilai yang tidak tersedia tidak ditampilkan sebagai nol.
         </p>
-      </div>
+      ) : null}
 
-      <div className="col-span-full grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
-          <StatsCard
-            key={index}
-            title={stat.title}
-            value={stat.value}
-            change={stat.change}
-            icon={stat.icon}
-            iconColor={stat.color}
-            iconBg={stat.bgColor}
-          />
+      <section aria-label="Statistik platform" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {metrics.map(({ label, value, detail, href, icon: Icon }) => (
+          <Link
+            key={label}
+            href={href}
+            className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <Card className="h-full shadow-none transition-colors hover:bg-muted/40">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{label}</CardTitle>
+                <Icon aria-hidden="true" className="size-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold tabular-nums">{value === null ? "—" : value.toLocaleString("id-ID")}</p>
+                <p className="text-xs text-muted-foreground">{detail}</p>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
-      </div>
+      </section>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="overflow-hidden shadow-none">
+      <section className="grid gap-4 xl:grid-cols-2">
+        <Card className="shadow-none">
           <CardHeader>
-            <CardTitle className="text-lg">Pengguna Terbaru</CardTitle>
-            <CardDescription>5 pengguna yang baru mendaftar</CardDescription>
+            <CardTitle>Pengguna terbaru</CardTitle>
+            <CardDescription>Lima akun pengguna yang terakhir terdaftar.</CardDescription>
           </CardHeader>
-
           <CardContent>
-            {recentUsers && recentUsers.length > 0 ? (
-              <RecentUsersTable data={recentUsers ?? []} />
+            {recentUsersResult.error ? (
+              <p role="alert" className="py-6 text-sm text-destructive">Data pengguna gagal dimuat. Periksa izin akses database.</p>
+            ) : recentUsersResult.data?.length ? (
+              <ul className="divide-y divide-border">
+                {recentUsersResult.data.map((user) => (
+                  <li key={user.id} className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">{user.full_name || "Tanpa nama"}</p>
+                      <p className="truncate text-sm text-muted-foreground">{user.email || "Email tidak tersedia"}</p>
+                    </div>
+                    <time dateTime={user.created_at} className="shrink-0 text-xs text-muted-foreground">
+                      {formatDate(user.created_at)}
+                    </time>
+                  </li>
+                ))}
+              </ul>
             ) : (
-              <p className="py-8 text-center text-muted-foreground">
-                Belum ada pengguna
-              </p>
+              <p className="py-8 text-center text-sm text-muted-foreground">Belum ada pengguna.</p>
             )}
+            <Link href="/admin/users" className="mt-4 inline-flex text-sm font-medium text-primary hover:underline">
+              Lihat semua pengguna
+            </Link>
           </CardContent>
         </Card>
 
         <Card className="shadow-none">
           <CardHeader>
-            <CardTitle className="text-lg">Pesanan Terbaru</CardTitle>
-            <CardDescription>5 pesanan terakhir</CardDescription>
+            <CardTitle>Undangan terbaru</CardTitle>
+            <CardDescription>Lima undangan yang terakhir dibuat.</CardDescription>
           </CardHeader>
-
           <CardContent>
-            {recentOrders && recentOrders.length > 0 ? (
-              <div className="space-y-4">
-                {recentOrders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="flex items-center justify-between py-2 border-b border-border last:border-0"
-                  >
-                    <div>
-                      <p className="font-medium">
-                        {order.profiles?.full_name || "Tanpa Nama"}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {order.package_name}
-                      </p>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="font-medium">
-                        Rp {order.amount?.toLocaleString("id-ID")}
-                      </p>
-                      <p className="text-xs text-muted-foreground capitalize">
-                        {order.status}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            {recentInvitationsResult.error ? (
+              <p role="alert" className="py-6 text-sm text-destructive">Data undangan gagal dimuat. Periksa izin akses database.</p>
+            ) : recentInvitationsResult.data?.length ? (
+              <ul className="divide-y divide-border">
+                {recentInvitationsResult.data.map((invitation) => {
+                  const owner = Array.isArray(invitation.profiles) ? invitation.profiles[0] : invitation.profiles;
+                  return (
+                    <li key={invitation.id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">{invitation.groom_name} & {invitation.bride_name}</p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {owner?.full_name || owner?.email || "Pemilik tidak diketahui"}
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-3">
+                        <span className="rounded-full bg-muted px-2.5 py-1 text-xs capitalize text-muted-foreground">
+                          {invitation.status}
+                        </span>
+                        <time dateTime={invitation.created_at} className="text-xs text-muted-foreground">
+                          {formatDate(invitation.created_at)}
+                        </time>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             ) : (
-              <p className="text-muted-foreground text-center py-8">
-                Belum ada pesanan
-              </p>
+              <p className="py-8 text-center text-sm text-muted-foreground">Belum ada undangan.</p>
             )}
+            <Link href="/admin/invitations" className="mt-4 inline-flex text-sm font-medium text-primary hover:underline">
+              Lihat semua undangan
+            </Link>
           </CardContent>
         </Card>
-      </div>
+      </section>
     </div>
   );
 }

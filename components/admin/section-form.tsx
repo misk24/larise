@@ -20,17 +20,16 @@ interface Props {
 
 const SECTION_TYPES = [
   "cover",
-  "hero",
+  "opening",
   "quote",
+  "couple",
   "event",
-  "countdown",
-  "story",
+  "location",
   "gallery",
-  "gift",
   "rsvp",
-  "wish",
+  "wishes",
+  "gift",
   "closing",
-  "footer",
 ];
 
 export default function SectionForm({ id }: Props) {
@@ -39,51 +38,69 @@ export default function SectionForm({ id }: Props) {
   const [sectionType, setSectionType] = useState("cover");
   const [defaultContent, setDefaultContent] = useState("{}");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
+    setError(null);
 
-    const res = await fetch(`/api/admin/themes/${id}/sections`, {
-      method: "POST",
-      body: JSON.stringify({
-        section_key: sectionKey,
-        section_type: sectionType,
-        default_content: JSON.parse(defaultContent),
-      }),
-    });
-
-    setLoading(false);
-
-    if (!res.ok) {
-      alert("Failed to create section");
-      setLoading(false);
+    let parsedContent: unknown;
+    try {
+      parsedContent = JSON.parse(defaultContent);
+    } catch {
+      setError("Konten default harus berupa JSON yang valid.");
       return;
     }
 
-    setSectionKey("");
-    setDefaultContent("{}");
+    if (!parsedContent || typeof parsedContent !== "object" || Array.isArray(parsedContent)) {
+      setError("Konten default harus berupa objek JSON, misalnya {}.");
+      return;
+    }
 
-    router.refresh();
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/themes/${id}/sections`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          section_key: sectionKey,
+          section_type: sectionType,
+          default_content: parsedContent,
+        }),
+      });
+
+      if (!res.ok) {
+        const payload = await res.json().catch(() => null);
+        setError(payload?.error ?? "Section gagal dibuat. Coba periksa data yang dimasukkan.");
+        return;
+      }
+
+      setSectionKey("");
+      setDefaultContent("{}");
+      router.refresh();
+    } catch {
+      setError("Tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 border p-4 rounded">
-      <div className="font-semibold">Add Section</div>
+    <form onSubmit={handleSubmit} className="space-y-4 rounded border p-4">
+      <div className="font-semibold">Tambah Section</div>
 
       <Input
-        placeholder="section_key (e.g. hero, event)"
+        placeholder="section_key (contoh: cover, event)"
         value={sectionKey}
         onChange={(e) => setSectionKey(e.target.value)}
-        className="border p-2 w-full"
+        className="w-full border p-2"
         required
       />
 
       <Select value={sectionType} onValueChange={setSectionType}>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Pilih section type" />
+          <SelectValue placeholder="Pilih tipe section" />
         </SelectTrigger>
-
         <SelectContent>
           {SECTION_TYPES.map((type) => (
             <SelectItem key={type} value={type}>
@@ -97,12 +114,15 @@ export default function SectionForm({ id }: Props) {
         value={defaultContent}
         onChange={(e) => setDefaultContent(e.target.value)}
         rows={6}
-        className="border p-2 w-full font-mono text-sm"
+        className="w-full border p-2 font-mono text-sm"
+        aria-invalid={Boolean(error)}
       />
+
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
       <Button disabled={loading}>
         {loading && <Loader2Icon className="mr-2 size-4 animate-spin" />}
-        {loading ? "Saving..." : "Add Section"}
+        {loading ? "Menyimpan..." : "Tambah Section"}
       </Button>
     </form>
   );
