@@ -86,7 +86,10 @@ These journeys express product intent. Their implementation status is documented
 ### Themes and administration
 - Allow administrators to manage reusable themes and section defaults/content.
 - Keep theme definitions distinct from invitation-specific content where the schema supports it.
+- Allow theme authors to configure section-level background, typography, spacing, buttons, images, icons, dividers, and ornaments while retaining defaults for unset properties.
 - Verify migration status and admin authorization before describing a change as deployed.
+
+**Implementation status for PR #55:** section-level design tokens are stored inside `theme_sections.default_content.design`, resolved and sanitized by the invitation renderer, and validated at the admin section API boundary. Decorative controls are optional and scoped; they must not override unspecified defaults.
 
 ## 6. Non-functional requirements
 
