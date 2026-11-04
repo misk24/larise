@@ -14,7 +14,7 @@ export function CoverSection({ section, invitation }: SectionContext) {
   return (
     <SectionShell className="flex min-h-[80vh] items-center justify-center text-center">
       <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
-          {contentValue(content, "eyebrow", "The Wedding of")}
+        {contentValue(content, "eyebrow", "The Wedding of")}
       </p>
       <h1 className="mt-6 font-serif text-5xl font-semibold md:text-7xl">{title}</h1>
       <p className="mt-6 text-lg text-muted-foreground">
