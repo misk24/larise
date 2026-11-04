@@ -69,3 +69,84 @@
   --sidebar-border: #403d3b;
   --sidebar-ring: #c58b9c;
 }
+
+
+/* Explicit backend surfaces for portal-rendered profile menus and sidebar.
+ * Radix portals mount under document.body, outside .backend-shell, so scoped
+ * design tokens alone cannot reach the profile dropdown. */
+.backend-sidebar {
+  background-color: #ffffff !important;
+  color: #252525 !important;
+  border-color: #e7e7e5 !important;
+}
+.backend-sidebar [data-sidebar="menu-button"][data-active="true"] {
+  background-color: #f0e5e8 !important;
+  color: #542333 !important;
+}
+.backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
+  background-color: #f7f1f3 !important;
+  color: #542333 !important;
+}
+.backend-sidebar [data-sidebar="group-label"] {
+  color: #70706d !important;
+}
+.backend-profile-menu {
+  background-color: #ffffff !important;
+  color: #252525 !important;
+  border: 1px solid #e7e7e5 !important;
+  box-shadow: 0 12px 32px rgb(37 37 37 / 12%) !important;
+}
+.backend-profile-name { color: #252525 !important; }
+.backend-profile-email { color: #70706d !important; }
+.backend-profile-avatar {
+  background-color: #f0e5e8 !important;
+  color: #542333 !important;
+}
+.backend-profile-menu-item {
+  color: #542333 !important;
+}
+.backend-profile-menu-item:focus,
+.backend-profile-menu-item[data-highlighted] {
+  background-color: #f0e5e8 !important;
+  color: #542333 !important;
+}
+.backend-profile-trigger:hover {
+  background-color: #f0e5e8 !important;
+}
+.dark .backend-sidebar {
+  background-color: #201e1d !important;
+  color: #f4f2f1 !important;
+  border-color: #403d3b !important;
+}
+.dark .backend-sidebar [data-sidebar="menu-button"][data-active="true"] {
+  background-color: #39272d !important;
+  color: #f3dfe5 !important;
+}
+.dark .backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
+  background-color: #302629 !important;
+  color: #f3dfe5 !important;
+}
+.dark .backend-sidebar [data-sidebar="group-label"] {
+  color: #b4afad !important;
+}
+.dark .backend-profile-menu {
+  background-color: #242221 !important;
+  color: #f4f2f1 !important;
+  border-color: #403d3b !important;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 28%) !important;
+}
+.dark .backend-profile-name { color: #f4f2f1 !important; }
+.dark .backend-profile-email { color: #b4afad !important; }
+.dark .backend-profile-avatar {
+  background-color: #39272d !important;
+  color: #f3dfe5 !important;
+}
+.dark .backend-profile-menu-item { color: #f3dfe5 !important; }
+.dark .backend-profile-menu-item:focus,
+.dark .backend-profile-menu-item[data-highlighted] {
+  background-color: #39272d !important;
+  color: #f3dfe5 !important;
+}
+.dark .backend-profile-trigger:hover {
+  background-color: #39272d !important;
+}
