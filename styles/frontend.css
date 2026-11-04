@@ -120,3 +120,62 @@
   object-position: var(--section-image-position, center) !important;
   border-radius: inherit;
 }
+
+
+/* Optional decorative controls. Every rule is opt-in through validated design tokens. */
+.section-design-scope[data-design-icon="true"] svg {
+  width: var(--section-icon-size, 1em);
+  height: var(--section-icon-size, 1em);
+  color: var(--section-icon-color, currentColor);
+  stroke-width: var(--section-icon-stroke, 2);
+}
+.section-design-scope[data-design-divider="true"] h2::after {
+  content: "";
+  display: block;
+  width: var(--section-divider-width, 48px);
+  max-width: 100%;
+  margin: var(--section-divider-spacing, 20px) auto;
+  border-top: var(--section-divider-thickness, 1px) var(--section-divider-style, solid) var(--section-divider-color, currentColor);
+  opacity: 0.65;
+}
+.section-design-scope[data-design-ornament="true"] {
+  position: relative;
+  isolation: isolate;
+}
+.section-design-scope[data-design-ornament="true"]::after {
+  content: "✦";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  color: var(--section-ornament-color, currentColor);
+  font-size: var(--section-ornament-size, 32px);
+  opacity: var(--section-ornament-opacity, 0.18);
+  line-height: 1;
+}
+.section-design-scope[data-design-ornament="true"][style*="--section-ornament-position: top-left"]::after { top: 1.25rem; left: 1.25rem; }
+.section-design-scope[data-design-ornament="true"][style*="--section-ornament-position: top-right"]::after { top: 1.25rem; right: 1.25rem; }
+.section-design-scope[data-design-ornament="true"][style*="--section-ornament-position: bottom-left"]::after { bottom: 1.25rem; left: 1.25rem; }
+.section-design-scope[data-design-ornament="true"][style*="--section-ornament-position: bottom-right"]::after { bottom: 1.25rem; right: 1.25rem; }
+.section-design-scope[data-design-element-gap="true"] > section > .container,
+.section-design-scope[data-design-element-gap="true"] > .container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-element-gap);
+}
+.section-design-scope[data-design-element-gap="true"] > section > .container > *,
+.section-design-scope[data-design-element-gap="true"] > .container > * {
+  margin-top: 0;
+}
+.section-design-scope[data-design-button="true"] a.section-design-button,
+.section-design-scope[data-design-button="true"] button.section-design-button,
+.section-design-scope[data-design-button="true"] [data-section-action] {
+  background-color: var(--section-button-bg, revert-layer);
+  color: var(--section-button-text, inherit);
+  border-color: var(--section-button-border, currentColor);
+  border-radius: var(--section-button-radius, inherit);
+  font-size: var(--section-button-size, inherit);
+  padding-left: var(--section-button-px, revert-layer);
+  padding-right: var(--section-button-px, revert-layer);
+  padding-top: var(--section-button-py, revert-layer);
+  padding-bottom: var(--section-button-py, revert-layer);
+}
