@@ -108,3 +108,46 @@
 .backend-shell .font-serif {
   font-family: var(--font-geist-sans), sans-serif;
 }
+
+/* Shared backend control and data-table rhythm. */
+.backend-shell [data-slot="input"],
+.backend-shell [data-slot="textarea"],
+.backend-shell [data-slot="select-trigger"] {
+  border-color: var(--input);
+  background-color: var(--card);
+  color: var(--foreground);
+}
+.backend-shell [data-slot="input"]:focus-visible,
+.backend-shell [data-slot="textarea"]:focus-visible,
+.backend-shell [data-slot="select-trigger"]:focus-visible {
+  border-color: var(--ring);
+}
+.backend-shell [data-slot="table-container"] {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.backend-shell [data-slot="table"] {
+  min-width: 40rem;
+}
+.backend-shell [data-slot="table-header"] {
+  background-color: var(--muted);
+}
+.backend-shell [data-slot="table-head"] {
+  height: 2.75rem;
+  padding-inline: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.backend-shell [data-slot="table-cell"] {
+  padding: 0.75rem 1rem;
+}
+.backend-shell [data-slot="table-row"] {
+  border-color: var(--border);
+}
+.backend-shell [data-slot="skeleton"] {
+  background-color: var(--muted);
+}

@@ -1,0 +1,147 @@
+/* Backend-only neutral and burgundy tokens. */
+.backend-shell {
+  color-scheme: light;
+  --background: #f8f8f7;
+  --foreground: #252525;
+  --card: #fff;
+  --card-foreground: #252525;
+  --popover: #fff;
+  --popover-foreground: #252525;
+  --primary: #7a3448;
+  --primary-foreground: #fff;
+  --secondary: #f0e5e8;
+  --secondary-foreground: #542333;
+  --accent: #f0e5e8;
+  --accent-foreground: #542333;
+  --muted: #f1f1ef;
+  --muted-foreground: #70706d;
+  --border: #e7e7e5;
+  --input: #e1e1de;
+  --ring: #9b6474;
+  --destructive: #b42318;
+  --chart-1: #7a3448;
+  --chart-2: #567d70;
+  --chart-3: #64748b;
+  --chart-4: #b78a4a;
+  --chart-5: #9a6b88;
+  --sidebar: #fff;
+  --sidebar-foreground: #252525;
+  --sidebar-primary: #7a3448;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #f0e5e8;
+  --sidebar-accent-foreground: #542333;
+  --sidebar-border: #e7e7e5;
+  --sidebar-ring: #9b6474;
+}
+.dark .backend-shell {
+  color-scheme: dark;
+  --background: #191817;
+  --foreground: #f4f2f1;
+  --card: #242221;
+  --card-foreground: #f4f2f1;
+  --popover: #242221;
+  --popover-foreground: #f4f2f1;
+  --primary: #c58b9c;
+  --primary-foreground: #28151b;
+  --secondary: #39272d;
+  --secondary-foreground: #f3dfe5;
+  --accent: #39272d;
+  --accent-foreground: #f3dfe5;
+  --muted: #2d2b2a;
+  --muted-foreground: #b4afad;
+  --border: #403d3b;
+  --input: #494542;
+  --ring: #c58b9c;
+  --destructive: #f87171;
+  --chart-1: #c58b9c;
+  --chart-2: #86b5a5;
+  --chart-3: #9aaec8;
+  --chart-4: #d6b17a;
+  --chart-5: #c49fba;
+  --sidebar: #201e1d;
+  --sidebar-foreground: #f4f2f1;
+  --sidebar-primary: #c58b9c;
+  --sidebar-primary-foreground: #28151b;
+  --sidebar-accent: #39272d;
+  --sidebar-accent-foreground: #f3dfe5;
+  --sidebar-border: #403d3b;
+  --sidebar-ring: #c58b9c;
+}
+
+/* Portal surfaces are outside .backend-shell, so they carry local semantic tokens. */
+.backend-profile-menu {
+  --popover: #fff;
+  --popover-foreground: #252525;
+  --accent: #f0e5e8;
+  --accent-foreground: #542333;
+  --border: #e7e7e5;
+  --muted-foreground: #70706d;
+  --destructive: #b42318;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border-color: #e7e7e5;
+  box-shadow: 0 12px 32px rgb(37 37 37 / 12%);
+}
+.backend-profile-name { color: var(--popover-foreground); }
+.backend-profile-email { color: #70706d; }
+.backend-profile-avatar { background: #f0e5e8; color: #542333; }
+.backend-profile-menu-item { color: #542333; }
+.backend-profile-menu-item:focus,
+.backend-profile-menu-item[data-highlighted] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.backend-profile-trigger:hover { background: #f0e5e8; }
+
+.backend-sidebar {
+  --sidebar: #fff;
+  --sidebar-foreground: #252525;
+  --sidebar-primary: #7a3448;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #f0e5e8;
+  --sidebar-accent-foreground: #542333;
+  --sidebar-border: #e7e7e5;
+  --sidebar-ring: #9b6474;
+  background: var(--sidebar);
+  color: var(--sidebar-foreground);
+}
+.backend-sidebar [data-slot="sidebar-inner"],
+.backend-sidebar [data-slot="sidebar-content"] {
+  background: var(--sidebar);
+  color: var(--sidebar-foreground);
+}
+.backend-sidebar [data-sidebar="menu-button"] { color: var(--sidebar-foreground); }
+.backend-sidebar [data-sidebar="menu-button"][data-active="true"],
+.backend-sidebar [data-sidebar="menu-button"].bg-sidebar-accent {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+}
+.backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
+  background: color-mix(in srgb, var(--sidebar-accent) 55%, var(--sidebar));
+  color: var(--sidebar-accent-foreground);
+}
+.dark .backend-profile-menu {
+  --popover: #242221;
+  --popover-foreground: #f4f2f1;
+  --accent: #39272d;
+  --accent-foreground: #f3dfe5;
+  --border: #403d3b;
+  --muted-foreground: #b4afad;
+  --destructive: #f87171;
+  border-color: #403d3b;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 28%);
+}
+.dark .backend-profile-email { color: #b4afad; }
+.dark .backend-profile-avatar { background: #39272d; color: #f3dfe5; }
+.dark .backend-profile-menu-item { color: #f3dfe5; }
+.dark .backend-profile-trigger:hover { background: #39272d; }
+.dark .backend-sidebar {
+  --sidebar: #201e1d;
+  --sidebar-foreground: #f4f2f1;
+  --sidebar-primary: #c58b9c;
+  --sidebar-primary-foreground: #28151b;
+  --sidebar-accent: #39272d;
+  --sidebar-accent-foreground: #f3dfe5;
+  --sidebar-border: #403d3b;
+  --sidebar-ring: #c58b9c;
+}

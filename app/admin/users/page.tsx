@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminTableError } from "@/components/admin/table-states";
@@ -48,10 +49,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
 
   return (
     <div className="backend-content space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Pengguna</h1>
-        <p className="text-muted-foreground">Cari dan tinjau akun pengguna yang terdaftar di LARISÉ.</p>
-      </header>
+      <BackendPageHeader title="Kelola Pengguna" description="Cari dan tinjau akun pengguna yang terdaftar di LARISÉ." />
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Pengguna</CardTitle>

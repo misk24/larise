@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminTableError } from "@/components/admin/table-states";
@@ -66,10 +67,7 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
 
   return (
     <div className="backend-content space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Undangan</h1>
-        <p className="text-muted-foreground">Cari dan pantau undangan yang dibuat pengguna.</p>
-      </header>
+      <BackendPageHeader title="Kelola Undangan" description="Cari dan pantau undangan yang dibuat pengguna." />
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Undangan</CardTitle>

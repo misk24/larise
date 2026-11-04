@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { WishesManager } from "@/components/dashboard/wishes-manager";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
@@ -20,10 +21,7 @@ export default async function WishesPage() {
   if (!invitation) {
     return (
       <div className="backend-content space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ucapan & Doa</h1>
-          <p className="text-muted-foreground">Moderasi ucapan dari tamu undangan</p>
-        </div>
+        <BackendPageHeader title="Ucapan & Doa" description="Moderasi ucapan dari tamu undangan." />
         <Card className="shadow-none">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk melihat ucapan.</p>
@@ -41,10 +39,7 @@ export default async function WishesPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ucapan & Doa</h1>
-        <p className="text-muted-foreground">Tampilkan atau sembunyikan ucapan, dan hapus spam.</p>
-      </div>
+      <BackendPageHeader title="Ucapan & Doa" description="Tampilkan atau sembunyikan ucapan, dan hapus spam." />
       {error ? (
         <Card className="shadow-none">
           <CardContent className="p-8 text-sm text-destructive">

@@ -21,7 +21,7 @@ The repository intentionally separates brand-facing and application UI typograph
 - **Dashboard and admin/backend:** Geist Sans for interface text and headings; Geist Mono for code and other monospaced content.
 - **Published invitations:** typography is controlled by the selected invitation theme, not forced to inherit the marketing or dashboard font stack.
 
-Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`. Avoid adding font classes outside the correct scope; audit shared components and nested layouts when changing typography.
+Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`. Backend color tokens live in `styles/backend-theme.css`. Avoid adding font classes outside the correct scope; audit shared components and nested layouts when changing typography.
 
 ## Components and boundaries
 
@@ -33,7 +33,9 @@ Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`
 
 ## Color, surfaces, and layout
 
-- Reuse existing semantic CSS variables and Tailwind mappings rather than scattering hardcoded colors.
+- **Backend palette:** neutral light surfaces with burgundy actions. Light mode uses `#F8F8F7` background, `#FFFFFF` cards, `#252525` foreground, and `#7A3448` primary. Muted burgundy (`#F0E5E8`) marks secondary and active surfaces.
+- Backend palette variables are scoped to `.backend-shell` in `styles/backend-theme.css`; they must not alter marketing/frontend or published invitation theme colors.
+- Reuse semantic CSS variables and Tailwind mappings rather than scattering hardcoded colors.
 - Preserve readability in supported light/dark themes.
 - Use consistent spacing, container widths, radii, and subtle borders. Not every section needs a card.
 - Design mobile first. Long names, URLs, and Indonesian text must wrap without causing page-wide horizontal overflow.

@@ -45,34 +45,34 @@ export function BackendProfileMenu({
   return (
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80 bg-sidebar" align={align}>
+      <DropdownMenuContent className="backend-profile-menu w-80" align={align}>
         <DropdownMenuLabel className="flex items-center gap-4">
           <div className="relative">
             <Avatar className="size-10">
               <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || fallbackName} />
-              <AvatarFallback>{initials}</AvatarFallback>
+              <AvatarFallback className="backend-profile-avatar">{initials}</AvatarFallback>
             </Avatar>
             <span className="absolute bottom-0 right-0 size-2 rounded-full bg-green-600" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col items-start">
-            <span className="text-lg font-semibold text-foreground">
+            <span className="backend-profile-name text-lg font-semibold">
               {profile?.full_name || fallbackName}
             </span>
-            <p className="max-w-full truncate text-muted-foreground">{user.email}</p>
+            <p className="backend-profile-email max-w-full truncate">{user.email}</p>
           </div>
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {!isAdmin && (
-            <DropdownMenuItem asChild className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10">
+            <DropdownMenuItem asChild className="backend-profile-menu-item px-4 py-2">
               <Link href="/dashboard/account" className="flex items-center gap-2">
                 <UserIcon className="size-5" />
                 <span>My Account</span>
               </Link>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem asChild className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10">
+          <DropdownMenuItem asChild className="backend-profile-menu-item px-4 py-2">
             <Link href={`${basePath}/settings`} className="flex items-center gap-2">
               <SettingsIcon className="size-5" />
               <span>Settings</span>
@@ -82,7 +82,7 @@ export function BackendProfileMenu({
 
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="px-4 py-2 text-muted-foreground focus:rounded-md focus:bg-accent/10"
+          className="backend-profile-menu-item px-4 py-2"
           onClick={() => signOut()}
         >
           <LogOutIcon className="size-5" />
