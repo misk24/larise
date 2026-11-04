@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BackendEmptyState, BackendPageHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
 import { FileTextIcon, PaletteIcon, UsersIcon } from "lucide-react";
@@ -67,10 +68,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Ringkasan Admin</h1>
-        <p className="text-muted-foreground">Pantau kondisi platform berdasarkan data database saat ini.</p>
-      </header>
+      <BackendPageHeader title="Ringkasan Admin" description="Pantau kondisi platform berdasarkan data database saat ini." />
 
       {metricErrors.length > 0 ? (
         <p role="alert" className="text-sm text-destructive">
@@ -79,23 +77,8 @@ export default async function AdminDashboardPage() {
       ) : null}
 
       <section aria-label="Statistik platform" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {metrics.map(({ label, value, detail, href, icon: Icon }) => (
-          <Link
-            key={label}
-            href={href}
-            className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <Card className="h-full shadow-none transition-colors hover:bg-muted/40">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{label}</CardTitle>
-                <Icon aria-hidden="true" className="size-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-semibold tabular-nums">{value === null ? "—" : value.toLocaleString("id-ID")}</p>
-                <p className="text-xs text-muted-foreground">{detail}</p>
-              </CardContent>
-            </Card>
-          </Link>
+        {metrics.map(({ label, value, detail, href, icon }) => (
+          <BackendStatCard key={label} label={label} value={value === null ? "—" : value.toLocaleString("id-ID")} description={detail} href={href} icon={icon} />
         ))}
       </section>
 
@@ -123,7 +106,7 @@ export default async function AdminDashboardPage() {
                 ))}
               </ul>
             ) : (
-              <p className="py-8 text-center text-sm text-muted-foreground">Belum ada pengguna.</p>
+              <BackendEmptyState title="Belum ada pengguna" description="Pengguna yang mendaftar akan muncul di sini." className="min-h-36 border-0 bg-transparent py-6" />
             )}
             <Link href="/admin/users" className="mt-4 inline-flex text-sm font-medium text-primary hover:underline">
               Lihat semua pengguna
@@ -152,9 +135,7 @@ export default async function AdminDashboardPage() {
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-3">
-                        <span className="rounded-full bg-muted px-2.5 py-1 text-xs capitalize text-muted-foreground">
-                          {invitation.status}
-                        </span>
+                        <BackendStatusBadge tone={invitation.status === "published" ? "success" : invitation.status === "draft" ? "neutral" : invitation.status === "unpublished" ? "warning" : "info"}>{invitation.status}</BackendStatusBadge>
                         <time dateTime={invitation.created_at} className="text-xs text-muted-foreground">
                           {formatDate(invitation.created_at)}
                         </time>
@@ -164,7 +145,7 @@ export default async function AdminDashboardPage() {
                 })}
               </ul>
             ) : (
-              <p className="py-8 text-center text-sm text-muted-foreground">Belum ada undangan.</p>
+              <BackendEmptyState title="Belum ada undangan" description="Undangan yang dibuat pengguna akan muncul di sini." className="min-h-36 border-0 bg-transparent py-6" />
             )}
             <Link href="/admin/invitations" className="mt-4 inline-flex text-sm font-medium text-primary hover:underline">
               Lihat semua undangan
