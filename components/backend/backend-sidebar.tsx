@@ -35,8 +35,8 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
   const items = role === "admin" ? adminNavs : userNavs;
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarContent className="backend-sidebar bg-sidebar text-sidebar-foreground">
+    <Sidebar collapsible="icon" className="backend-sidebar">
+      <SidebarContent className="bg-sidebar text-sidebar-foreground">
         <SidebarHeader>
           <div
             className={cn(
