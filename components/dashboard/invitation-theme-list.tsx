@@ -34,12 +34,12 @@ const categoryLabels: Record<string, string> = {
 };
 
 const categoryStyles: Record<string, string> = {
-  elegant: "bg-stone-100 text-stone-700 dark:bg-stone-900 dark:text-stone-200",
-  minimalist: "bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200",
-  traditional: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200",
-  modern: "bg-zinc-100 text-zinc-700 dark:bg-zinc-900 dark:text-zinc-200",
-  rustic: "bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-200",
-  floral: "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-200",
+  elegant: "bg-muted text-muted-foreground",
+  minimalist: "bg-card text-foreground",
+  traditional: "bg-secondary text-secondary-foreground",
+  modern: "bg-accent text-accent-foreground",
+  rustic: "bg-muted/80 text-foreground",
+  floral: "bg-primary/10 text-primary",
 };
 
 export function InvitationThemeList({
