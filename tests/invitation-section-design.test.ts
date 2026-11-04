@@ -108,6 +108,21 @@ describe("invitation section design", () => {
     expect(attributes["data-design-element-gap"]).toBe("true");
   });
 
+  it("keeps legacy shared typography settings active for both text groups", () => {
+    const attributes = getSectionDesignAttributes({
+      typography: { fontFamily: "Georgia, serif", color: "#333333", fontWeight: 700, alignment: "left" },
+    });
+
+    expect(attributes["data-design-heading-family"]).toBe("true");
+    expect(attributes["data-design-body-family"]).toBe("true");
+    expect(attributes["data-design-heading-color"]).toBe("true");
+    expect(attributes["data-design-body-color"]).toBe("true");
+    expect(attributes["data-design-heading-weight"]).toBe("true");
+    expect(attributes["data-design-body-weight"]).toBe("true");
+    expect(attributes["data-design-heading-align"]).toBe("true");
+    expect(attributes["data-design-body-align"]).toBe("true");
+  });
+
   it("validates design configuration at the API boundary", () => {
     expect(validateSectionDesign({
       design: {
