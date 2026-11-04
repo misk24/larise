@@ -173,9 +173,11 @@ export function getSectionDesignAttributes(value: unknown): Record<string, strin
   if (has("--section-button-bg", "--section-button-text", "--section-button-border", "--section-button-radius", "--section-button-size", "--section-button-px", "--section-button-py")) {
     attributes["data-design-button"] = "true";
   }
-  if (has("--section-image-radius", "--section-image-ratio", "--section-image-fit", "--section-image-position")) {
-    attributes["data-design-image"] = "true";
-  }
+  if (has("--section-image-radius", "--section-image-ratio", "--section-image-fit", "--section-image-position")) attributes["data-design-image"] = "true";
+  if (has("--section-image-radius")) attributes["data-design-image-radius"] = "true";
+  if (has("--section-image-ratio")) attributes["data-design-image-ratio"] = "true";
+  if (has("--section-image-fit")) attributes["data-design-image-fit"] = "true";
+  if (has("--section-image-position")) attributes["data-design-image-position"] = "true";
   if (has("--section-icon-color", "--section-icon-size", "--section-icon-stroke")) attributes["data-design-icon"] = "true";
   if (has("--section-divider-color", "--section-divider-thickness", "--section-divider-width", "--section-divider-style", "--section-divider-spacing")) attributes["data-design-divider"] = "true";
   if (has("--section-ornament-color", "--section-ornament-size", "--section-ornament-opacity", "--section-ornament-position")) attributes["data-design-ornament"] = "true";
