@@ -1,6 +1,6 @@
 # LARISÉ Architecture
 
-> Status: implementation-oriented baseline checked against the current `main` source files and `package.json`. Database behavior must be verified against migrations and deployed schema before making operational claims.
+> Status: implementation-oriented baseline checked against the current `main` source files and `package.json`. Database behavior must be verified against migrations and deployed schema before making operational claims. Current delivery and release risks are tracked in [`docs/STATUS.md`](docs/STATUS.md).
 
 ## 1. Verified stack
 
