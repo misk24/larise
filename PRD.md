@@ -2,13 +2,13 @@
 
 > Status: product intent and verified implementation status are recorded separately. A documented gap is not permission to weaken or remove an approved requirement.
 
-## Current delivery snapshot — 2026-11-05
+## Current delivery snapshot — 2026-11-08
 
 The core invitation lifecycle, account flows, section builder/renderer, image upload, public invitation, baseline guest responses, dashboard/admin operations, Theme Builder design configuration, and backend visual foundation are merged to `main`. This snapshot does not change product requirements; detailed current delivery tracking and release risks live in [`docs/STATUS.md`](docs/STATUS.md).
 
-**Open work:** PR [#53](https://github.com/misk24/larise/pull/53) (dashboard/guest/gallery integration and token-based RSVP security; production migration must be coordinated with application release), PR [#52](https://github.com/misk24/larise/pull/52) (user-supplied background music URL), and PR [#58](https://github.com/misk24/larise/pull/58) (remaining dashboard category palette cleanup). PR #57 was closed without merge and superseded by #58.
+**Applied locally on `feat/dashboard-integration-rebased`, not merged or deployed:** the rebased dashboard/guest/gallery integration and token-based RSVP security from PR [#53](https://github.com/misk24/larise/pull/53), the user-supplied background music URL from PR [#52](https://github.com/misk24/larise/pull/52), and the dashboard theme-category palette cleanup from PR [#58](https://github.com/misk24/larise/pull/58). The public RSVP/wish migration is split into two ordered migrations and is not applied to the target database yet. PR #57 was closed without merge and superseded by #58.
 
-**Next priorities:** safely integrate open PRs; verify migrations and owner/admin/public behavior against the target Supabase project; add cross-user RLS behavior tests; finish marketing/UX accessibility and responsive audits; then complete production monitoring, backup/recovery, smoke-test and rollback readiness. See `docs/STATUS.md` for exact scope and caveats.
+**Next priorities:** review and merge the local branch; apply migration phase 1, deploy the token-based client, then apply the phase-2 lock migration; verify migrations and owner/admin/public behavior against the target Supabase project; add cross-user RLS behavior tests; finish marketing/UX accessibility and responsive audits; then complete production monitoring, backup/recovery, smoke-test and rollback readiness. See `docs/STATUS.md` for exact rollout order and caveats.
 
 ## 1. Product summary
 
@@ -48,8 +48,10 @@ The primary market and default product language are Indonesia and Bahasa Indones
 
 1. Open a shared public invitation on mobile or desktop.
 2. Read event information and use available location/media features.
-3. Submit an RSVP and/or message where enabled.
+3. Submit an RSVP and/or message where enabled, using the personal guest link shared by the owner.
 4. Receive clear validation and submission feedback.
+
+Public RSVP and wishes are token-only. A guest opens the invitation through a personal link containing `?guest=<token>`; the general invitation link is view-only and cannot submit guest responses.
 
 ### Administrator
 
@@ -87,14 +89,18 @@ These journeys express product intent. Their implementation status is documented
 - Let owners edit section content, visibility, and order; preview before publishing.
 - Keep the Cover and Opening at the beginning and Closing at the end.
 - Provide event details, location, gallery, RSVP/wishes, gift details, and closing content.
+- Allow owners to set an optional background music URL; playback is user-initiated and the app does not host audio.
 - Keep countdown as a planned feature, deferred from the current implementation scope until a later phase.
 - Save changes with clear feedback and avoid claiming publication until it succeeds.
 
 **Verified source status:** PR #48 is merged into `main`. The current builder list in `components/dashboard/invitation-builder.tsx` filters editable sections to ten types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing. RSVP and wishes are combined in the guest-facing flow. The validation schema still recognizes a `countdown` section type, but the builder's current filter excludes it. Countdown is intentionally deferred to a later phase by product decision. It is not a current acceptance criterion for this phase, and it must not be described as implemented. Revisit it when the later phase is planned.
 
+**Background music status:** the code from PR #52 is applied locally on `feat/dashboard-integration-rebased`. The builder accepts an HTTPS audio URL validated by `backgroundMusicUrlSchema`, saves it through the owner-scoped `saveInvitationBackgroundMusic` action, and the shared renderer shows a native audio control with `preload="none"`. `invitations.background_music_url` already exists in the foundation migration, so no new column migration is needed. Remote file compatibility is not verified by the app.
+
 ### Guests and content
 
 - Support guest response management and wishes/messages where enabled.
+- Require a valid per-guest token for public RSVP and wish submission; the general invitation link must not submit responses on behalf of a guest.
 - Support invitation media and configurable sections only where implemented and validated.
 - Protect invitation ownership and guest data at server/database layers.
 

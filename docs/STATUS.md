@@ -1,7 +1,7 @@
 # LARISÉ Project Status
 
-> Updated: 2026-11-05  
-> Repository baseline: `main`  
+> Updated: 2026-11-08  
+> Repository baseline: `main` (local branch `feat/dashboard-integration-rebased` includes pending work)  
 > Product requirements: `PRD.md` and the approved LARISÉ PRD in Notion  
 > This document is the concise delivery tracker. It does not replace product requirements or architecture documentation.
 
@@ -9,7 +9,7 @@
 
 The core invitation lifecycle is implemented: authentication, invitation creation, theme selection, section-based editing, shared rendering, image uploads, public invitations, guest responses, wishes, and dashboard management are present in the repository. Admin operations and the Theme Builder's section-level design configuration are also merged.
 
-Current work is concentrated on dashboard integration/security refinements and optional background music. The most important release risk is not missing UI: it is coordinating the open dashboard integration PR with its production migration, then verifying real production behavior and authorization.
+The dashboard integration from PR #53, background music from PR #52, and the dashboard palette cleanup from PR #58 have been re-applied locally on `feat/dashboard-integration-rebased`. They are **not merged, pushed, or deployed**, and the target database has not received the RSVP token migration. The most important release risk is now ordering: the phase-1 migration and the token-based client must be live before the phase-2 lock migration is applied, otherwise guests on the previous app version lose RSVP/wish submission.
 
 ## Completed and merged
 
@@ -22,24 +22,37 @@ Current work is concentrated on dashboard integration/security refinements and o
 | Invitation builder                 | Section content editing, visibility/order, validation, save state, preview and publish controls.                                                                                                                |
 | Media                              | Supabase Storage image upload, validation, ownership checks, metadata, deletion handling and gallery integration. Advanced server-side optimization remains deferred.                                           |
 | Public invitation                  | Published-only public route at `/undangan/[slug]`, shared renderer, server rendering and share metadata.                                                                                                        |
-| Guest response foundation          | Guest, RSVP and wishes functionality has an earlier merged baseline. Do not confuse it with the additional token-security and dashboard integration work still in PR #53.                                       |
+| Guest response foundation          | Earlier merged guest, RSVP and wishes baseline. Token-only public submission is part of the pending local branch below.                                                                                        |
 | Dashboard and admin                | Dashboard management baseline, admin overview/users/invitations, theme operations and shared backend components. PR #54 merged.                                                                                 |
 | Theme Builder design configuration | Section-level background, typography, layout, buttons, images and decorative controls, validated configuration and real section renderer preview. PR #55 merged.                                                |
 | Backend visual system              | Backend-scoped neutral/burgundy semantic palette with light/dark tokens. PR #56 merged.                                                                                                                         |
 
-## In progress: open pull requests
+## Applied locally, pending merge and deployment
 
-| PR                                                                                       | Scope                                                                                                                             | Current status / required next step                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [#53 Dashboard management integration](https://github.com/misk24/larise/pull/53)         | Gallery page, invitation-scoped guest/wishes/gallery management, autosave sequencing and token-based public RSVP/wishes security. | CI and Vercel Preview passed for the reported HEAD. **Not merged.** Branch is significantly diverged from `main`; perform a final diff/rebase review. Coordinate the new RSVP token migration with the application release. Do not apply that migration before the token-based client is deployed, because old direct-insert clients would stop working. Run production migration and real authorization/public-submission checks as a coordinated release. |
-| [#52 Background music URL](https://github.com/misk24/larise/pull/52)                     | Owner-supplied HTTPS audio URL, owner-checked save action and user-initiated audio playback in preview/public invitation.         | CI and Vercel Preview passed. **Not merged.** Review and merge separately. No migration is required; the column already exists. Compatibility of the remote audio file is not verified by the app.                                                                                                                                                                                                                                                          |
-| [#58 Dashboard theme-category palette cleanup](https://github.com/misk24/larise/pull/58) | Replace remaining fixed category colors with backend semantic tokens.                                                             | **Open.** CI/Preview status must be checked before merge. PR #57 was closed without merge and superseded by this follow-up.                                                                                                                                                                                                                                                                                                                                 |
+Branch: `feat/dashboard-integration-rebased` (not pushed). Verified with `npm run typecheck`, `npm run lint` (0 errors, existing warnings only), `npm test` (6 files, 29 tests) and `npm run build` (28 routes, Next 16.4.5).
+
+| Commit    | Scope                                                                                                                                                                                                                                                              |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `b22ec59` | Rebased PR #53 dashboard/guest/gallery integration. Keeps newer `main` UI (`BackendPageHeader`, section `content.design`, Tailwind 4), adds multi-invitation dashboard flows, guest tokens and atomic builder saves, and adopts token-only RSVP via `submit_guest_rsvp` / `submit_guest_wish` / `resolve_public_guest`. Legacy `?to=` guest parameter removed. |
+| `dccc1fb` | Splits the public guest RPC migration into two ordered phases (see rollout below).                                                                                                                                                                                |
+| `05aa2cb` | Re-applies PR #52 background music: `backgroundMusicUrlSchema`, owner-scoped `saveInvitationBackgroundMusic`, builder URL input, and a `preload="none"` audio player in the shared renderer. No new column migration; `invitations.background_music_url` already exists. |
+| `e85819b` | Re-applies PR #58 dashboard theme-category chips using backend semantic tokens instead of fixed Tailwind colors.                                                                                                                                                  |
+
+PR #52 and PR #58 are closed unmerged on GitHub because their documentation was stale; only their code was re-applied. PR #53 is still open on GitHub and should be superseded by this branch or updated after review.
+
+## Migration rollout order
+
+1. **Phase 1 — `20261103100000_secure_public_guest_rsvp.sql`:** adds the `guests (invitation_id, public_token)` index and the token-verified RPCs while keeping the legacy anonymous write policies. Safe to apply before the app release because the old client keeps working.
+2. **Deploy the application release** that uses `resolve_public_guest`, `submit_guest_rsvp` and `submit_guest_wish`.
+3. **Phase 2 — `20261105120000_lock_public_guest_writes.sql`:** drops the legacy anonymous insert/update policies and revokes direct `anon` writes on `rsvps` and `wishes`. Apply only after step 2 is verified in production.
+
+Neither migration has been applied to the target database. A read-only check previously confirmed `guests.public_token` values match `^[0-9a-f]{36}$` but `resolve_public_guest` did not exist yet, confirming the migration is still pending.
 
 ## Next work, in priority order
 
-1. **Close the open PRs safely.** Review/rebase #53 against current `main`, resolve its full diff, and coordinate its migration/release. Review #52 and #58 independently; do not merge based only on a green check.
-2. **Production verification.** Exercise real owner/admin accounts, public published/unpublished routes, guest-token RSVP/wishes, media operations and dashboard counts against the target Supabase project.
-3. **Authorization and data-integrity hardening.** Add authenticated cross-user RLS behavior tests to CI; verify all relevant migrations and policies in the target environment. Review public interaction rate limiting and media cleanup/optimization gaps.
+1. **Review and land the local branch safely.** Push `feat/dashboard-integration-rebased`, open or update the PR, review the full diff, and follow the migration rollout order above. Do not merge based only on a green check.
+2. **Production verification.** Exercise real owner/admin accounts, public published/unpublished routes, guest-token RSVP/wishes, view-only general links, media operations and dashboard counts against the target Supabase project.
+3. **Authorization and data-integrity hardening.** Add authenticated cross-user RLS behavior tests to CI; verify all relevant migrations and policies in the target environment. Review public interaction rate limiting, RSVP+wish atomicity, event-date validation and media cleanup/optimization gaps.
 4. **Marketing and UX completion.** Audit the landing/marketing experience against the approved Indonesian, mobile-first, minimal editorial + modern luxe direction. Finish loading, empty, error, validation, keyboard, focus, contrast and reduced-motion states.
 5. **Production readiness.** Confirm production/staging environment separation, domain, migration/release procedure, monitoring, backup/recovery, smoke tests and rollback procedure.
 
@@ -54,7 +67,7 @@ These are not current blockers and must not be represented as implemented:
 - Custom domains, collaboration, version history, advanced analytics/SEO and AI features.
 - Timeless/no-expiration promise until storage and operating economics are validated.
 
-Background music via a user-supplied URL is being reviewed in PR #52; it is not an audio-hosting platform.
+Background music is a user-supplied URL only; LARISÉ is not an audio-hosting platform.
 
 ## Source-of-truth and status rules
 
