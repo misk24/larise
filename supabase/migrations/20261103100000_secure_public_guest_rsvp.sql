@@ -1,9 +1,12 @@
--- Public RSVP submissions must prove possession of the guest's public token.
--- Anonymous clients cannot insert/update guest or RSVP rows directly anymore.
+-- Phase 1 of 2: add token-verified public RPCs.
+-- The legacy anonymous write policies are intentionally kept for this release
+-- so the currently deployed app keeps working during rollout. Phase 2
+-- (20261105120000_lock_public_guest_writes.sql) removes them after the app
+-- using these RPCs is live.
 
-drop policy if exists "Public create guests for published invitations" on public.guests;
-drop policy if exists "Public create rsvps for published invitations" on public.rsvps;
-drop policy if exists "Public update rsvps for published invitations" on public.rsvps;
+-- Speed up token lookup used by every public RSVP/wish call.
+create index if not exists guests_invitation_public_token_idx
+  on public.guests (invitation_id, public_token);
 
 create or replace function public.submit_guest_rsvp(
   p_invitation_id uuid,
@@ -70,9 +73,6 @@ $$;
 
 revoke all on function public.submit_guest_rsvp(uuid, text, text, integer) from public;
 grant execute on function public.submit_guest_rsvp(uuid, text, text, integer) to anon, authenticated;
-
--- Defense in depth: public clients may not directly mutate RSVP rows.
-revoke insert, update, delete on public.rsvps from anon;
 
 
 -- Resolve the opaque guest token without exposing guest rows to anonymous clients.
@@ -145,7 +145,3 @@ $$;
 
 revoke all on function public.submit_guest_wish(uuid, text, text) from public;
 grant execute on function public.submit_guest_wish(uuid, text, text) to anon, authenticated;
-
--- Public clients can no longer forge guest identity in wish rows.
-drop policy if exists "Public create wishes for published invitations" on public.wishes;
-revoke insert on public.wishes from anon;
