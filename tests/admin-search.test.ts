@@ -1,5 +1,9 @@
+import {
+  normalizeAdminSearchTerm,
+  postgrestIlikePattern,
+  sanitizeAdminSearch,
+} from "@/lib/utils/admin-search";
 import { describe, expect, it } from "vitest";
-import { normalizeAdminSearchTerm, postgrestIlikePattern, sanitizeAdminSearch } from "@/lib/utils/admin-search";
 
 describe("admin search normalization", () => {
   it("strips PostgREST filter grammar and wildcard characters", () => {
@@ -13,11 +17,15 @@ describe("admin search normalization", () => {
     expect(email).toBe("mail@example.com");
     expect(postgrestIlikePattern(email)).toBe('"%mail@example.com%"');
     expect(postgrestIlikePattern(order)).toBe('"%INV-2026.001%"');
-    expect(sanitizeAdminSearch('x"),status.eq.paid,("')).toBe("x status.eq.paid");
+    expect(sanitizeAdminSearch('x"),status.eq.paid,("')).toBe(
+      "x status.eq.paid",
+    );
   });
 
   it("keeps Unicode letters and normalizes separators for joined-field search", () => {
-    expect(normalizeAdminSearchTerm("Mail.Example+tag@domain.com")).toBe("mailexampletagdomaincom");
+    expect(normalizeAdminSearchTerm("Mail.Example+tag@domain.com")).toBe(
+      "mailexampletagdomaincom",
+    );
     expect(normalizeAdminSearchTerm("Ayu Putri")).toBe("ayuputri");
     expect(normalizeAdminSearchTerm("Dewi-Sari")).toBe("dewisari");
   });

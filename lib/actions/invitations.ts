@@ -1,8 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import {
   buildInvitationSlug,
@@ -10,10 +7,15 @@ import {
   invitationSettingsSchema,
   normalizeSlug,
 } from "@/lib/validation/invitation";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
 
 async function requireUser() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) return { supabase, user: null };
   return { supabase, user };
@@ -46,9 +48,12 @@ async function uniqueSlug(
   throw new Error("Tidak dapat membuat URL undangan yang unik.");
 }
 
-export async function createInvitation(input: z.input<typeof invitationInputSchema>) {
+export async function createInvitation(
+  input: z.input<typeof invitationInputSchema>,
+) {
   const parsed = invitationInputSchema.safeParse(input);
-  if (!parsed.success) return { error: "Data undangan belum lengkap atau tidak valid." };
+  if (!parsed.success)
+    return { error: "Data undangan belum lengkap atau tidak valid." };
 
   const { supabase, user } = await requireUser();
   if (!user) return { error: "Sesi login tidak valid." };
@@ -63,13 +68,18 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
   if (themeError || !theme) return { error: "Tema tidak tersedia." };
 
   try {
-    const firstNickname = parsed.data.nameOrder === "groom_first"
-      ? parsed.data.groomNickname
-      : parsed.data.brideNickname;
-    const secondNickname = parsed.data.nameOrder === "groom_first"
-      ? parsed.data.brideNickname
-      : parsed.data.groomNickname;
-    const slug = await uniqueSlug(supabase, buildInvitationSlug(firstNickname, secondNickname));
+    const firstNickname =
+      parsed.data.nameOrder === "groom_first"
+        ? parsed.data.groomNickname
+        : parsed.data.brideNickname;
+    const secondNickname =
+      parsed.data.nameOrder === "groom_first"
+        ? parsed.data.brideNickname
+        : parsed.data.groomNickname;
+    const slug = await uniqueSlug(
+      supabase,
+      buildInvitationSlug(firstNickname, secondNickname),
+    );
 
     const { data: invitation, error } = await supabase
       .from("invitations")
@@ -108,7 +118,8 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
     revalidatePath("/dashboard/invitations");
     redirect(`/dashboard/invitations/${invitation.id}/builder`);
   } catch (error) {
-    if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) throw error;
+    if (error instanceof Error && error.message.includes("NEXT_REDIRECT"))
+      throw error;
     console.error("createInvitation unexpected error", error);
     return { error: "Terjadi kesalahan. Silakan coba lagi." };
   }
@@ -180,7 +191,10 @@ export async function updateInvitation(
   }
 }
 
-export async function setInvitationPublished(invitationId: string, published: boolean) {
+export async function setInvitationPublished(
+  invitationId: string,
+  published: boolean,
+) {
   if (!z.string().uuid().safeParse(invitationId).success) {
     return { error: "ID undangan tidak valid." };
   }
@@ -197,7 +211,8 @@ export async function setInvitationPublished(invitationId: string, published: bo
 
   if (!invitation) return { error: "Undangan tidak ditemukan." };
 
-  if (published && !invitation.theme_id) return { error: "Pilih tema sebelum menerbitkan." };
+  if (published && !invitation.theme_id)
+    return { error: "Pilih tema sebelum menerbitkan." };
 
   const { error } = await supabase
     .from("invitations")
@@ -250,7 +265,9 @@ export async function duplicateInvitation(invitationId: string) {
 
   const { data: source } = await supabase
     .from("invitations")
-    .select("id,theme_id,slug,groom_name,groom_nickname,bride_name,bride_nickname,name_order,event_date")
+    .select(
+      "id,theme_id,slug,groom_name,groom_nickname,bride_name,bride_nickname,name_order,event_date",
+    )
     .eq("id", invitationId)
     .eq("user_id", user.id)
     .single();

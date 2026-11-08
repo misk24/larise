@@ -52,7 +52,11 @@ export default function SectionForm({ id }: Props) {
       return;
     }
 
-    if (!parsedContent || typeof parsedContent !== "object" || Array.isArray(parsedContent)) {
+    if (
+      !parsedContent ||
+      typeof parsedContent !== "object" ||
+      Array.isArray(parsedContent)
+    ) {
       setError("Konten default harus berupa objek JSON, misalnya {}.");
       return;
     }
@@ -71,7 +75,10 @@ export default function SectionForm({ id }: Props) {
 
       if (!res.ok) {
         const payload = await res.json().catch(() => null);
-        setError(payload?.error ?? "Section gagal dibuat. Coba periksa data yang dimasukkan.");
+        setError(
+          payload?.error ??
+            "Section gagal dibuat. Coba periksa data yang dimasukkan.",
+        );
         return;
       }
 
@@ -79,7 +86,9 @@ export default function SectionForm({ id }: Props) {
       setDefaultContent("{}");
       router.refresh();
     } catch {
-      setError("Tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.");
+      setError(
+        "Tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.",
+      );
     } finally {
       setLoading(false);
     }
@@ -118,7 +127,11 @@ export default function SectionForm({ id }: Props) {
         aria-invalid={Boolean(error)}
       />
 
-      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
 
       <Button disabled={loading}>
         {loading && <Loader2Icon className="mr-2 size-4 animate-spin" />}

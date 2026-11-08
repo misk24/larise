@@ -1,35 +1,74 @@
-import { BackendPageHeader } from "@/components/backend/backend-ui";
-import { redirect } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminTableError } from "@/components/admin/table-states";
-import { ThemesTable, type AdminThemeRow } from "@/components/admin/tables/themes/themes-table";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { requireAdmin } from "@/lib/actions/auth";
-import { postgrestIlikePattern, sanitizeAdminSearch } from "@/lib/utils/admin-search";
+import {
+  ThemesTable,
+  type AdminThemeRow,
+} from "@/components/admin/tables/themes/themes-table";
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { requireAdmin } from "@/lib/actions/auth";
+import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  postgrestIlikePattern,
+  sanitizeAdminSearch,
+} from "@/lib/utils/admin-search";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
+type SearchParams = Promise<{
+  q?: string;
+  page?: string;
+  size?: string;
+  sort?: string;
+  direction?: string;
+}>;
 
-function positiveInteger(value: string | undefined, fallback: number, max: number) {
+function positiveInteger(
+  value: string | undefined,
+  fallback: number,
+  max: number,
+) {
   const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, max) : fallback;
+  return Number.isInteger(parsed) && parsed > 0
+    ? Math.min(parsed, max)
+    : fallback;
 }
 
-export default async function AdminThemesPage({ searchParams }: { searchParams: SearchParams }) {
+export default async function AdminThemesPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   await requireAdmin();
   const params = await searchParams;
   const query = sanitizeAdminSearch(params.q);
-  const pageSize = [10, 20, 50].includes(Number(params.size)) ? Number(params.size) : 20;
-  const sortFields = ["created_at", "name", "category", "price", "is_active"] as const;
-  const sort = sortFields.find((field) => field === params.sort) ?? "created_at";
+  const pageSize = [10, 20, 50].includes(Number(params.size))
+    ? Number(params.size)
+    : 20;
+  const sortFields = [
+    "created_at",
+    "name",
+    "category",
+    "price",
+    "is_active",
+  ] as const;
+  const sort =
+    sortFields.find((field) => field === params.sort) ?? "created_at";
   const direction = params.direction === "asc" ? "asc" : "desc";
   const requestedPage = positiveInteger(params.page, 1, 1_000_000);
   const supabase = createAdminClient();
 
   let request = supabase
     .from("themes")
-    .select("id,name,slug,category,price,is_active,created_at", { count: "exact" })
+    .select("id,name,slug,category,price,is_active,created_at", {
+      count: "exact",
+    })
     .order(sort, { ascending: direction === "asc" })
     .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
 
@@ -41,14 +80,19 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
       `category.ilike.${pattern}`,
     ];
     const normalized = query.toLocaleLowerCase("id-ID");
-    if (["aktif", "active", "true", "yes"].includes(normalized)) clauses.push("is_active.eq.true");
-    if (["nonaktif", "inactive", "false", "no"].includes(normalized)) clauses.push("is_active.eq.false");
+    if (["aktif", "active", "true", "yes"].includes(normalized))
+      clauses.push("is_active.eq.true");
+    if (["nonaktif", "inactive", "false", "no"].includes(normalized))
+      clauses.push("is_active.eq.false");
     if (/^\d+(\.\d+)?$/.test(query)) clauses.push(`price.eq.${query}`);
     request = request.or(clauses.join(","));
   }
   const { data, error, count } = await request;
   const total = count ?? 0;
-  const page = Math.min(requestedPage, Math.max(1, Math.ceil(total / pageSize)));
+  const page = Math.min(
+    requestedPage,
+    Math.max(1, Math.ceil(total / pageSize)),
+  );
 
   if (!error && page !== requestedPage) {
     const next = new URLSearchParams();
@@ -62,16 +106,31 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
 
   return (
     <div className="backend-content space-y-6">
-      <BackendPageHeader title="Kelola Tema" description="Kelola tema undangan yang tersedia untuk pengguna." actions={<Button asChild><Link href="/admin/themes/create">Buat Tema</Link></Button>} />
+      <BackendPageHeader
+        title="Kelola Tema"
+        description="Kelola tema undangan yang tersedia untuk pengguna."
+        actions={
+          <Button asChild>
+            <Link href="/admin/themes/create">Buat Tema</Link>
+          </Button>
+        }
+      />
 
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Tema</CardTitle>
-          <CardDescription>{error ? "Jumlah tema tidak dapat dimuat." : `Total ${total.toLocaleString("id-ID")} tema`}</CardDescription>
+          <CardDescription>
+            {error
+              ? "Jumlah tema tidak dapat dimuat."
+              : `Total ${total.toLocaleString("id-ID")} tema`}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {error ? (
-            <AdminTableError title="Tema gagal dimuat" description="Periksa izin baca admin pada database." />
+            <AdminTableError
+              title="Tema gagal dimuat"
+              description="Periksa izin baca admin pada database."
+            />
           ) : (
             <ThemesTable
               data={(data ?? []) as AdminThemeRow[]}

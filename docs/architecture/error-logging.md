@@ -15,12 +15,14 @@ Use typed application errors at domain/service boundaries.
 Use the shared logger for server-side operational events.
 
 Log:
+
 - event name or concise message
 - timestamp
 - safe contextual identifiers when necessary
 - error cause internally
 
 Never log:
+
 - passwords
 - access/refresh tokens
 - cookies
@@ -37,6 +39,7 @@ Routes, server actions, and domain services should translate low-level failures 
 ## Phase 0 standard
 
 A failure is considered handled when:
+
 1. the user receives a safe, actionable message;
 2. the server retains enough context to diagnose the failure;
 3. secrets and sensitive data are absent from logs;

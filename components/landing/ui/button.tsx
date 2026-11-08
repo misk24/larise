@@ -1,5 +1,5 @@
-import * as React from "react";
 import { cn } from "@/lib/utils";
+import * as React from "react";
 
 export type LandingButtonVariant = "primary" | "secondary" | "text" | "icon";
 export type LandingButtonSize = "sm" | "md" | "lg" | "icon";
@@ -13,8 +13,7 @@ const variantStyles: Record<LandingButtonVariant, string> = {
   secondary:
     "border-[#29271F]/25 bg-transparent text-[#29271F] hover:border-[#A58A67] hover:bg-[#A58A67]/10",
   text: "border-transparent bg-transparent text-[#29271F] hover:text-[#927653]",
-  icon:
-    "border-[#29271F]/20 bg-transparent text-[#29271F] hover:border-[#A58A67] hover:bg-[#A58A67]/10",
+  icon: "border-[#29271F]/20 bg-transparent text-[#29271F] hover:border-[#A58A67] hover:bg-[#A58A67]/10",
 };
 
 const sizeStyles: Record<LandingButtonSize, string> = {
@@ -33,11 +32,16 @@ export function landingButtonStyles({
   size?: LandingButtonSize;
   className?: string;
 } = {}) {
-  return cn(baseStyles, "rounded-[4px]", variantStyles[variant], sizeStyles[size], className);
+  return cn(
+    baseStyles,
+    "rounded-[4px]",
+    variantStyles[variant],
+    sizeStyles[size],
+    className,
+  );
 }
 
-export interface LandingButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface LandingButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: LandingButtonVariant;
   size?: LandingButtonSize;
 }

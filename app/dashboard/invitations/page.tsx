@@ -17,7 +17,18 @@ export default async function InvitationsPage() {
   if (error) throw new Error("Gagal memuat undangan.");
   return (
     <div className="backend-content space-y-6">
-      <BackendPageHeader title="Undangan Saya" description="Kelola draft, tema, duplikasi, dan status publikasi." actions={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>} />
+      <BackendPageHeader
+        title="Undangan Saya"
+        description="Kelola draft, tema, duplikasi, dan status publikasi."
+        actions={
+          <Button asChild>
+            <Link href="/dashboard/invitations/create">
+              <PlusIcon className="size-4" />
+              Buat Undangan
+            </Link>
+          </Button>
+        }
+      />
       {invitations?.length ? (
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {invitations.map((invitation) => {

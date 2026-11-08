@@ -1,14 +1,14 @@
 "use server";
 
-import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import {
   emailSchema,
   loginSchema,
   registerSchema,
   safeRedirectPath,
 } from "@/lib/auth/validation";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 const getSiteUrl = () => {
   const value =
@@ -17,7 +17,10 @@ const getSiteUrl = () => {
     process.env.VERCEL_URL ||
     "http://localhost:3000";
 
-  return (value.startsWith("http") ? value : `https://${value}`).replace(/\/$/, "");
+  return (value.startsWith("http") ? value : `https://${value}`).replace(
+    /\/$/,
+    "",
+  );
 };
 
 function providerLabel(provider: string | null | undefined) {
@@ -27,17 +30,29 @@ function providerLabel(provider: string | null | undefined) {
 }
 
 function isDuplicateAuthError(message: string) {
-  return /already registered|already exists|user already|email.*taken/i.test(message);
+  return /already registered|already exists|user already|email.*taken/i.test(
+    message,
+  );
 }
 
-export async function signUpWithEmail(email: string, password: string): Promise<{ error?: string; shouldRedirectToLogin?: boolean; needsVerification?: boolean }> {
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+): Promise<{
+  error?: string;
+  shouldRedirectToLogin?: boolean;
+  needsVerification?: boolean;
+}> {
   const validation = registerSchema.safeParse({
     email,
     password,
     confirmPassword: password,
   });
   if (!validation.success) {
-    return { error: validation.error.issues[0]?.message ?? "Data registrasi tidak valid." };
+    return {
+      error:
+        validation.error.issues[0]?.message ?? "Data registrasi tidak valid.",
+    };
   }
 
   const normalizedEmail = email.trim().toLowerCase();
@@ -73,7 +88,8 @@ export async function signUpWithEmail(email: string, password: string): Promise<
   if (error) {
     if (isDuplicateAuthError(error.message)) {
       return {
-        error: "Email ini sudah terdaftar. Silakan login atau gunakan fitur lupa password.",
+        error:
+          "Email ini sudah terdaftar. Silakan login atau gunakan fitur lupa password.",
         shouldRedirectToLogin: true,
       };
     }
@@ -89,7 +105,8 @@ export async function signUpWithEmail(email: string, password: string): Promise<
   // confirmation is enabled. An empty identities list means this is not a new account.
   if (data.user.identities && data.user.identities.length === 0) {
     return {
-      error: "Email ini sudah terdaftar. Silakan login atau gunakan fitur lupa password.",
+      error:
+        "Email ini sudah terdaftar. Silakan login atau gunakan fitur lupa password.",
       shouldRedirectToLogin: true,
     };
   }
@@ -110,7 +127,10 @@ export async function signUpWithEmail(email: string, password: string): Promise<
     console.error("Registration profile upsert failed:", upsertError);
     // Do not delete the Auth user here: a retry should not destroy an account
     // that may already have been created successfully by Supabase.
-    return { error: "Akun dibuat, tetapi profil belum siap. Silakan coba login atau hubungi dukungan." };
+    return {
+      error:
+        "Akun dibuat, tetapi profil belum siap. Silakan coba login atau hubungi dukungan.",
+    };
   }
 
   return { needsVerification: !data.session };
@@ -123,7 +143,9 @@ export async function signInWithEmail(
 ): Promise<{ error?: string; success?: boolean; redirectTo?: string }> {
   const validation = loginSchema.safeParse({ email, password });
   if (!validation.success) {
-    return { error: validation.error.issues[0]?.message ?? "Data login tidak valid." };
+    return {
+      error: validation.error.issues[0]?.message ?? "Data login tidak valid.",
+    };
   }
 
   const normalizedEmail = email.trim().toLowerCase();
@@ -150,7 +172,10 @@ export async function signInWithEmail(
     }
 
     if (error && /email not confirmed/i.test(error.message)) {
-      return { error: "Verifikasi email terlebih dahulu melalui tautan yang kami kirim." };
+      return {
+        error:
+          "Verifikasi email terlebih dahulu melalui tautan yang kami kirim.",
+      };
     }
 
     return { error: "Email atau password salah. Silakan coba lagi." };
@@ -169,7 +194,8 @@ export async function signInWithEmail(
     return { error: "Login belum dapat diselesaikan. Coba lagi nanti." };
   }
 
-  const defaultDestination = profile?.role === "admin" ? "/admin" : "/dashboard";
+  const defaultDestination =
+    profile?.role === "admin" ? "/admin" : "/dashboard";
   const requestedDestination = safeRedirectPath(redirectTo, defaultDestination);
   const destination =
     profile?.role === "admin"
@@ -181,10 +207,14 @@ export async function signInWithEmail(
   return { success: true, redirectTo: destination };
 }
 
-export async function requestPasswordReset(email: string): Promise<{ error?: string; success?: boolean }> {
+export async function requestPasswordReset(
+  email: string,
+): Promise<{ error?: string; success?: boolean }> {
   const validation = emailSchema.safeParse(email);
   if (!validation.success) {
-    return { error: validation.error.issues[0]?.message ?? "Email tidak valid." };
+    return {
+      error: validation.error.issues[0]?.message ?? "Email tidak valid.",
+    };
   }
 
   const normalizedEmail = validation.data.toLowerCase();
@@ -206,9 +236,12 @@ export async function requestPasswordReset(email: string): Promise<{ error?: str
   }
 
   if (profile?.provider === "email") {
-    const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
-      redirectTo: `${getSiteUrl()}/auth/recovery-callback`,
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      normalizedEmail,
+      {
+        redirectTo: `${getSiteUrl()}/auth/recovery-callback`,
+      },
+    );
 
     if (error) {
       console.error("Password reset request failed:", error.message);
@@ -227,7 +260,10 @@ export async function signOut() {
 
 export async function getUser() {
   const supabase = await createClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
   if (error) {
     console.error("Session user lookup failed:", error.message);
     return null;
@@ -241,7 +277,9 @@ export async function updateProfile(input: {
   avatar_url?: string | null;
 }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return { error: "Sesi login tidak valid." };
 
   const fullName = input.full_name.trim();
@@ -253,7 +291,11 @@ export async function updateProfile(input: {
     return { error: "Nomor telepon maksimal 30 karakter." };
   }
 
-  const updates: { full_name: string; phone: string | null; avatar_url?: string | null } = {
+  const updates: {
+    full_name: string;
+    phone: string | null;
+    avatar_url?: string | null;
+  } = {
     full_name: fullName,
     phone: phone || null,
   };
@@ -292,7 +334,9 @@ export async function updateProfile(input: {
 
 export async function getUserProfile() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return null;
 
   const { data, error } = await supabase
@@ -323,7 +367,6 @@ export async function requireAdmin() {
   return profile;
 }
 
-
 export async function changeAccountPassword(input: {
   currentPassword: string;
   newPassword: string;
@@ -334,7 +377,11 @@ export async function changeAccountPassword(input: {
   if (typeof currentPassword !== "string" || !currentPassword) {
     return { error: "Masukkan password saat ini." };
   }
-  if (typeof newPassword !== "string" || newPassword.length < 8 || newPassword.length > 128) {
+  if (
+    typeof newPassword !== "string" ||
+    newPassword.length < 8 ||
+    newPassword.length > 128
+  ) {
     return { error: "Password baru harus terdiri dari 8–128 karakter." };
   }
   if (currentPassword === newPassword) {
@@ -342,8 +389,11 @@ export async function changeAccountPassword(input: {
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user?.email) return { error: "Sesi login tidak valid. Silakan login kembali." };
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email)
+    return { error: "Sesi login tidak valid. Silakan login kembali." };
 
   const admin = createAdminClient();
   const { data: profile, error: profileError } = await admin
@@ -354,10 +404,15 @@ export async function changeAccountPassword(input: {
 
   if (profileError || !profile) {
     console.error("Password change profile lookup failed:", profileError);
-    return { error: "Informasi akun belum dapat diverifikasi. Coba lagi nanti." };
+    return {
+      error: "Informasi akun belum dapat diverifikasi. Coba lagi nanti.",
+    };
   }
   if (profile.provider !== "email") {
-    return { error: "Akun Google tidak memiliki password LARISÉ. Kelola password melalui Google." };
+    return {
+      error:
+        "Akun Google tidak memiliki password LARISÉ. Kelola password melalui Google.",
+    };
   }
 
   const { error: reauthError } = await supabase.auth.signInWithPassword({
@@ -368,10 +423,15 @@ export async function changeAccountPassword(input: {
     return { error: "Password saat ini tidak sesuai." };
   }
 
-  const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
   if (updateError) {
     console.error("Account password update failed:", updateError.message);
-    return { error: "Password belum berhasil diperbarui. Pastikan password baru memenuhi ketentuan." };
+    return {
+      error:
+        "Password belum berhasil diperbarui. Pastikan password baru memenuhi ketentuan.",
+    };
   }
 
   return { success: true };

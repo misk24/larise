@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/ui/logo";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { createClient } from "@/lib/supabase/client";
 import { passwordResetSchema } from "@/lib/auth/validation";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
@@ -63,18 +63,26 @@ export function ResetPasswordForm() {
           const { data, error } = await supabase.auth.getSession();
           validationError = error;
           if (!validationError && !data.session) {
-            validationError = new Error("No valid recovery session was established.");
+            validationError = new Error(
+              "No valid recovery session was established.",
+            );
           }
         }
       } catch (error) {
-        validationError = error instanceof Error ? error : new Error("Recovery link validation failed.");
+        validationError =
+          error instanceof Error
+            ? error
+            : new Error("Recovery link validation failed.");
       }
 
       if (!isMounted) return;
 
       if (validationError) {
         // Keep token values out of logs and show a safe, actionable message to users.
-        console.error("Password recovery link validation failed:", validationError.message);
+        console.error(
+          "Password recovery link validation failed:",
+          validationError.message,
+        );
         toast.error("Link reset tidak valid atau sudah kedaluwarsa.");
         setIsReady(false);
       } else {

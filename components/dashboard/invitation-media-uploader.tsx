@@ -1,11 +1,14 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { registerInvitationMedia, deleteInvitationMedia } from "@/lib/actions/invitation-media";
-import type { InvitationMedia } from "@/types/database";
 import { Button } from "@/components/ui/button";
+import {
+  deleteInvitationMedia,
+  registerInvitationMedia,
+} from "@/lib/actions/invitation-media";
+import { createClient } from "@/lib/supabase/client";
+import type { InvitationMedia } from "@/types/database";
 import { Loader2, Trash2, Upload } from "lucide-react";
+import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -26,10 +29,13 @@ export function InvitationMediaUploader({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
-  const withPublicUrls = (items: InvitationMedia[]) => items.map((item) => ({
-    ...item,
-    public_url: supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl,
-  }));
+  const withPublicUrls = (items: InvitationMedia[]) =>
+    items.map((item) => ({
+      ...item,
+      public_url: supabase.storage
+        .from("invitation-media")
+        .getPublicUrl(item.storage_path).data.publicUrl,
+    }));
   const [media, setMedia] = useState(() => withPublicUrls(initialMedia));
   const [pending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
@@ -45,7 +51,7 @@ export function InvitationMediaUploader({
     setUploading(true);
     try {
       for (const file of Array.from(files)) {
-        if (!ACCEPTED.includes(file.type as typeof ACCEPTED[number])) {
+        if (!ACCEPTED.includes(file.type as (typeof ACCEPTED)[number])) {
           toast.error(`${file.name}: format harus JPG, PNG, atau WebP.`);
           continue;
         }
@@ -54,29 +60,47 @@ export function InvitationMediaUploader({
           continue;
         }
 
-        const dimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
-          const url = URL.createObjectURL(file);
-          const image = new Image();
-          image.onload = () => { URL.revokeObjectURL(url); resolve({ width: image.naturalWidth, height: image.naturalHeight }); };
-          image.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Gambar tidak dapat dibaca.")); };
-          image.src = url;
-        });
+        const dimensions = await new Promise<{ width: number; height: number }>(
+          (resolve, reject) => {
+            const url = URL.createObjectURL(file);
+            const image = new Image();
+            image.onload = () => {
+              URL.revokeObjectURL(url);
+              resolve({
+                width: image.naturalWidth,
+                height: image.naturalHeight,
+              });
+            };
+            image.onerror = () => {
+              URL.revokeObjectURL(url);
+              reject(new Error("Gambar tidak dapat dibaca."));
+            };
+            image.src = url;
+          },
+        );
 
         const path = `${invitationId}/${crypto.randomUUID()}.${extensionFor(file.type)}`;
         const { data: auth } = await supabase.auth.getUser();
-        if (!auth.user) throw new Error("Sesi login berakhir. Silakan login lagi.");
+        if (!auth.user)
+          throw new Error("Sesi login berakhir. Silakan login lagi.");
         const storagePath = `${auth.user.id}/${path}`;
 
         const { error: uploadError } = await supabase.storage
           .from("invitation-media")
-          .upload(storagePath, file, { contentType: file.type, upsert: false, cacheControl: "31536000" });
+          .upload(storagePath, file, {
+            contentType: file.type,
+            upsert: false,
+            cacheControl: "31536000",
+          });
 
         if (uploadError) {
           toast.error(`${file.name}: upload gagal.`);
           continue;
         }
 
-        const { data } = supabase.storage.from("invitation-media").getPublicUrl(storagePath);
+        const { data } = supabase.storage
+          .from("invitation-media")
+          .getPublicUrl(storagePath);
         const result = await registerInvitationMedia({
           invitationId,
           storagePath,
@@ -92,7 +116,10 @@ export function InvitationMediaUploader({
           continue;
         }
 
-        update([...media, { ...result.media, public_url: data.publicUrl } as InvitationMedia]);
+        update([
+          ...media,
+          { ...result.media, public_url: data.publicUrl } as InvitationMedia,
+        ]);
       }
       toast.success("Upload selesai.");
     } catch (error) {
@@ -105,7 +132,10 @@ export function InvitationMediaUploader({
   function remove(item: InvitationMedia) {
     startTransition(async () => {
       const result = await deleteInvitationMedia(item.id);
-      if (result.error) { toast.error(result.error); return; }
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
       update(media.filter((entry) => entry.id !== item.id));
       toast.success("Gambar dihapus.");
     });
@@ -113,18 +143,55 @@ export function InvitationMediaUploader({
 
   return (
     <div className="space-y-3">
-      <input ref={inputRef} type="file" accept={ACCEPTED.join(",")} multiple hidden onChange={(e) => handleFiles(e.target.files)} />
-      <Button type="button" variant="outline" onClick={() => inputRef.current?.click()} disabled={uploading || pending}>
-        {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+      <input
+        ref={inputRef}
+        type="file"
+        accept={ACCEPTED.join(",")}
+        multiple
+        hidden
+        onChange={(e) => handleFiles(e.target.files)}
+      />
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => inputRef.current?.click()}
+        disabled={uploading || pending}
+      >
+        {uploading ? (
+          <Loader2 className="size-4 animate-spin" />
+        ) : (
+          <Upload className="size-4" />
+        )}
         {uploading ? "Mengunggah..." : "Upload gambar"}
       </Button>
-      <p className="text-xs text-muted-foreground">JPG, PNG, WebP. Maksimum 5 MB per gambar.</p>
+      <p className="text-xs text-muted-foreground">
+        JPG, PNG, WebP. Maksimum 5 MB per gambar.
+      </p>
       {media.length > 0 && (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {media.map((item) => (
-            <div key={item.id} className="group relative overflow-hidden rounded-md border bg-muted">
-              <img src={(item as InvitationMedia & { public_url?: string }).public_url ?? supabase.storage.from("invitation-media").getPublicUrl(item.storage_path).data.publicUrl} alt={item.file_name} className="aspect-square w-full object-cover" />
-              <button type="button" onClick={() => remove(item)} disabled={pending} className="absolute right-1 top-1 rounded-md bg-background/90 p-1.5 opacity-0 shadow transition group-hover:opacity-100" aria-label={`Hapus ${item.file_name}`}>
+            <div
+              key={item.id}
+              className="group relative overflow-hidden rounded-md border bg-muted"
+            >
+              <img
+                src={
+                  (item as InvitationMedia & { public_url?: string })
+                    .public_url ??
+                  supabase.storage
+                    .from("invitation-media")
+                    .getPublicUrl(item.storage_path).data.publicUrl
+                }
+                alt={item.file_name}
+                className="aspect-square w-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => remove(item)}
+                disabled={pending}
+                className="absolute right-1 top-1 rounded-md bg-background/90 p-1.5 opacity-0 shadow transition group-hover:opacity-100"
+                aria-label={`Hapus ${item.file_name}`}
+              >
                 <Trash2 className="size-4 text-destructive" />
               </button>
             </div>

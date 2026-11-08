@@ -78,6 +78,7 @@ Verify relevant migrations, RLS policies, and provider behavior before changing 
 ## 8. Database and migrations
 
 Before changing the schema:
+
 1. Inspect current migrations and shared database types.
 2. Check foreign keys, unique constraints, triggers, RLS policies, and existing records.
 3. Make schema changes through a migration committed to the repository.

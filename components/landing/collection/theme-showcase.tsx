@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ChevronRight, Palette } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Theme = {
   id: string;
@@ -189,7 +189,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     type="button"
                     onClick={() => setActiveCategory(category)}
                     aria-pressed={selected}
-                    className={`shrink-0 rounded-[4px] border px-4 py-2 text-xs transition-colors duration-200 sm:px-5 sm:py-2.5 ${
+                    className={`shrink-0 rounded-lg border px-4 py-2 text-xs transition-colors duration-200 sm:px-5 sm:py-2.5 ${
                       selected
                         ? "border-[#29271F] bg-[#29271F] text-[#F8F6F1]"
                         : "border-[#29271F]/15 bg-transparent text-[#29271F]/65 hover:border-[#A58A67] hover:text-[#29271F]"
@@ -211,7 +211,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
               role="region"
               aria-label="Koleksi tema. Pada layar kecil, geser horizontal untuk melihat tema lainnya."
               tabIndex={0}
-              className="flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto overscroll-x-contain pb-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#927653] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 sm:overflow-visible sm:pb-0 sm:focus-visible:outline-none lg:grid-cols-3 lg:gap-x-7"
+              className="flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto overscroll-x-contain pb-4 focus-visible:outline focus-visible:outline-offset-4 focus-visible:outline-[#927653] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 sm:overflow-visible sm:pb-0 sm:focus-visible:outline-none lg:grid-cols-3 lg:gap-x-7"
             >
               {filteredThemes.map((theme, index) => {
                 const image = theme.thumbnail_url || theme.preview_url;
@@ -226,7 +226,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                 return (
                   <article
                     key={theme.id}
-                    className="theme-card w-[86%] max-w-[340px] shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink sm:min-w-0"
+                    className="theme-card w-[86%] max-w-85 shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink sm:min-w-0"
                   >
                     <Link
                       href="/register"
@@ -234,7 +234,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                       aria-label={`Pilih tema ${theme.name}`}
                     >
                       <div
-                        className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${
+                        className={`relative aspect-4/5 overflow-hidden bg-linear-to-br ${
                           categoryColors[category] ??
                           "from-[#e8e3d9] via-[#f7f3ec] to-[#c9b9a4]"
                         }`}
@@ -263,7 +263,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                           </div>
                         )}
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#211c17]/55 via-transparent to-black/5 opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
+                        <div className="absolute inset-0 bg-linear-to-t from-[#211c17]/55 via-transparent to-black/5 opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
 
                         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5 sm:left-4 sm:top-4">
                           {theme.is_premium && (

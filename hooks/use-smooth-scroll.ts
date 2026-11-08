@@ -6,8 +6,11 @@ const DEFAULT_HEADER_OFFSET = 80;
 
 export function useSmoothScroll() {
   const scrollToElement = useCallback((target: string) => {
-    const isTopTarget = target === "html" || target === "body" || target === "/";
-    const element = isTopTarget ? null : document.querySelector<HTMLElement>(target);
+    const isTopTarget =
+      target === "html" || target === "body" || target === "/";
+    const element = isTopTarget
+      ? null
+      : document.querySelector<HTMLElement>(target);
 
     // Do not hijack a link if its target does not exist.
     if (!isTopTarget && !element) return false;

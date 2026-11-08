@@ -24,8 +24,12 @@ interface BackendBreadcrumbProps {
 export function BackendBreadcrumb({ role }: BackendBreadcrumbProps) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
-  const [dynamicLabels, setDynamicLabels] = useState<Record<string, string>>({});
-  const [loadingLabels, setLoadingLabels] = useState<Record<string, boolean>>({});
+  const [dynamicLabels, setDynamicLabels] = useState<Record<string, string>>(
+    {},
+  );
+  const [loadingLabels, setLoadingLabels] = useState<Record<string, boolean>>(
+    {},
+  );
   const loadedThemeIds = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -55,7 +59,9 @@ export function BackendBreadcrumb({ role }: BackendBreadcrumbProps) {
     const cachedName = themeNameCache.get(themeId);
     if (cachedName) {
       setDynamicLabels((prev) =>
-        prev[cacheKey] === cachedName ? prev : { ...prev, [cacheKey]: cachedName },
+        prev[cacheKey] === cachedName
+          ? prev
+          : { ...prev, [cacheKey]: cachedName },
       );
       return;
     }

@@ -9,32 +9,33 @@ interface SmoothScrollLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorEle
   children: React.ReactNode;
 }
 
-export const LandingScrollLink = forwardRef<HTMLAnchorElement, SmoothScrollLinkProps>(
-  ({ href, children, onClick, ...props }, ref) => {
-    const pathname = usePathname();
-    const { scrollToElement } = useSmoothScroll();
+export const LandingScrollLink = forwardRef<
+  HTMLAnchorElement,
+  SmoothScrollLinkProps
+>(({ href, children, onClick, ...props }, ref) => {
+  const pathname = usePathname();
+  const { scrollToElement } = useSmoothScroll();
 
-    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-      const isHome = pathname === "/";
-      const isSectionLink = href.startsWith("#");
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const isHome = pathname === "/";
+    const isSectionLink = href.startsWith("#");
 
-      if (isHome && isSectionLink && document.querySelector(href)) {
-        event.preventDefault();
-        scrollToElement(href);
-      } else if (isHome && href === "/") {
-        event.preventDefault();
-        scrollToElement("html");
-      }
+    if (isHome && isSectionLink && document.querySelector(href)) {
+      event.preventDefault();
+      scrollToElement(href);
+    } else if (isHome && href === "/") {
+      event.preventDefault();
+      scrollToElement("html");
+    }
 
-      onClick?.(event);
-    };
+    onClick?.(event);
+  };
 
-    return (
-      <a ref={ref} href={href} onClick={handleClick} {...props}>
-        {children}
-      </a>
-    );
-  },
-);
+  return (
+    <a ref={ref} href={href} onClick={handleClick} {...props}>
+      {children}
+    </a>
+  );
+});
 
 LandingScrollLink.displayName = "LandingScrollLink";

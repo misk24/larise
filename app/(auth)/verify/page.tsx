@@ -7,9 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ArrowLeftIcon, MailCheckIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeftIcon, MailCheckIcon } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Verifikasi Email | LARISÉ",
@@ -20,7 +20,7 @@ export default function VerifyEmailPage() {
   return (
     <Card className="w-full">
       <CardHeader className="space-y-4">
-        <div className="flex size-12 items-center justify-center border border-[var(--auth-line)] bg-[var(--auth-paper)] text-[var(--auth-olive)]">
+        <div className="flex size-12 items-center justify-center border border-(--auth-line) bg-(--auth-paper) text-(--auth-olive)">
           <MailCheckIcon aria-hidden="true" className="size-5" />
         </div>
         <div className="space-y-2">
@@ -33,11 +33,11 @@ export default function VerifyEmailPage() {
       </CardHeader>
 
       <CardContent className="space-y-5">
-        <div className="border-l-2 border-[var(--auth-olive)] bg-[var(--auth-paper)] px-4 py-3">
+        <div className="border-l-2 border-(--auth-olive) bg-(--auth-paper) px-4 py-3">
           <p className="text-sm leading-6 text-muted-foreground">
             Kami telah mengirim tautan verifikasi ke alamat email yang kamu
-            daftarkan. Buka email tersebut dan klik tautannya untuk
-            mengaktifkan akun.
+            daftarkan. Buka email tersebut dan klik tautannya untuk mengaktifkan
+            akun.
           </p>
         </div>
 

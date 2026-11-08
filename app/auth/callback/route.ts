@@ -14,7 +14,9 @@ export async function GET(request: Request) {
   const intent = url.searchParams.get("intent") ?? "login";
 
   if (!code) {
-    return NextResponse.redirect(new URL("/login?error=invalid_callback", url.origin));
+    return NextResponse.redirect(
+      new URL("/login?error=invalid_callback", url.origin),
+    );
   }
 
   // Attach refreshed session cookies to the redirect response, not only the
@@ -39,11 +41,16 @@ export async function GET(request: Request) {
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error || !data.user?.email) {
-    console.error("Auth callback code exchange failed:", error?.message ?? "Missing user email");
+    console.error(
+      "Auth callback code exchange failed:",
+      error?.message ?? "Missing user email",
+    );
     response.headers.set(
       "Location",
       new URL(
-        type === "verify" ? "/login?error=verification_failed" : "/login?error=oauth",
+        type === "verify"
+          ? "/login?error=verification_failed"
+          : "/login?error=oauth",
         url.origin,
       ).toString(),
     );
@@ -54,7 +61,10 @@ export async function GET(request: Request) {
   const email = user.email?.trim().toLowerCase();
   if (!email) {
     await supabase.auth.signOut();
-    response.headers.set("Location", new URL("/login?error=oauth", url.origin).toString());
+    response.headers.set(
+      "Location",
+      new URL("/login?error=oauth", url.origin).toString(),
+    );
     return response;
   }
   const provider =
@@ -63,7 +73,7 @@ export async function GET(request: Request) {
       : user.app_metadata?.provider === "google" ||
           user.identities?.some((identity) => identity.provider === "google")
         ? "google"
-        : user.app_metadata?.provider ?? "email";
+        : (user.app_metadata?.provider ?? "email");
 
   const admin = createAdminClient();
   const { data: profile, error: lookupError } = await admin

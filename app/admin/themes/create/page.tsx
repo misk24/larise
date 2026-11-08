@@ -37,13 +37,22 @@ export default function CreateThemePage() {
   return (
     <div className="backend-content space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Buat Tema</h1>
-        <p className="mt-1 text-muted-foreground">Beri nama tema sebelum mengatur section undangan.</p>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+          Buat Tema
+        </h1>
+        <p className="mt-1 text-muted-foreground">
+          Beri nama tema sebelum mengatur section undangan.
+        </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="backend-surface w-full max-w-2xl space-y-5 p-4 sm:p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="backend-surface w-full max-w-2xl space-y-5 p-4 sm:p-6"
+      >
         <div className="space-y-2">
-          <label htmlFor="theme-name" className="text-sm font-medium">Nama tema</label>
+          <label htmlFor="theme-name" className="text-sm font-medium">
+            Nama tema
+          </label>
           <Input
             id="theme-name"
             placeholder="Contoh: Minimalis Modern"
@@ -54,8 +63,14 @@ export default function CreateThemePage() {
             required
           />
         </div>
-        {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
-        <Button type="submit" disabled={busy}>{busy ? "Menyimpan..." : "Simpan dan Lanjutkan"}</Button>
+        {error ? (
+          <p role="alert" className="text-sm text-destructive">
+            {error}
+          </p>
+        ) : null}
+        <Button type="submit" disabled={busy}>
+          {busy ? "Menyimpan..." : "Simpan dan Lanjutkan"}
+        </Button>
       </form>
     </div>
   );

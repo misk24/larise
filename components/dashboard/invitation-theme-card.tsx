@@ -1,7 +1,7 @@
 "use client";
 
-import { Check, Eye, LockKeyhole } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Check, Eye, LockKeyhole } from "lucide-react";
 
 type Theme = {
   id: string;
@@ -32,7 +32,9 @@ export function InvitationThemeCard({
   selected: boolean;
   onSelect: () => void;
 }) {
-  const features = Array.isArray(theme.features) ? theme.features.filter((item): item is string => typeof item === "string") : [];
+  const features = Array.isArray(theme.features)
+    ? theme.features.filter((item): item is string => typeof item === "string")
+    : [];
 
   return (
     <button
@@ -43,27 +45,46 @@ export function InvitationThemeCard({
         selected ? "border-primary ring-2 ring-primary/20" : "border-border",
       )}
     >
-      <div className={cn("relative aspect-[4/3] p-5", categoryStyles[theme.category] ?? "bg-muted")}>
+      <div
+        className={cn(
+          "relative aspect-4/3 p-5",
+          categoryStyles[theme.category] ?? "bg-muted",
+        )}
+      >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,white/70,transparent_35%)]" />
         <div className="relative flex h-full flex-col justify-between">
-          <span className="text-xs font-medium uppercase tracking-[0.2em]">{theme.category}</span>
+          <span className="text-xs font-medium uppercase tracking-[0.2em]">
+            {theme.category}
+          </span>
           <div className="text-center">
             <p className="text-2xl font-medium tracking-tight">{theme.name}</p>
             <p className="mt-1 text-xs opacity-70">LARISÉ</p>
           </div>
           <div className="flex items-center justify-between text-xs">
             <span>{theme.is_premium ? "Premium" : "Free"}</span>
-            {selected ? <Check className="size-5" /> : <Eye className="size-4 opacity-60" />}
+            {selected ? (
+              <Check className="size-5" />
+            ) : (
+              <Eye className="size-4 opacity-60" />
+            )}
           </div>
         </div>
       </div>
       <div className="space-y-2 p-4">
         <div className="flex items-center justify-between gap-3">
           <p className="font-medium">{theme.name}</p>
-          {theme.is_premium && <LockKeyhole className="size-4 text-muted-foreground" />}
+          {theme.is_premium && (
+            <LockKeyhole className="size-4 text-muted-foreground" />
+          )}
         </div>
-        <p className="line-clamp-2 text-sm text-muted-foreground">{theme.description}</p>
-        {features.length > 0 && <p className="text-xs text-muted-foreground">{features.slice(0, 2).join(" • ")}</p>}
+        <p className="line-clamp-2 text-sm text-muted-foreground">
+          {theme.description}
+        </p>
+        {features.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {features.slice(0, 2).join(" • ")}
+          </p>
+        )}
       </div>
     </button>
   );

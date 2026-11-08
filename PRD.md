@@ -36,6 +36,7 @@ The primary market and default product language are Indonesia and Bahasa Indones
 ## 4. Core user journeys
 
 ### Invitation owner
+
 1. Register or sign in using supported authentication methods.
 2. Complete or review their profile.
 3. Create an invitation and select an available theme.
@@ -44,12 +45,14 @@ The primary market and default product language are Indonesia and Bahasa Indones
 6. Review guest responses and wishes, and manage invitation settings.
 
 ### Guest
+
 1. Open a shared public invitation on mobile or desktop.
 2. Read event information and use available location/media features.
 3. Submit an RSVP and/or message where enabled.
 4. Receive clear validation and submission feedback.
 
 ### Administrator
+
 1. Sign in using an authorized administrator account.
 2. Access the admin area without gaining access merely by changing a URL.
 3. Manage themes and section definitions/content.
@@ -60,6 +63,7 @@ These journeys express product intent. Their implementation status is documented
 ## 5. Functional requirements and implementation status
 
 ### Authentication and account
+
 - Support email/password and Google authentication.
 - Support email verification and role-aware protected areas.
 - Allow users to update profile information.
@@ -69,6 +73,7 @@ These journeys express product intent. Their implementation status is documented
 **Verified source status:** profile management, Login & Security, provider-specific password restrictions, and Danger Zone UI are present on `main`. Account deletion is intentionally not implemented.
 
 ### Invitation creation and editing
+
 - Create an invitation through a two-step flow: basic couple information, then theme selection.
 - Generate a unique slug from nicknames in the chosen name order.
 - Lock slug and name order after draft creation; keep both nicknames editable without regenerating the existing slug.
@@ -78,6 +83,7 @@ These journeys express product intent. Their implementation status is documented
 **Verified source status:** PR #47 is merged into `main`; the create/edit UI and server action follow the two-step flow. The edit UI allows both full names and nicknames to be edited while keeping the existing slug and name order locked. Nickname edits do not regenerate the slug. The builder's Event section edits the event date, and its save action synchronizes that value to `invitations.event_date`.
 
 ### Invitation builder and published content
+
 - Let owners edit section content, visibility, and order; preview before publishing.
 - Keep the Cover and Opening at the beginning and Closing at the end.
 - Provide event details, location, gallery, RSVP/wishes, gift details, and closing content.
@@ -87,11 +93,13 @@ These journeys express product intent. Their implementation status is documented
 **Verified source status:** PR #48 is merged into `main`. The current builder list in `components/dashboard/invitation-builder.tsx` filters editable sections to ten types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing. RSVP and wishes are combined in the guest-facing flow. The validation schema still recognizes a `countdown` section type, but the builder's current filter excludes it. Countdown is intentionally deferred to a later phase by product decision. It is not a current acceptance criterion for this phase, and it must not be described as implemented. Revisit it when the later phase is planned.
 
 ### Guests and content
+
 - Support guest response management and wishes/messages where enabled.
 - Support invitation media and configurable sections only where implemented and validated.
 - Protect invitation ownership and guest data at server/database layers.
 
 ### Themes and administration
+
 - Allow administrators to manage reusable themes and section defaults/content.
 - Keep theme definitions distinct from invitation-specific content where the schema supports it.
 - Allow theme authors to configure section-level background, typography, spacing, buttons, images, icons, dividers, and ornaments while retaining defaults for unset properties.
@@ -121,6 +129,7 @@ These journeys express product intent. Their implementation status is documented
 ## 8. Definition of done
 
 A change is complete when:
+
 - Approved acceptance criteria are met.
 - Authorization and validation are correct for the affected flow.
 - Relevant tests pass; lint, typecheck, and build are run when feasible.
@@ -131,6 +140,7 @@ A change is complete when:
 ## 9. Scope and discrepancy handling
 
 When a product requirement and implementation disagree:
+
 1. Verify the actual behavior in the target branch, related actions, schema, migrations, and tests.
 2. Record the requirement and observed behavior separately.
 3. Do not silently rewrite the PRD to match existing code.

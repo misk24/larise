@@ -21,10 +21,15 @@ export default async function WishesPage() {
   if (!invitation) {
     return (
       <div className="backend-content space-y-6">
-        <BackendPageHeader title="Ucapan & Doa" description="Moderasi ucapan dari tamu undangan." />
+        <BackendPageHeader
+          title="Ucapan & Doa"
+          description="Moderasi ucapan dari tamu undangan."
+        />
         <Card className="shadow-none">
           <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk melihat ucapan.</p>
+            <p className="text-muted-foreground">
+              Buat undangan terlebih dahulu untuk melihat ucapan.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -39,7 +44,10 @@ export default async function WishesPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <BackendPageHeader title="Ucapan & Doa" description="Tampilkan atau sembunyikan ucapan, dan hapus spam." />
+      <BackendPageHeader
+        title="Ucapan & Doa"
+        description="Tampilkan atau sembunyikan ucapan, dan hapus spam."
+      />
       {error ? (
         <Card className="shadow-none">
           <CardContent className="p-8 text-sm text-destructive">

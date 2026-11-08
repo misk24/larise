@@ -32,9 +32,7 @@ export function BackendShell({
         {sidebar}
         <div className="min-w-0 flex flex-1 flex-col">
           {header}
-          <main
-            className="backend-page"
-          >
+          <main className="backend-page">
             <div className="mb-6 min-w-0">{breadcrumbs}</div>
             {children}
           </main>

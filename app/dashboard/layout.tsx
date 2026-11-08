@@ -14,7 +14,11 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const user = await getUser();
   const profile = await getUserProfile();
   if (!user) redirect("/login");

@@ -7,7 +7,8 @@ import { toast } from "sonner";
 
 export function PublicUrlActions({ slug }: { slug: string }) {
   const [isCopying, setIsCopying] = useState(false);
-  const publicUrl = typeof window === "undefined" ? "" : `${window.location.origin}/${slug}`;
+  const publicUrl =
+    typeof window === "undefined" ? "" : `${window.location.origin}/${slug}`;
 
   async function copyUrl() {
     setIsCopying(true);
@@ -29,7 +30,9 @@ export function PublicUrlActions({ slug }: { slug: string }) {
         await navigator.share({ title: "Undangan pernikahan", url });
       } else {
         await navigator.clipboard.writeText(url);
-        toast.success("Browser belum mendukung berbagi langsung. Tautan disalin.");
+        toast.success(
+          "Browser belum mendukung berbagi langsung. Tautan disalin.",
+        );
       }
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") return;
@@ -39,7 +42,13 @@ export function PublicUrlActions({ slug }: { slug: string }) {
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Button type="button" size="sm" variant="outline" onClick={copyUrl} disabled={isCopying}>
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        onClick={copyUrl}
+        disabled={isCopying}
+      >
         <CopyIcon className="mr-2 size-3.5" />
         Salin tautan
       </Button>

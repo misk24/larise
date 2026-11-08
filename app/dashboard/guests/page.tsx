@@ -6,7 +6,9 @@ import { redirect } from "next/navigation";
 
 export default async function GuestsPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
 
@@ -19,10 +21,14 @@ export default async function GuestsPage() {
   if (invitationError) {
     return (
       <div className="backend-content space-y-6">
-        <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
+        <BackendPageHeader
+          title="Daftar Tamu"
+          description="Kelola kontak, tautan personal, dan konfirmasi kehadiran."
+        />
         <Card className="shadow-none">
           <CardContent className="p-8 text-sm text-destructive">
-            Data undangan gagal dimuat. Muat ulang halaman atau periksa koneksi database.
+            Data undangan gagal dimuat. Muat ulang halaman atau periksa koneksi
+            database.
           </CardContent>
         </Card>
       </div>
@@ -32,10 +38,15 @@ export default async function GuestsPage() {
   if (!invitation) {
     return (
       <div className="backend-content space-y-6">
-        <BackendPageHeader title="Daftar Tamu" description="Kelola daftar tamu undangan Anda." />
+        <BackendPageHeader
+          title="Daftar Tamu"
+          description="Kelola daftar tamu undangan Anda."
+        />
         <Card className="shadow-none">
           <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground">Buat undangan terlebih dahulu untuk mengelola daftar tamu.</p>
+            <p className="text-muted-foreground">
+              Buat undangan terlebih dahulu untuk mengelola daftar tamu.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -50,11 +61,15 @@ export default async function GuestsPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
+      <BackendPageHeader
+        title="Daftar Tamu"
+        description="Kelola kontak, tautan personal, dan konfirmasi kehadiran."
+      />
       {guestsError ? (
         <Card className="border-border/50">
           <CardContent className="p-8 text-sm text-destructive">
-            Daftar tamu gagal dimuat. Periksa kebijakan akses database dan coba lagi.
+            Daftar tamu gagal dimuat. Periksa kebijakan akses database dan coba
+            lagi.
           </CardContent>
         </Card>
       ) : (

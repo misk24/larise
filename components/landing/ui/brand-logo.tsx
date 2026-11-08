@@ -15,11 +15,17 @@ export function BrandLogo({
 }: BrandLogoProps) {
   return (
     <Image
-      src={variant === "footer" ? "/images/logo-dark.png" : "/images/logo-light.png"}
+      src={
+        variant === "footer"
+          ? "/images/logo-dark.png"
+          : "/images/logo-light.png"
+      }
       alt="LARISÉ"
       width={width}
       height={height}
-      className={["h-6 w-auto object-contain", className].filter(Boolean).join(" ")}
+      className={["h-6 w-auto object-contain", className]
+        .filter(Boolean)
+        .join(" ")}
       priority={variant === "header"}
     />
   );

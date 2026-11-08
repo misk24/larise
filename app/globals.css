@@ -96,7 +96,7 @@
   --sidebar-foreground: oklch(0.96 0.008 90);
   --sidebar-primary: var(--accent);
   --sidebar-primary-foreground: oklch(0.2 0.012 55);
-  --sidebar-accent: oklch(0.30 0.02 55);
+  --sidebar-accent: oklch(0.3 0.02 55);
   --sidebar-accent-foreground: var(--sidebar-foreground);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: var(--ring);
@@ -175,14 +175,29 @@
     line-height: var(--leading-body);
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-heading);
   }
 
-  h1 { font-size: var(--text-h1); line-height: var(--leading-h1); }
-  h2 { font-size: var(--text-h2); line-height: var(--leading-h2); }
-  h3 { font-size: var(--text-h3); line-height: var(--leading-h3); }
-  h4 { font-size: var(--text-h4); line-height: var(--leading-h4); }
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--leading-h1);
+  }
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--leading-h2);
+  }
+  h3 {
+    font-size: var(--text-h3);
+    line-height: var(--leading-h3);
+  }
+  h4 {
+    font-size: var(--text-h4);
+    line-height: var(--leading-h4);
+  }
 
   ::selection {
     background: var(--accent);

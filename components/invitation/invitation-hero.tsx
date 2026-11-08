@@ -1,37 +1,48 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Heart } from "lucide-react"
-import { useEffect, useState } from "react"
+import { motion } from "framer-motion";
+import { Heart } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface InvitationHeroProps {
-  groomName: string
-  brideName: string
-  eventDate: string
+  groomName: string;
+  brideName: string;
+  eventDate: string;
 }
 
-export function InvitationHero({ groomName, brideName, eventDate }: InvitationHeroProps) {
-  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+export function InvitationHero({
+  groomName,
+  brideName,
+  eventDate,
+}: InvitationHeroProps) {
+  const [countdown, setCountdown] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
   useEffect(() => {
-    const targetDate = new Date(eventDate).getTime()
+    const targetDate = new Date(eventDate).getTime();
 
     const interval = setInterval(() => {
-      const now = new Date().getTime()
-      const difference = targetDate - now
+      const now = new Date().getTime();
+      const difference = targetDate - now;
 
       if (difference > 0) {
         setCountdown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          hours: Math.floor(
+            (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+          ),
           minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
           seconds: Math.floor((difference % (1000 * 60)) / 1000),
-        })
+        });
       }
-    }, 1000)
+    }, 1000);
 
-    return () => clearInterval(interval)
-  }, [eventDate])
+    return () => clearInterval(interval);
+  }, [eventDate]);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -60,13 +71,17 @@ export function InvitationHero({ groomName, brideName, eventDate }: InvitationHe
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          <h1 className="text-5xl md:text-7xl font-serif font-semibold text-foreground mb-2">{groomName}</h1>
+          <h1 className="text-5xl md:text-7xl font-serif font-semibold text-foreground mb-2">
+            {groomName}
+          </h1>
           <div className="flex items-center justify-center gap-4 my-6">
             <div className="h-px w-20 bg-primary/50" />
             <Heart className="h-8 w-8 text-primary fill-primary animate-float" />
             <div className="h-px w-20 bg-primary/50" />
           </div>
-          <h1 className="text-5xl md:text-7xl font-serif font-semibold text-foreground">{brideName}</h1>
+          <h1 className="text-5xl md:text-7xl font-serif font-semibold text-foreground">
+            {brideName}
+          </h1>
         </motion.div>
 
         <motion.p
@@ -97,13 +112,20 @@ export function InvitationHero({ groomName, brideName, eventDate }: InvitationHe
             { value: countdown.minutes, label: "Menit" },
             { value: countdown.seconds, label: "Detik" },
           ].map((item, index) => (
-            <div key={index} className="bg-card/80 backdrop-blur-sm rounded-lg p-4 border border-border/50">
-              <p className="text-3xl md:text-4xl font-serif font-semibold text-foreground">{item.value}</p>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">{item.label}</p>
+            <div
+              key={index}
+              className="bg-card/80 backdrop-blur-sm rounded-lg p-4 border border-border/50"
+            >
+              <p className="text-3xl md:text-4xl font-serif font-semibold text-foreground">
+                {item.value}
+              </p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                {item.label}
+              </p>
             </div>
           ))}
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { useState } from "react"
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useState } from "react";
 
 interface InvitationGalleryProps {
-  images: string[]
+  images: string[];
 }
 
 export function InvitationGallery({ images }: InvitationGalleryProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
     <section className="py-20 md:py-32 bg-secondary/30">
@@ -21,8 +21,12 @@ export function InvitationGallery({ images }: InvitationGalleryProps) {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-4">Galeri Foto</h2>
-          <p className="text-muted-foreground">Momen-momen indah kami bersama</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-4">
+            Galeri Foto
+          </h2>
+          <p className="text-muted-foreground">
+            Momen-momen indah kami bersama
+          </p>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -47,7 +51,10 @@ export function InvitationGallery({ images }: InvitationGalleryProps) {
         </div>
       </div>
 
-      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+      <Dialog
+        open={!!selectedImage}
+        onOpenChange={() => setSelectedImage(null)}
+      >
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           {selectedImage && (
             <Image
@@ -61,5 +68,5 @@ export function InvitationGallery({ images }: InvitationGalleryProps) {
         </DialogContent>
       </Dialog>
     </section>
-  )
+  );
 }

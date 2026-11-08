@@ -2,14 +2,25 @@ import { InvitationBuilder } from "@/components/dashboard/invitation-builder";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 
-export default async function InvitationBuilderPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function InvitationBuilderPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
 
-  const [{ data: invitation }, { data: sections }, { data: wishes }, { data: media }] = await Promise.all([
+  const [
+    { data: invitation },
+    { data: sections },
+    { data: wishes },
+    { data: media },
+  ] = await Promise.all([
     supabase
       .from("invitations")
       .select("*, themes(*)")
@@ -28,13 +39,17 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
       .eq("visibility", "visible")
       .order("created_at", { ascending: false })
       .limit(50),
-    supabase.from("invitation_media").select("*").eq("invitation_id", id).order("created_at"),
+    supabase
+      .from("invitation_media")
+      .select("*")
+      .eq("invitation_id", id)
+      .order("created_at"),
   ]);
 
   if (!invitation) notFound();
 
   return (
-    <div className="backend-content mx-auto max-w-[1800px] space-y-5">
+    <div className="backend-content mx-auto max-w-450 space-y-5">
       <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
         <div>
           <p className="text-sm text-muted-foreground">Builder</p>
@@ -43,7 +58,9 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
               ? `${invitation.bride_name} & ${invitation.groom_name}`
               : `${invitation.groom_name} & ${invitation.bride_name}`}
           </h1>
-          <p className="text-muted-foreground">Edit konten, visibility, urutan, lalu preview sebelum publish.</p>
+          <p className="text-muted-foreground">
+            Edit konten, visibility, urutan, lalu preview sebelum publish.
+          </p>
         </div>
         <a
           href={`/${invitation.slug}`}
@@ -54,7 +71,12 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
           Buka undangan publik
         </a>
       </div>
-      <InvitationBuilder invitation={invitation} initialSections={sections ?? []} wishes={wishes ?? []} media={media ?? []} />
+      <InvitationBuilder
+        invitation={invitation}
+        initialSections={sections ?? []}
+        wishes={wishes ?? []}
+        media={media ?? []}
+      />
     </div>
   );
 }

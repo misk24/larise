@@ -1,5 +1,5 @@
-import { z } from "zod";
 import slugify from "slugify";
+import { z } from "zod";
 
 export const invitationNameOrderSchema = z.enum(["groom_first", "bride_first"]);
 
@@ -29,7 +29,10 @@ export function normalizeSlug(value: string) {
   }).slice(0, 80);
 }
 
-export function buildInvitationSlug(firstNickname: string, secondNickname: string) {
+export function buildInvitationSlug(
+  firstNickname: string,
+  secondNickname: string,
+) {
   if (!firstNickname.trim() || !secondNickname.trim()) return "";
   return normalizeSlug(`${firstNickname}-${secondNickname}`);
 }

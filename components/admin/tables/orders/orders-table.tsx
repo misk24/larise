@@ -2,10 +2,13 @@
 
 import type { ReactNode } from "react";
 
-import { useMemo } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import {
+  AdminDataTable,
+  type AdminTableFilter,
+} from "@/components/admin/data-table";
 import { Badge } from "@/components/ui/badge";
-import { AdminDataTable, type AdminTableFilter } from "@/components/admin/data-table";
+import type { ColumnDef } from "@tanstack/react-table";
+import { useMemo } from "react";
 
 type OrderOwner = { full_name: string | null; email: string | null };
 
@@ -31,7 +34,7 @@ type Props = {
 };
 
 function relation(value: OrderOwner | OrderOwner[] | null): OrderOwner | null {
-  return Array.isArray(value) ? value[0] ?? null : value;
+  return Array.isArray(value) ? (value[0] ?? null) : value;
 }
 
 function statusLabel(status: string) {
@@ -64,54 +67,63 @@ function statusVariant(status: string) {
 }
 
 export function OrdersTable(props: Props) {
-  const columns = useMemo<ColumnDef<AdminOrderRow, unknown>[]>(() => [
-    {
-      accessorKey: "order_number",
-      header: "ID Pesanan",
-      enableSorting: true,
-      cell: ({ row }) => <span className="font-mono text-xs">{row.original.order_number}</span>,
-    },
-    {
-      id: "customer",
-      header: "Pelanggan",
-      enableSorting: false,
-      cell: ({ row }) => {
-        const owner = relation(row.original.profiles);
-        return (
-          <div className="min-w-40">
-            <p className="font-medium">{owner?.full_name || "Tanpa nama"}</p>
-            <p className="text-xs text-muted-foreground">{owner?.email || "Email tidak tersedia"}</p>
-          </div>
-        );
+  const columns = useMemo<ColumnDef<AdminOrderRow, unknown>[]>(
+    () => [
+      {
+        accessorKey: "order_number",
+        header: "ID Pesanan",
+        enableSorting: true,
+        cell: ({ row }) => (
+          <span className="font-mono text-xs">{row.original.order_number}</span>
+        ),
       },
-    },
-    {
-      accessorKey: "amount",
-      header: "Jumlah",
-      enableSorting: true,
-      cell: ({ row }) => `Rp ${Number(row.original.amount).toLocaleString("id-ID")}`,
-    },
-    {
-      accessorKey: "payment_status",
-      header: "Status",
-      enableSorting: true,
-      cell: ({ row }) => (
-        <Badge variant={statusVariant(row.original.payment_status)}>
-          {statusLabel(row.original.payment_status)}
-        </Badge>
-      ),
-    },
-    {
-      accessorKey: "created_at",
-      header: "Tanggal",
-      enableSorting: true,
-      cell: ({ row }) => new Date(row.original.created_at).toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      }),
-    },
-  ], []);
+      {
+        id: "customer",
+        header: "Pelanggan",
+        enableSorting: false,
+        cell: ({ row }) => {
+          const owner = relation(row.original.profiles);
+          return (
+            <div className="min-w-40">
+              <p className="font-medium">{owner?.full_name || "Tanpa nama"}</p>
+              <p className="text-xs text-muted-foreground">
+                {owner?.email || "Email tidak tersedia"}
+              </p>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "amount",
+        header: "Jumlah",
+        enableSorting: true,
+        cell: ({ row }) =>
+          `Rp ${Number(row.original.amount).toLocaleString("id-ID")}`,
+      },
+      {
+        accessorKey: "payment_status",
+        header: "Status",
+        enableSorting: true,
+        cell: ({ row }) => (
+          <Badge variant={statusVariant(row.original.payment_status)}>
+            {statusLabel(row.original.payment_status)}
+          </Badge>
+        ),
+      },
+      {
+        accessorKey: "created_at",
+        header: "Tanggal",
+        enableSorting: true,
+        cell: ({ row }) =>
+          new Date(row.original.created_at).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
+      },
+    ],
+    [],
+  );
 
   return (
     <AdminDataTable

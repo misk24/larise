@@ -54,9 +54,13 @@ export function LoginForm() {
     } else if (error === "profile_creation" || error === "profile_lookup") {
       toast.error("Terjadi kesalahan saat memuat profil. Silakan coba lagi.");
     } else if (error === "verification_failed") {
-      toast.error("Verifikasi email gagal atau tautannya sudah kedaluwarsa. Minta tautan baru.");
+      toast.error(
+        "Verifikasi email gagal atau tautannya sudah kedaluwarsa. Minta tautan baru.",
+      );
     } else if (error === "invalid_callback") {
-      toast.error("Tautan autentikasi tidak valid. Silakan coba login kembali.");
+      toast.error(
+        "Tautan autentikasi tidak valid. Silakan coba login kembali.",
+      );
     }
   }, [searchParams]);
 

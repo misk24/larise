@@ -18,7 +18,10 @@ export function ThemeSection() {
               <span className="h-px w-8 bg-[#A58A67]" />
               The collection
             </p>
-            <h2 id="collections-title" className="frontend-display max-w-3xl text-[clamp(2.75rem,6vw,5rem)] leading-[0.98] tracking-[-0.055em]">
+            <h2
+              id="collections-title"
+              className="frontend-display max-w-3xl text-[clamp(2.75rem,6vw,5rem)] leading-[0.98] tracking-[-0.055em]"
+            >
               {themeSection.title}
             </h2>
             <p className="mt-5 max-w-xl text-sm leading-7 text-[#625D51] sm:text-base sm:leading-8">
@@ -31,7 +34,7 @@ export function ThemeSection() {
           {themeSection.themes.map((theme, index) => (
             <FadeUp key={theme.id}>
               <article className="group h-full">
-                <div className="relative aspect-[4/5] overflow-hidden bg-[#EAE5DA]">
+                <div className="relative aspect-4/5 overflow-hidden bg-[#EAE5DA]">
                   <Image
                     src={theme.image || "/images/logo-light.png"}
                     alt={`Pratinjau tema ${theme.name}`}
@@ -48,8 +51,12 @@ export function ThemeSection() {
                   )}
                 </div>
                 <div className="border-b border-[#29271F]/15 py-4">
-                  <p className="mb-1 text-[10px] uppercase tracking-[0.18em] text-[#927653]">{theme.category}</p>
-                  <h3 className="frontend-display text-xl tracking-tight sm:text-2xl">{theme.name}</h3>
+                  <p className="mb-1 text-[10px] uppercase tracking-[0.18em] text-[#927653]">
+                    {theme.category}
+                  </p>
+                  <h3 className="frontend-display text-xl tracking-tight sm:text-2xl">
+                    {theme.name}
+                  </h3>
                 </div>
               </article>
             </FadeUp>

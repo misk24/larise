@@ -14,8 +14,12 @@ export default async function CreateInvitationPage() {
   return (
     <div className="backend-content w-full space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Buat Undangan</h1>
-        <p className="text-muted-foreground">Mulai dari informasi dasar, lalu pilih tema yang sesuai.</p>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+          Buat Undangan
+        </h1>
+        <p className="text-muted-foreground">
+          Mulai dari informasi dasar, lalu pilih tema yang sesuai.
+        </p>
       </div>
       <CreateInvitationForm themes={themes ?? []} />
     </div>

@@ -1,14 +1,25 @@
 import { BackendPageHeader } from "@/components/backend/backend-ui";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowUpRightIcon, BellIcon, FileTextIcon, ShieldCheckIcon } from "lucide-react";
+import {
+  ArrowUpRightIcon,
+  BellIcon,
+  FileTextIcon,
+  ShieldCheckIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const settingsItems = [
   {
     title: "Preferensi undangan",
-    description: "Kelola detail acara, RSVP, galeri, backsound, dan informasi lainnya dari masing-masing undangan.",
+    description:
+      "Kelola detail acara, RSVP, galeri, backsound, dan informasi lainnya dari masing-masing undangan.",
     href: "/dashboard/invitations",
     label: "Buka undangan",
     icon: FileTextIcon,
@@ -16,7 +27,8 @@ const settingsItems = [
   },
   {
     title: "Notifikasi",
-    description: "Preferensi notifikasi akan tersedia ketika notifikasi email dan aktivitas sudah didukung oleh aplikasi.",
+    description:
+      "Preferensi notifikasi akan tersedia ketika notifikasi email dan aktivitas sudah didukung oleh aplikasi.",
     href: "/dashboard/settings",
     label: "Dalam pengembangan",
     icon: BellIcon,
@@ -24,7 +36,8 @@ const settingsItems = [
   },
   {
     title: "Privasi dan keamanan",
-    description: "Kelola informasi profil dan metode login melalui halaman My Account.",
+    description:
+      "Kelola informasi profil dan metode login melalui halaman My Account.",
     href: "/dashboard/account",
     label: "Kelola akun",
     icon: ShieldCheckIcon,
@@ -34,12 +47,17 @@ const settingsItems = [
 
 export default async function SettingsPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
-      <BackendPageHeader title="Settings" description="Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing." />
+      <BackendPageHeader
+        title="Settings"
+        description="Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing."
+      />
 
       <div className="grid gap-4">
         {settingsItems.map((item) => (
@@ -50,11 +68,18 @@ export default async function SettingsPage() {
               </div>
               <div className="min-w-0 flex-1 space-y-1">
                 <CardTitle className="text-base">{item.title}</CardTitle>
-                <CardDescription className="text-sm leading-6">{item.description}</CardDescription>
+                <CardDescription className="text-sm leading-6">
+                  {item.description}
+                </CardDescription>
                 {item.disabled ? (
-                  <span className="inline-flex pt-2 text-xs font-medium text-muted-foreground">{item.label}</span>
+                  <span className="inline-flex pt-2 text-xs font-medium text-muted-foreground">
+                    {item.label}
+                  </span>
                 ) : (
-                  <Link href={item.href} className="inline-flex items-center gap-1 pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline">
+                  <Link
+                    href={item.href}
+                    className="inline-flex items-center gap-1 pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+                  >
                     {item.label}
                     <ArrowUpRightIcon className="size-3.5" />
                   </Link>

@@ -1,14 +1,27 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { changeAccountPassword } from "@/lib/actions/auth";
 import type { Profile } from "@/types/database";
-import { CheckCircle2Icon, EyeIcon, EyeOffIcon, KeyRoundIcon, Loader2Icon, ShieldCheckIcon } from "lucide-react";
-import { useState } from "react";
+import {
+  CheckCircle2Icon,
+  EyeIcon,
+  EyeOffIcon,
+  KeyRoundIcon,
+  Loader2Icon,
+  ShieldCheckIcon,
+} from "lucide-react";
 import type { FormEvent } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 type LoginSecurityCardProps = {
@@ -42,7 +55,10 @@ export function LoginSecurityCard({ provider, email }: LoginSecurityCardProps) {
 
     setIsSaving(true);
     try {
-      const result = await changeAccountPassword({ currentPassword, newPassword });
+      const result = await changeAccountPassword({
+        currentPassword,
+        newPassword,
+      });
       if (result.error) {
         toast.error(result.error);
         return;
@@ -94,7 +110,13 @@ export function LoginSecurityCard({ provider, email }: LoginSecurityCardProps) {
 
         <div className="space-y-1">
           <Label htmlFor="security-email">Email login</Label>
-          <Input id="security-email" type="email" value={email} disabled readOnly />
+          <Input
+            id="security-email"
+            type="email"
+            value={email}
+            disabled
+            readOnly
+          />
         </div>
 
         <div className="border-t pt-5">
@@ -110,24 +132,44 @@ export function LoginSecurityCard({ provider, email }: LoginSecurityCardProps) {
           {isGoogleAccount ? (
             <div className="space-y-3" aria-describedby="google-password-help">
               <div className="space-y-2">
-                <Label htmlFor="google-current-password">Password saat ini</Label>
-                <Input id="google-current-password" type="password" value="" disabled placeholder="Dikelola oleh Google" />
+                <Label htmlFor="google-current-password">
+                  Password saat ini
+                </Label>
+                <Input
+                  id="google-current-password"
+                  type="password"
+                  value=""
+                  disabled
+                  placeholder="Dikelola oleh Google"
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="google-new-password">Password baru</Label>
-                <Input id="google-new-password" type="password" value="" disabled placeholder="Tidak tersedia untuk akun Google" />
+                <Input
+                  id="google-new-password"
+                  type="password"
+                  value=""
+                  disabled
+                  placeholder="Tidak tersedia untuk akun Google"
+                />
               </div>
               <Button type="button" disabled className="w-full sm:w-auto">
                 Ubah password
               </Button>
-              <p id="google-password-help" className="text-xs leading-5 text-muted-foreground">
-                Untuk mengganti password, buka pengaturan keamanan akun Google Anda.
+              <p
+                id="google-password-help"
+                className="text-xs leading-5 text-muted-foreground"
+              >
+                Untuk mengganti password, buka pengaturan keamanan akun Google
+                Anda.
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="security-current-password">Password saat ini</Label>
+                <Label htmlFor="security-current-password">
+                  Password saat ini
+                </Label>
                 <Input
                   id="security-current-password"
                   type={showPasswords ? "text" : "password"}
@@ -152,7 +194,9 @@ export function LoginSecurityCard({ provider, email }: LoginSecurityCardProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="security-confirm-password">Konfirmasi password baru</Label>
+                <Label htmlFor="security-confirm-password">
+                  Konfirmasi password baru
+                </Label>
                 <Input
                   id="security-confirm-password"
                   type={showPasswords ? "text" : "password"}
@@ -170,12 +214,24 @@ export function LoginSecurityCard({ provider, email }: LoginSecurityCardProps) {
                 onClick={() => setShowPasswords((value) => !value)}
                 aria-pressed={showPasswords}
               >
-                {showPasswords ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
+                {showPasswords ? (
+                  <EyeOffIcon className="size-4" />
+                ) : (
+                  <EyeIcon className="size-4" />
+                )}
                 {showPasswords ? "Sembunyikan password" : "Tampilkan password"}
               </button>
               <div className="flex justify-end border-t pt-4">
-                <Button type="submit" disabled={isSaving} className="w-full sm:w-auto">
-                  {isSaving ? <Loader2Icon className="mr-2 size-4 animate-spin" /> : <KeyRoundIcon className="mr-2 size-4" />}
+                <Button
+                  type="submit"
+                  disabled={isSaving}
+                  className="w-full sm:w-auto"
+                >
+                  {isSaving ? (
+                    <Loader2Icon className="mr-2 size-4 animate-spin" />
+                  ) : (
+                    <KeyRoundIcon className="mr-2 size-4" />
+                  )}
                   {isSaving ? "Menyimpan..." : "Ubah password"}
                 </Button>
               </div>

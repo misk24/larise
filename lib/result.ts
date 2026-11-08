@@ -1,6 +1,4 @@
-export type Result<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: AppError };
+export type Result<T> = { ok: true; data: T } | { ok: false; error: AppError };
 
 export type AppErrorCode =
   | "VALIDATION_ERROR"

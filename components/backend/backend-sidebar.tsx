@@ -90,7 +90,9 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>{menu}</TooltipTrigger>
-                          <TooltipContent side="right">{item.label}</TooltipContent>
+                          <TooltipContent side="right">
+                            {item.label}
+                          </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     ) : (

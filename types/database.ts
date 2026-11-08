@@ -4,7 +4,13 @@ export type InvitationNameOrder = "groom_first" | "bride_first";
 export type RSVPStatus = "pending" | "attending" | "not_attending";
 export type WishVisibility = "visible" | "hidden";
 export type PaymentStatus = "pending" | "paid" | "expired" | "refunded";
-export type ThemeCategory = "elegant" | "minimalist" | "traditional" | "modern" | "rustic" | "floral";
+export type ThemeCategory =
+  | "elegant"
+  | "minimalist"
+  | "traditional"
+  | "modern"
+  | "rustic"
+  | "floral";
 
 export interface Profile {
   id: string;

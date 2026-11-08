@@ -13,7 +13,9 @@ export async function GET(request: Request) {
   }
 
   const cookieStore = await cookies();
-  const response = NextResponse.redirect(new URL("/reset-password", url.origin));
+  const response = NextResponse.redirect(
+    new URL("/reset-password", url.origin),
+  );
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

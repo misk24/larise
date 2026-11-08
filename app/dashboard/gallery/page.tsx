@@ -21,7 +21,10 @@ export default async function GalleryPage() {
   if (!invitation) {
     return (
       <div className="backend-content space-y-6">
-        <BackendPageHeader title="Galeri Foto" description="Kelola foto-foto untuk undangan Anda." />
+        <BackendPageHeader
+          title="Galeri Foto"
+          description="Kelola foto-foto untuk undangan Anda."
+        />
         <Card className="shadow-none">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">
@@ -35,7 +38,10 @@ export default async function GalleryPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <BackendPageHeader title="Galeri Foto" description="Kelola foto-foto untuk undangan Anda." />
+      <BackendPageHeader
+        title="Galeri Foto"
+        description="Kelola foto-foto untuk undangan Anda."
+      />
       <Card className="shadow-none">
         <CardContent className="p-12 text-center">
           <ImageIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
