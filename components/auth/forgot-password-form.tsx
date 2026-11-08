@@ -43,7 +43,9 @@ export function ForgotPasswordForm() {
         return;
       }
 
-      toast.success("Jika email terdaftar untuk login dengan password, link reset akan dikirim. Silakan cek inbox atau folder spam.");
+      toast.success(
+        "Jika email terdaftar untuk login dengan password, link reset akan dikirim. Silakan cek inbox atau folder spam.",
+      );
       setIsSent(true);
     } catch (error) {
       console.error("Password reset request failed:", error);

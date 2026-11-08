@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { motion } from "framer-motion"
-import { Calendar, Clock, ExternalLink, MapPin } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { Calendar, Clock, ExternalLink, MapPin } from "lucide-react";
 
 interface InvitationEventProps {
-  eventDate: string
-  akadTime: string
-  eventTime: string
-  akadVenue: string
-  akadAddress: string
-  venueName: string
-  venueAddress: string
+  eventDate: string;
+  akadTime: string;
+  eventTime: string;
+  akadVenue: string;
+  akadAddress: string;
+  venueName: string;
+  venueAddress: string;
 }
 
 export function InvitationEvent({
@@ -31,7 +31,7 @@ export function InvitationEvent({
         month: "long",
         year: "numeric",
       })
-    : ""
+    : "";
 
   return (
     <section className="py-20 md:py-32">
@@ -42,8 +42,12 @@ export function InvitationEvent({
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-4">Waktu & Tempat</h2>
-          <p className="text-muted-foreground">Dengan memohon rahmat dan ridho Allah SWT</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-4">
+            Waktu & Tempat
+          </h2>
+          <p className="text-muted-foreground">
+            Dengan memohon rahmat dan ridho Allah SWT
+          </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -59,7 +63,9 @@ export function InvitationEvent({
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                     <Calendar className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="text-xl font-serif font-semibold text-foreground mb-4">Akad Nikah</h3>
+                  <h3 className="text-xl font-serif font-semibold text-foreground mb-4">
+                    Akad Nikah
+                  </h3>
                   <div className="space-y-3 text-muted-foreground">
                     <div className="flex items-center justify-center gap-2">
                       <Calendar className="h-4 w-4" />
@@ -72,12 +78,18 @@ export function InvitationEvent({
                     <div className="flex items-start justify-center gap-2">
                       <MapPin className="h-4 w-4 mt-0.5" />
                       <div>
-                        <p className="font-medium text-foreground">{akadVenue}</p>
+                        <p className="font-medium text-foreground">
+                          {akadVenue}
+                        </p>
                         <p className="text-sm">{akadAddress}</p>
                       </div>
                     </div>
                   </div>
-                  <Button variant="outline" className="mt-6 bg-transparent" asChild>
+                  <Button
+                    variant="outline"
+                    className="mt-6 bg-transparent"
+                    asChild
+                  >
                     <a
                       href={`https://maps.google.com/?q=${encodeURIComponent(akadAddress)}`}
                       target="_blank"
@@ -104,7 +116,9 @@ export function InvitationEvent({
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                     <Calendar className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="text-xl font-serif font-semibold text-foreground mb-4">Resepsi</h3>
+                  <h3 className="text-xl font-serif font-semibold text-foreground mb-4">
+                    Resepsi
+                  </h3>
                   <div className="space-y-3 text-muted-foreground">
                     <div className="flex items-center justify-center gap-2">
                       <Calendar className="h-4 w-4" />
@@ -117,12 +131,18 @@ export function InvitationEvent({
                     <div className="flex items-start justify-center gap-2">
                       <MapPin className="h-4 w-4 mt-0.5" />
                       <div>
-                        <p className="font-medium text-foreground">{venueName}</p>
+                        <p className="font-medium text-foreground">
+                          {venueName}
+                        </p>
                         <p className="text-sm">{venueAddress}</p>
                       </div>
                     </div>
                   </div>
-                  <Button variant="outline" className="mt-6 bg-transparent" asChild>
+                  <Button
+                    variant="outline"
+                    className="mt-6 bg-transparent"
+                    asChild
+                  >
                     <a
                       href={`https://maps.google.com/?q=${encodeURIComponent(venueAddress)}`}
                       target="_blank"
@@ -158,5 +178,5 @@ export function InvitationEvent({
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

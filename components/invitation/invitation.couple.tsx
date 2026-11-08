@@ -1,16 +1,21 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface InvitationCoupleProps {
-  groomName: string
-  brideName: string
-  groomParents: string
-  brideParents: string
+  groomName: string;
+  brideName: string;
+  groomParents: string;
+  brideParents: string;
 }
 
-export function InvitationCouple({ groomName, brideName, groomParents, brideParents }: InvitationCoupleProps) {
+export function InvitationCouple({
+  groomName,
+  brideName,
+  groomParents,
+  brideParents,
+}: InvitationCoupleProps) {
   return (
     <section className="py-20 md:py-32 bg-secondary/30">
       <div className="container px-6 max-w-4xl mx-auto">
@@ -21,8 +26,10 @@ export function InvitationCouple({ groomName, brideName, groomParents, bridePare
           className="text-center mb-16"
         >
           <p className="text-muted-foreground italic text-lg mb-4">
-            &ldquo;Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu
-            sendiri, supaya kamu merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.&rdquo;
+            &ldquo;Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan
+            untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa
+            tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan
+            sayang.&rdquo;
           </p>
           <p className="text-muted-foreground font-medium">QS. Ar-Rum: 21</p>
         </motion.div>
@@ -43,7 +50,9 @@ export function InvitationCouple({ groomName, brideName, groomParents, bridePare
                 className="w-full h-full object-cover"
               />
             </div>
-            <h3 className="text-3xl font-serif font-semibold text-foreground mb-2">{groomName}</h3>
+            <h3 className="text-3xl font-serif font-semibold text-foreground mb-2">
+              {groomName}
+            </h3>
             <p className="text-muted-foreground">{groomParents}</p>
           </motion.div>
 
@@ -62,11 +71,13 @@ export function InvitationCouple({ groomName, brideName, groomParents, bridePare
                 className="w-full h-full object-cover"
               />
             </div>
-            <h3 className="text-3xl font-serif font-semibold text-foreground mb-2">{brideName}</h3>
+            <h3 className="text-3xl font-serif font-semibold text-foreground mb-2">
+              {brideName}
+            </h3>
             <p className="text-muted-foreground">{brideParents}</p>
           </motion.div>
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -2,13 +2,13 @@
 
 > Status: product intent and verified implementation status are recorded separately. A documented gap is not permission to weaken or remove an approved requirement.
 
-## Current delivery snapshot — 2026-11-05
+## Current delivery snapshot — 2026-11-08
 
 The core invitation lifecycle, account flows, section builder/renderer, image upload, public invitation, baseline guest responses, dashboard/admin operations, Theme Builder design configuration, and backend visual foundation are merged to `main`. This snapshot does not change product requirements; detailed current delivery tracking and release risks live in [`docs/STATUS.md`](docs/STATUS.md).
 
-**Open work:** PR [#53](https://github.com/misk24/larise/pull/53) (dashboard/guest/gallery integration and token-based RSVP security; production migration must be coordinated with application release), PR [#52](https://github.com/misk24/larise/pull/52) (user-supplied background music URL), and PR [#58](https://github.com/misk24/larise/pull/58) (remaining dashboard category palette cleanup). PR #57 was closed without merge and superseded by #58.
+**Applied locally on `feat/dashboard-integration-rebased`, not merged or deployed:** the rebased dashboard/guest/gallery integration and token-based RSVP security from PR [#53](https://github.com/misk24/larise/pull/53), the user-supplied background music URL from PR [#52](https://github.com/misk24/larise/pull/52), and the dashboard theme-category palette cleanup from PR [#58](https://github.com/misk24/larise/pull/58). The public RSVP/wish migration is split into two ordered migrations and is not applied to the target database yet. PR #57 was closed without merge and superseded by #58.
 
-**Next priorities:** safely integrate open PRs; verify migrations and owner/admin/public behavior against the target Supabase project; add cross-user RLS behavior tests; finish marketing/UX accessibility and responsive audits; then complete production monitoring, backup/recovery, smoke-test and rollback readiness. See `docs/STATUS.md` for exact scope and caveats.
+**Next priorities:** review and merge the local branch; apply migration phase 1, deploy the token-based client, then apply the phase-2 lock migration; verify migrations and owner/admin/public behavior against the target Supabase project; add cross-user RLS behavior tests; finish marketing/UX accessibility and responsive audits; then complete production monitoring, backup/recovery, smoke-test and rollback readiness. See `docs/STATUS.md` for exact rollout order and caveats.
 
 ## 1. Product summary
 
@@ -36,6 +36,7 @@ The primary market and default product language are Indonesia and Bahasa Indones
 ## 4. Core user journeys
 
 ### Invitation owner
+
 1. Register or sign in using supported authentication methods.
 2. Complete or review their profile.
 3. Create an invitation and select an available theme.
@@ -44,12 +45,16 @@ The primary market and default product language are Indonesia and Bahasa Indones
 6. Review guest responses and wishes, and manage invitation settings.
 
 ### Guest
+
 1. Open a shared public invitation on mobile or desktop.
 2. Read event information and use available location/media features.
-3. Submit an RSVP and/or message where enabled.
+3. Submit an RSVP and/or message where enabled, using the personal guest link shared by the owner.
 4. Receive clear validation and submission feedback.
 
+Public RSVP and wishes are token-only. A guest opens the invitation through a personal link containing `?guest=<token>`; the general invitation link is view-only and cannot submit guest responses.
+
 ### Administrator
+
 1. Sign in using an authorized administrator account.
 2. Access the admin area without gaining access merely by changing a URL.
 3. Manage themes and section definitions/content.
@@ -60,6 +65,7 @@ These journeys express product intent. Their implementation status is documented
 ## 5. Functional requirements and implementation status
 
 ### Authentication and account
+
 - Support email/password and Google authentication.
 - Support email verification and role-aware protected areas.
 - Allow users to update profile information.
@@ -69,6 +75,7 @@ These journeys express product intent. Their implementation status is documented
 **Verified source status:** profile management, Login & Security, provider-specific password restrictions, and Danger Zone UI are present on `main`. Account deletion is intentionally not implemented.
 
 ### Invitation creation and editing
+
 - Create an invitation through a two-step flow: basic couple information, then theme selection.
 - Generate a unique slug from nicknames in the chosen name order.
 - Lock slug and name order after draft creation; keep both nicknames editable without regenerating the existing slug.
@@ -78,20 +85,27 @@ These journeys express product intent. Their implementation status is documented
 **Verified source status:** PR #47 is merged into `main`; the create/edit UI and server action follow the two-step flow. The edit UI allows both full names and nicknames to be edited while keeping the existing slug and name order locked. Nickname edits do not regenerate the slug. The builder's Event section edits the event date, and its save action synchronizes that value to `invitations.event_date`.
 
 ### Invitation builder and published content
+
 - Let owners edit section content, visibility, and order; preview before publishing.
 - Keep the Cover and Opening at the beginning and Closing at the end.
 - Provide event details, location, gallery, RSVP/wishes, gift details, and closing content.
+- Allow owners to set an optional background music URL; playback is user-initiated and the app does not host audio.
 - Keep countdown as a planned feature, deferred from the current implementation scope until a later phase.
 - Save changes with clear feedback and avoid claiming publication until it succeeds.
 
 **Verified source status:** PR #48 is merged into `main`. The current builder list in `components/dashboard/invitation-builder.tsx` filters editable sections to ten types: Cover, Opening, Quote, Couple, Event, Location, Gallery, RSVP, Gift, and Closing. RSVP and wishes are combined in the guest-facing flow. The validation schema still recognizes a `countdown` section type, but the builder's current filter excludes it. Countdown is intentionally deferred to a later phase by product decision. It is not a current acceptance criterion for this phase, and it must not be described as implemented. Revisit it when the later phase is planned.
 
+**Background music status:** the code from PR #52 is applied locally on `feat/dashboard-integration-rebased`. The builder accepts an HTTPS audio URL validated by `backgroundMusicUrlSchema`, saves it through the owner-scoped `saveInvitationBackgroundMusic` action, and the shared renderer shows a native audio control with `preload="none"`. `invitations.background_music_url` already exists in the foundation migration, so no new column migration is needed. Remote file compatibility is not verified by the app.
+
 ### Guests and content
+
 - Support guest response management and wishes/messages where enabled.
+- Require a valid per-guest token for public RSVP and wish submission; the general invitation link must not submit responses on behalf of a guest.
 - Support invitation media and configurable sections only where implemented and validated.
 - Protect invitation ownership and guest data at server/database layers.
 
 ### Themes and administration
+
 - Allow administrators to manage reusable themes and section defaults/content.
 - Keep theme definitions distinct from invitation-specific content where the schema supports it.
 - Allow theme authors to configure section-level background, typography, spacing, buttons, images, icons, dividers, and ornaments while retaining defaults for unset properties.
@@ -121,6 +135,7 @@ These journeys express product intent. Their implementation status is documented
 ## 8. Definition of done
 
 A change is complete when:
+
 - Approved acceptance criteria are met.
 - Authorization and validation are correct for the affected flow.
 - Relevant tests pass; lint, typecheck, and build are run when feasible.
@@ -131,6 +146,7 @@ A change is complete when:
 ## 9. Scope and discrepancy handling
 
 When a product requirement and implementation disagree:
+
 1. Verify the actual behavior in the target branch, related actions, schema, migrations, and tests.
 2. Record the requirement and observed behavior separately.
 3. Do not silently rewrite the PRD to match existing code.

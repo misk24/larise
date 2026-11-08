@@ -1,31 +1,39 @@
 import { BackendPageHeader } from "@/components/backend/backend-ui";
+import { AccountDangerZone } from "@/components/dashboard/account-danger-zone";
 import { AccountForm } from "@/components/dashboard/account-form";
 import { LoginSecurityCard } from "@/components/dashboard/login-security-card";
-import { AccountDangerZone } from "@/components/dashboard/account-danger-zone";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { CalendarDaysIcon } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function MyAccountPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("id, email, provider, full_name, phone, avatar_url, role, created_at, updated_at")
+    .select(
+      "id, email, provider, full_name, phone, avatar_url, role, created_at, updated_at",
+    )
     .eq("id", user.id)
     .single();
 
   if (error || !profile) {
     return (
       <div className="backend-content mx-auto w-full max-w-4xl space-y-6">
-        <BackendPageHeader title="My Account" description="Kelola profil dan akses akun LARISÉ Anda." />
+        <BackendPageHeader
+          title="My Account"
+          description="Kelola profil dan akses akun LARISÉ Anda."
+        />
         <Card className="shadow-none">
           <CardContent className="p-6 text-sm text-destructive">
-            Data profil belum dapat dimuat. Muat ulang halaman atau coba beberapa saat lagi.
+            Data profil belum dapat dimuat. Muat ulang halaman atau coba
+            beberapa saat lagi.
           </CardContent>
         </Card>
       </div>
@@ -40,11 +48,17 @@ export default async function MyAccountPage() {
 
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
-      <BackendPageHeader title="My Account" description="Kelola informasi profil dan metode login yang digunakan untuk mengakses LARISÉ." />
+      <BackendPageHeader
+        title="My Account"
+        description="Kelola informasi profil dan metode login yang digunakan untuk mengakses LARISÉ."
+      />
 
       <AccountForm user={user} profile={profile} />
 
-      <LoginSecurityCard provider={profile.provider} email={user.email ?? profile.email} />
+      <LoginSecurityCard
+        provider={profile.provider}
+        email={user.email ?? profile.email}
+      />
 
       <div className="max-w-md">
         <Card className="shadow-none">
@@ -63,7 +77,10 @@ export default async function MyAccountPage() {
         </Card>
       </div>
 
-      <AccountDangerZone provider={profile.provider} email={user.email ?? profile.email} />
+      <AccountDangerZone
+        provider={profile.provider}
+        email={user.email ?? profile.email}
+      />
     </div>
   );
 }

@@ -42,7 +42,8 @@ export function ValueSection() {
                 id="value-title"
                 className="frontend-display max-w-2xl text-[clamp(2.75rem,6vw,5rem)] leading-[0.98] tracking-[-0.055em] text-balance"
               >
-                Lebih dekat dengan <span className="italic text-[#c8b18f]">cerita kalian.</span>
+                Lebih dekat dengan{" "}
+                <span className="italic text-[#c8b18f]">cerita kalian.</span>
               </h2>
             </div>
             <p className="max-w-lg text-base leading-7 text-white/65 sm:text-lg sm:leading-8 md:justify-self-end">

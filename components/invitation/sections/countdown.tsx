@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { contentValue } from "./content-utils";
 import type { SectionContext } from "./section-registry";
 import { SectionShell } from "./section-shell";
-import { contentValue } from "./content-utils";
 
 export function CountdownSection({ section }: SectionContext) {
   const target = contentValue(section.content, "target_date") || "";
@@ -28,14 +28,17 @@ export function CountdownSection({ section }: SectionContext) {
         {contentValue(section.content, "title", "Menuju Hari Bahagia")}
       </h2>
       <div className="mx-auto mt-8 grid max-w-xl grid-cols-4 gap-2 md:gap-4">
-        {[[days, "Hari"], [hours, "Jam"], [minutes, "Menit"], [seconds, "Detik"]].map(
-          ([value, label]) => (
-            <div key={label} className="rounded-lg border p-4">
-              <div className="text-2xl font-semibold">{value}</div>
-              <div className="text-xs text-muted-foreground">{label}</div>
-            </div>
-          ),
-        )}
+        {[
+          [days, "Hari"],
+          [hours, "Jam"],
+          [minutes, "Menit"],
+          [seconds, "Detik"],
+        ].map(([value, label]) => (
+          <div key={label} className="rounded-lg border p-4">
+            <div className="text-2xl font-semibold">{value}</div>
+            <div className="text-xs text-muted-foreground">{label}</div>
+          </div>
+        ))}
       </div>
     </SectionShell>
   );

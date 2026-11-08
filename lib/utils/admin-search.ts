@@ -18,7 +18,10 @@ export function sanitizeAdminSearch(value: string | undefined): string {
  * as "mail@example.com" can match a normalized database search column.
  */
 export function normalizeAdminSearchTerm(value: string): string {
-  return value.normalize("NFKC").toLocaleLowerCase("id-ID").replace(/[^\p{L}\p{N}]/gu, "");
+  return value
+    .normalize("NFKC")
+    .toLocaleLowerCase("id-ID")
+    .replace(/[^\p{L}\p{N}]/gu, "");
 }
 
 /**

@@ -1,7 +1,10 @@
 "use client";
 
 import { BrandLogo } from "@/components/landing/ui/brand-logo";
-import { LandingButton, landingButtonStyles } from "@/components/landing/ui/button";
+import {
+  LandingButton,
+  landingButtonStyles,
+} from "@/components/landing/ui/button";
 import { LandingScrollLink } from "@/components/landing/ui/smooth-scroll-link";
 import { XIcon } from "lucide-react";
 import Link from "next/link";
@@ -40,7 +43,10 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
               <XIcon className="size-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:rotate-90 motion-reduce:transition-none" />
             </LandingButton>
           </div>
-          <nav aria-label="Navigasi mobile" className="divide-y divide-[#29271F]/10">
+          <nav
+            aria-label="Navigasi mobile"
+            className="divide-y divide-[#29271F]/10"
+          >
             {navigation.map((item, index) => (
               <LandingScrollLink
                 key={item.label}
@@ -49,7 +55,9 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
                 style={{ transitionDelay: isOpen ? `${index * 45}ms` : "0ms" }}
                 className={[
                   "flex items-center py-4 text-xl tracking-tight text-[#29271F] transition-[color,opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-[#927653] motion-reduce:transition-none",
-                  isOpen ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0",
+                  isOpen
+                    ? "translate-y-0 opacity-100"
+                    : "-translate-y-2 opacity-0",
                 ].join(" ")}
               >
                 {item.label}
@@ -66,14 +74,21 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
             <Link
               href="/login"
               onClick={onClose}
-              className={landingButtonStyles({ variant: "secondary", size: "md", className: "min-h-11" })}
+              className={landingButtonStyles({
+                variant: "secondary",
+                size: "md",
+                className: "min-h-11",
+              })}
             >
               Masuk
             </Link>
             <Link
               href="/register"
               onClick={onClose}
-              className={landingButtonStyles({ size: "md", className: "min-h-11" })}
+              className={landingButtonStyles({
+                size: "md",
+                className: "min-h-11",
+              })}
             >
               Buat Undangan
             </Link>

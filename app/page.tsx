@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { ThemeSectionHorizontal } from "@/components/landing/collection/collections";
 import { CTASection } from "@/components/landing/cta/cta";
 import { FAQSection } from "@/components/landing/faq/faq";
@@ -8,6 +7,7 @@ import { HeroSection } from "@/components/landing/hero/hero";
 import { HowItWorksSection } from "@/components/landing/how-it-works/how-it-works";
 import { Navbar } from "@/components/landing/navbar/navbar";
 import { ValueSection } from "@/components/landing/value/value";
+import { redirect } from "next/navigation";
 
 type HomeProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

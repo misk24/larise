@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
-import { validateSectionDesign } from "@/lib/validation/section-design";
 import {
   getSectionDesignAttributes,
   getSectionDesignStyle,
 } from "@/components/invitation/sections/section-design";
+import { validateSectionDesign } from "@/lib/validation/section-design";
+import { describe, expect, it } from "vitest";
 
 describe("invitation section design", () => {
   it("keeps existing section styling untouched when no design is configured", () => {
@@ -28,7 +28,9 @@ describe("invitation section design", () => {
     expect(style["--section-heading-align"]).toBe("left");
     expect(style["--section-padding-top"]).toBe("96px");
     expect(style["--section-padding-bottom"]).toBe("120px");
-    const attributes = getSectionDesignAttributes({ layout: { paddingTop: 96, paddingBottom: 120 } });
+    const attributes = getSectionDesignAttributes({
+      layout: { paddingTop: 96, paddingBottom: 120 },
+    });
     expect(attributes["data-design-padding-top"]).toBe("true");
     expect(attributes["data-design-padding-bottom"]).toBe("true");
   });
@@ -91,8 +93,19 @@ describe("invitation section design", () => {
   it("creates decorative icon, divider, ornament, and element-gap tokens", () => {
     const design = {
       icon: { color: "#8b7565", size: 28, strokeWidth: 1.5 },
-      divider: { color: "#c8b8a8", thickness: 2, width: 60, style: "dotted", spacing: 24 },
-      ornament: { color: "#b89b7b", size: 44, opacity: 0.2, position: "bottom-right" },
+      divider: {
+        color: "#c8b8a8",
+        thickness: 2,
+        width: 60,
+        style: "dotted",
+        spacing: 24,
+      },
+      ornament: {
+        color: "#b89b7b",
+        size: 44,
+        opacity: 0.2,
+        position: "bottom-right",
+      },
       layout: { elementGap: 32 },
     };
     const style = getSectionDesignStyle(design) as Record<string, string>;
@@ -117,7 +130,12 @@ describe("invitation section design", () => {
 
   it("keeps legacy shared typography settings active for both text groups", () => {
     const attributes = getSectionDesignAttributes({
-      typography: { fontFamily: "Georgia, serif", color: "#333333", fontWeight: 700, alignment: "left" },
+      typography: {
+        fontFamily: "Georgia, serif",
+        color: "#333333",
+        fontWeight: 700,
+        alignment: "left",
+      },
     });
 
     expect(attributes["data-design-heading-family"]).toBe("true");
@@ -131,24 +149,31 @@ describe("invitation section design", () => {
   });
 
   it("validates design configuration at the API boundary", () => {
-    expect(validateSectionDesign({
-      design: {
-        icon: { color: "#ffffff", size: 24 },
-        divider: { style: "dashed", width: 80 },
-        ornament: { opacity: 0.15, position: "top-left" },
-        layout: { elementGap: 24 },
-      },
-    }).success).toBe(true);
+    expect(
+      validateSectionDesign({
+        design: {
+          icon: { color: "#ffffff", size: 24 },
+          divider: { style: "dashed", width: 80 },
+          ornament: { opacity: 0.15, position: "top-left" },
+          layout: { elementGap: 24 },
+        },
+      }).success,
+    ).toBe(true);
 
-    expect(validateSectionDesign({
-      design: { background: { type: "image", value: "javascript:alert(1)" } },
-    }).success).toBe(false);
-    expect(validateSectionDesign({
-      design: { ornament: { opacity: 3 } },
-    }).success).toBe(false);
-    expect(validateSectionDesign({
-      design: { icon: { onload: "alert(1)" } },
-    }).success).toBe(false);
+    expect(
+      validateSectionDesign({
+        design: { background: { type: "image", value: "javascript:alert(1)" } },
+      }).success,
+    ).toBe(false);
+    expect(
+      validateSectionDesign({
+        design: { ornament: { opacity: 3 } },
+      }).success,
+    ).toBe(false);
+    expect(
+      validateSectionDesign({
+        design: { icon: { onload: "alert(1)" } },
+      }).success,
+    ).toBe(false);
   });
-
 });

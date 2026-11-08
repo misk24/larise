@@ -1,8 +1,11 @@
 "use client";
 
-import type { Invitation, InvitationSection, Wish } from "@/types/database";
+import {
+  getSectionDesignAttributes,
+  getSectionDesignStyle,
+} from "@/components/invitation/sections/section-design";
 import { sectionRegistry } from "@/components/invitation/sections/section-registry";
-import { getSectionDesignAttributes, getSectionDesignStyle } from "@/components/invitation/sections/section-design";
+import type { Invitation, InvitationSection, Wish } from "@/types/database";
 
 const previewInvitation = {
   id: "00000000-0000-4000-8000-000000000001",
@@ -64,13 +67,23 @@ export function ThemeSectionLivePreview({
   content: Record<string, unknown>;
   visible?: boolean;
 }) {
-  const Component = sectionRegistry[sectionType as keyof typeof sectionRegistry];
+  const Component =
+    sectionRegistry[sectionType as keyof typeof sectionRegistry];
   if (!Component) {
-    return <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">Belum ada renderer untuk section ini.</p>;
+    return (
+      <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
+        Belum ada renderer untuk section ini.
+      </p>
+    );
   }
 
   if (sectionType === "rsvp" || sectionType === "gift") {
-    return <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">Preview interaktif untuk section {sectionType} dinonaktifkan agar tidak mengirim data sungguhan.</p>;
+    return (
+      <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
+        Preview interaktif untuk section {sectionType} dinonaktifkan agar tidak
+        mengirim data sungguhan.
+      </p>
+    );
   }
 
   const section = {
@@ -87,11 +100,16 @@ export function ThemeSectionLivePreview({
   const design = content.design;
 
   return (
-    <div className="section-design-scope overflow-hidden rounded-md border" {...getSectionDesignAttributes(design)} style={getSectionDesignStyle(design)}>
+    <div
+      className="section-design-scope overflow-hidden rounded-md border"
+      {...getSectionDesignAttributes(design)}
+      style={getSectionDesignStyle(design)}
+    >
       <Component
         invitation={previewInvitation}
         section={section}
         guestName="Tamu Undangan"
+        guestToken={null}
         wishes={previewWishes}
       />
     </div>

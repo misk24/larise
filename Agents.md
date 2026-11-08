@@ -5,6 +5,7 @@ These rules apply to AI coding agents and contributors using AI assistance.
 ## 1. Required reading
 
 Before planning work, read:
+
 1. `Agents.md`
 2. `PRD.md` for product intent and acceptance criteria
 3. `Design_System.md` for approved visual and component conventions
@@ -16,6 +17,7 @@ The repository is the source of truth for current implementation. The PRD is the
 ## 2. Workflow: Plan → Implement → Verify → Review
 
 ### Plan
+
 - Restate the requested outcome and observable acceptance criteria.
 - Read actual implementation and relevant tests, not just filenames or PR summaries.
 - Identify likely files, migration/auth/accessibility/responsive risks, and out-of-scope work.
@@ -23,6 +25,7 @@ The repository is the source of truth for current implementation. The PRD is the
 - For non-trivial work, present a plan and wait for approval unless the user has already authorized implementation.
 
 ### Implement
+
 - Make the smallest coherent change that meets the approved scope.
 - Follow established folder, component, naming, and data-access conventions.
 - Frontend/landing-page UI uses original reusable LARISÉ components; shadcn/ui is reserved for dashboard/admin backend UI.
@@ -33,7 +36,9 @@ The repository is the source of truth for current implementation. The PRD is the
 - Do not run destructive database commands or delete user data without explicit authorization.
 
 ### Verify
+
 Run relevant checks and broaden coverage when feasible:
+
 1. `npm run lint`
 2. `npm run typecheck`
 3. `npm test`
@@ -45,6 +50,7 @@ Report the exact checks run and their observed outcomes. If a check is blocked b
 For UI work, check mobile and desktop, keyboard/focus behavior, loading/empty/error/success states, and reduced-motion preferences where applicable. For auth/data work, review server authorization, RLS, migrations, and anonymous/user/admin access as relevant.
 
 ### Review
+
 - Compare the final diff with the task and approved requirements.
 - Check for accidental secrets, unrelated changes, broken imports, unsafe SQL/RLS, and missing tests.
 - Update documentation when verified implementation or approved conventions change.
@@ -54,6 +60,7 @@ For UI work, check mobile and desktop, keyboard/focus behavior, loading/empty/er
 ## 3. Handling PRD/implementation mismatches
 
 When source code and product requirements differ:
+
 1. Confirm the behavior in the current target branch and relevant tests/migrations.
 2. Describe the exact requirement and observed implementation, with file/route references.
 3. Do not alter the requirement to match the implementation, or claim the implementation meets the requirement.

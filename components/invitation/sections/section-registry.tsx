@@ -1,29 +1,43 @@
+import type {
+  Invitation,
+  InvitationSection,
+  Theme,
+  Wish,
+} from "@/types/database";
 import type { ComponentType } from "react";
-import type { Invitation, InvitationSection, Theme, Wish } from "@/types/database";
-import type { SectionType } from "./types";
-import { CoverSection } from "./cover";
-import { OpeningSection } from "./opening";
-import { CoupleSection } from "./couple";
-import { QuoteSection } from "./quote";
-import { EventSection } from "./event";
-import { CountdownSection } from "./countdown";
-import { GallerySection } from "./gallery";
-import { LocationSection } from "./location";
 import { ClosingSection } from "./closing";
-import { RsvpSection } from "./rsvp";
+import { CountdownSection } from "./countdown";
+import { CoupleSection } from "./couple";
+import { CoverSection } from "./cover";
+import { EventSection } from "./event";
+import { GallerySection } from "./gallery";
 import { GiftSection } from "./gift";
+import { LocationSection } from "./location";
+import { OpeningSection } from "./opening";
+import { QuoteSection } from "./quote";
+import { RsvpSection } from "./rsvp";
+import type { SectionType } from "./types";
 
 export interface SectionContext {
   invitation: Invitation & { themes?: Theme | null };
   section: InvitationSection;
   guestName: string;
+  guestToken: string | null;
   wishes: Wish[];
   onWishAdded?: (wish: Wish) => void;
 }
 
 export type SectionComponent = ComponentType<SectionContext>;
 export const sectionRegistry: Record<SectionType, SectionComponent> = {
-  cover:CoverSection, opening:OpeningSection, couple:CoupleSection, quote:QuoteSection,
-  event:EventSection, countdown:CountdownSection, gallery:GallerySection, location:LocationSection,
-  closing:ClosingSection, rsvp:RsvpSection, gift:GiftSection,
+  cover: CoverSection,
+  opening: OpeningSection,
+  couple: CoupleSection,
+  quote: QuoteSection,
+  event: EventSection,
+  countdown: CountdownSection,
+  gallery: GallerySection,
+  location: LocationSection,
+  closing: ClosingSection,
+  rsvp: RsvpSection,
+  gift: GiftSection,
 };

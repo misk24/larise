@@ -2,19 +2,51 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/client";
 import type { Guest, RSVP, RSVPStatus } from "@/types/database";
-import { Check, Copy, Loader2, Pencil, Plus, Search, Trash2, UserCheck, UserX, Users } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Loader2,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+  UserCheck,
+  UserX,
+  Users,
+} from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-type GuestWithRsvp = Guest & { rsvp: RSVP[] };
+type GuestWithRsvp = Guest & { rsvp: RSVP[] | RSVP | null };
 type GuestForm = { name: string; phone: string; email: string };
 
 interface GuestManagerProps {
@@ -26,12 +58,24 @@ interface GuestManagerProps {
 const emptyForm: GuestForm = { name: "", phone: "", email: "" };
 
 function latestRsvp(guest: GuestWithRsvp): RSVP | undefined {
-  return [...(guest.rsvp ?? [])].sort((a, b) =>
-    new Date(b.updated_at ?? b.created_at).getTime() - new Date(a.updated_at ?? a.created_at).getTime()
+  const rsvps = Array.isArray(guest.rsvp)
+    ? guest.rsvp
+    : guest.rsvp
+      ? [guest.rsvp]
+      : [];
+
+  return [...rsvps].sort(
+    (a, b) =>
+      new Date(b.updated_at ?? b.created_at).getTime() -
+      new Date(a.updated_at ?? a.created_at).getTime(),
   )[0];
 }
 
-export function GuestManager({ invitationId, initialGuests, invitationSlug }: GuestManagerProps) {
+export function GuestManager({
+  invitationId,
+  initialGuests,
+  invitationSlug,
+}: GuestManagerProps) {
   const [guests, setGuests] = useState<GuestWithRsvp[]>(initialGuests);
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -47,21 +91,29 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
     return {
       total: guests.length,
       attending: statuses.filter((r) => r?.status === "attending").length,
-      notAttending: statuses.filter((r) => r?.status === "not_attending").length,
+      notAttending: statuses.filter((r) => r?.status === "not_attending")
+        .length,
       pending: statuses.filter((r) => !r || r.status === "pending").length,
-      attendees: statuses.reduce((total, r) => total + (r?.status === "attending" ? r.attendee_count : 0), 0),
+      attendees: statuses.reduce(
+        (total, r) =>
+          total + (r?.status === "attending" ? r.attendee_count : 0),
+        0,
+      ),
     };
   }, [guests]);
 
   const filteredGuests = useMemo(() => {
     const query = searchQuery.trim().toLocaleLowerCase();
     return guests.filter((guest) => {
-      const matchesSearch = !query ||
+      const matchesSearch =
+        !query ||
         guest.name.toLocaleLowerCase().includes(query) ||
         (guest.phone ?? "").toLocaleLowerCase().includes(query) ||
         (guest.email ?? "").toLocaleLowerCase().includes(query);
       const status = latestRsvp(guest)?.status ?? "pending";
-      return matchesSearch && (statusFilter === "all" || status === statusFilter);
+      return (
+        matchesSearch && (statusFilter === "all" || status === statusFilter)
+      );
     });
   }, [guests, searchQuery, statusFilter]);
 
@@ -73,7 +125,11 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
 
   function openEditDialog(guest: GuestWithRsvp) {
     setEditingGuest(guest);
-    setForm({ name: guest.name, phone: guest.phone ?? "", email: guest.email ?? "" });
+    setForm({
+      name: guest.name,
+      phone: guest.phone ?? "",
+      email: guest.email ?? "",
+    });
     setIsDialogOpen(true);
   }
 
@@ -104,7 +160,9 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
           toast.error("Gagal memperbarui tamu. " + error.message);
           return;
         }
-        setGuests((current) => current.map((guest) => guest.id === data.id ? data : guest));
+        setGuests((current) =>
+          current.map((guest) => (guest.id === data.id ? data : guest)),
+        );
         toast.success("Data tamu berhasil diperbarui.");
       } else {
         const { data, error } = await supabase
@@ -130,7 +188,12 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
   }
 
   async function handleDeleteGuest(guest: GuestWithRsvp) {
-    if (!window.confirm(`Hapus tamu “${guest.name}”? Data RSVP terkait juga bisa terpengaruh.`)) return;
+    if (
+      !window.confirm(
+        `Hapus tamu “${guest.name}”? Data RSVP terkait juga bisa terpengaruh.`,
+      )
+    )
+      return;
     setIsLoading(true);
     try {
       const { error } = await supabase
@@ -157,7 +220,11 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
       await navigator.clipboard.writeText(link);
       setCopiedId(guestToken);
       toast.success("Link undangan disalin.");
-      window.setTimeout(() => setCopiedId((current) => current === guestToken ? null : current), 2000);
+      window.setTimeout(
+        () =>
+          setCopiedId((current) => (current === guestToken ? null : current)),
+        2000,
+      );
     } catch {
       toast.error("Link gagal disalin. Periksa izin clipboard browser.");
     }
@@ -165,8 +232,14 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
 
   function getRsvpBadge(guest: GuestWithRsvp) {
     const status = latestRsvp(guest)?.status;
-    if (status === "attending") return <Badge className="border-chart-3/30 bg-chart-3/20 text-chart-3">Hadir</Badge>;
-    if (status === "not_attending") return <Badge variant="destructive">Tidak hadir</Badge>;
+    if (status === "attending")
+      return (
+        <Badge className="border-chart-3/30 bg-chart-3/20 text-chart-3">
+          Hadir
+        </Badge>
+      );
+    if (status === "not_attending")
+      return <Badge variant="destructive">Tidak hadir</Badge>;
     return <Badge variant="secondary">Menunggu</Badge>;
   }
 
@@ -201,40 +274,100 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
             <div>
               <CardTitle>Daftar Tamu</CardTitle>
               <CardDescription>
-                {stats.attendees} orang diperkirakan hadir berdasarkan RSVP yang masuk.
+                {stats.attendees} orang diperkirakan hadir berdasarkan RSVP yang
+                masuk.
               </CardDescription>
             </div>
-            <Dialog open={isDialogOpen} onOpenChange={(open) => {
-              setIsDialogOpen(open);
-              if (!open) { setEditingGuest(null); setForm(emptyForm); }
-            }}>
+            <Dialog
+              open={isDialogOpen}
+              onOpenChange={(open) => {
+                setIsDialogOpen(open);
+                if (!open) {
+                  setEditingGuest(null);
+                  setForm(emptyForm);
+                }
+              }}
+            >
               <DialogTrigger asChild>
-                <Button onClick={openAddDialog}><Plus className="mr-2 size-4" />Tambah tamu</Button>
+                <Button onClick={openAddDialog}>
+                  <Plus className="mr-2 size-4" />
+                  Tambah tamu
+                </Button>
               </DialogTrigger>
               <DialogContent>
                 <form onSubmit={handleSaveGuest}>
                   <DialogHeader>
-                    <DialogTitle>{editingGuest ? "Edit data tamu" : "Tambah tamu baru"}</DialogTitle>
-                    <DialogDescription>Nama wajib diisi. Nomor WhatsApp dan email opsional.</DialogDescription>
+                    <DialogTitle>
+                      {editingGuest ? "Edit data tamu" : "Tambah tamu baru"}
+                    </DialogTitle>
+                    <DialogDescription>
+                      Nama wajib diisi. Nomor WhatsApp dan email opsional.
+                    </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
                       <Label htmlFor="guest-name">Nama tamu *</Label>
-                      <Input id="guest-name" autoComplete="name" value={form.name} onChange={(e) => setForm((current) => ({ ...current, name: e.target.value }))} maxLength={120} required />
+                      <Input
+                        id="guest-name"
+                        autoComplete="name"
+                        value={form.name}
+                        onChange={(e) =>
+                          setForm((current) => ({
+                            ...current,
+                            name: e.target.value,
+                          }))
+                        }
+                        maxLength={120}
+                        required
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="guest-phone">Nomor WhatsApp</Label>
-                      <Input id="guest-phone" type="tel" autoComplete="tel" value={form.phone} onChange={(e) => setForm((current) => ({ ...current, phone: e.target.value }))} maxLength={32} placeholder="08123456789" />
+                      <Input
+                        id="guest-phone"
+                        type="tel"
+                        autoComplete="tel"
+                        value={form.phone}
+                        onChange={(e) =>
+                          setForm((current) => ({
+                            ...current,
+                            phone: e.target.value,
+                          }))
+                        }
+                        maxLength={32}
+                        placeholder="08123456789"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="guest-email">Email</Label>
-                      <Input id="guest-email" type="email" autoComplete="email" value={form.email} onChange={(e) => setForm((current) => ({ ...current, email: e.target.value }))} maxLength={254} placeholder="email@example.com" />
+                      <Input
+                        id="guest-email"
+                        type="email"
+                        autoComplete="email"
+                        value={form.email}
+                        onChange={(e) =>
+                          setForm((current) => ({
+                            ...current,
+                            email: e.target.value,
+                          }))
+                        }
+                        maxLength={254}
+                        placeholder="email@example.com"
+                      />
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Batal</Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsDialogOpen(false)}
+                    >
+                      Batal
+                    </Button>
                     <Button type="submit" disabled={isLoading}>
-                      {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+                      {isLoading && (
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                      )}
                       {editingGuest ? "Simpan perubahan" : "Tambah tamu"}
                     </Button>
                   </DialogFooter>
@@ -247,12 +380,20 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
           <div className="mb-4 grid gap-3 sm:grid-cols-[1fr_220px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input aria-label="Cari tamu" placeholder="Cari nama, telepon, atau email..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
+              <Input
+                aria-label="Cari tamu"
+                placeholder="Cari nama, telepon, atau email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
             <select
               aria-label="Filter status RSVP"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+              onChange={(e) =>
+                setStatusFilter(e.target.value as typeof statusFilter)
+              }
               className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
             >
               <option value="all">Semua status RSVP</option>
@@ -268,9 +409,13 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nama</TableHead>
-                    <TableHead className="hidden md:table-cell">Kontak</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Kontak
+                    </TableHead>
                     <TableHead>Status RSVP</TableHead>
-                    <TableHead className="hidden sm:table-cell">Jumlah hadir</TableHead>
+                    <TableHead className="hidden sm:table-cell">
+                      Jumlah hadir
+                    </TableHead>
                     <TableHead className="text-right">Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -281,23 +426,57 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
                       <TableRow key={guest.id}>
                         <TableCell className="font-medium">
                           <div>{guest.name}</div>
-                          <div className="text-xs text-muted-foreground md:hidden">{guest.phone || guest.email || "Kontak belum diisi"}</div>
+                          <div className="text-xs text-muted-foreground md:hidden">
+                            {guest.phone || guest.email || "Kontak belum diisi"}
+                          </div>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           <div>{guest.phone || "-"}</div>
-                          <div className="text-xs text-muted-foreground">{guest.email || ""}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {guest.email || ""}
+                          </div>
                         </TableCell>
                         <TableCell>{getRsvpBadge(guest)}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{rsvp?.status === "attending" ? rsvp.attendee_count : "-"}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {rsvp?.status === "attending"
+                            ? rsvp.attendee_count
+                            : "-"}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center justify-end gap-1">
-                            <Button type="button" variant="ghost" size="icon" aria-label={`Salin link untuk ${guest.name}`} onClick={() => copyInvitationLink(guest.public_token)}>
-                              {copiedId === guest.public_token ? <Check className="size-4 text-chart-3" /> : <Copy className="size-4" />}
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              aria-label={`Salin link untuk ${guest.name}`}
+                              onClick={() =>
+                                copyInvitationLink(guest.public_token)
+                              }
+                            >
+                              {copiedId === guest.public_token ? (
+                                <Check className="size-4 text-chart-3" />
+                              ) : (
+                                <Copy className="size-4" />
+                              )}
                             </Button>
-                            <Button type="button" variant="ghost" size="icon" aria-label={`Edit ${guest.name}`} onClick={() => openEditDialog(guest)}>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              aria-label={`Edit ${guest.name}`}
+                              onClick={() => openEditDialog(guest)}
+                            >
                               <Pencil className="size-4" />
                             </Button>
-                            <Button type="button" variant="ghost" size="icon" aria-label={`Hapus ${guest.name}`} disabled={isLoading} onClick={() => handleDeleteGuest(guest)} className="text-destructive hover:text-destructive">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              aria-label={`Hapus ${guest.name}`}
+                              disabled={isLoading}
+                              onClick={() => handleDeleteGuest(guest)}
+                              className="text-destructive hover:text-destructive"
+                            >
                               <Trash2 className="size-4" />
                             </Button>
                           </div>
@@ -312,7 +491,9 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
             <div className="py-12 text-center">
               <Users className="mx-auto mb-4 size-12 text-muted-foreground/50" />
               <p className="text-muted-foreground">
-                {guests.length === 0 ? "Belum ada tamu. Tambahkan tamu pertama Anda." : "Tidak ada tamu yang cocok dengan pencarian atau filter."}
+                {guests.length === 0
+                  ? "Belum ada tamu. Tambahkan tamu pertama Anda."
+                  : "Tidak ada tamu yang cocok dengan pencarian atau filter."}
               </p>
             </div>
           )}

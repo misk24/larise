@@ -2,9 +2,7 @@ import { z } from "zod";
 
 export const emailSchema = z.string().trim().email("Email tidak valid.");
 
-export const passwordSchema = z
-  .string()
-  .min(8, "Password minimal 8 karakter.");
+export const passwordSchema = z.string().min(8, "Password minimal 8 karakter.");
 
 export const loginSchema = z.object({
   email: emailSchema,
@@ -36,7 +34,10 @@ export const passwordResetSchema = z
  * Only allow same-origin relative paths for post-auth redirects.
  * Absolute URLs and protocol-relative URLs are rejected to prevent open redirects.
  */
-export function safeRedirectPath(value: string | null | undefined, fallback = "/dashboard") {
+export function safeRedirectPath(
+  value: string | null | undefined,
+  fallback = "/dashboard",
+) {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
     return fallback;
   }

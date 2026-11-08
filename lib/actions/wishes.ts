@@ -11,7 +11,9 @@ async function getOwnedInvitationForWish(wishId: string) {
   if (!parsed.success) return { supabase: null, wish: null };
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return { supabase: null, wish: null };
 
   const { data: wish } = await supabase
@@ -32,16 +34,27 @@ async function getOwnedInvitationForWish(wishId: string) {
   return invitation ? { supabase, wish } : { supabase: null, wish: null };
 }
 
-export async function setWishVisibility(wishId: string, visibility: "visible" | "hidden") {
+export async function setWishVisibility(
+  wishId: string,
+  visibility: "visible" | "hidden",
+) {
   if (visibility !== "visible" && visibility !== "hidden") {
     return { success: false, error: "Status visibilitas tidak valid." };
   }
 
   const { supabase, wish } = await getOwnedInvitationForWish(wishId);
-  if (!supabase || !wish) return { success: false, error: "Ucapan tidak ditemukan atau akses ditolak." };
+  if (!supabase || !wish)
+    return {
+      success: false,
+      error: "Ucapan tidak ditemukan atau akses ditolak.",
+    };
 
-  const { error } = await supabase.from("wishes").update({ visibility }).eq("id", wish.id);
-  if (error) return { success: false, error: "Gagal memperbarui visibilitas ucapan." };
+  const { error } = await supabase
+    .from("wishes")
+    .update({ visibility })
+    .eq("id", wish.id);
+  if (error)
+    return { success: false, error: "Gagal memperbarui visibilitas ucapan." };
 
   revalidatePath("/dashboard/wishes");
   revalidatePath("/undangan");
@@ -50,7 +63,11 @@ export async function setWishVisibility(wishId: string, visibility: "visible" | 
 
 export async function deleteWish(wishId: string) {
   const { supabase, wish } = await getOwnedInvitationForWish(wishId);
-  if (!supabase || !wish) return { success: false, error: "Ucapan tidak ditemukan atau akses ditolak." };
+  if (!supabase || !wish)
+    return {
+      success: false,
+      error: "Ucapan tidak ditemukan atau akses ditolak.",
+    };
 
   const { error } = await supabase.from("wishes").delete().eq("id", wish.id);
   if (error) return { success: false, error: "Gagal menghapus ucapan." };
