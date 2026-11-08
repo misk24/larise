@@ -1,16 +1,19 @@
 "use server";
 
+import {
+  invitationSectionSchema,
+  sectionContentSchemas,
+} from "@/components/invitation/sections/types";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
-import { invitationSectionSchema, sectionContentSchemas } from "@/components/invitation/sections/types";
 
 const sectionUpdateSchema = z.object({
   id: z.string().uuid(),
   section_key: z.string().min(1),
   section_type: invitationSectionSchema.shape.section_type,
   position: z.number().int().nonnegative(),
-  content: z.record(z.unknown()),
+  content: z.record(z.string(), z.unknown()),
   is_visible: z.boolean(),
 });
 
@@ -21,7 +24,9 @@ const saveSectionsSchema = z.object({
 
 async function requireOwner(invitationId: string) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return { supabase, user: null, invitation: null };
 
   const { data: invitation } = await supabase
@@ -34,11 +39,15 @@ async function requireOwner(invitationId: string) {
   return { supabase, user, invitation };
 }
 
-export async function saveInvitationSections(input: z.input<typeof saveSectionsSchema>) {
+export async function saveInvitationSections(
+  input: z.input<typeof saveSectionsSchema>,
+) {
   const parsed = saveSectionsSchema.safeParse(input);
   if (!parsed.success) return { error: "Data section tidak valid." };
 
-  const { supabase, user, invitation } = await requireOwner(parsed.data.invitationId);
+  const { supabase, user, invitation } = await requireOwner(
+    parsed.data.invitationId,
+  );
   if (!user || !invitation) return { error: "Undangan tidak ditemukan." };
 
   const seen = new Set<string>();
@@ -84,11 +93,14 @@ export async function saveInvitationSections(input: z.input<typeof saveSectionsS
 
   // Keep the invitation-level date in sync with the builder's event section.
   // The dashboard summary reads invitations.event_date, while the builder edits section content.
-  const eventSection = parsed.data.sections.find((section) => section.section_type === "event");
+  const eventSection = parsed.data.sections.find(
+    (section) => section.section_type === "event",
+  );
   if (eventSection) {
-    const eventDate = typeof eventSection.content.date === "string" && eventSection.content.date
-      ? eventSection.content.date
-      : null;
+    const eventDate =
+      typeof eventSection.content.date === "string" && eventSection.content.date
+        ? eventSection.content.date
+        : null;
     const { error: dateSyncError } = await supabase
       .from("invitations")
       .update({ event_date: eventDate })
@@ -96,7 +108,10 @@ export async function saveInvitationSections(input: z.input<typeof saveSectionsS
       .eq("user_id", user.id);
 
     if (dateSyncError) {
-      console.error("saveInvitationSections event date sync failed", dateSyncError);
+      console.error(
+        "saveInvitationSections event date sync failed",
+        dateSyncError,
+      );
       return { error: "Tanggal acara gagal disinkronkan." };
     }
   }
@@ -105,7 +120,9 @@ export async function saveInvitationSections(input: z.input<typeof saveSectionsS
   revalidatePath(`/dashboard/invitations`);
   revalidatePath(`/dashboard/invitations/${parsed.data.invitationId}`);
   revalidatePath(`/dashboard/invitations/${parsed.data.invitationId}/builder`);
-  revalidatePath(`/${(await supabase.from("invitations").select("slug").eq("id", parsed.data.invitationId).single()).data?.slug ?? ""}`);
+  revalidatePath(
+    `/${(await supabase.from("invitations").select("slug").eq("id", parsed.data.invitationId).single()).data?.slug ?? ""}`,
+  );
 
   return { success: true, savedAt: new Date().toISOString() };
 }
