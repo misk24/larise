@@ -55,7 +55,7 @@ export default async function SettingsPage() {
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
       <BackendPageHeader
-        title="Settings"
+        title="Pengaturan"
         description="Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing."
       />
 

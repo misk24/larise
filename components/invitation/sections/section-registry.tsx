@@ -22,6 +22,7 @@ export interface SectionContext {
   invitation: Invitation & { themes?: Theme | null };
   section: InvitationSection;
   guestName: string;
+  guestToken: string | null;
   wishes: Wish[];
   onWishAdded?: (wish: Wish) => void;
 }

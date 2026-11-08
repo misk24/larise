@@ -17,6 +17,7 @@ interface Props {
   invitation: Invitation & { themes?: Theme | null };
   sections: InvitationSection[];
   guestName: string;
+  guestToken: string | null;
   wishes: Wish[];
 }
 
@@ -24,6 +25,7 @@ export function SharedInvitationRenderer({
   invitation,
   sections,
   guestName,
+  guestToken,
   wishes: initialWishes,
 }: Props) {
   const [wishes, setWishes] = useState(initialWishes);
@@ -53,6 +55,7 @@ export function SharedInvitationRenderer({
               invitation={invitation}
               section={section}
               guestName={guestName}
+              guestToken={guestToken}
               wishes={wishes}
               onWishAdded={(wish) => setWishes((prev) => [wish, ...prev])}
             />

@@ -109,6 +109,7 @@ export function ThemeSectionLivePreview({
         invitation={previewInvitation}
         section={section}
         guestName="Tamu Undangan"
+        guestToken={null}
         wishes={previewWishes}
       />
     </div>

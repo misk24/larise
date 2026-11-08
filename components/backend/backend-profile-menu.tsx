@@ -86,7 +86,7 @@ export function BackendProfileMenu({
                 className="flex items-center gap-2"
               >
                 <UserIcon className="size-5" />
-                <span>My Account</span>
+                <span>Akun Saya</span>
               </Link>
             </DropdownMenuItem>
           )}
@@ -110,7 +110,7 @@ export function BackendProfileMenu({
           onClick={() => signOut()}
         >
           <LogOutIcon className="size-5" />
-          <span>Logout</span>
+          <span>Keluar</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

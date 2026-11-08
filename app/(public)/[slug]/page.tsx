@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ to?: string }>;
+  searchParams: Promise<{ guest?: string }>;
 }
 
 function invitationTitle(invitation: {
@@ -49,7 +49,6 @@ export async function generateMetadata({
 
   const title = invitationTitle(invitation);
   const description = `Anda diundang untuk merayakan pernikahan ${invitation.groom_name} & ${invitation.bride_name}.`;
-
   return {
     title,
     description,
@@ -61,11 +60,7 @@ export async function generateMetadata({
       description,
       siteName: "LARISÉ",
     },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
+    twitter: { card: "summary", title, description },
   };
 }
 
@@ -73,9 +68,8 @@ export default async function InvitationPage({
   params,
   searchParams,
 }: PageProps) {
-  const [{ slug }, { to }] = await Promise.all([params, searchParams]);
+  const [{ slug }, { guest }] = await Promise.all([params, searchParams]);
   const supabase = await createClient();
-
   const { data: invitation } = await supabase
     .from("invitations")
     .select("*, themes(*)")
@@ -91,26 +85,36 @@ export default async function InvitationPage({
     notFound();
   }
 
-  const [{ data: sections }, { data: wishes }] = await Promise.all([
-    supabase
-      .from("invitation_sections")
-      .select("*")
-      .eq("invitation_id", invitation.id)
-      .order("position"),
-    supabase
-      .from("wishes")
-      .select("*")
-      .eq("invitation_id", invitation.id)
-      .eq("visibility", "visible")
-      .order("created_at", { ascending: false })
-      .limit(50),
-  ]);
+  const [{ data: sections }, { data: wishes }, guestResult] = await Promise.all(
+    [
+      supabase
+        .from("invitation_sections")
+        .select("*")
+        .eq("invitation_id", invitation.id)
+        .order("position"),
+      supabase
+        .from("wishes")
+        .select("*")
+        .eq("invitation_id", invitation.id)
+        .eq("visibility", "visible")
+        .order("created_at", { ascending: false })
+        .limit(50),
+      guest
+        ? supabase.rpc("resolve_public_guest", {
+            p_invitation_id: invitation.id,
+            p_guest_token: guest,
+          })
+        : Promise.resolve({ data: null, error: null }),
+    ],
+  );
 
+  const validGuest = !guestResult.error && guestResult.data?.[0];
   return (
     <InvitationView
       invitation={invitation}
       sections={sections ?? []}
-      guestName={to?.trim() || "Tamu Undangan"}
+      guestName={validGuest?.guest_name ?? "Tamu Undangan"}
+      guestToken={validGuest ? guest! : null}
       wishes={wishes ?? []}
     />
   );
