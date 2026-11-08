@@ -39,6 +39,20 @@ export function SharedInvitationRenderer({
 
   return (
     <main className="min-h-screen">
+      {invitation.background_music_url && (
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-3 px-4 py-6 text-center">
+          <p className="text-sm font-medium">Musik Latar</p>
+          <audio
+            controls
+            preload="none"
+            src={invitation.background_music_url}
+            aria-label="Musik latar undangan"
+            className="w-full max-w-md"
+          >
+            Browser Anda tidak mendukung pemutar audio.
+          </audio>
+        </div>
+      )}
       {ordered.map((section) => {
         const Component =
           sectionRegistry[section.section_type as keyof typeof sectionRegistry];
