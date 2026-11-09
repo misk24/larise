@@ -41,35 +41,27 @@ export async function saveInvitationSections(input: z.input<typeof saveSectionsS
   const { supabase, user, invitation } = await requireOwner(parsed.data.invitationId);
   if (!user || !invitation) return { error: "Undangan tidak ditemukan." };
 
-  const { data: existing, error: existingError } = await supabase
-    .from("invitation_sections")
-    .select("id, section_type")
-    .eq("invitation_id", parsed.data.invitationId);
-
-  if (existingError) return { error: "Gagal memuat struktur section." };
-
-  const storedTypes = new Map((existing ?? []).map((row) => [row.id, row.section_type]));
-
   const seen = new Set<string>();
   for (const section of parsed.data.sections) {
     if (seen.has(section.id)) return { error: "Section duplikat." };
     seen.add(section.id);
 
-    // Validate against the section type stored in the database, never the
-    // type supplied by the client.
-    const storedType = storedTypes.get(section.id);
-    if (!storedType) return { error: "Section tidak dikenali untuk undangan ini." };
-    if (storedType !== section.section_type) {
-      return { error: `Tipe section "${section.section_key}" tidak sesuai.` };
-    }
-
-    const typeParse = invitationSectionSchema.shape.section_type.safeParse(storedType);
-    if (!typeParse.success) return { error: "Tipe section tidak dikenali." };
-
-    const contentSchema = sectionContentSchemas[typeParse.data];
+    const contentSchema = sectionContentSchemas[section.section_type];
     if (!contentSchema.safeParse(section.content).success) {
       return { error: `Konten section "${section.section_key}" tidak valid.` };
     }
+  }
+
+  const { data: existing, error: existingError } = await supabase
+    .from("invitation_sections")
+    .select("id, invitation_id")
+    .eq("invitation_id", parsed.data.invitationId);
+
+  if (existingError) return { error: "Gagal memuat struktur section." };
+
+  const existingIds = new Set((existing ?? []).map((row) => row.id));
+  if (parsed.data.sections.some((section) => !existingIds.has(section.id))) {
+    return { error: "Section tidak dikenali untuk undangan ini." };
   }
 
   for (const section of parsed.data.sections) {
