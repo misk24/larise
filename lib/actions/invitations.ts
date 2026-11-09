@@ -62,6 +62,8 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
 
   if (themeError || !theme) return { error: "Tema tidak tersedia." };
 
+  let createdInvitationId: string;
+
   try {
     const firstNickname = parsed.data.nameOrder === "groom_first"
       ? parsed.data.groomNickname
@@ -106,12 +108,14 @@ export async function createInvitation(input: z.input<typeof invitationInputSche
 
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/invitations");
-    redirect(`/dashboard/invitations/${invitation.id}/builder`);
+    createdInvitationId = invitation.id;
   } catch (error) {
-    if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) throw error;
     console.error("createInvitation unexpected error", error);
     return { error: "Terjadi kesalahan. Silakan coba lagi." };
   }
+
+  // redirect() throws by design, so it must run outside the try/catch above.
+  redirect(`/dashboard/invitations/${createdInvitationId}/builder`);
 }
 
 export async function updateInvitation(

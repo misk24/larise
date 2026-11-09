@@ -46,7 +46,7 @@ export async function signUpWithEmail(email: string, password: string): Promise<
   const { data: existingProfile, error: profileLookupError } = await admin
     .from("profiles")
     .select("provider")
-    .ilike("email", normalizedEmail)
+    .eq("email", normalizedEmail)
     .maybeSingle();
 
   if (profileLookupError) {
@@ -140,7 +140,7 @@ export async function signInWithEmail(
     const { data: profile } = await admin
       .from("profiles")
       .select("provider")
-      .ilike("email", normalizedEmail)
+      .eq("email", normalizedEmail)
       .maybeSingle();
 
     if (profile && profile.provider !== "email") {
@@ -197,7 +197,7 @@ export async function requestPasswordReset(email: string): Promise<{ error?: str
   const { data: profile, error: lookupError } = await admin
     .from("profiles")
     .select("provider")
-    .ilike("email", normalizedEmail)
+    .eq("email", normalizedEmail)
     .maybeSingle();
 
   if (lookupError) {
