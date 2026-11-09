@@ -1,3 +1,4 @@
+import { safeRedirectPath } from "@/lib/auth/validation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -69,7 +70,7 @@ export async function GET(request: Request) {
   const { data: profile, error: lookupError } = await admin
     .from("profiles")
     .select("id, provider, role")
-    .ilike("email", email)
+    .eq("email", email)
     .maybeSingle();
 
   if (lookupError) {
@@ -129,9 +130,15 @@ export async function GET(request: Request) {
     }
   }
 
-  response.headers.set(
-    "Location",
-    new URL(destinationForRole(profile?.role), url.origin).toString(),
-  );
+  const defaultDestination = destinationForRole(profile?.role);
+  const requestedDestination = safeRedirectPath(url.searchParams.get("next"), defaultDestination);
+  const destination =
+    profile?.role === "admin"
+      ? defaultDestination
+      : requestedDestination.startsWith("/admin")
+        ? defaultDestination
+        : requestedDestination;
+
+  response.headers.set("Location", new URL(destination, url.origin).toString());
   return response;
 }
