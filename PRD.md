@@ -2,6 +2,14 @@
 
 > Status: product intent and verified implementation status are recorded separately. A documented gap is not permission to weaken or remove an approved requirement.
 
+## Current delivery snapshot — 2026-11-05
+
+The core invitation lifecycle, account flows, section builder/renderer, image upload, public invitation, baseline guest responses, dashboard/admin operations, Theme Builder design configuration, and backend visual foundation are merged to `main`. This snapshot does not change product requirements; detailed current delivery tracking and release risks live in [`docs/STATUS.md`](docs/STATUS.md).
+
+**Open work:** PR [#53](https://github.com/misk24/larise/pull/53) (dashboard/guest/gallery integration and token-based RSVP security; production migration must be coordinated with application release), PR [#52](https://github.com/misk24/larise/pull/52) (user-supplied background music URL), and PR [#58](https://github.com/misk24/larise/pull/58) (remaining dashboard category palette cleanup). PR #57 was closed without merge and superseded by #58.
+
+**Next priorities:** safely integrate open PRs; verify migrations and owner/admin/public behavior against the target Supabase project; add cross-user RLS behavior tests; finish marketing/UX accessibility and responsive audits; then complete production monitoring, backup/recovery, smoke-test and rollback readiness. See `docs/STATUS.md` for exact scope and caveats.
+
 ## 1. Product summary
 
 LARISÉ is an Indonesian digital wedding invitation platform. Couples create and share a personalized invitation website using reusable themes, then manage invitation content and guest responses through a dashboard.
@@ -86,7 +94,10 @@ These journeys express product intent. Their implementation status is documented
 ### Themes and administration
 - Allow administrators to manage reusable themes and section defaults/content.
 - Keep theme definitions distinct from invitation-specific content where the schema supports it.
+- Allow theme authors to configure section-level background, typography, spacing, buttons, images, icons, dividers, and ornaments while retaining defaults for unset properties.
 - Verify migration status and admin authorization before describing a change as deployed.
+
+**Implementation status for PR #55:** section-level design tokens are stored inside `theme_sections.default_content.design`, resolved and sanitized by the invitation renderer, and validated at the admin section API boundary. Decorative controls are optional and scoped; they must not override unspecified defaults.
 
 ## 6. Non-functional requirements
 

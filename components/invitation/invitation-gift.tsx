@@ -58,7 +58,7 @@ export function InvitationGift({ bankName, bankAccount, bankHolder }: Invitation
 
                 <p className="text-muted-foreground">a.n. {bankHolder}</p>
 
-                <Button onClick={handleCopy} variant="outline" className="bg-transparent">
+                <Button onClick={handleCopy} variant="outline" className="section-design-button bg-transparent">
                   {copied ? (
                     <>
                       <Check className="mr-2 h-4 w-4 text-chart-3" />

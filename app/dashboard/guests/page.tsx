@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { GuestManager } from "@/components/dashboard/guest-manager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,7 +26,7 @@ export default async function GuestsPage({ searchParams }: GuestsPageProps) {
   if (invitationsError) {
     return (
       <div className="backend-content space-y-6">
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Daftar Tamu</h1>
+        <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
         <Card className="shadow-none">
           <CardContent className="p-8 text-sm text-destructive">
             Daftar undangan gagal dimuat. Muat ulang halaman atau periksa koneksi database.
@@ -41,10 +42,7 @@ export default async function GuestsPage({ searchParams }: GuestsPageProps) {
   if (!invitation) {
     return (
       <div className="backend-content space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Daftar Tamu</h1>
-          <p className="text-sm text-muted-foreground">Kelola kontak, tautan personal, dan konfirmasi kehadiran.</p>
-        </div>
+        <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
         <Card className="border-dashed shadow-none">
           <CardContent className="p-10 text-center">
             <h2 className="font-semibold">Belum ada undangan</h2>
@@ -66,11 +64,7 @@ export default async function GuestsPage({ searchParams }: GuestsPageProps) {
 
   return (
     <div className="backend-content space-y-6">
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Manajemen Undangan</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Daftar Tamu</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Kelola kontak, tautan personal, dan konfirmasi kehadiran.</p>
-      </div>
+      <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
 
       {invitationList.length > 1 ? (
         <form action="/dashboard/guests" method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">

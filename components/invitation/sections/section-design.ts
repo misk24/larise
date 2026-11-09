@@ -1,0 +1,197 @@
+import type { CSSProperties } from "react";
+
+export type SectionDesign = {
+  background?: { type?: "color" | "image" | "gradient"; value?: string; position?: string; size?: "cover" | "contain" | "auto"; overlay?: number };
+  typography?: {
+    fontFamily?: string; headingFontSize?: number; bodyFontSize?: number;
+    headingFontFamily?: string; bodyFontFamily?: string; headingColor?: string; bodyColor?: string;
+    headingFontWeight?: number; bodyFontWeight?: number;
+    headingAlignment?: "left" | "center" | "right"; bodyAlignment?: "left" | "center" | "right";
+    fontWeight?: number; color?: string; alignment?: "left" | "center" | "right";
+    lineHeight?: number; letterSpacing?: number;
+  };
+  layout?: { paddingTop?: number; paddingBottom?: number; elementGap?: number };
+  button?: { backgroundColor?: string; textColor?: string; borderColor?: string; borderRadius?: number; fontSize?: number; paddingX?: number; paddingY?: number };
+  image?: { borderRadius?: number; aspectRatio?: "square" | "portrait" | "landscape"; objectFit?: "cover" | "contain"; objectPosition?: string };
+  icon?: { color?: string; size?: number; strokeWidth?: number };
+  divider?: { color?: string; thickness?: number; width?: number; style?: "solid" | "dashed" | "dotted"; spacing?: number };
+  ornament?: { color?: string; size?: number; opacity?: number; position?: "top-left" | "top-right" | "bottom-left" | "bottom-right" };
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+function finiteNumber(value: unknown, min: number, max: number): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value >= min && value <= max ? value : undefined;
+}
+function safeColor(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const color = value.trim();
+  return /^(#[\da-f]{3,8}|rgba?\([\d\s.,%]+\)|hsla?\([\d\s.,%deg]+\)|[a-z]{1,24})$/i.test(color) ? color : undefined;
+}
+function safeFontFamily(value: unknown): string | undefined {
+  return typeof value === "string" && /^[\w ,"'()-]{1,100}$/.test(value) ? value : undefined;
+}
+function safeUrl(value: unknown): string | undefined {
+  if (typeof value !== "string" || value.length > 2048 || /[\u0000-\u0020"'()\\]/.test(value)) return undefined;
+  try {
+    const url = new URL(value, "https://larise.invalid");
+    if ((url.protocol === "https:" || url.protocol === "http:") && !value.startsWith("//")) return value;
+  } catch {}
+  return undefined;
+}
+function cssVar(style: CSSProperties, key: `--${string}`, value: string | undefined) {
+  if (value !== undefined) (style as CSSProperties & Record<`--${string}`, string>)[key] = value;
+}
+
+export function getSectionDesignStyle(value: unknown): CSSProperties {
+  if (!isRecord(value)) return {};
+  const background = isRecord(value.background) ? value.background : {};
+  const typography = isRecord(value.typography) ? value.typography : {};
+  const layout = isRecord(value.layout) ? value.layout : {};
+  const button = isRecord(value.button) ? value.button : {};
+  const image = isRecord(value.image) ? value.image : {};
+  const icon = isRecord(value.icon) ? value.icon : {};
+  const divider = isRecord(value.divider) ? value.divider : {};
+  const ornament = isRecord(value.ornament) ? value.ornament : {};
+  const style: CSSProperties = {};
+
+  const bgValue = typeof background.value === "string" ? background.value.trim() : "";
+  const overlay = finiteNumber(background.overlay, 0, 1) ?? 0;
+  if (background.type === "color") {
+    const color = safeColor(bgValue);
+    if (color) style.backgroundColor = color;
+  } else if (background.type === "image") {
+    const url = safeUrl(bgValue);
+    if (url) {
+      style.backgroundImage = overlay > 0
+        ? `linear-gradient(rgba(0,0,0,${overlay}), rgba(0,0,0,${overlay})), url("${url}")`
+        : `url("${url}")`;
+      style.backgroundPosition = typeof background.position === "string" && /^(center|top|bottom|left|right|\d{1,3}%\s+\d{1,3}%)$/.test(background.position) ? background.position : "center";
+      style.backgroundSize = ["cover", "contain", "auto"].includes(String(background.size)) ? background.size as CSSProperties["backgroundSize"] : "cover";
+      style.backgroundRepeat = "no-repeat";
+    }
+  } else if (background.type === "gradient" && typeof background.value === "string" &&
+    /^linear-gradient\(\s*(?:\d{1,3}deg\s*,\s*)?(?:#[\da-f]{3,8}|[a-z]{1,24}|rgba?\([\d\s.,%]+\))\s*,\s*(?:#[\da-f]{3,8}|[a-z]{1,24}|rgba?\([\d\s.,%]+\))(?:\s*,\s*(?:#[\da-f]{3,8}|[a-z]{1,24}|rgba?\([\d\s.,%]+\)))*\s*\)$/i.test(background.value)) {
+    style.backgroundImage = background.value;
+  }
+
+  cssVar(style, "--section-text-color", safeColor(typography.color));
+  cssVar(style, "--section-font-family", safeFontFamily(typography.fontFamily));
+  cssVar(style, "--section-heading-color", safeColor(typography.headingColor));
+  cssVar(style, "--section-body-color", safeColor(typography.bodyColor));
+  cssVar(style, "--section-heading-font-family", safeFontFamily(typography.headingFontFamily));
+  cssVar(style, "--section-body-font-family", safeFontFamily(typography.bodyFontFamily));
+  const headingWeight = finiteNumber(typography.headingFontWeight, 100, 900);
+  const bodyWeight = finiteNumber(typography.bodyFontWeight, 100, 900);
+  const fontWeight = finiteNumber(typography.fontWeight, 100, 900);
+  cssVar(style, "--section-heading-font-weight", headingWeight === undefined ? undefined : String(headingWeight));
+  cssVar(style, "--section-body-font-weight", bodyWeight === undefined ? undefined : String(bodyWeight));
+  cssVar(style, "--section-font-weight", fontWeight === undefined ? undefined : String(fontWeight));
+  if (["left", "center", "right"].includes(String(typography.headingAlignment))) cssVar(style, "--section-heading-align", String(typography.headingAlignment));
+  if (["left", "center", "right"].includes(String(typography.bodyAlignment))) cssVar(style, "--section-body-align", String(typography.bodyAlignment));
+  if (["left", "center", "right"].includes(String(typography.alignment))) cssVar(style, "--section-text-align", String(typography.alignment));
+  const headingSize = finiteNumber(typography.headingFontSize, 12, 120);
+  const bodySize = finiteNumber(typography.bodyFontSize, 8, 48);
+  cssVar(style, "--section-heading-size", headingSize === undefined ? undefined : `${headingSize}px`);
+  cssVar(style, "--section-body-size", bodySize === undefined ? undefined : `${bodySize}px`);
+  const lineHeight = finiteNumber(typography.lineHeight, 0.8, 3);
+  if (lineHeight !== undefined) style.lineHeight = lineHeight;
+  const letterSpacing = finiteNumber(typography.letterSpacing, -5, 20);
+  if (letterSpacing !== undefined) style.letterSpacing = `${letterSpacing}px`;
+
+  const paddingTop = finiteNumber(layout.paddingTop, 0, 400);
+  const paddingBottom = finiteNumber(layout.paddingBottom, 0, 400);
+  cssVar(style, "--section-padding-top", paddingTop === undefined ? undefined : `${paddingTop}px`);
+  cssVar(style, "--section-padding-bottom", paddingBottom === undefined ? undefined : `${paddingBottom}px`);
+  const elementGap = finiteNumber(layout.elementGap, 0, 96);
+  cssVar(style, "--section-element-gap", elementGap === undefined ? undefined : `${elementGap}px`);
+
+  cssVar(style, "--section-button-bg", safeColor(button.backgroundColor));
+  cssVar(style, "--section-button-text", safeColor(button.textColor));
+  cssVar(style, "--section-button-border", safeColor(button.borderColor));
+  for (const [key, cssKey, min, max] of [
+    ["borderRadius", "--section-button-radius", 0, 48], ["fontSize", "--section-button-size", 10, 32],
+    ["paddingX", "--section-button-px", 0, 64], ["paddingY", "--section-button-py", 0, 40],
+  ] as const) {
+    const number = finiteNumber(button[key], min, max);
+    cssVar(style, cssKey, number === undefined ? undefined : `${number}px`);
+  }
+
+  const imageRadius = finiteNumber(image.borderRadius, 0, 48);
+  cssVar(style, "--section-image-radius", imageRadius === undefined ? undefined : `${imageRadius}px`);
+  if (image.aspectRatio === "square") cssVar(style, "--section-image-ratio", "1 / 1");
+  if (image.aspectRatio === "portrait") cssVar(style, "--section-image-ratio", "3 / 4");
+  if (image.aspectRatio === "landscape") cssVar(style, "--section-image-ratio", "4 / 3");
+  if (image.objectFit === "cover" || image.objectFit === "contain") cssVar(style, "--section-image-fit", image.objectFit);
+  if (typeof image.objectPosition === "string" && /^(center|top|bottom|left|right|\d{1,3}%\s+\d{1,3}%)$/.test(image.objectPosition)) cssVar(style, "--section-image-position", image.objectPosition);
+
+  cssVar(style, "--section-icon-color", safeColor(icon.color));
+  const iconSize = finiteNumber(icon.size, 12, 96);
+  const iconStroke = finiteNumber(icon.strokeWidth, 1, 4);
+  cssVar(style, "--section-icon-size", iconSize === undefined ? undefined : `${iconSize}px`);
+  cssVar(style, "--section-icon-stroke", iconStroke === undefined ? undefined : String(iconStroke));
+
+  cssVar(style, "--section-divider-color", safeColor(divider.color));
+  for (const [key, cssKey, min, max] of [
+    ["thickness", "--section-divider-thickness", 1, 8],
+    ["width", "--section-divider-width", 10, 100],
+    ["spacing", "--section-divider-spacing", 0, 160],
+  ] as const) {
+    const number = finiteNumber(divider[key], min, max);
+    cssVar(style, cssKey, number === undefined ? undefined : key === "width" ? `${number}%` : `${number}px`);
+  }
+  if (["solid", "dashed", "dotted"].includes(String(divider.style))) cssVar(style, "--section-divider-style", String(divider.style));
+
+  cssVar(style, "--section-ornament-color", safeColor(ornament.color));
+  const ornamentSize = finiteNumber(ornament.size, 8, 160);
+  const ornamentOpacity = finiteNumber(ornament.opacity, 0, 1);
+  cssVar(style, "--section-ornament-size", ornamentSize === undefined ? undefined : `${ornamentSize}px`);
+  cssVar(style, "--section-ornament-opacity", ornamentOpacity === undefined ? undefined : String(ornamentOpacity));
+  if (["top-left", "top-right", "bottom-left", "bottom-right"].includes(String(ornament.position))) cssVar(style, "--section-ornament-position", String(ornament.position));
+
+  return style;
+}
+
+export function getSectionDesignAttributes(value: unknown): Record<string, string> {
+  if (!isRecord(value)) return {};
+  const resolvedStyle = getSectionDesignStyle(value) as CSSProperties & Record<`--${string}`, string>;
+  const attributes: Record<string, string> = {};
+  const has = (...keys: Array<`--${string}`>) => keys.some((key) => resolvedStyle[key] !== undefined);
+  const flags: Array<[string, Array<`--${string}`>]> = [
+    ["data-design-heading-size", ["--section-heading-size"]],
+    ["data-design-body-size", ["--section-body-size"]],
+    ["data-design-heading-family", ["--section-heading-font-family", "--section-font-family"]],
+    ["data-design-body-family", ["--section-body-font-family", "--section-font-family"]],
+    ["data-design-heading-color", ["--section-heading-color", "--section-text-color"]],
+    ["data-design-body-color", ["--section-body-color", "--section-text-color"]],
+    ["data-design-heading-weight", ["--section-heading-font-weight", "--section-font-weight"]],
+    ["data-design-body-weight", ["--section-body-font-weight", "--section-font-weight"]],
+    ["data-design-heading-align", ["--section-heading-align", "--section-text-align"]],
+    ["data-design-body-align", ["--section-body-align", "--section-text-align"]],
+  ];
+  if (has("--section-button-bg", "--section-button-text", "--section-button-border", "--section-button-radius", "--section-button-size", "--section-button-px", "--section-button-py")) {
+    attributes["data-design-button"] = "true";
+  }
+  if (has("--section-image-radius", "--section-image-ratio", "--section-image-fit", "--section-image-position")) attributes["data-design-image"] = "true";
+  if (has("--section-image-radius")) attributes["data-design-image-radius"] = "true";
+  if (has("--section-image-ratio")) attributes["data-design-image-ratio"] = "true";
+  if (has("--section-image-fit")) attributes["data-design-image-fit"] = "true";
+  if (has("--section-image-position")) attributes["data-design-image-position"] = "true";
+  if (has("--section-icon-color", "--section-icon-size", "--section-icon-stroke")) attributes["data-design-icon"] = "true";
+  if (has("--section-icon-color")) attributes["data-design-icon-color"] = "true";
+  if (has("--section-icon-size")) attributes["data-design-icon-size"] = "true";
+  if (has("--section-icon-stroke")) attributes["data-design-icon-stroke"] = "true";
+  if (has("--section-divider-color", "--section-divider-thickness", "--section-divider-width", "--section-divider-style", "--section-divider-spacing")) attributes["data-design-divider"] = "true";
+  if (has("--section-ornament-color", "--section-ornament-size", "--section-ornament-opacity", "--section-ornament-position")) attributes["data-design-ornament"] = "true";
+  const ornamentPosition = resolvedStyle["--section-ornament-position"];
+  if (ornamentPosition) attributes["data-design-ornament-position"] = ornamentPosition;
+  if (has("--section-padding-top")) attributes["data-design-padding-top"] = "true";
+  if (has("--section-padding-bottom")) attributes["data-design-padding-bottom"] = "true";
+  if (has("--section-element-gap")) attributes["data-design-element-gap"] = "true";
+  if (resolvedStyle.backgroundColor || resolvedStyle.backgroundImage) attributes["data-design-background"] = "true";
+  for (const [attribute, tokens] of flags) {
+    if (has(...tokens)) attributes[attribute] = "true";
+  }
+  return attributes;
+}

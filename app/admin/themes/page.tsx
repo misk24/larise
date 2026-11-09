@@ -1,111 +1,86 @@
-import { Badge } from "@/components/ui/badge";
+import { BackendPageHeader } from "@/components/backend/backend-ui";
+import { redirect } from "next/navigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminTableError } from "@/components/admin/table-states";
+import { ThemesTable, type AdminThemeRow } from "@/components/admin/tables/themes/themes-table";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/actions/auth";
+import { postgrestIlikePattern, sanitizeAdminSearch } from "@/lib/utils/admin-search";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { createClient } from "@/lib/supabase/server";
-import { PaletteIcon } from "lucide-react";
 import Link from "next/link";
 
-export default async function AdminThemesPage() {
-  const supabase = await createClient();
+type SearchParams = Promise<{ q?: string; page?: string; size?: string; sort?: string; direction?: string }>;
 
-  const { data: themes } = await supabase
+function positiveInteger(value: string | undefined, fallback: number, max: number) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, max) : fallback;
+}
+
+export default async function AdminThemesPage({ searchParams }: { searchParams: SearchParams }) {
+  await requireAdmin();
+  const params = await searchParams;
+  const query = sanitizeAdminSearch(params.q);
+  const pageSize = [10, 20, 50].includes(Number(params.size)) ? Number(params.size) : 20;
+  const sortFields = ["created_at", "name", "category", "price", "is_active"] as const;
+  const sort = sortFields.find((field) => field === params.sort) ?? "created_at";
+  const direction = params.direction === "asc" ? "asc" : "desc";
+  const requestedPage = positiveInteger(params.page, 1, 1_000_000);
+  const supabase = createAdminClient();
+
+  let request = supabase
     .from("themes")
-    .select("*")
-    .order("created_at", { ascending: false });
+    .select("id,name,slug,category,price,is_active,created_at", { count: "exact" })
+    .order(sort, { ascending: direction === "asc" })
+    .range((requestedPage - 1) * pageSize, requestedPage * pageSize - 1);
+
+  if (query) {
+    const pattern = postgrestIlikePattern(query);
+    const clauses = [
+      `name.ilike.${pattern}`,
+      `slug.ilike.${pattern}`,
+      `category.ilike.${pattern}`,
+    ];
+    const normalized = query.toLocaleLowerCase("id-ID");
+    if (["aktif", "active", "true", "yes"].includes(normalized)) clauses.push("is_active.eq.true");
+    if (["nonaktif", "inactive", "false", "no"].includes(normalized)) clauses.push("is_active.eq.false");
+    if (/^\d+(\.\d+)?$/.test(query)) clauses.push(`price.eq.${query}`);
+    request = request.or(clauses.join(","));
+  }
+  const { data, error, count } = await request;
+  const total = count ?? 0;
+  const page = Math.min(requestedPage, Math.max(1, Math.ceil(total / pageSize)));
+
+  if (!error && page !== requestedPage) {
+    const next = new URLSearchParams();
+    if (query) next.set("q", query);
+    next.set("page", String(page));
+    next.set("size", String(pageSize));
+    next.set("sort", sort);
+    next.set("direction", direction);
+    redirect(`/admin/themes?${next.toString()}`);
+  }
 
   return (
     <div className="backend-content space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Kelola Tema</h1>
-          <p className="text-muted-foreground">
-            Kelola tema undangan yang tersedia
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/admin/themes/create" className="flex items-center gap-2">
-            Buat Tema
-          </Link>
-        </Button>
-      </div>
+      <BackendPageHeader title="Kelola Tema" description="Kelola tema undangan yang tersedia untuk pengguna." actions={<Button asChild><Link href="/admin/themes/create">Buat Tema</Link></Button>} />
+
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle>Daftar Tema</CardTitle>
-          <CardDescription>
-            Total {themes?.length || 0} tema tersedia
-          </CardDescription>
+          <CardDescription>{error ? "Jumlah tema tidak dapat dimuat." : `Total ${total.toLocaleString("id-ID")} tema`}</CardDescription>
         </CardHeader>
         <CardContent>
-          {themes && themes.length > 0 ? (
-            <div className="backend-table-container">
-              <Table>
-                <TableHeader className="bg-muted/70">
-                  <TableRow>
-                    <TableHead className="text-foreground">
-                      Nama Tema
-                    </TableHead>
-                    <TableHead className="text-foreground">
-                      Kategori
-                    </TableHead>
-                    <TableHead className="text-foreground">
-                      Harga
-                    </TableHead>
-                    <TableHead className="text-foreground">
-                      Status
-                    </TableHead>
-                    <TableHead className="text-foreground">
-                      Aksi
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {themes.map((theme) => (
-                    <TableRow key={theme.id}>
-                      <TableCell className="font-medium">
-                        {theme.name}
-                      </TableCell>
-                      <TableCell>{theme.category}</TableCell>
-                      <TableCell>
-                        {theme.price
-                          ? `Rp ${theme.price.toLocaleString("id-ID")}`
-                          : "Gratis"}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={theme.is_active ? "default" : "secondary"}
-                        >
-                          {theme.is_active ? "Aktif" : "Nonaktif"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/admin/themes/${theme.id}`}>Edit</Link>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+          {error ? (
+            <AdminTableError title="Tema gagal dimuat" description="Periksa izin baca admin pada database." />
           ) : (
-            <div className="py-12 text-center">
-              <PaletteIcon className="mx-auto mb-4 size-12 text-muted-foreground/50" />
-              <p className="text-muted-foreground">Belum ada tema</p>
-            </div>
+            <ThemesTable
+              data={(data ?? []) as AdminThemeRow[]}
+              page={page}
+              pageSize={pageSize}
+              rowCount={total}
+              sort={sort}
+              direction={direction}
+            />
           )}
         </CardContent>
       </Card>

@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { AccountForm } from "@/components/dashboard/account-form";
 import { LoginSecurityCard } from "@/components/dashboard/login-security-card";
 import { AccountDangerZone } from "@/components/dashboard/account-danger-zone";
@@ -21,10 +22,7 @@ export default async function MyAccountPage() {
   if (error || !profile) {
     return (
       <div className="backend-content mx-auto w-full max-w-4xl space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">My Account</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Kelola profil dan akses akun LARISÉ Anda.</p>
-        </div>
+        <BackendPageHeader title="My Account" description="Kelola profil dan akses akun LARISÉ Anda." />
         <Card className="shadow-none">
           <CardContent className="p-6 text-sm text-destructive">
             Data profil belum dapat dimuat. Muat ulang halaman atau coba beberapa saat lagi.
@@ -42,13 +40,7 @@ export default async function MyAccountPage() {
 
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
-      <div className="space-y-1">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Account</p>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">My Account</h1>
-        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-          Kelola informasi profil dan metode login yang digunakan untuk mengakses LARISÉ.
-        </p>
-      </div>
+      <BackendPageHeader title="My Account" description="Kelola informasi profil dan metode login yang digunakan untuk mengakses LARISÉ." />
 
       <AccountForm user={user} profile={profile} />
 

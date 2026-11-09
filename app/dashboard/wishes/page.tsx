@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { WishesManager } from "@/components/dashboard/wishes-manager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,11 +22,7 @@ export default async function WishesPage({ searchParams }: WishesPageProps) {
 
   return (
     <div className="backend-content space-y-6">
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Manajemen Undangan</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Ucapan & Doa</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Moderasi ucapan dari tamu di setiap undangan Anda.</p>
-      </div>
+      <BackendPageHeader title="Ucapan & Doa" description="Moderasi ucapan dari tamu di setiap undangan Anda." />
       {invitationsError ? (
         <Card className="shadow-none"><CardContent className="p-8 text-sm text-destructive">Daftar undangan gagal dimuat. Coba muat ulang halaman.</CardContent></Card>
       ) : !invitation ? (

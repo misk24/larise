@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { InvitationMediaUploader } from "@/components/dashboard/invitation-media-uploader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,10 +27,7 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
   if (invitationsError) {
     return (
       <div className="backend-content space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Galeri Foto</h1>
-          <p className="text-muted-foreground">Kelola foto untuk setiap undangan Anda.</p>
-        </div>
+        <BackendPageHeader title="Galeri Foto" description="Kelola foto untuk setiap undangan Anda." />
         <Card className="shadow-none"><CardContent className="p-6 text-sm text-destructive">Daftar undangan gagal dimuat. Coba muat ulang halaman.</CardContent></Card>
       </div>
     );
@@ -41,10 +39,7 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
   if (!selectedInvitation) {
     return (
       <div className="backend-content space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Galeri Foto</h1>
-          <p className="text-muted-foreground">Kelola foto untuk setiap undangan Anda.</p>
-        </div>
+        <BackendPageHeader title="Galeri Foto" description="Kelola foto untuk setiap undangan Anda." />
         <Card className="border-dashed shadow-none">
           <CardContent className="p-10 text-center">
             <ImageIcon className="mx-auto mb-3 size-10 text-muted-foreground/50" />
@@ -69,14 +64,7 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
 
   return (
     <div className="backend-content mx-auto w-full max-w-5xl space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-1">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Konten Undangan</p>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Galeri Foto</h1>
-          <p className="text-sm text-muted-foreground">Unggah dan kelola foto yang akan digunakan pada undangan Anda.</p>
-        </div>
-        <Button variant="outline" asChild><Link href={`/dashboard/invitations/${selectedInvitation.id}/builder`}>Buka builder undangan</Link></Button>
-      </div>
+      <BackendPageHeader title="Galeri Foto" description="Unggah dan kelola foto yang akan digunakan pada undangan Anda." actions={<Button variant="outline" asChild><Link href={`/dashboard/invitations/${selectedInvitation.id}/builder`}>Buka builder undangan</Link></Button>} />
 
       {invitationList.length > 1 ? (
         <form action="/dashboard/gallery" method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">

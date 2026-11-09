@@ -138,7 +138,7 @@ export function InvitationRsvp({ invitationId, guestName, guestToken, wishes, on
                           placeholder="Tuliskan ucapan dan doa untuk kedua mempelai..." rows={4} maxLength={1000} />
                       </div>
 
-                      <Button type="submit" className="w-full" disabled={isLoading}>
+                      <Button type="submit" className="section-design-button w-full" disabled={isLoading}>
                         {isLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Send className="mr-2 size-4" />}Kirim
                       </Button>
                     </form>

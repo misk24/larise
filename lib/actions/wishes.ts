@@ -44,7 +44,7 @@ export async function setWishVisibility(wishId: string, visibility: "visible" | 
   if (error) return { success: false, error: "Gagal memperbarui visibilitas ucapan." };
 
   revalidatePath("/dashboard/wishes");
-  revalidatePath("/undangan");
+  revalidatePath("/[slug]", "page");
   return { success: true };
 }
 

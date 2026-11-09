@@ -35,7 +35,7 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
   const items = role === "admin" ? adminNavs : userNavs;
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="backend-sidebar">
       <SidebarContent className="bg-sidebar text-sidebar-foreground">
         <SidebarHeader>
           <div
@@ -44,7 +44,7 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
               collapsed ? "scale-90 opacity-0" : "scale-100 opacity-100",
             )}
           >
-            <Logo variant="footer" />
+            <Logo />
           </div>
         </SidebarHeader>
 
@@ -62,6 +62,7 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
                     pathname.startsWith(`${item.href}/`));
                 const menu = (
                   <SidebarMenuButton
+                    isActive={isActive}
                     className={cn(
                       "rounded-md transition-colors",
                       isActive

@@ -29,13 +29,13 @@ export function BackendHeader({ user, profile, role }: BackendHeaderProps) {
         <div className="flex shrink-0 items-center gap-4">
           <BackendProfileMenu
             trigger={
-              <Button variant="ghost" size="icon" className="size-9.5 rounded-full">
+              <Button variant="ghost" size="icon" className="backend-profile-trigger size-9.5 rounded-full">
                 <Avatar className="size-9.5">
                   <AvatarImage
                     src={profile?.avatar_url || ""}
                     alt={profile?.full_name || (role === "admin" ? "Admin" : "User")}
                   />
-                  <AvatarFallback>{initials}</AvatarFallback>
+                  <AvatarFallback className="backend-profile-avatar">{initials}</AvatarFallback>
                 </Avatar>
               </Button>
             }

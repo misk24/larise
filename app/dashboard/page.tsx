@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { BackendEmptyState, BackendPageHeader, BackendSectionHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { PublicUrlActions } from "@/components/dashboard/public-url-actions";
@@ -20,10 +21,7 @@ export default async function DashboardPage() {
   if (error) {
     return (
       <div className="backend-content space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Dashboard</h1>
-          <p className="mt-1 text-muted-foreground">Ringkasan dan pintasan untuk semua undangan Anda.</p>
-        </div>
+        <BackendPageHeader title="Dashboard" description="Ringkasan dan pintasan untuk semua undangan Anda." />
         <Card className="shadow-none">
           <CardContent className="p-6 text-sm text-destructive">Dashboard gagal memuat data undangan. Muat ulang halaman atau periksa koneksi database.</CardContent>
         </Card>
@@ -51,31 +49,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="backend-content space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Dashboard</h1>
-          <p className="mt-1 text-muted-foreground">Ringkasan dan pintasan untuk semua undangan Anda.</p>
-        </div>
-        <Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="mr-2 size-4" />Buat Undangan</Link></Button>
-      </div>
+      <BackendPageHeader title="Dashboard" description="Ringkasan dan pintasan untuk semua undangan Anda." actions={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>} />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.title} className="shadow-none">
-            <CardContent className="flex items-center gap-4 p-5">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><stat.icon className="size-5" /></div>
-              <div><p className="text-2xl font-semibold tabular-nums">{stat.value.toLocaleString("id-ID")}</p><p className="text-sm text-muted-foreground">{stat.title}</p></div>
-            </CardContent>
-          </Card>
+          <BackendStatCard key={stat.title} label={stat.title} value={stat.value.toLocaleString("id-ID")} icon={stat.icon} />
         ))}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(260px,1fr)]">
         <section className="space-y-4">
-          <div className="flex items-center justify-between gap-3">
-            <div><h2 className="text-lg font-semibold">Undangan Anda</h2><p className="text-sm text-muted-foreground">Status publikasi dan pintasan pengelolaan.</p></div>
-            <Button variant="outline" size="sm" asChild><Link href="/dashboard/invitations">Semua undangan</Link></Button>
-          </div>
+          <BackendSectionHeader title="Undangan Anda" description="Status publikasi dan pintasan pengelolaan." action={<Button variant="outline" size="sm" asChild><Link href="/dashboard/invitations">Semua undangan</Link></Button>} />
           {invitationList.length ? invitationList.map((invitation) => {
             const theme = Array.isArray(invitation.themes) ? invitation.themes[0] : invitation.themes;
             const guestCount = invitation.guests?.[0]?.count ?? 0;
@@ -89,7 +73,7 @@ export default async function DashboardPage() {
                       <p className="mt-1 text-sm text-muted-foreground">{theme?.name ?? "Tema belum dipilih"} · /{invitation.slug}</p>
                       <p className="mt-1 text-xs text-muted-foreground">{(invitation.event_date || invitation.resepsi_date) ? new Date(`${invitation.event_date || invitation.resepsi_date}T00:00:00`).toLocaleDateString("id-ID", { dateStyle: "long" }) : "Tanggal acara belum diatur"}</p>
                     </div>
-                    <span className={invitation.is_published ? "w-fit rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300" : "w-fit rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"}>{invitation.is_published ? "Dipublikasikan" : invitation.status === "unpublished" ? "Tidak dipublikasikan" : "Draft"}</span>
+                    <BackendStatusBadge tone={invitation.is_published ? "success" : invitation.status === "unpublished" ? "warning" : "neutral"}>{invitation.is_published ? "Dipublikasikan" : invitation.status === "unpublished" ? "Tidak dipublikasikan" : "Draft"}</BackendStatusBadge>
                   </div>
                   <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground"><span>{guestCount} tamu</span><span>{wishCount} ucapan</span><span>{invitation.view_count ?? 0} kunjungan</span></div>
                   <div className="flex flex-wrap gap-2 border-t pt-4">
@@ -101,11 +85,7 @@ export default async function DashboardPage() {
               </Card>
             );
           }) : (
-            <Card className="border-dashed shadow-none"><CardContent className="p-10 text-center">
-              <FileTextIcon className="mx-auto mb-3 size-10 text-muted-foreground/50" />
-              <h3 className="font-semibold">Belum ada undangan</h3><p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">Buat undangan pertama, pilih tema, lalu isi detail acara sebelum membagikannya.</p>
-              <Button className="mt-5" asChild><Link href="/dashboard/invitations/create"><PlusIcon className="mr-2 size-4" />Buat undangan pertama</Link></Button>
-            </CardContent></Card>
+            <BackendEmptyState icon={FileTextIcon} title="Belum ada undangan" description="Buat undangan pertama, pilih tema, lalu isi detail acara sebelum membagikannya." action={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat undangan pertama</Link></Button>} />
           )}
         </section>
 
