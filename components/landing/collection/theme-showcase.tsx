@@ -40,6 +40,16 @@ const categoryColors: Record<string, string> = {
   floral: "from-[#e6ccd0] via-[#f8eeee] to-[#c49da5]",
 };
 
+// Only images from our own Supabase Storage go through the optimizer; other hosts are not allow-listed.
+function canOptimize(src: string) {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    return Boolean(supabaseUrl) && new URL(src).hostname === new URL(supabaseUrl!).hostname;
+  } catch {
+    return false;
+  }
+}
+
 function formatPrice(price: number) {
   if (!price) return "Gratis";
   return new Intl.NumberFormat("id-ID", {
@@ -245,7 +255,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                             src={image}
                             alt={`Preview tema ${theme.name}`}
                             fill
-                            unoptimized
+                            unoptimized={!canOptimize(image)}
                             sizes="(max-width: 639px) 86vw, (max-width: 1023px) 46vw, 30vw"
                             priority={index < 2}
                             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"

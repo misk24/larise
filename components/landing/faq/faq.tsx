@@ -10,9 +10,20 @@ const faqs: EditorialAccordionItem[] = [
   { question: "Bisakah tema diganti setelah undangan dibuat?", answer: "Penggantian tema mengikuti struktur dan fitur yang didukung oleh tema tujuan. Sebelum mengganti, tinjau kembali tampilan dan konten agar hasilnya sesuai." },
 ];
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
+};
+
 export function FAQSection() {
   return (
     <section id="faq" aria-labelledby="faq-title" className="bg-[#f0ede5] px-5 py-20 text-[#29271f] sm:px-8 sm:py-28 lg:py-32">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
         <FadeUp>
           <div className="lg:sticky lg:top-28 lg:self-start">

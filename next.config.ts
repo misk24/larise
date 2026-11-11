@@ -1,7 +1,20 @@
 import type { NextConfig } from "next";
 
+const supabaseHost = (() => {
+  try {
+    return process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : null;
+  } catch {
+    return null;
+  }
+})();
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    // Theme thumbnails stored in Supabase Storage are served through the Next.js image optimizer.
+    remotePatterns: supabaseHost
+      ? [{ protocol: "https", hostname: supabaseHost, pathname: "/storage/v1/object/public/**" }]
+      : [],
+  },
 };
 
 export default nextConfig;

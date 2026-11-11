@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import { ThemeSectionHorizontal } from "@/components/landing/collection/collections";
 import { CTASection } from "@/components/landing/cta/cta";
 import { FAQSection } from "@/components/landing/faq/faq";
@@ -8,6 +10,8 @@ import { HeroSection } from "@/components/landing/hero/hero";
 import { HowItWorksSection } from "@/components/landing/how-it-works/how-it-works";
 import { Navbar } from "@/components/landing/navbar/navbar";
 import { ValueSection } from "@/components/landing/value/value";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 type HomeProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -31,9 +35,12 @@ export default async function Home({ searchParams }: HomeProps) {
     redirect(`/auth/callback?${callbackParams.toString()}`);
   }
 
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <main className="frontend-shell min-h-screen">
-      <Navbar />
+      <Navbar isLoggedIn={Boolean(user)} />
       <HeroSection />
       <ValueSection />
       <ThemeSectionHorizontal />

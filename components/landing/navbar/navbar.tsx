@@ -16,7 +16,7 @@ export const navigation = [
   { label: "FAQ", href: "#faq" },
 ];
 
-export function Navbar() {
+export function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const isScrolled = useScroll();
   const isOpen = useOverlay();
 
@@ -38,8 +38,14 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-2 sm:gap-3 md:flex">
-          <Link href="/login" className={landingButtonStyles({ variant: "text", size: "sm" })}>Masuk</Link>
-          <Link href="/register" className={landingButtonStyles({ size: "sm", className: "px-4 lg:px-5" })}>Buat Undangan</Link>
+          {isLoggedIn ? (
+            <Link href="/dashboard" className={landingButtonStyles({ size: "sm", className: "px-4 lg:px-5" })}>Buka Dashboard</Link>
+          ) : (
+            <>
+              <Link href="/login" className={landingButtonStyles({ variant: "text", size: "sm" })}>Masuk</Link>
+              <Link href="/register" className={landingButtonStyles({ size: "sm", className: "px-4 lg:px-5" })}>Buat Undangan</Link>
+            </>
+          )}
         </div>
 
         <LandingButton
@@ -67,7 +73,7 @@ export function Navbar() {
           />
         </LandingButton>
       </div>
-      <MobileHeader isOpen={isOpen.isOpen} onClose={isOpen.close} />
+      <MobileHeader isOpen={isOpen.isOpen} onClose={isOpen.close} isLoggedIn={isLoggedIn} />
     </header>
   );
 }
