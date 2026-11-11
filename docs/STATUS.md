@@ -40,7 +40,7 @@ Note: Supabase records applied migrations with its own timestamps, so the produc
 
 ## Next work, in priority order
 
-1. **Production verification.** Exercise real owner/admin accounts, public published/unpublished routes, media operations and dashboard counts against production. Drift to resolve: production lacks the legacy "Owners manage ..." policies that older migrations create.
+1. **Production verification.** Exercise real owner/admin accounts, public published/unpublished routes, media operations and dashboard counts against production. Known policy duplicates: production still has both "Owners manage ..." and "Users manage own ..." policies on `invitation_media` and `invitation_sections` (Supabase performance advisor: multiple permissive policies). Clean up with a migration verified by the RLS CI tests.
 2. **Production readiness.** Staging/production separation (the `larise-staging` project is empty and migrations were never applied there; separation was deliberately deferred), `NEXT_PUBLIC_SITE_URL` set to the production domain, migration/release procedure, monitoring, backup/recovery, smoke tests and rollback procedure.
 3. **Content and data gaps.** Active themes have no `thumbnail_url`/`preview_url`; landing cards show placeholders. Landing hero/collection headings are still in English. Convert the base tables to a migration so `supabase/ci` is no longer a hand-copied mirror.
 4. **Hardening backlog.** Public interaction rate limiting (beyond the 3-wish cap), media cleanup/optimization gaps.
