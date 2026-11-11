@@ -17,14 +17,17 @@ for (const viewport of [{ name: "desktop", width: 1280, height: 800 }, { name: "
   test(`landing sections and footer are visible (${viewport.name})`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto("/");
+    // whileInView animations only start after hydration. The hero animates on load, so once the
+    // h1 (and its animated ancestors) are fully opaque the page is interactive.
+    await page.waitForFunction(() => {
+      const h1 = document.querySelector("h1");
+      for (let n: Element | null = h1; n; n = n.parentElement) {
+        if (Number.parseFloat(getComputedStyle(n).opacity) < 1) return false;
+      }
+      return Boolean(h1);
+    }, undefined, { timeout: 30_000 });
     await scrollThrough(page);
     await page.waitForTimeout(1500);
-    console.log("DIAG", JSON.stringify(await page.evaluate(() => {
-      const el = document.querySelector("#value h2");
-      const chain: string[] = [];
-      for (let n: Element | null = el; n; n = n.parentElement) chain.push(`${n.tagName}.${String(n.className).slice(0, 30)}=${getComputedStyle(n).opacity}|${(n as HTMLElement).style.cssText.slice(0, 60)}`);
-      return { y: window.scrollY, h: document.documentElement.scrollHeight, ih: window.innerHeight, chain };
-    })));
 
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     for (const id of ["#value", "#features", "#how-it-works", "#faq"]) {
