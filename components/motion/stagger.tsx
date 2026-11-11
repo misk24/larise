@@ -26,6 +26,7 @@ export function Stagger({
       }}
       initial="hidden"
       whileInView="show"
+      viewport={{ once: true, amount: 0.15 }}
       className={className}
     >
       {children}

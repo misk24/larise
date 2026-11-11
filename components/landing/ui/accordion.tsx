@@ -33,9 +33,9 @@ export function EditorialAccordion({ items, className }: EditorialAccordionProps
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="group flex w-full items-start gap-4 py-5 text-left text-base font-medium text-[#29271F] transition-colors duration-200 hover:text-[#927653] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#A58A67] sm:py-6 sm:text-lg"
+                className="group flex w-full items-start gap-4 py-5 text-left text-base font-medium text-[#29271F] transition-colors duration-200 hover:text-[#7a6445] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#A58A67] sm:py-6 sm:text-lg"
               >
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center text-[#8B765A]" aria-hidden="true">
+                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center text-[#7a6445]" aria-hidden="true">
                   <span
                     className={[
                       "transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",

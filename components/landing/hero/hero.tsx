@@ -49,7 +49,7 @@ export function HeroSection() {
             <Image src="/images/hero.jpg" alt="Inspirasi suasana pernikahan yang hangat dan intim" fill priority sizes="(max-width: 1024px) 90vw, 44vw" className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#29271f]/40 via-transparent to-[#29271f]/5" />
             <div className="absolute inset-x-4 bottom-4 border border-white/30 bg-[#faf9f6]/90 p-4 backdrop-blur-md sm:inset-x-6 sm:bottom-6 sm:p-5">
-              <p className="text-[9px] uppercase tracking-[0.24em] text-[#8a765d] sm:text-[10px]">LARISÉ</p>
+              <p className="text-[9px] uppercase tracking-[0.24em] text-[#7a6445] sm:text-[10px]">LARISÉ</p>
               <p className="frontend-display mt-1 text-2xl italic leading-tight text-[#29271f] sm:text-3xl">A day to remember</p>
             </div>
           </div>

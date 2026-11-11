@@ -19,6 +19,7 @@ export function Scale({
       className={className}
       initial={{ opacity: 0, scale: from }}
       whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, amount: 0.15 }}
       transition={{ duration, ease: "easeOut" }}
     >
       {children}

@@ -153,7 +153,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
           <div className="max-w-2xl">
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-8 bg-[#A58A67]" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-[#927653]">
+              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-[#7a6445]">
                 The collection
               </span>
             </div>
@@ -161,7 +161,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
               Tema yang terasa
               <br className="hidden sm:block" /> seperti <em>ceritamu.</em>
             </h2>
-            <p className="mt-5 max-w-lg text-sm leading-7 text-[#29271F]/65 sm:text-base">
+            <p className="mt-5 max-w-lg text-sm leading-7 text-[#29271F]/72 sm:text-base">
               Dari yang sederhana hingga penuh detail, temukan desain yang
               paling pas untuk merayakan kisah kalian.
             </p>
@@ -169,7 +169,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
 
           <Link
             href="/register"
-            className="inline-flex w-fit border-b border-[#29271F]/25 pb-2 text-sm transition-colors hover:border-[#A58A67] hover:text-[#927653]"
+            className="inline-flex w-fit border-b border-[#29271F]/25 pb-2 text-sm transition-colors hover:border-[#A58A67] hover:text-[#7a6445]"
           >
             Jelajahi semua tema
           </Link>
@@ -179,6 +179,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
           <>
             <div
               className="mb-8 flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              role="group"
               aria-label="Filter kategori tema"
             >
               {categories.map((category) => {
@@ -192,7 +193,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     className={`shrink-0 rounded-[4px] border px-4 py-2 text-xs transition-colors duration-200 sm:px-5 sm:py-2.5 ${
                       selected
                         ? "border-[#29271F] bg-[#29271F] text-[#F8F6F1]"
-                        : "border-[#29271F]/15 bg-transparent text-[#29271F]/65 hover:border-[#A58A67] hover:text-[#29271F]"
+                        : "border-[#29271F]/15 bg-transparent text-[#29271F]/72 hover:border-[#A58A67] hover:text-[#29271F]"
                     }`}
                   >
                     {categoryLabels[category] ?? category}
@@ -201,7 +202,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
               })}
             </div>
 
-            <div className="mb-3 flex items-center justify-between text-[11px] text-[#29271F]/55 sm:hidden">
+            <div className="mb-3 flex items-center justify-between text-[11px] text-[#29271F]/70 sm:hidden">
               <span>Geser untuk melihat tema lainnya</span>
               <ChevronRight size={15} aria-hidden="true" />
             </div>
@@ -257,7 +258,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                             <span className="font-serif text-2xl italic sm:text-3xl">
                               {theme.name}
                             </span>
-                            <span className="mt-3 text-[9px] uppercase tracking-[0.2em] text-[#29271F]/60">
+                            <span className="mt-3 text-[9px] uppercase tracking-[0.2em] text-[#29271F]/70">
                               LARISÉ COLLECTION
                             </span>
                           </div>
@@ -288,12 +289,12 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                             {theme.name}
                           </h3>
                           {theme.description && (
-                            <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-[#29271F]/60 sm:text-xs sm:leading-6">
+                            <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-[#29271F]/70 sm:text-xs sm:leading-6">
                               {theme.description}
                             </p>
                           )}
                         </div>
-                        <span className="shrink-0 pt-1 text-[10px] text-[#927653] sm:text-xs">
+                        <span className="shrink-0 pt-1 text-[10px] text-[#7a6445] sm:text-xs">
                           {formatPrice(theme.price)}
                         </span>
                       </div>
@@ -303,7 +304,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                           {features.slice(0, 2).map((feature) => (
                             <span
                               key={feature}
-                              className="text-[10px] text-[#29271F]/55"
+                              className="text-[10px] text-[#29271F]/70"
                             >
                               {feature}
                             </span>
@@ -320,7 +321,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
           <div className="border-y border-[#29271F]/15 py-16 text-center sm:py-24">
             <Palette className="mx-auto mb-4 text-[#A58A67]" size={28} />
             <h3 className="font-serif text-2xl">Koleksi sedang disiapkan</h3>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#29271F]/60">
+            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#29271F]/70">
               Tema undangan akan tampil di sini setelah tersedia. Silakan
               kembali lagi sebentar.
             </p>
