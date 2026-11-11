@@ -29,3 +29,17 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: npm run build
+
+  database:
+    # Builds a throwaway Postgres from supabase/ci + all migrations and runs supabase/tests.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL 16 and pgTAP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 postgresql-16-pgtap
+          sudo systemctl start postgresql@16-main || sudo pg_ctlcluster 16 main start
+          sudo -u postgres psql -c "alter role postgres with password 'postgres'"
+      - name: Migrations + RLS tests
+        run: PGURL=postgres://postgres:postgres@localhost:5432/postgres scripts/test-db.sh
