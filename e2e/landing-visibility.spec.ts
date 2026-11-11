@@ -16,6 +16,9 @@ async function scrollThrough(page: Page) {
 for (const viewport of [{ name: "desktop", width: 1280, height: 800 }, { name: "mobile", width: 390, height: 844 }]) {
   test(`landing sections and footer are visible (${viewport.name})`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    const problems: string[] = [];
+    page.on("pageerror", (error) => problems.push(`pageerror: ${error.message}`));
+    page.on("console", (message) => { if (message.type() === "error") problems.push(`console: ${message.text().slice(0, 300)}`); });
     await page.goto("/");
     // whileInView animations only start after hydration. The hero animates on load, so once the
     // h1 (and its animated ancestors) are fully opaque the page is interactive.
@@ -25,7 +28,10 @@ for (const viewport of [{ name: "desktop", width: 1280, height: 800 }, { name: "
         if (Number.parseFloat(getComputedStyle(n).opacity) < 1) return false;
       }
       return Boolean(h1);
-    }, undefined, { timeout: 30_000 });
+    }, undefined, { timeout: 20_000 }).catch((error) => {
+      console.log("DIAG", JSON.stringify(problems));
+      throw error;
+    });
     await scrollThrough(page);
     await page.waitForTimeout(1500);
 
