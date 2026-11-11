@@ -14,8 +14,8 @@ function invitationTitle(invitation: { groom_name: string; bride_name: string; n
   return `Undangan Pernikahan ${firstName} & ${secondName}`;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+  const [{ slug }, { guest }] = await Promise.all([params, searchParams]);
   const supabase = await createClient();
   const { data: invitation } = await supabase
     .from("invitations")
@@ -29,8 +29,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = invitationTitle(invitation);
   const description = `Anda diundang untuk merayakan pernikahan ${invitation.groom_name} & ${invitation.bride_name}.`;
+  // A personal link carries the guest's private token in the URL. Keep those URLs out
+  // of search results and never send them as a referrer to other sites.
+  const isPersonalLink = Boolean(guest);
   return {
-    title, description, robots: { index: true, follow: true },
+    title, description,
+    robots: isPersonalLink ? { index: false, follow: false } : { index: true, follow: true },
+    ...(isPersonalLink ? { referrer: "same-origin" as const } : {}),
     openGraph: { type: "website", locale: "id_ID", title, description, siteName: "LARISÉ" },
     twitter: { card: "summary", title, description },
   };

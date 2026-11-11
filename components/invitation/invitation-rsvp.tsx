@@ -22,6 +22,20 @@ interface InvitationRsvpProps {
   onWishAdded?: (wish: Wish) => void;
 }
 
+const GENERIC_ERROR = "Terjadi kesalahan. Silakan coba lagi.";
+// Errors raised on purpose by the guest RPCs (P0001, 22023, 42501) carry messages
+// written for guests. Anything else (network, permission, internal) stays generic.
+const GUEST_FACING_CODES = new Set(["P0001", "22023", "42501"]);
+
+function userFacingMessage(error: unknown): string {
+  if (typeof error === "object" && error !== null) {
+    const { code, message } = error as { code?: unknown; message?: unknown };
+    if (typeof message === "string" && typeof code === "string" && GUEST_FACING_CODES.has(code)) return message;
+  }
+  if (error instanceof Error && error.message === "Jumlah tamu harus antara 1 sampai 10.") return error.message;
+  return GENERIC_ERROR;
+}
+
 export function InvitationRsvp({ invitationId, guestName, guestToken, wishes, onWishAdded }: InvitationRsvpProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -55,21 +69,33 @@ export function InvitationRsvp({ invitationId, guestName, guestToken, wishes, on
       });
       if (rsvpError) throw rsvpError;
 
+      // The RSVP is already saved at this point, so a wish failure (for example the
+      // per-guest wish limit) must not look like the whole submission failed.
+      let wishFailure: string | null = null;
       if (formData.message.trim()) {
         const { data: newWish, error: wishError } = await supabase.rpc("submit_guest_wish", {
           p_invitation_id: invitationId,
           p_guest_token: guestToken,
           p_message: formData.message.trim(),
         });
-        if (wishError) throw wishError;
-        if (newWish) onWishAdded?.(newWish as Wish);
+        if (wishError) {
+          console.error(wishError);
+          wishFailure = userFacingMessage(wishError);
+        } else if (newWish) {
+          onWishAdded?.(newWish as Wish);
+        }
       }
 
       setIsSubmitted(true);
-      toast.success("Konfirmasi dan ucapan berhasil dikirim!");
+      if (wishFailure) {
+        toast.success("Konfirmasi kehadiran berhasil dikirim.");
+        toast.error(`Ucapan belum terkirim. ${wishFailure}`);
+      } else {
+        toast.success("Konfirmasi dan ucapan berhasil dikirim!");
+      }
     } catch (error) {
       console.error(error);
-      toast.error(error instanceof Error ? error.message : "Terjadi kesalahan. Silakan coba lagi.");
+      toast.error(userFacingMessage(error));
     } finally {
       setIsLoading(false);
     }
