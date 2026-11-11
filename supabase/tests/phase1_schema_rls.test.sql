@@ -59,11 +59,11 @@ select ok(
 );
 
 select ok(
-  exists(select 1 from pg_policies where schemaname='public' and tablename='invitation_sections' and policyname='Owners manage sections for own invitations'),
+  exists(select 1 from pg_policies where schemaname='public' and tablename='invitation_sections' and policyname='Users manage own invitation sections'),
   'invitation section owner policy exists'
 );
 select ok(
-  exists(select 1 from pg_policies where schemaname='public' and tablename='invitation_media' and policyname='Owners manage media for own invitations'),
+  exists(select 1 from pg_policies where schemaname='public' and tablename='invitation_media' and policyname='Users manage own invitation media'),
   'invitation media owner policy exists'
 );
 
