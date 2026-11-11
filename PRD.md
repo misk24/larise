@@ -6,7 +6,7 @@
 
 The core invitation lifecycle, account flows, section builder/renderer, image upload, public invitation, baseline guest responses, dashboard/admin operations, Theme Builder design configuration, and backend visual foundation are merged to `main`. This snapshot does not change product requirements; detailed current delivery tracking and release risks live in [`docs/STATUS.md`](docs/STATUS.md).
 
-**Open work:** PR [#53](https://github.com/misk24/larise/pull/53) (dashboard/guest/gallery integration and token-based RSVP security; the RSVP migrations are split into expand and contract steps and must be released in coordination with the application). PRs #52, #57 and #58 were closed without merge.
+**Open work:** none tracked as open pull requests. PR #53 (dashboard integration and token-based RSVP security) is merged and deployed; PRs #52, #57 and #58 were closed without merge.
 
 **Next priorities:** safely integrate open PRs; verify migrations and owner/admin/public behavior against the target Supabase project; add cross-user RLS behavior tests; finish marketing/UX accessibility and responsive audits; then complete production monitoring, backup/recovery, smoke-test and rollback readiness. See `docs/STATUS.md` for exact scope and caveats.
 
