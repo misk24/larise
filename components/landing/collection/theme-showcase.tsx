@@ -230,9 +230,9 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     className="theme-card w-[86%] max-w-[340px] shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink sm:min-w-0"
                   >
                     <Link
-                      href="/register"
+                      href={`/tema/${theme.slug}`}
                       className="group block"
-                      aria-label={`Pilih tema ${theme.name}`}
+                      aria-label={`Lihat pratinjau tema ${theme.name}`}
                     >
                       <div
                         className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${
