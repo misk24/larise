@@ -12,7 +12,7 @@ const variantStyles: Record<LandingButtonVariant, string> = {
     "border-[#29271F] bg-[#29271F] text-[#FAF8F3] hover:border-[#51483B] hover:bg-[#51483B]",
   secondary:
     "border-[#29271F]/25 bg-transparent text-[#29271F] hover:border-[#A58A67] hover:bg-[#A58A67]/10",
-  text: "border-transparent bg-transparent text-[#29271F] hover:text-[#927653]",
+  text: "border-transparent bg-transparent text-[#29271F] hover:text-[#7a6445]",
   icon:
     "border-[#29271F]/20 bg-transparent text-[#29271F] hover:border-[#A58A67] hover:bg-[#A58A67]/10",
 };

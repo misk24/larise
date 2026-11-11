@@ -16,8 +16,8 @@ export function FAQSection() {
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
         <FadeUp>
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="mb-4 flex items-center gap-3 text-[10px] uppercase tracking-[0.24em] text-[#8b765a] sm:text-xs"><span className="h-px w-8 bg-[#a58a67]" />Pertanyaan umum</p>
-            <h2 id="faq-title" className="frontend-display max-w-lg text-[clamp(2.75rem,6vw,4.5rem)] leading-[0.98] tracking-[-0.055em] text-balance">Ada yang ingin <span className="italic text-[#8b765a]">diketahui?</span></h2>
+            <p className="mb-4 flex items-center gap-3 text-[10px] uppercase tracking-[0.24em] text-[#7a6445] sm:text-xs"><span className="h-px w-8 bg-[#a58a67]" />Pertanyaan umum</p>
+            <h2 id="faq-title" className="frontend-display max-w-lg text-[clamp(2.75rem,6vw,4.5rem)] leading-[0.98] tracking-[-0.055em] text-balance">Ada yang ingin <span className="italic text-[#7a6445]">diketahui?</span></h2>
             <p className="mt-5 max-w-md text-sm leading-7 text-[#625d51] sm:text-base sm:leading-8">Jawaban singkat untuk membantu kamu memahami cara kerja undangan digital LARISÉ.</p>
           </div>
         </FadeUp>

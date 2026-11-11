@@ -48,7 +48,7 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
                 onClick={onClose}
                 style={{ transitionDelay: isOpen ? `${index * 45}ms` : "0ms" }}
                 className={[
-                  "flex items-center py-4 text-xl tracking-tight text-[#29271F] transition-[color,opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-[#927653] motion-reduce:transition-none",
+                  "flex items-center py-4 text-xl tracking-tight text-[#29271F] transition-[color,opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-[#7a6445] motion-reduce:transition-none",
                   isOpen ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0",
                 ].join(" ")}
               >

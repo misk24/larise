@@ -30,7 +30,7 @@ export function Navbar() {
         <nav aria-label="Navigasi utama" className="hidden md:block">
           <ul className="flex items-center gap-5 lg:gap-9">
             {navigation.map((item) => (
-              <li key={item.href} className="text-xs tracking-wide text-[#29271F]/65 transition-colors hover:text-[#927653] lg:text-sm">
+              <li key={item.href} className="text-xs tracking-wide text-[#29271F]/72 transition-colors hover:text-[#7a6445] lg:text-sm">
                 <LandingScrollLink href={item.href}>{item.label}</LandingScrollLink>
               </li>
             ))}

@@ -1,7 +1,7 @@
 export const timings = {
-  fast: 0.6,
-  normal: 1.2,
-  slow: 1.8,
+  fast: 0.4,
+  normal: 0.6,
+  slow: 0.8,
 };
 
 export const offsets = {
@@ -12,7 +12,7 @@ export const offsets = {
 };
 
 export const staggers = {
-  tight: 0.2,
-  normal: 0.4,
-  loose: 0.8,
+  tight: 0.06,
+  normal: 0.1,
+  loose: 0.2,
 };
