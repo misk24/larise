@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(32);
+select plan(33);
 
 select ok(
   (select relrowsecurity from pg_class where oid = 'public.profiles'::regclass),
@@ -122,6 +122,14 @@ select ok(
      and has_function_privilege('anon', p.oid, 'EXECUTE')
      and has_function_privilege('authenticated', p.oid, 'EXECUTE')),
   'public guest RPCs are executable by anon and authenticated roles'
+);
+
+select ok(
+  (select pg_get_functiondef(p.oid) like '%Batas ucapan untuk tamu ini%' and pg_get_functiondef(p.oid) like '%for update of g%'
+   from pg_proc p
+   join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'public' and p.proname = 'submit_guest_wish'),
+  'submit_guest_wish limits wishes per guest and serializes concurrent submissions'
 );
 
 select ok(

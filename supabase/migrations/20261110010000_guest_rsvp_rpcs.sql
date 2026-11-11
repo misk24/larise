@@ -1,9 +1,8 @@
--- Public RSVP submissions must prove possession of the guest's public token.
--- Anonymous clients cannot insert/update guest or RSVP rows directly anymore.
-
-drop policy if exists "Public create guests for published invitations" on public.guests;
-drop policy if exists "Public create rsvps for published invitations" on public.rsvps;
-drop policy if exists "Public update rsvps for published invitations" on public.rsvps;
+-- Public guest RPCs (expand step).
+-- Adds token-verified submission and lookup functions. This migration is purely
+-- additive, so it can be applied BEFORE the token-based client is deployed.
+-- The follow-up migration 20261110010100 removes direct anonymous writes and
+-- must only be applied AFTER the new client is live.
 
 create or replace function public.submit_guest_rsvp(
   p_invitation_id uuid,
@@ -71,10 +70,6 @@ $$;
 revoke all on function public.submit_guest_rsvp(uuid, text, text, integer) from public;
 grant execute on function public.submit_guest_rsvp(uuid, text, text, integer) to anon, authenticated;
 
--- Defense in depth: public clients may not directly mutate RSVP rows.
-revoke insert, update, delete on public.rsvps from anon;
-
-
 -- Resolve the opaque guest token without exposing guest rows to anonymous clients.
 create or replace function public.resolve_public_guest(
   p_invitation_id uuid,
@@ -129,10 +124,17 @@ begin
   where g.invitation_id = p_invitation_id
     and g.public_token = p_guest_token
     and i.status = 'published'
-    and i.is_published = true;
+    and i.is_published = true
+  for update of g;
 
   if v_guest.id is null then
     raise exception 'Link tamu tidak valid atau undangan belum diterbitkan.' using errcode = '42501';
+  end if;
+
+  -- Basic abuse control: a verified guest may leave a limited number of wishes.
+  -- The guest row is locked above, so concurrent submissions cannot exceed it.
+  if (select count(*) from public.wishes w where w.guest_id = v_guest.id) >= 3 then
+    raise exception 'Batas ucapan untuk tamu ini sudah tercapai.' using errcode = 'P0001';
   end if;
 
   insert into public.wishes (invitation_id, guest_id, guest_name, message, visibility)
@@ -145,7 +147,3 @@ $$;
 
 revoke all on function public.submit_guest_wish(uuid, text, text) from public;
 grant execute on function public.submit_guest_wish(uuid, text, text) to anon, authenticated;
-
--- Public clients can no longer forge guest identity in wish rows.
-drop policy if exists "Public create wishes for published invitations" on public.wishes;
-revoke insert on public.wishes from anon;
