@@ -27,23 +27,19 @@ Current work is concentrated on dashboard integration/security refinements and o
 | Theme Builder design configuration | Section-level background, typography, layout, buttons, images and decorative controls, validated configuration and real section renderer preview. PR #55 merged. |
 | Backend visual system | Backend-scoped neutral/burgundy semantic palette with light/dark tokens. PR #56 merged. |
 
-## In progress: open pull requests
+## Recently completed
 
-| PR | Scope | Current status / required next step |
-| --- | --- | --- |
-| [#53 Dashboard management integration](https://github.com/misk24/larise/pull/53) | Gallery page, invitation-scoped guest/wishes/gallery management, autosave sequencing and token-based public RSVP/wishes security. | `main` has been merged into the branch and conflicts resolved. **Not merged.** The RSVP migration is now split: `20261110010000_guest_rsvp_rpcs.sql` (additive, safe to apply first) and `20261110010100_restrict_public_guest_writes.sql` (removes direct anonymous writes). Release order: apply the first migration, deploy the application, then apply the second. Each guest may leave at most 3 wishes. Personal links (`?guest=`) are `noindex` with a `same-origin` referrer policy. Verify guest-token RSVP/wishes against the target Supabase project after release. |
+- **PR #53 (dashboard management integration and token-based guest RSVP/wishes)** is merged and deployed to production. Both RSVP migrations are applied to the production Supabase project (`guest_rsvp_rpcs`, then `restrict_public_guest_writes`). Anonymous clients can no longer write guests, RSVPs or wishes directly; they use `submit_guest_rsvp`, `submit_guest_wish` and `resolve_public_guest` with the guest's private token. Each guest may leave at most 3 wishes. Personal links (`?guest=`) are `noindex` with a `same-origin` referrer policy. A first real RSVP and wish through the new flow was confirmed in production.
+- PRs #52 (background music URL), #57 and #58 (theme-category palette cleanup) were closed without merge by the maintainer and are not planned.
 
-PRs [#52](https://github.com/misk24/larise/pull/52) (background music URL) and [#58](https://github.com/misk24/larise/pull/58) (theme-category palette cleanup) were closed without merge by the maintainer and are not planned. PR #57 was also closed without merge.
-
-The builder and settings migrations from #53 (`20261029174143` to `20261029174834`) are already applied to the production Supabase project; only the RSVP migrations above remain.
+Note: Supabase records applied migrations with its own timestamps, so the production version numbers differ from the file names in `supabase/migrations`. The two RSVP migration files are idempotent for this reason.
 
 ## Next work, in priority order
 
-1. **Close #53 safely.** Merge it, then run the coordinated RSVP release (expand migration, deploy, contract migration) described above.
-2. **Production verification.** Exercise real owner/admin accounts, public published/unpublished routes, guest-token RSVP/wishes, media operations and dashboard counts against the target Supabase project.
-3. **Authorization and data-integrity hardening.** Add authenticated cross-user RLS behavior tests to CI; verify all relevant migrations and policies in the target environment. Review public interaction rate limiting and media cleanup/optimization gaps.
-4. **Marketing and UX completion.** Audit the landing/marketing experience against the approved Indonesian, mobile-first, minimal editorial + modern luxe direction. Finish loading, empty, error, validation, keyboard, focus, contrast and reduced-motion states.
-5. **Production readiness.** Confirm production/staging environment separation, domain, migration/release procedure, monitoring, backup/recovery, smoke tests and rollback procedure.
+1. **Production verification.** Exercise real owner/admin accounts, public published/unpublished routes, guest-token RSVP/wishes, media operations and dashboard counts against the target Supabase project.
+2. **Authorization and data-integrity hardening.** Add authenticated cross-user RLS behavior tests to CI; verify all relevant migrations and policies in the target environment. Review public interaction rate limiting and media cleanup/optimization gaps.
+3. **Marketing and UX completion.** Audit the landing/marketing experience against the approved Indonesian, mobile-first, minimal editorial + modern luxe direction. Finish loading, empty, error, validation, keyboard, focus, contrast and reduced-motion states.
+4. **Production readiness.** Confirm production/staging environment separation, domain, migration/release procedure, monitoring, backup/recovery, smoke tests and rollback procedure.
 
 ## Deferred product scope
 
@@ -56,7 +52,7 @@ These are not current blockers and must not be represented as implemented:
 - Custom domains, collaboration, version history, advanced analytics/SEO and AI features.
 - Timeless/no-expiration promise until storage and operating economics are validated.
 
-Background music via a user-supplied URL (PR #52) was closed without merge; it is not currently planned, and the app is not an audio-hosting platform.
+Background music via a user-supplied URL (PR #52) was closed without merge and is not currently planned; the app is not an audio-hosting platform.
 
 ## Source-of-truth and status rules
 
