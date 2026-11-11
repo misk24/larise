@@ -9,6 +9,7 @@ psql "$PGURL" -v ON_ERROR_STOP=1 -qc "create database $DB"
 trap 'psql "$PGURL" -qc "drop database if exists $DB" >/dev/null' EXIT
 URL="${PGURL%/*}/$DB"
 run() { psql "$URL" -v ON_ERROR_STOP=1 -q -f "$1"; }
+psql "$URL" -v ON_ERROR_STOP=1 -qc "alter database $DB set search_path = \"\$user\", public, extensions"
 run supabase/ci/00_supabase_stub.sql
 run supabase/ci/01_base_schema.sql
 for f in $(ls supabase/migrations/*.sql | sort); do echo "migration: $f"; run "$f"; done
