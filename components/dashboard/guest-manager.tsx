@@ -14,7 +14,7 @@ import type React from "react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-type GuestWithRsvp = Guest & { rsvp: RSVP[] };
+type GuestWithRsvp = Guest & { rsvp: RSVP[] | RSVP | null };
 type GuestForm = { name: string; phone: string; email: string };
 
 interface GuestManagerProps {
@@ -26,7 +26,13 @@ interface GuestManagerProps {
 const emptyForm: GuestForm = { name: "", phone: "", email: "" };
 
 function latestRsvp(guest: GuestWithRsvp): RSVP | undefined {
-  return [...(guest.rsvp ?? [])].sort((a, b) =>
+  const rsvps = Array.isArray(guest.rsvp)
+    ? guest.rsvp
+    : guest.rsvp
+      ? [guest.rsvp]
+      : [];
+
+  return [...rsvps].sort((a, b) =>
     new Date(b.updated_at ?? b.created_at).getTime() - new Date(a.updated_at ?? a.created_at).getTime()
   )[0];
 }

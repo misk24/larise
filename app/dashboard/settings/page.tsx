@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 
 const settingsItems = [
   {
-    title: "Preferensi undangan",
+    title: "Preferensi Undangan",
     description: "Kelola detail acara, RSVP, galeri, backsound, dan informasi lainnya dari masing-masing undangan.",
     href: "/dashboard/invitations",
     label: "Buka undangan",
@@ -23,7 +23,7 @@ const settingsItems = [
     disabled: true,
   },
   {
-    title: "Privasi dan keamanan",
+    title: "Privasi & Keamanan",
     description: "Kelola informasi profil dan metode login melalui halaman My Account.",
     href: "/dashboard/account",
     label: "Kelola akun",

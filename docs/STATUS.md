@@ -31,13 +31,15 @@ Current work is concentrated on dashboard integration/security refinements and o
 
 | PR | Scope | Current status / required next step |
 | --- | --- | --- |
-| [#53 Dashboard management integration](https://github.com/misk24/larise/pull/53) | Gallery page, invitation-scoped guest/wishes/gallery management, autosave sequencing and token-based public RSVP/wishes security. | CI and Vercel Preview passed for the reported HEAD. **Not merged.** Branch is significantly diverged from `main`; perform a final diff/rebase review. Coordinate the new RSVP token migration with the application release. Do not apply that migration before the token-based client is deployed, because old direct-insert clients would stop working. Run production migration and real authorization/public-submission checks as a coordinated release. |
-| [#52 Background music URL](https://github.com/misk24/larise/pull/52) | Owner-supplied HTTPS audio URL, owner-checked save action and user-initiated audio playback in preview/public invitation. | CI and Vercel Preview passed. **Not merged.** Review and merge separately. No migration is required; the column already exists. Compatibility of the remote audio file is not verified by the app. |
-| [#58 Dashboard theme-category palette cleanup](https://github.com/misk24/larise/pull/58) | Replace remaining fixed category colors with backend semantic tokens. | **Open.** CI/Preview status must be checked before merge. PR #57 was closed without merge and superseded by this follow-up. |
+| [#53 Dashboard management integration](https://github.com/misk24/larise/pull/53) | Gallery page, invitation-scoped guest/wishes/gallery management, autosave sequencing and token-based public RSVP/wishes security. | `main` has been merged into the branch and conflicts resolved. **Not merged.** The RSVP migration is now split: `20261110010000_guest_rsvp_rpcs.sql` (additive, safe to apply first) and `20261110010100_restrict_public_guest_writes.sql` (removes direct anonymous writes). Release order: apply the first migration, deploy the application, then apply the second. Each guest may leave at most 3 wishes. Personal links (`?guest=`) are `noindex` with a `same-origin` referrer policy. Verify guest-token RSVP/wishes against the target Supabase project after release. |
+
+PRs [#52](https://github.com/misk24/larise/pull/52) (background music URL) and [#58](https://github.com/misk24/larise/pull/58) (theme-category palette cleanup) were closed without merge by the maintainer and are not planned. PR #57 was also closed without merge.
+
+The builder and settings migrations from #53 (`20261029174143` to `20261029174834`) are already applied to the production Supabase project; only the RSVP migrations above remain.
 
 ## Next work, in priority order
 
-1. **Close the open PRs safely.** Review/rebase #53 against current `main`, resolve its full diff, and coordinate its migration/release. Review #52 and #58 independently; do not merge based only on a green check.
+1. **Close #53 safely.** Merge it, then run the coordinated RSVP release (expand migration, deploy, contract migration) described above.
 2. **Production verification.** Exercise real owner/admin accounts, public published/unpublished routes, guest-token RSVP/wishes, media operations and dashboard counts against the target Supabase project.
 3. **Authorization and data-integrity hardening.** Add authenticated cross-user RLS behavior tests to CI; verify all relevant migrations and policies in the target environment. Review public interaction rate limiting and media cleanup/optimization gaps.
 4. **Marketing and UX completion.** Audit the landing/marketing experience against the approved Indonesian, mobile-first, minimal editorial + modern luxe direction. Finish loading, empty, error, validation, keyboard, focus, contrast and reduced-motion states.
@@ -54,7 +56,7 @@ These are not current blockers and must not be represented as implemented:
 - Custom domains, collaboration, version history, advanced analytics/SEO and AI features.
 - Timeless/no-expiration promise until storage and operating economics are validated.
 
-Background music via a user-supplied URL is being reviewed in PR #52; it is not an audio-hosting platform.
+Background music via a user-supplied URL (PR #52) was closed without merge; it is not currently planned, and the app is not an audio-hosting platform.
 
 ## Source-of-truth and status rules
 

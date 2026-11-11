@@ -26,8 +26,14 @@ export function InvitationActions({
         toast.error(result.error);
         return;
       }
-      toast.success("Perubahan berhasil disimpan.");
+      if (!result.success && !result.id) {
+        toast.error("Tindakan belum berhasil diselesaikan. Coba lagi.");
+        return;
+      }
+      toast.success(result.id ? "Undangan berhasil diduplikasi." : "Perubahan berhasil disimpan.");
       router.refresh();
+    } catch {
+      toast.error("Tindakan gagal diproses. Periksa koneksi lalu coba lagi.");
     } finally {
       setLoading(null);
     }
