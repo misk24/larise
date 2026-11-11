@@ -11,6 +11,7 @@ export const rosehot = localFont({
   ],
   variable: "--font-rosehot",
   display: "swap",
+  fallback: ["Georgia", "serif"],
 });
 
 export const satoshi = localFont({
@@ -23,6 +24,7 @@ export const satoshi = localFont({
   ],
   variable: "--font-satoshi",
   display: "swap",
+  fallback: ["system-ui", "sans-serif"],
 });
 
 export const geistSans = Geist({

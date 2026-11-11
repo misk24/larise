@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { staggers } from "./presets";
 import { MotionBaseProps } from "./type";

@@ -5,16 +5,16 @@ export type LandingButtonVariant = "primary" | "secondary" | "text" | "icon";
 export type LandingButtonSize = "sm" | "md" | "lg" | "icon";
 
 const baseStyles =
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap border text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A58A67] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F6F1] disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap border text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:pointer-events-none disabled:opacity-50";
 
 const variantStyles: Record<LandingButtonVariant, string> = {
   primary:
-    "border-[#29271F] bg-[#29271F] text-[#FAF8F3] hover:border-[#51483B] hover:bg-[#51483B]",
+    "border-ink bg-ink text-ivory hover:border-ink-hover hover:bg-ink-hover",
   secondary:
-    "border-[#29271F]/25 bg-transparent text-[#29271F] hover:border-[#A58A67] hover:bg-[#A58A67]/10",
-  text: "border-transparent bg-transparent text-[#29271F] hover:text-[#7a6445]",
+    "border-ink/25 bg-transparent text-ink hover:border-gold hover:bg-gold/10",
+  text: "border-transparent bg-transparent text-ink hover:text-gold-deep",
   icon:
-    "border-[#29271F]/20 bg-transparent text-[#29271F] hover:border-[#A58A67] hover:bg-[#A58A67]/10",
+    "border-ink/20 bg-transparent text-ink hover:border-gold hover:bg-gold/10",
 };
 
 const sizeStyles: Record<LandingButtonSize, string> = {
