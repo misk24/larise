@@ -10,9 +10,10 @@ import { navigation } from "./navbar";
 interface MobileHeaderProps {
   isOpen: boolean;
   onClose: () => void;
+  isLoggedIn?: boolean;
 }
 
-export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
+export function MobileHeader({ isOpen, onClose, isLoggedIn = false }: MobileHeaderProps) {
   return (
     <div
       id="mobile-navigation"
@@ -63,20 +64,32 @@ export function MobileHeader({ isOpen, onClose }: MobileHeaderProps) {
             ].join(" ")}
             style={{ transitionDelay: isOpen ? "160ms" : "0ms" }}
           >
-            <Link
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                onClick={onClose}
+                className={landingButtonStyles({ size: "md", className: "col-span-2 min-h-11" })}
+              >
+                Buka Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
               href="/login"
               onClick={onClose}
               className={landingButtonStyles({ variant: "secondary", size: "md", className: "min-h-11" })}
             >
               Masuk
-            </Link>
-            <Link
+                </Link>
+                <Link
               href="/register"
               onClick={onClose}
               className={landingButtonStyles({ size: "md", className: "min-h-11" })}
             >
               Buat Undangan
-            </Link>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
