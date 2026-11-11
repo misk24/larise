@@ -46,6 +46,9 @@ create or replace function pg_temp.check(name text, passed boolean) returns void
 begin raise notice '%', case when passed then 'ok - ' else 'not ok - ' end || name; end $$;
 grant execute on all functions in schema pg_temp to public;
 
+select pg_temp.check('no legacy duplicate "Owners manage" policies remain', (select count(*) from pg_policies where schemaname='public' and policyname like 'Owners manage %') = 0);
+select pg_temp.check('no duplicate indexes on invitation_sections', (select count(*) from pg_indexes where tablename='invitation_sections' and indexname in ('idx_invitation_sections_invitation_id','invitation_sections_invitation_position_idx')) = 0);
+
 begin;
 select pg_temp.as_user('00000000-0000-0000-0000-00000000000a');
 select pg_temp.check('user A sees own 2 invitations plus B published (3 total)', pg_temp.rows('select 1 from invitations') = 3);
