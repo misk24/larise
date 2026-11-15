@@ -13,7 +13,7 @@ export function CTASection() {
           <p className="max-w-sm text-base leading-7 sm:text-lg sm:leading-8">
             Mulai susun undangan yang personal, lalu bagikan kabar bahagia kepada orang-orang terdekat.
           </p>
-          <Link href="/register" className={landingButtonStyles({ size: "lg", className: "mt-8" })}>Mulai Buat Undangan</Link>
+          <Link href="/register" className={landingButtonStyles({ size: "lg", className: "mt-8 border-ink bg-ink text-ivory hover:border-ink-hover hover:bg-ink-hover" })}>Mulai Buat Undangan</Link>
           <p className="mt-4 text-sm text-ink/80">Mulai dengan memilih tema yang paling cocok untuk kalian.</p>
         </div>
       </Container>

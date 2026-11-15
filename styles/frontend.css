@@ -5,6 +5,8 @@
   --color-paper: var(--paper);
   --color-paper-deep: var(--paper-deep);
   --color-ivory: var(--ivory);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-ink-hover: var(--ink-hover);
@@ -33,6 +35,8 @@
     --gold: #a58a67; /* decorative only: 3:1 on paper, too low for small text */
     --gold-deep: #7a6445; /* text accent on light surfaces (5.2:1) */
     --gold-soft: #c8b18f; /* text accent on ink surfaces (7.2:1) */
+    --surface: #faf9f6; /* card surface; flips in dark mode (ivory stays light for text on ink) */
+    --fg: #29271f; /* text and strokes on page surfaces; flips in dark mode */
     --background: var(--paper);
 
     min-height: 100vh;
@@ -228,3 +232,22 @@
 }
 
 
+
+/* Dark mode for the landing only. next-themes writes data-theme on <html>; the
+ * dashboard and published invitations never read it. ink and ivory stay fixed
+ * (dark section, light text on it); only page surfaces and text flip. */
+html[data-theme="dark"] .frontend-shell {
+  color-scheme: dark;
+  --paper: #16140f;
+  --paper-deep: #1d1a14;
+  --surface: #25221a;
+  --fg: #f1ede4;
+  --foreground: #f1ede4;
+  --muted-foreground: #b8b1a2;
+  --border: rgb(255 255 255 / 0.14);
+  --secondary: #25221a;
+  --ink: #0b0a07;
+  --ink-hover: #26221a;
+  --ink-soft: #b8b1a2;
+  --gold-deep: #c8b18f;
+}

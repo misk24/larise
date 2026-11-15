@@ -1,6 +1,5 @@
 import { Item, Stagger } from "@/components/motion";
 import { Container } from "@/components/landing/ui/container";
-import { Eyebrow } from "@/components/landing/ui/eyebrow";
 import { landingButtonStyles } from "@/components/landing/ui/button";
 import { LandingScrollLink } from "@/components/landing/ui/smooth-scroll-link";
 import Image from "next/image";
@@ -9,12 +8,8 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden bg-background pt-24 sm:pt-28 lg:pt-32">
-      <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-20 -z-10 size-72 rounded-full bg-gold/15 blur-3xl sm:size-96" />
       <Container className="grid min-h-[calc(100svh-6rem)] items-center gap-12 pb-16 pt-8 sm:pb-20 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14 lg:py-16">
         <Stagger className="relative z-10 max-w-2xl">
-          <Item>
-            <Eyebrow className="mb-6">Undangan digital, lebih personal</Eyebrow>
-          </Item>
           <Item>
             <h1 id="hero-title" className="frontend-display max-w-xl text-[clamp(3.25rem,9vw,6.75rem)] leading-[0.94] tracking-[-0.065em] text-balance">
               Your Story,
@@ -46,7 +41,7 @@ export function HeroSection() {
             <Image src="/images/hero.jpg" alt="Inspirasi suasana pernikahan yang hangat dan intim" fill priority sizes="(max-width: 1024px) 90vw, 44vw" className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-ink/5" />
             <div className="absolute inset-x-4 bottom-4 border border-white/30 bg-ivory/90 p-4 backdrop-blur-md sm:inset-x-6 sm:bottom-6 sm:p-5">
-              <p className="text-[11px] uppercase tracking-[0.24em] text-gold-deep">LARISÉ</p>
+              <p className="text-xs tracking-[0.2em] text-ink-hover">LARISÉ</p>
               <p className="frontend-display mt-1 text-2xl leading-tight text-ink sm:text-3xl">A day to remember</p>
             </div>
           </div>

@@ -22,7 +22,7 @@ const faqJsonLd = {
 
 export function FAQSection() {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="bg-background py-24 text-ink sm:py-32 lg:py-40">
+    <section id="faq" aria-labelledby="faq-title" className="bg-background py-24 text-fg sm:py-32 lg:py-40">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
       <Container className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
         <div>

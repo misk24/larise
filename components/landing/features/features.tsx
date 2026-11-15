@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 // Layout slot per card: one tall ink card, one wide card, two small ones.
 const features = [
   { title: "Cerita yang personal", description: "Sapa setiap tamu dengan nama, lalu ceritakan perjalanan kalian lewat profil, galeri, dan kisah cinta.", items: ["Nama tamu personal", "Profil dan kisah cinta", "Galeri foto"], slot: "md:row-span-2 bg-ink text-ivory", dark: true },
-  { title: "Detail acara", description: "Bantu tamu menemukan informasi acara dan memberi kabar kehadiran tanpa harus bertanya berulang kali.", items: ["Jadwal dan lokasi", "Google Maps", "RSVP dan ucapan"], slot: "md:col-span-2 bg-ivory" },
-  { title: "Suasana pilihan kalian", description: "Lengkapi undangan dengan elemen visual dan audio yang sesuai dengan suasana kalian.", items: ["Musik latar", "Video dan foto", "Kutipan pilihan"], slot: "bg-ivory" },
-  { title: "Mudah dibagikan", description: "Undangan berbasis web yang praktis dibuka dari ponsel dan mudah diteruskan kepada orang terdekat.", items: ["Satu tautan undangan", "Tampilan responsif", "Informasi terpusat"], slot: "bg-ivory" },
+  { title: "Detail acara", description: "Bantu tamu menemukan informasi acara dan memberi kabar kehadiran tanpa harus bertanya berulang kali.", items: ["Jadwal dan lokasi", "Google Maps", "RSVP dan ucapan"], slot: "md:col-span-2 bg-surface" },
+  { title: "Suasana pilihan kalian", description: "Lengkapi undangan dengan elemen visual dan audio yang sesuai dengan suasana kalian.", items: ["Musik latar", "Video dan foto", "Kutipan pilihan"], slot: "bg-surface" },
+  { title: "Mudah dibagikan", description: "Undangan berbasis web yang praktis dibuka dari ponsel dan mudah diteruskan kepada orang terdekat.", items: ["Satu tautan undangan", "Tampilan responsif", "Informasi terpusat"], slot: "bg-surface" },
 ];
 
 export function FeaturesSection() {

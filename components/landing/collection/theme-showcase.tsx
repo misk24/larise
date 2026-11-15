@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ChevronRight, Palette } from "lucide-react";
 import { FadeUp } from "@/components/motion";
 import { Container } from "@/components/landing/ui/container";
-import { Eyebrow } from "@/components/landing/ui/eyebrow";
 import { categoryLabels, ThemeCard, type Theme } from "./theme-card";
 
 export function ThemeShowcase({ themes }: { themes: Theme[] }) {
@@ -25,27 +24,23 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
   );
 
   return (
-    <section id="collections" className="relative overflow-hidden bg-paper py-20 text-ink sm:py-28 lg:py-36">
-      <div aria-hidden="true" className="pointer-events-none absolute -right-32 top-24 h-80 w-80 rounded-full bg-[#d9c4a8]/20 blur-3xl" />
-      <div aria-hidden="true" className="pointer-events-none absolute -left-40 bottom-0 h-80 w-80 rounded-full bg-[#c9d0c1]/25 blur-3xl" />
-
-      <Container className="relative">
+    <section id="collections" className="bg-paper py-24 text-fg sm:py-32 lg:py-40">
+      <Container>
         <FadeUp>
           <div className="mb-10 flex flex-col gap-6 sm:mb-14 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <Eyebrow className="mb-5">The collection</Eyebrow>
-              <h2 className="frontend-display text-4xl leading-[1.08] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
+              <h2 className="frontend-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1] tracking-[-0.05em] text-balance">
                 Tema yang terasa
-                <br className="hidden sm:block" /> seperti <span className="text-gold-deep">ceritamu.</span>
+                <br className="hidden sm:block" /> seperti ceritamu.
               </h2>
-              <p className="mt-5 max-w-lg text-sm leading-7 text-ink/72 sm:text-base">
+              <p className="mt-5 max-w-lg text-sm leading-7 text-fg/72 sm:text-base">
                 Dari yang sederhana hingga penuh detail, temukan desain yang paling pas untuk merayakan kisah kalian.
               </p>
             </div>
 
             <Link
               href="/register"
-              className="inline-flex w-fit border-b border-ink/25 pb-2 text-sm transition-colors hover:border-gold hover:text-gold-deep"
+              className="inline-flex w-fit border-b border-fg/25 pb-2 text-sm transition-colors hover:border-gold hover:text-gold-deep"
             >
               Jelajahi semua tema
             </Link>
@@ -69,8 +64,8 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
                     aria-pressed={selected}
                     className={`min-h-10 shrink-0 rounded-[4px] border px-4 text-xs transition-colors duration-200 sm:px-5 ${
                       selected
-                        ? "border-ink bg-ink text-paper"
-                        : "border-ink/15 bg-transparent text-ink/72 hover:border-gold hover:text-ink"
+                        ? "border-fg bg-fg text-background"
+                        : "border-fg/15 bg-transparent text-fg/72 hover:border-gold hover:text-fg"
                     }`}
                   >
                     {categoryLabels[category] ?? category}
@@ -79,7 +74,7 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
               })}
             </div>
 
-            <div className="mb-3 flex items-center justify-between text-xs text-ink/70 sm:hidden">
+            <div className="mb-3 flex items-center justify-between text-xs text-fg/70 sm:hidden">
               <span>Geser untuk melihat tema lainnya</span>
               <ChevronRight size={15} aria-hidden="true" />
             </div>
@@ -96,10 +91,10 @@ export function ThemeShowcase({ themes }: { themes: Theme[] }) {
             </div>
           </>
         ) : (
-          <div className="border-y border-ink/15 py-16 text-center sm:py-24">
+          <div className="border-y border-fg/15 py-16 text-center sm:py-24">
             <Palette className="mx-auto mb-4 text-gold-deep" size={28} aria-hidden="true" />
             <h3 className="frontend-display text-2xl">Koleksi sedang disiapkan</h3>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-ink/70">
+            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-fg/70">
               Tema undangan akan tampil di sini setelah tersedia. Silakan kembali lagi sebentar.
             </p>
           </div>

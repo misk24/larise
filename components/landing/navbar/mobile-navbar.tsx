@@ -2,6 +2,7 @@
 
 import { landingButtonStyles } from "@/components/landing/ui/button";
 import { LandingScrollLink } from "@/components/landing/ui/smooth-scroll-link";
+import { ThemeToggle } from "@/components/landing/ui/theme-toggle";
 import { navigation } from "@/config/landing-navigation";
 import Link from "next/link";
 
@@ -20,7 +21,7 @@ export function MobileHeader({ isOpen, onClose, isLoggedIn = false }: MobileHead
       aria-hidden={!isOpen}
       inert={!isOpen}
       className={[
-        "absolute inset-x-0 top-full grid overflow-hidden border-b border-ink/10 bg-paper shadow-xl shadow-ink/10 transition-[grid-template-rows,opacity,visibility] duration-300 motion-reduce:transition-none md:hidden",
+        "absolute inset-x-0 top-full grid overflow-hidden border-b border-fg/10 bg-paper shadow-xl shadow-ink/10 transition-[grid-template-rows,opacity,visibility] duration-300 motion-reduce:transition-none md:hidden",
         ease,
         isOpen
           ? "visible grid-rows-[1fr] opacity-100"
@@ -29,7 +30,7 @@ export function MobileHeader({ isOpen, onClose, isLoggedIn = false }: MobileHead
     >
       <div className="min-h-0 overflow-hidden">
         <div className="px-5 pb-7 pt-2 sm:px-8">
-          <nav aria-label="Navigasi mobile" className="divide-y divide-ink/10">
+          <nav aria-label="Navigasi mobile" className="divide-y divide-fg/10">
             {navigation.map((item, index) => (
               <LandingScrollLink
                 key={item.label}
@@ -37,7 +38,7 @@ export function MobileHeader({ isOpen, onClose, isLoggedIn = false }: MobileHead
                 onClick={onClose}
                 style={{ transitionDelay: isOpen ? `${index * 45}ms` : "0ms" }}
                 className={[
-                  "flex items-center py-4 text-xl tracking-tight text-ink transition-[color,opacity,transform] duration-300 hover:text-gold-deep motion-reduce:transition-none",
+                  "flex items-center py-4 text-xl tracking-tight text-fg transition-[color,opacity,transform] duration-300 hover:text-gold-deep motion-reduce:transition-none",
                   ease,
                   isOpen ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0",
                 ].join(" ")}
@@ -46,6 +47,7 @@ export function MobileHeader({ isOpen, onClose, isLoggedIn = false }: MobileHead
               </LandingScrollLink>
             ))}
           </nav>
+          <ThemeToggle showLabels className="mt-5 flex w-full" />
           <div
             className={[
               "mt-5 grid grid-cols-2 gap-3 transition-[opacity,transform] duration-300 motion-reduce:transition-none",

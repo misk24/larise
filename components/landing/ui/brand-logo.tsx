@@ -13,14 +13,17 @@ export function BrandLogo({
   height = 50,
   className,
 }: BrandLogoProps) {
+  const classes = ["h-6 w-auto object-contain", className].filter(Boolean);
+
+  if (variant === "footer") {
+    return <Image src="/images/logo-dark.png" alt="LARISÉ" width={width} height={height} className={classes.join(" ")} />;
+  }
+
+  // The header sits on a surface that flips with the theme, so it carries both logos and CSS picks one.
   return (
-    <Image
-      src={variant === "footer" ? "/images/logo-dark.png" : "/images/logo-light.png"}
-      alt="LARISÉ"
-      width={width}
-      height={height}
-      className={["h-6 w-auto object-contain", className].filter(Boolean).join(" ")}
-      priority={variant === "header"}
-    />
+    <>
+      <Image src="/images/logo-light.png" alt="LARISÉ" width={width} height={height} className={[...classes, "[html[data-theme=dark]_&]:hidden"].join(" ")} priority />
+      <Image src="/images/logo-dark.png" alt="" aria-hidden="true" width={width} height={height} className={[...classes, "hidden [html[data-theme=dark]_&]:block"].join(" ")} />
+    </>
   );
 }
