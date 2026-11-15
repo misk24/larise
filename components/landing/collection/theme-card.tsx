@@ -89,7 +89,7 @@ export function ThemeCard({ theme, index }: { theme: Theme; index: number }) {
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             />
           ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-5 text-center">
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-5 text-center text-ink">
               <div className="mb-4 flex size-14 items-center justify-center rounded-full border border-ink/20 bg-white/30 backdrop-blur-sm">
                 <Palette size={23} strokeWidth={1} aria-hidden="true" />
               </div>
@@ -117,7 +117,7 @@ export function ThemeCard({ theme, index }: { theme: Theme; index: number }) {
           <div className="min-w-0">
             <h3 className="frontend-display truncate text-lg sm:text-xl lg:text-2xl">{theme.name}</h3>
             {theme.description && (
-              <p className="mt-1 line-clamp-2 text-xs leading-5 text-ink/70 sm:leading-6">{theme.description}</p>
+              <p className="mt-1 line-clamp-2 text-xs leading-5 text-fg/70 sm:leading-6">{theme.description}</p>
             )}
           </div>
           <span className="shrink-0 pt-1 text-xs text-gold-deep">{formatPrice(theme.price)}</span>
@@ -126,7 +126,7 @@ export function ThemeCard({ theme, index }: { theme: Theme; index: number }) {
         {features.length > 0 && (
           <div className="mt-3 hidden flex-wrap gap-x-3 gap-y-1.5 sm:flex">
             {features.slice(0, 2).map((feature) => (
-              <span key={feature} className="text-xs text-ink/70">
+              <span key={feature} className="text-xs text-fg/70">
                 {feature}
               </span>
             ))}

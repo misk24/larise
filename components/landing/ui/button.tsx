@@ -9,12 +9,12 @@ const baseStyles =
 
 const variantStyles: Record<LandingButtonVariant, string> = {
   primary:
-    "border-ink bg-ink text-ivory hover:border-ink-hover hover:bg-ink-hover",
+    "border-fg bg-fg text-background hover:border-fg/85 hover:bg-fg/85",
   secondary:
-    "border-ink/25 bg-transparent text-ink hover:border-gold hover:bg-gold/10",
-  text: "border-transparent bg-transparent text-ink hover:text-gold-deep",
+    "border-fg/25 bg-transparent text-fg hover:border-gold hover:bg-gold/10",
+  text: "border-transparent bg-transparent text-fg hover:text-gold-deep",
   icon:
-    "border-ink/20 bg-transparent text-ink hover:border-gold hover:bg-gold/10",
+    "border-fg/20 bg-transparent text-fg hover:border-gold hover:bg-gold/10",
 };
 
 const sizeStyles: Record<LandingButtonSize, string> = {

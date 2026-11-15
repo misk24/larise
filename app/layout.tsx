@@ -1,4 +1,5 @@
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata, Viewport } from "next";
 import type React from "react";
@@ -41,11 +42,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <body
         className={`${rosehot.variable} ${satoshi.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MotionProvider>{children}</MotionProvider>
+        {/* data-theme (not the .dark class) keeps dark mode scoped to the landing. */}
+        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem enableColorScheme={false} storageKey="larise-theme" disableTransitionOnChange>
+          <MotionProvider>{children}</MotionProvider>
+        </ThemeProvider>
         <Toaster position="top-center" richColors />
       </body>
     </html>

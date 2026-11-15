@@ -18,14 +18,14 @@ export function EditorialAccordion({ items, className }: EditorialAccordionProps
   const instanceId = useId();
 
   return (
-    <div className={["w-full border-t border-ink/20", className].filter(Boolean).join(" ")}>
+    <div className={["w-full border-t border-fg/20", className].filter(Boolean).join(" ")}>
       {items.map((item, index) => {
         const isOpen = openIndex === index;
         const panelId = `landing-faq-${instanceId.replace(/:/g, "")}-panel-${index}`;
         const triggerId = `landing-faq-${instanceId.replace(/:/g, "")}-trigger-${index}`;
 
         return (
-          <article key={item.question} className="border-b border-ink/15">
+          <article key={item.question} className="border-b border-fg/15">
             <h3>
               <button
                 id={triggerId}
@@ -33,7 +33,7 @@ export function EditorialAccordion({ items, className }: EditorialAccordionProps
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="group flex w-full items-start gap-4 py-5 text-left text-base text-ink transition-colors duration-200 hover:text-gold-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold sm:py-6 sm:text-lg"
+                className="group flex w-full items-start gap-4 py-5 text-left text-base text-fg transition-colors duration-200 hover:text-gold-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold sm:py-6 sm:text-lg"
               >
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center text-gold-deep" aria-hidden="true">
                   <span
