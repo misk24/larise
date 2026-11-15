@@ -45,47 +45,47 @@ export function BackendProfileMenu({
   return (
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-      <DropdownMenuContent className="backend-profile-menu w-80" align={align}>
-        <DropdownMenuLabel className="flex items-center gap-4">
+      <DropdownMenuContent className="w-72" align={align}>
+        <DropdownMenuLabel className="flex items-center gap-3 p-3 font-normal">
           <div className="relative">
             <Avatar className="size-10">
               <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || fallbackName} />
-              <AvatarFallback className="backend-profile-avatar">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-secondary font-medium text-secondary-foreground">{initials}</AvatarFallback>
             </Avatar>
-            <span className="absolute bottom-0 right-0 size-2 rounded-full bg-green-600" />
+            <span aria-hidden="true" className="absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-popover bg-success" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col items-start">
-            <span className="backend-profile-name text-lg font-semibold">
+            <span className="max-w-full truncate text-sm font-semibold">
               {profile?.full_name || fallbackName}
             </span>
-            <p className="backend-profile-email max-w-full truncate">{user.email}</p>
+            <p className="max-w-full truncate text-xs text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {!isAdmin && (
-            <DropdownMenuItem asChild className="backend-profile-menu-item px-4 py-2">
+            <DropdownMenuItem asChild className="px-3 py-2">
               <Link href="/dashboard/account" className="flex items-center gap-2">
-                <UserIcon className="size-5" />
+                <UserIcon className="size-4" />
                 <span>Akun Saya</span>
               </Link>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem asChild className="backend-profile-menu-item px-4 py-2">
+          <DropdownMenuItem asChild className="px-3 py-2">
             <Link href={`${basePath}/settings`} className="flex items-center gap-2">
-              <SettingsIcon className="size-5" />
-              <span>Settings</span>
+              <SettingsIcon className="size-4" />
+              <span>Pengaturan</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="backend-profile-menu-item px-4 py-2"
+          className="px-3 py-2 text-destructive focus:bg-destructive-muted focus:text-destructive"
           onClick={() => signOut()}
         >
-          <LogOutIcon className="size-5" />
+          <LogOutIcon className="size-4" />
           <span>Keluar</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

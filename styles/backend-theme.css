@@ -1,147 +1,116 @@
-/* Backend-only neutral and burgundy tokens. */
-.backend-shell {
+/* Backend-only semantic tokens (dashboard + admin).
+ *
+ * Tokens live on both .backend-shell and <body> while a backend page is mounted.
+ * Radix portals (dropdowns, dialogs, tooltips, sheets) and toasts render under
+ * <body>, outside .backend-shell, so scoping to body lets them inherit the same
+ * palette without per-component overrides. Marketing pages never contain
+ * .backend-shell, so their palette is untouched.
+ *
+ * Dark mode follows next-themes, which writes data-theme on <html>. */
+
+.backend-shell,
+body:has(.backend-shell) {
   color-scheme: light;
-  --background: #f8f8f7;
-  --foreground: #252525;
+
+  /* Surfaces */
+  --background: #f7f7f5;
+  --foreground: #232321;
   --card: #fff;
-  --card-foreground: #252525;
+  --card-foreground: #232321;
   --popover: #fff;
-  --popover-foreground: #252525;
+  --popover-foreground: #232321;
+  --muted: #f0f0ee;
+  --muted-foreground: #6b6b67;
+  --border: #e6e5e2;
+  --input: #dcdbd7;
+
+  /* Actions: burgundy is reserved for the primary action and the active item. */
   --primary: #7a3448;
   --primary-foreground: #fff;
   --secondary: #f0e5e8;
   --secondary-foreground: #542333;
-  --accent: #f0e5e8;
+  --accent: #f4ebee;
   --accent-foreground: #542333;
-  --muted: #f1f1ef;
-  --muted-foreground: #70706d;
-  --border: #e7e7e5;
-  --input: #e1e1de;
   --ring: #9b6474;
+
+  /* Status */
   --destructive: #b42318;
+  --destructive-muted: #fdecea;
+  --success: #17653f;
+  --success-muted: #e6f4ec;
+  --warning: #8a5300;
+  --warning-muted: #fbf1dc;
+  --info: #1d5a96;
+  --info-muted: #e6f0fa;
+
+  /* Data visualization */
   --chart-1: #7a3448;
   --chart-2: #567d70;
   --chart-3: #64748b;
   --chart-4: #b78a4a;
   --chart-5: #9a6b88;
+
+  /* Navigation */
   --sidebar: #fff;
-  --sidebar-foreground: #252525;
+  --sidebar-foreground: #3a3a37;
   --sidebar-primary: #7a3448;
   --sidebar-primary-foreground: #fff;
-  --sidebar-accent: #f0e5e8;
+  --sidebar-accent: #f4ebee;
   --sidebar-accent-foreground: #542333;
-  --sidebar-border: #e7e7e5;
+  --sidebar-border: #e6e5e2;
   --sidebar-ring: #9b6474;
+
+  /* Shape and elevation: flat surfaces, shadow only on floating layers. */
+  --radius: 0.625rem;
+  --shadow-float: 0 12px 32px rgb(35 35 33 / 12%), 0 2px 6px rgb(35 35 33 / 6%);
 }
-.dark .backend-shell {
+
+html[data-theme="dark"] .backend-shell,
+html[data-theme="dark"] body:has(.backend-shell) {
   color-scheme: dark;
-  --background: #191817;
-  --foreground: #f4f2f1;
-  --card: #242221;
-  --card-foreground: #f4f2f1;
-  --popover: #242221;
-  --popover-foreground: #f4f2f1;
+
+  --background: #171615;
+  --foreground: #f1efed;
+  --card: #211f1e;
+  --card-foreground: #f1efed;
+  --popover: #262322;
+  --popover-foreground: #f1efed;
+  --muted: #2b2928;
+  --muted-foreground: #aeaaa7;
+  --border: #3a3735;
+  --input: #46423f;
+
   --primary: #c58b9c;
   --primary-foreground: #28151b;
   --secondary: #39272d;
   --secondary-foreground: #f3dfe5;
-  --accent: #39272d;
+  --accent: #2f2428;
   --accent-foreground: #f3dfe5;
-  --muted: #2d2b2a;
-  --muted-foreground: #b4afad;
-  --border: #403d3b;
-  --input: #494542;
   --ring: #c58b9c;
+
   --destructive: #f87171;
+  --destructive-muted: #3a1f1f;
+  --success: #6fcf9b;
+  --success-muted: #1b2e24;
+  --warning: #e6b45c;
+  --warning-muted: #35291a;
+  --info: #7fb4ea;
+  --info-muted: #1a2a3b;
+
   --chart-1: #c58b9c;
   --chart-2: #86b5a5;
   --chart-3: #9aaec8;
   --chart-4: #d6b17a;
   --chart-5: #c49fba;
-  --sidebar: #201e1d;
-  --sidebar-foreground: #f4f2f1;
+
+  --sidebar: #1c1a19;
+  --sidebar-foreground: #e4e1de;
   --sidebar-primary: #c58b9c;
   --sidebar-primary-foreground: #28151b;
-  --sidebar-accent: #39272d;
+  --sidebar-accent: #2f2428;
   --sidebar-accent-foreground: #f3dfe5;
-  --sidebar-border: #403d3b;
+  --sidebar-border: #3a3735;
   --sidebar-ring: #c58b9c;
-}
 
-/* Portal surfaces are outside .backend-shell, so they carry local semantic tokens. */
-.backend-profile-menu {
-  --popover: #fff;
-  --popover-foreground: #252525;
-  --accent: #f0e5e8;
-  --accent-foreground: #542333;
-  --border: #e7e7e5;
-  --muted-foreground: #70706d;
-  --destructive: #b42318;
-  background: var(--popover);
-  color: var(--popover-foreground);
-  border-color: #e7e7e5;
-  box-shadow: 0 12px 32px rgb(37 37 37 / 12%);
-}
-.backend-profile-name { color: var(--popover-foreground); }
-.backend-profile-email { color: #70706d; }
-.backend-profile-avatar { background: #f0e5e8; color: #542333; }
-.backend-profile-menu-item { color: #542333; }
-.backend-profile-menu-item:focus,
-.backend-profile-menu-item[data-highlighted] {
-  background: var(--accent);
-  color: var(--accent-foreground);
-}
-.backend-profile-trigger:hover { background: #f0e5e8; }
-
-.backend-sidebar {
-  --sidebar: #fff;
-  --sidebar-foreground: #252525;
-  --sidebar-primary: #7a3448;
-  --sidebar-primary-foreground: #fff;
-  --sidebar-accent: #f0e5e8;
-  --sidebar-accent-foreground: #542333;
-  --sidebar-border: #e7e7e5;
-  --sidebar-ring: #9b6474;
-  background: var(--sidebar);
-  color: var(--sidebar-foreground);
-}
-.backend-sidebar [data-slot="sidebar-inner"],
-.backend-sidebar [data-slot="sidebar-content"] {
-  background: var(--sidebar);
-  color: var(--sidebar-foreground);
-}
-.backend-sidebar [data-sidebar="menu-button"] { color: var(--sidebar-foreground); }
-.backend-sidebar [data-sidebar="menu-button"][data-active="true"],
-.backend-sidebar [data-sidebar="menu-button"].bg-sidebar-accent {
-  background: var(--sidebar-accent);
-  color: var(--sidebar-accent-foreground);
-}
-.backend-sidebar [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
-  background: color-mix(in srgb, var(--sidebar-accent) 55%, var(--sidebar));
-  color: var(--sidebar-accent-foreground);
-}
-.dark .backend-profile-menu {
-  --popover: #242221;
-  --popover-foreground: #f4f2f1;
-  --accent: #39272d;
-  --accent-foreground: #f3dfe5;
-  --border: #403d3b;
-  --muted-foreground: #b4afad;
-  --destructive: #f87171;
-  border-color: #403d3b;
-  box-shadow: 0 12px 32px rgb(0 0 0 / 28%);
-}
-.dark .backend-profile-email { color: #b4afad; }
-.dark .backend-profile-avatar { background: #39272d; color: #f3dfe5; }
-.dark .backend-profile-menu-item { color: #f3dfe5; }
-.dark .backend-profile-trigger:hover { background: #39272d; }
-.dark .backend-sidebar {
-  --sidebar: #201e1d;
-  --sidebar-foreground: #f4f2f1;
-  --sidebar-primary: #c58b9c;
-  --sidebar-primary-foreground: #28151b;
-  --sidebar-accent: #39272d;
-  --sidebar-accent-foreground: #f3dfe5;
-  --sidebar-border: #403d3b;
-  --sidebar-ring: #c58b9c;
+  --shadow-float: 0 12px 32px rgb(0 0 0 / 40%), 0 2px 6px rgb(0 0 0 / 24%);
 }

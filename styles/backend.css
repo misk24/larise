@@ -151,3 +151,21 @@
 .backend-shell [data-slot="skeleton"] {
   background-color: var(--muted);
 }
+.backend-shell [data-slot="table-row"] {
+  transition: background-color 150ms ease;
+}
+.backend-shell [data-slot="table-body"] [data-slot="table-row"]:hover {
+  background-color: color-mix(in srgb, var(--muted) 60%, transparent);
+}
+
+/* Keep motion functional: honour the OS reduced-motion setting everywhere in the backend,
+ * including portaled dialogs, menus and toasts. */
+@media (prefers-reduced-motion: reduce) {
+  .backend-shell *,
+  body:has(.backend-shell) [data-slot],
+  body:has(.backend-shell) [data-sonner-toast] {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

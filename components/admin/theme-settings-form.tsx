@@ -62,7 +62,7 @@ export default function ThemeSettingsForm({ theme }: { theme: Theme }) {
       <div className="flex items-center gap-3"><Switch id="theme-premium" checked={form.is_premium} onCheckedChange={value=>update("is_premium",value)} /><Label htmlFor="theme-premium">Tema premium</Label></div>
     </div>
     {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
-    {success ? <p role="status" className="text-sm text-emerald-600">Konfigurasi tema berhasil disimpan.</p> : null}
+    {success ? <p role="status" className="text-sm text-success">Konfigurasi tema berhasil disimpan.</p> : null}
     <Button type="submit" disabled={busy}>{busy ? "Menyimpan..." : "Simpan konfigurasi"}</Button>
   </form>;
 }

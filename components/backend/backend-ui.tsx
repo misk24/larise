@@ -59,7 +59,7 @@ interface BackendStatCardProps {
 
 export function BackendStatCard({ label, value, description, icon: Icon, href, className }: BackendStatCardProps) {
   const content = (
-    <Card className={cn("h-full shadow-none transition-colors", href && "hover:bg-muted/40", className)}>
+    <Card className={cn("h-full shadow-none transition-colors", href && "hover:border-primary/30 hover:bg-accent/50", className)}>
       <CardContent className="flex items-start justify-between gap-4 p-5">
         <div className="min-w-0 space-y-1">
           <p className="text-sm font-medium text-muted-foreground">{label}</p>
@@ -67,7 +67,7 @@ export function BackendStatCard({ label, value, description, icon: Icon, href, c
           {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
         </div>
         {Icon ? (
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
             <Icon aria-hidden="true" className="size-5" />
           </span>
         ) : null}
@@ -76,7 +76,7 @@ export function BackendStatCard({ label, value, description, icon: Icon, href, c
   );
 
   return href ? (
-    <Link href={href} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+    <Link href={href} className="block rounded-xl outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
       {content}
     </Link>
   ) : content;
@@ -86,10 +86,10 @@ type BackendStatusTone = "neutral" | "success" | "warning" | "danger" | "info";
 
 const statusToneClasses: Record<BackendStatusTone, string> = {
   neutral: "border-border bg-muted text-muted-foreground",
-  success: "border-emerald-600/20 bg-emerald-600/10 text-emerald-700 dark:text-emerald-300",
-  warning: "border-amber-600/20 bg-amber-600/10 text-amber-700 dark:text-amber-300",
-  danger: "border-destructive/20 bg-destructive/10 text-destructive",
-  info: "border-sky-600/20 bg-sky-600/10 text-sky-700 dark:text-sky-300",
+  success: "border-success/20 bg-success-muted text-success",
+  warning: "border-warning/20 bg-warning-muted text-warning",
+  danger: "border-destructive/20 bg-destructive-muted text-destructive",
+  info: "border-info/20 bg-info-muted text-info",
 };
 
 export function BackendStatusBadge({
