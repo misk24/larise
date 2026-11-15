@@ -1,25 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Logo } from "@/components/ui/logo";
-import { Separator } from "@/components/ui/separator";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { AuthHeading } from "@/components/landing/ui/auth-heading";
+import { LandingButton } from "@/components/landing/ui/button";
+import { Field, focusField, getFieldErrors, PasswordField } from "@/components/landing/ui/field";
+import { OAuthButton } from "@/components/landing/ui/oauth-button";
 import { signUpWithEmail } from "@/lib/actions/auth";
 import { registerSchema } from "@/lib/auth/validation";
 import { createClient } from "@/lib/supabase/client";
-import { cn } from "@/lib/utils";
-import { Icon } from "@iconify/react";
-import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type React from "react";
@@ -30,13 +18,13 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
-  const isMobile = useIsMobile();
+
+  const clearError = (key: string) => setErrors((prev) => (prev[key] ? { ...prev, [key]: "" } : prev));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,9 +35,12 @@ export function RegisterForm() {
       confirmPassword,
     });
     if (!validation.success) {
-      toast.error(validation.error.issues[0]?.message ?? "Data tidak valid.");
+      const fieldErrors = getFieldErrors(validation.error.issues);
+      setErrors(fieldErrors);
+      focusField(Object.keys(fieldErrors)[0]);
       return;
     }
+    setErrors({});
 
     setIsSubmitLoading(true);
 
@@ -103,140 +94,74 @@ export function RegisterForm() {
   }
 
   return (
-    <Card
-      className={cn(
-        "w-full max-w-md bg-sidebar",
-        isMobile ? "border-none shadow-none" : "",
-      )}
-    >
-      <CardHeader className="flex flex-col items-center gap-4 mb-4">
-        <CardTitle>
-          <Logo />
-        </CardTitle>
+    <>
+      <AuthHeading title="Daftar" description="Mulai buat undangan pernikahan digital Anda." />
 
-        <CardDescription>
-          Mulai buat undangan pernikahan digital Anda
-        </CardDescription>
-      </CardHeader>
+      <OAuthButton onClick={handleGoogle} loading={isGoogleLoading}>
+        Daftar dengan Google
+      </OAuthButton>
 
-      <CardContent className="space-y-4">
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          className="w-full gap-2 hover:text-primary-foreground"
-          onClick={handleGoogle}
-          disabled={isGoogleLoading}
-        >
-          {isGoogleLoading ? (
-            <Loader2Icon className="size-4 animate-spin" />
-          ) : (
-            <Icon icon="logos:google-icon" className="size-4" />
-          )}
-          <span>
-            {isGoogleLoading ? "Redirecting..." : "Daftar dengan Google"}
-          </span>
-        </Button>
+      <div aria-hidden="true" className="my-6 flex items-center gap-4 text-sm text-ink-soft">
+        <span className="h-px flex-1 bg-fg/15" />
+        atau
+        <span className="h-px flex-1 bg-fg/15" />
+      </div>
 
-        <div className="flex items-center gap-4">
-          <Separator className="flex-1" />
-          <p className="text-xs">atau</p>
-          <Separator className="flex-1" />
-        </div>
+      <form onSubmit={handleSubmit} noValidate className="space-y-5">
+        <Field
+          id="email"
+          label="Email"
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          placeholder="nama@email.com"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            clearError("email");
+          }}
+          disabled={isSubmitLoading}
+          error={errors.email}
+        />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="nama@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isSubmitLoading}
-            />
-          </div>
+        <PasswordField
+          id="password"
+          label="Password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            clearError("password");
+          }}
+          disabled={isSubmitLoading}
+          error={errors.password}
+        />
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isSubmitLoading}
-              />
+        <PasswordField
+          id="confirmPassword"
+          label="Konfirmasi Password"
+          autoComplete="new-password"
+          value={confirmPassword}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+            clearError("confirmPassword");
+          }}
+          disabled={isSubmitLoading}
+          error={errors.confirmPassword}
+        />
 
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowPassword((prevState) => !prevState)}
-                className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
-              >
-                {showPassword ? <EyeIcon /> : <EyeOffIcon />}
-                <span className="sr-only">
-                  {showPassword ? "Hide password" : "Show password"}
-                </span>
-              </Button>
-            </div>
-          </div>
+        <LandingButton type="submit" size="lg" className="w-full" disabled={isSubmitLoading}>
+          {isSubmitLoading && <Loader2Icon aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />}
+          Daftar
+        </LandingButton>
+      </form>
 
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-            <div className="relative">
-              <Input
-                id="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={isSubmitLoading}
-              />
-
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() =>
-                  setShowConfirmPassword((prevState) => !prevState)
-                }
-                className="text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
-              >
-                {showConfirmPassword ? <EyeIcon /> : <EyeOffIcon />}
-                <span className="sr-only">
-                  {showConfirmPassword ? "Hide password" : "Show password"}
-                </span>
-              </Button>
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full"
-            disabled={isSubmitLoading}
-          >
-            {isSubmitLoading && (
-              <Loader2Icon className="mr-2 size-4 animate-spin" />
-            )}
-            Daftar
-          </Button>
-        </form>
-      </CardContent>
-
-      <CardFooter className="flex flex-col">
-        <div className="text-sm text-muted-foreground">
-          Sudah punya akun?
-          <Button variant="link" className="-ml-2" asChild>
-            <Link href="/login" className="text-primary">
-              Masuk di sini
-            </Link>
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
+      <p className="mt-8 text-sm text-ink-soft">
+        Sudah punya akun?{" "}
+        <Link href="/login" className="text-fg underline underline-offset-4 transition-colors hover:text-gold-deep">
+          Masuk di sini
+        </Link>
+      </p>
+    </>
   );
 }

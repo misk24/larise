@@ -1,15 +1,8 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { AuthHeading } from "@/components/landing/ui/auth-heading";
+import { landingButtonStyles } from "@/components/landing/ui/button";
+import { ArrowLeftIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeftIcon, MailCheckIcon } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Verifikasi Email | LARISÉ",
@@ -18,53 +11,35 @@ export const metadata: Metadata = {
 
 export default function VerifyEmailPage() {
   return (
-    <Card className="w-full">
-      <CardHeader className="space-y-4">
-        <div className="flex size-12 items-center justify-center border border-[var(--auth-line)] bg-[var(--auth-paper)] text-[var(--auth-olive)]">
-          <MailCheckIcon aria-hidden="true" className="size-5" />
-        </div>
-        <div className="space-y-2">
-          <CardTitle>Periksa email kamu</CardTitle>
-          <CardDescription>
-            Satu langkah kecil lagi sebelum kamu mulai merangkai undangan
-            pernikahan bersama LARISÉ.
-          </CardDescription>
-        </div>
-      </CardHeader>
+    <>
+      <AuthHeading
+        title="Periksa email kamu"
+        description="Satu langkah kecil lagi sebelum kamu mulai merangkai undangan pernikahan bersama LARISÉ."
+      />
 
-      <CardContent className="space-y-5">
-        <div className="border-l-2 border-[var(--auth-olive)] bg-[var(--auth-paper)] px-4 py-3">
-          <p className="text-sm leading-6 text-muted-foreground">
-            Kami telah mengirim tautan verifikasi ke alamat email yang kamu
-            daftarkan. Buka email tersebut dan klik tautannya untuk
-            mengaktifkan akun.
-          </p>
-        </div>
-
-        <p className="text-sm leading-6 text-muted-foreground">
-          Belum melihat emailnya? Periksa folder spam atau promosi, lalu tunggu
-          beberapa menit sebelum mencoba lagi.
+      <div className="space-y-5">
+        <p className="border-l-2 border-gold-deep pl-4 text-sm leading-6 text-ink-soft">
+          Kami telah mengirim tautan verifikasi ke alamat email yang kamu daftarkan. Buka email tersebut dan klik tautannya untuk mengaktifkan akun.
         </p>
+        <p className="text-sm leading-6 text-ink-soft">
+          Belum melihat emailnya? Periksa folder spam atau promosi, lalu tunggu beberapa menit sebelum mencoba lagi.
+        </p>
+      </div>
 
-        <Button asChild className="w-full" size="lg">
-          <a
-            href="https://mail.google.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Buka Gmail
-          </a>
-        </Button>
-      </CardContent>
-
-      <CardFooter>
-        <Button asChild className="w-full" variant="ghost">
-          <Link href="/login">
-            <ArrowLeftIcon aria-hidden="true" className="size-4" />
-            Kembali ke halaman masuk
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+      <div className="mt-8 space-y-3">
+        <a
+          href="https://mail.google.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={landingButtonStyles({ size: "lg", className: "w-full" })}
+        >
+          Buka Gmail
+        </a>
+        <Link href="/login" className={landingButtonStyles({ variant: "text", size: "lg", className: "w-full" })}>
+          <ArrowLeftIcon aria-hidden="true" className="size-4" />
+          Kembali ke halaman masuk
+        </Link>
+      </div>
+    </>
   );
 }

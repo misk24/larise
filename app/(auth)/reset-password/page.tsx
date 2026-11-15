@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<p role="status" className="text-sm text-ink-soft">Memuat...</p>}>
       <ResetPasswordForm />
     </Suspense>
   );
