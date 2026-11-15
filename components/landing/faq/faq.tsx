@@ -1,4 +1,6 @@
 import { FadeUp } from "@/components/motion";
+import { Container } from "@/components/landing/ui/container";
+import { Eyebrow } from "@/components/landing/ui/eyebrow";
 import { EditorialAccordion, type EditorialAccordionItem } from "@/components/landing/ui/accordion";
 
 const faqs: EditorialAccordionItem[] = [
@@ -22,20 +24,20 @@ const faqJsonLd = {
 
 export function FAQSection() {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="bg-[#f0ede5] px-5 py-20 text-[#29271f] sm:px-8 sm:py-28 lg:py-32">
+    <section id="faq" aria-labelledby="faq-title" className="bg-paper-deep py-20 text-ink sm:py-28 lg:py-32">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+      <Container className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
         <FadeUp>
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="mb-4 flex items-center gap-3 text-[10px] uppercase tracking-[0.24em] text-[#7a6445] sm:text-xs"><span className="h-px w-8 bg-[#a58a67]" />Pertanyaan umum</p>
-            <h2 id="faq-title" className="frontend-display max-w-lg text-[clamp(2.75rem,6vw,4.5rem)] leading-[0.98] tracking-[-0.055em] text-balance">Ada yang ingin <span className="italic text-[#7a6445]">diketahui?</span></h2>
-            <p className="mt-5 max-w-md text-sm leading-7 text-[#625d51] sm:text-base sm:leading-8">Jawaban singkat untuk membantu kamu memahami cara kerja undangan digital LARISÉ.</p>
+            <Eyebrow>Pertanyaan umum</Eyebrow>
+            <h2 id="faq-title" className="frontend-display max-w-lg text-[clamp(2.75rem,6vw,4.5rem)] leading-[0.98] tracking-[-0.055em] text-balance">Ada yang ingin <span className="text-gold-deep">diketahui?</span></h2>
+            <p className="mt-5 max-w-md text-sm leading-7 text-ink-soft sm:text-base sm:leading-8">Jawaban singkat untuk membantu kamu memahami cara kerja undangan digital LARISÉ.</p>
           </div>
         </FadeUp>
         <FadeUp>
           <EditorialAccordion items={faqs} />
         </FadeUp>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -1,6 +1,18 @@
 /* Marketing and brand-facing UI typography.
  * Published invitations remain controlled by their selected theme. */
 
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ivory: var(--ivory);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-hover: var(--ink-hover);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
+  --color-gold-soft: var(--gold-soft);
+}
+
 @layer components {
   .frontend-shell,
   .auth-editorial {
@@ -10,9 +22,28 @@
   }
 
   .frontend-shell {
+    /* Brand palette: one source for every landing color. Scoped here so the
+     * backend and published invitation themes are never affected. */
+    --paper: #f8f6f1;
+    --paper-deep: #f0ede5;
+    --ivory: #faf9f6;
+    --ink: #29271f;
+    --ink-soft: #625d51;
+    --ink-hover: #51483b;
+    --gold: #a58a67; /* decorative only: 3:1 on paper, too low for small text */
+    --gold-deep: #7a6445; /* text accent on light surfaces (5.2:1) */
+    --gold-soft: #c8b18f; /* text accent on ink surfaces (7.2:1) */
+    --background: var(--paper);
+
     min-height: 100vh;
     background: var(--background);
     color: var(--foreground);
+  }
+
+  /* Visible keyboard focus for links and buttons that have no ring of their own. */
+  .frontend-shell :is(a, button):focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
   }
 
   .frontend-shell h1,
