@@ -7,6 +7,7 @@
   --color-ivory: var(--ivory);
   --color-surface: var(--surface);
   --color-fg: var(--fg);
+  --color-danger: var(--danger);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-ink-hover: var(--ink-hover);
@@ -16,8 +17,7 @@
 }
 
 @layer components {
-  .frontend-shell,
-  .auth-editorial {
+  .frontend-shell {
     --font-heading: var(--font-rosehot);
     --font-body: var(--font-satoshi);
     font-family: var(--font-satoshi), sans-serif;
@@ -37,6 +37,7 @@
     --gold-soft: #c8b18f; /* text accent on ink surfaces (7.2:1) */
     --surface: #faf9f6; /* card surface; flips in dark mode (ivory stays light for text on ink) */
     --fg: #29271f; /* text and strokes on page surfaces; flips in dark mode */
+    --danger: #a3321f; /* form errors */
     --background: var(--paper);
 
     min-height: 100vh;
@@ -53,9 +54,7 @@
   .frontend-shell h1,
   .frontend-shell h2,
   .frontend-shell h3,
-  .frontend-shell h4,
-  .auth-editorial .auth-editorial-title,
-  .auth-editorial [data-slot="card-title"] {
+  .frontend-shell h4 {
     font-family: var(--font-rosehot), Georgia, serif;
   }
 
@@ -242,6 +241,7 @@ html[data-theme="dark"] .frontend-shell {
   --paper-deep: #1d1a14;
   --surface: #25221a;
   --fg: #f1ede4;
+  --danger: #f09b8a;
   --foreground: #f1ede4;
   --muted-foreground: #b8b1a2;
   --border: rgb(255 255 255 / 0.14);
