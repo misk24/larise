@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
@@ -19,7 +20,10 @@ export default async function ThemeDetailPage({ params }: { params: Promise<{ id
   ]);
   if (themeError || !theme) notFound();
   return <div className="backend-content space-y-6">
-    <div className="space-y-2"><Link href="/admin/themes" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ChevronLeft className="size-4"/>Kembali ke daftar tema</Link><div><h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{theme.name}</h1><p className="mt-1 text-muted-foreground">Atur konfigurasi visual dan struktur konten tema undangan.</p></div></div>
+    <div className="space-y-3">
+      <Link href="/admin/themes" className="inline-flex items-center gap-1 rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><ChevronLeft className="size-4"/>Kembali ke daftar tema</Link>
+      <BackendPageHeader title={theme.name} description="Atur konfigurasi visual dan struktur konten tema undangan." />
+    </div>
     <Card className="shadow-none"><CardHeader><CardTitle>Konfigurasi tema</CardTitle><CardDescription>Informasi, harga, kategori, dan aset pratinjau tema.</CardDescription></CardHeader><CardContent><ThemeSettingsForm theme={{...theme,features:Array.isArray(theme.features)?theme.features as string[]:[]}}/></CardContent></Card>
     <Card className="shadow-none"><CardHeader><CardTitle>Theme section builder</CardTitle><CardDescription>Kelola isi, visibilitas, dan urutan section. Perubahan di sini mengubah template default, bukan konten undangan yang sudah dibuat.</CardDescription></CardHeader><CardContent>{sectionsError?<p role="alert" className="text-sm text-destructive">Section tema gagal dimuat. Muat ulang halaman untuk mencoba lagi.</p>:<ThemeSectionsBuilder themeId={id} initialSections={(sections??[]) as never}/>}</CardContent></Card>
   </div>;

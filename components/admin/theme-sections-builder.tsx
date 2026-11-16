@@ -1,4 +1,5 @@
 "use client";
+import { BackendEmptyState, BackendErrorState } from "@/components/backend/backend-ui";
 import { ConfirmDialog } from "@/components/backend/confirm-dialog";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -58,9 +59,9 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
   function addNew(){setEditing(null);setDraft(blank());setExpanded("new");setError("");}
   return <div className="space-y-4">
     <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-semibold">Struktur section</h3><p className="text-sm text-muted-foreground">{sections.length} section · urutan tampil pada undangan</p></div><Button type="button" size="sm" onClick={addNew}><Plus className="mr-2 size-4"/>Tambah section</Button></div>
-    {error&&!expanded?<p role="alert" className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</p>:null}
+    {error&&!expanded?<BackendErrorState title={error}/>:null}
     <ol className="space-y-2">
-      {sections.map((section,index)=><li key={section.id} className="rounded-lg border">
+      {sections.map((section,index)=><li key={section.id} className="rounded-lg border bg-card transition-colors hover:border-primary/30">
         <div className="flex flex-wrap items-center gap-2 p-3">
           <GripVertical className="size-4 text-muted-foreground"/>
           <span className="w-7 text-center text-xs tabular-nums text-muted-foreground">{index+1}</span>
@@ -76,7 +77,7 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
       </li>)}
     </ol>
     {expanded==="new"?<div className="rounded-lg border p-4"><EditorForm draft={draft} setDraft={setDraft} editing={editing} busy={busy} error={error} onSubmit={save} onCancel={()=>{setExpanded(null);setError("");}}/></div>:null}
-    {!sections.length?<p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">Belum ada section. Tambahkan section pertama untuk membangun struktur tema.</p>:null}
+    {!sections.length?<BackendEmptyState title="Belum ada section" description="Tambahkan section pertama untuk membangun struktur tema." className="min-h-40"/>:null}
   </div>;
 }
 function readDesign(json: string): Record<string, any> {
@@ -104,7 +105,7 @@ function EditorForm({draft,setDraft,editing,busy,error,onSubmit,onCancel}:{draft
   </div>
   <div className="space-y-3 rounded-lg border p-4">
    <div className="flex flex-wrap items-center justify-between gap-2"><div><h5 className="text-sm font-semibold">Live preview</h5><p className="text-xs text-muted-foreground">Renderer section asli dengan data contoh.</p></div><div className="flex gap-1"><Button type="button" size="sm" variant={previewMode==="desktop"?"default":"outline"} onClick={()=>setPreviewMode("desktop")}>Desktop</Button><Button type="button" size="sm" variant={previewMode==="mobile"?"default":"outline"} onClick={()=>setPreviewMode("mobile")}>Mobile</Button></div></div>
-   <div className={previewMode==="mobile"?"mx-auto max-h-[640px] w-[390px] max-w-full overflow-auto rounded-xl border-4 border-foreground/15 bg-background shadow-inner":"w-full overflow-hidden rounded-md border bg-background"}>
+   <div className={previewMode==="mobile"?"mx-auto max-h-[640px] w-[390px] max-w-full overflow-auto rounded-xl border-4 border-border bg-background shadow-inner":"w-full overflow-hidden rounded-md border bg-background"}>
     <ThemeSectionLivePreview sectionKey={draft.section_key || "preview"} sectionType={draft.section_type} content={(() => { try { const value=JSON.parse(draft.default_content); return value && typeof value==="object" && !Array.isArray(value) ? value : {}; } catch { return {}; } })()} />
    </div>
   </div>

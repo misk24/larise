@@ -1,5 +1,6 @@
 "use client";
 
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
@@ -36,10 +37,7 @@ export default function CreateThemePage() {
 
   return (
     <div className="backend-content space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Buat Tema</h1>
-        <p className="mt-1 text-muted-foreground">Beri nama tema sebelum mengatur section undangan.</p>
-      </div>
+      <BackendPageHeader title="Buat Tema" description="Beri nama tema sebelum mengatur section undangan." />
 
       <form onSubmit={handleSubmit} className="backend-surface w-full max-w-2xl space-y-5 p-4 sm:p-6">
         <div className="space-y-2">
