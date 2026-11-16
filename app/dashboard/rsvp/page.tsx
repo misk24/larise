@@ -1,4 +1,4 @@
-import { BackendEmptyState, BackendPageHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { CheckCircle2Icon, Clock3Icon, UsersIcon, XCircleIcon } from "lucide-react";
@@ -17,9 +17,7 @@ export default async function RsvpDashboardPage() {
     return (
       <div className="backend-content space-y-6">
         <BackendPageHeader title="Ringkasan RSVP" description="Pantau respons kehadiran dari semua undangan Anda." />
-        <Card className="shadow-none">
-          <CardContent className="p-6 text-sm text-destructive">Data undangan gagal dimuat. Coba muat ulang halaman.</CardContent>
-        </Card>
+        <BackendErrorState title="Data undangan gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." />
       </div>
     );
   }
@@ -56,13 +54,13 @@ export default async function RsvpDashboardPage() {
       <Card className="shadow-none">
         <CardHeader><CardTitle>Respons terbaru</CardTitle><CardDescription>Respons tamu yang terkait dengan undangan milik Anda.</CardDescription></CardHeader>
         <CardContent>
-          {rsvpError ? <p className="text-sm text-destructive">Data RSVP gagal dimuat. Periksa koneksi database dan kebijakan akses.</p> : guestsError ? <p className="text-sm text-destructive">Respons RSVP tersedia, tetapi data tamu gagal dimuat. Periksa kebijakan akses database.</p> : rows.length ? (
+          {rsvpError ? <BackendErrorState title="Data RSVP gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." /> : guestsError ? <BackendErrorState title="Data tamu gagal dimuat" description="Respons RSVP tersedia, tetapi nama tamu belum bisa ditampilkan." /> : rows.length ? (
             <div className="space-y-0">
               {rows.map((row) => {
                 const guest = guestById.get(row.guest_id);
                 const invitation = invitationById.get(row.invitation_id);
                 const status = row.status === "attending" ? "Hadir" : row.status === "not_attending" ? "Tidak hadir" : "Menunggu";
-                return <div key={row.id} className="flex flex-col gap-2 border-b py-4 last:border-0 sm:flex-row sm:items-start sm:justify-between">
+                return <div key={row.id} className="flex flex-col gap-2 border-b py-4 first:pt-0 last:border-0 last:pb-0 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0"><p className="font-medium">{guest?.name ?? "Tamu"}</p><p className="text-sm text-muted-foreground">{invitation ? `${invitation.groom_name || "Mempelai"} & ${invitation.bride_name || "Mempelai"}` : "Undangan"} · {guest?.phone ?? "Tanpa nomor telepon"}</p>{row.message ? <p className="mt-2 text-sm">{row.message}</p> : null}</div>
                   <div className="flex shrink-0 items-center gap-3"><BackendStatusBadge tone={row.status === "attending" ? "success" : row.status === "not_attending" ? "danger" : "neutral"}>{status}{row.status === "attending" && row.attendee_count > 1 ? ` · ${row.attendee_count} orang` : ""}</BackendStatusBadge><span className="text-xs text-muted-foreground">{new Date(row.updated_at).toLocaleDateString("id-ID")}</span></div>
                 </div>;

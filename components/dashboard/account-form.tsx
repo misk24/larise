@@ -130,7 +130,7 @@ export function AccountForm({ user, profile }: AccountFormProps) {
   return (
     <form onSubmit={handleSave} className="space-y-5">
       <Card className="overflow-hidden shadow-none">
-        <CardHeader className="border-b bg-muted/20 px-5 py-4 sm:px-6">
+        <CardHeader className="border-b bg-muted/40 px-5 py-4 sm:px-6">
           <CardTitle className="text-base">Informasi profil</CardTitle>
           <CardDescription>Informasi ini membantu Anda mengenali akun di dashboard.</CardDescription>
         </CardHeader>

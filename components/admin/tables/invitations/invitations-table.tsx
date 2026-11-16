@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useMemo } from "react";
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
+import { InvitationStatusBadge } from "@/components/backend/invitation-meta";
 import { AdminDataTable, type AdminTableFilter } from "@/components/admin/data-table";
 
 export type AdminInvitationRow = {
@@ -30,12 +30,6 @@ type Props = {
   sort: string;
   direction: "asc" | "desc";
 };
-
-function statusVariant(status: string) {
-  if (status === "published") return "default" as const;
-  if (status === "unpublished") return "secondary" as const;
-  return "outline" as const;
-}
 
 export function InvitationsTable(props: Props) {
   const columns = useMemo<ColumnDef<AdminInvitationRow, unknown>[]>(() => [
@@ -74,7 +68,7 @@ export function InvitationsTable(props: Props) {
       accessorKey: "status",
       header: "Status",
       enableSorting: true,
-      cell: ({ row }) => <Badge variant={statusVariant(row.original.status)}>{row.original.status}</Badge>,
+      cell: ({ row }) => <InvitationStatusBadge status={row.original.status} />,
     },
     {
       accessorKey: "created_at",

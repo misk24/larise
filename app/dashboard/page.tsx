@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { BackendEmptyState, BackendPageHeader, BackendSectionHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendSectionHeader, BackendStatCard } from "@/components/backend/backend-ui";
+import { InvitationStatusBadge, coupleNames } from "@/components/backend/invitation-meta";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { PublicUrlActions } from "@/components/dashboard/public-url-actions";
-import { ArrowRightIcon, CheckCircle2Icon, EyeIcon, FileTextIcon, MessageSquareHeartIcon, PlusIcon, UsersIcon } from "lucide-react";
+import { CheckCircle2Icon, ExternalLinkIcon, EyeIcon, FileTextIcon, PlusIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -22,9 +23,7 @@ export default async function DashboardPage() {
     return (
       <div className="backend-content space-y-6">
         <BackendPageHeader title="Dashboard" description="Ringkasan dan pintasan untuk semua undangan Anda." />
-        <Card className="shadow-none">
-          <CardContent className="p-6 text-sm text-destructive">Dashboard gagal memuat data undangan. Muat ulang halaman atau periksa koneksi database.</CardContent>
-        </Card>
+        <BackendErrorState title="Data undangan gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." />
       </div>
     );
   }
@@ -47,69 +46,110 @@ export default async function DashboardPage() {
     { title: "Konfirmasi Hadir", value: attendingPeople, icon: CheckCircle2Icon },
   ];
 
-  return (
-    <div className="backend-content space-y-6">
-      <BackendPageHeader title="Dashboard" description="Ringkasan dan pintasan untuk semua undangan Anda." actions={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>} />
+  const rsvpRows = rsvps ?? [];
+  const rsvpSummary = [
+    { label: "Hadir", value: attendingPeople },
+    { label: "Tidak hadir", value: rsvpRows.filter((rsvp) => rsvp.status === "not_attending").length },
+    { label: "Menunggu", value: rsvpRows.filter((rsvp) => rsvp.status === "pending").length },
+  ];
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  return (
+    <div className="backend-content space-y-8">
+      <BackendPageHeader
+        title="Dashboard"
+        description="Ringkasan semua undangan Anda."
+        actions={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>}
+      />
+
+      <section aria-label="Statistik" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
           <BackendStatCard key={stat.title} label={stat.title} value={stat.value.toLocaleString("id-ID")} icon={stat.icon} />
         ))}
-      </div>
+      </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(260px,1fr)]">
-        <section className="space-y-4">
-          <BackendSectionHeader title="Undangan Anda" description="Status publikasi dan pintasan pengelolaan." action={<Button variant="outline" size="sm" asChild><Link href="/dashboard/invitations">Semua undangan</Link></Button>} />
-          {invitationList.length ? invitationList.map((invitation) => {
-            const theme = Array.isArray(invitation.themes) ? invitation.themes[0] : invitation.themes;
-            const guestCount = invitation.guests?.[0]?.count ?? 0;
-            const wishCount = invitation.wishes?.[0]?.count ?? 0;
-            return (
-              <Card key={invitation.id} className="shadow-none">
-                <CardContent className="space-y-4 p-5">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="min-w-0">
-                      <h3 className="truncate font-semibold">{invitation.name_order === "bride_first" ? invitation.bride_name || "Mempelai wanita" : invitation.groom_name || "Mempelai pria"} &amp; {invitation.name_order === "bride_first" ? invitation.groom_name || "mempelai pria" : invitation.bride_name || "mempelai wanita"}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{theme?.name ?? "Tema belum dipilih"} · /{invitation.slug}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">{(invitation.event_date || invitation.resepsi_date) ? new Date(`${invitation.event_date || invitation.resepsi_date}T00:00:00`).toLocaleDateString("id-ID", { dateStyle: "long" }) : "Tanggal acara belum diatur"}</p>
-                    </div>
-                    <BackendStatusBadge tone={invitation.is_published ? "success" : invitation.status === "unpublished" ? "warning" : "neutral"}>{invitation.is_published ? "Dipublikasikan" : invitation.status === "unpublished" ? "Tidak dipublikasikan" : "Draft"}</BackendStatusBadge>
-                  </div>
-                  <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground"><span>{guestCount} tamu</span><span>{wishCount} ucapan</span><span>{invitation.view_count ?? 0} kunjungan</span></div>
-                  <div className="flex flex-wrap gap-2 border-t pt-4">
-                    <Button size="sm" asChild><Link href={`/dashboard/invitations/${invitation.id}`}>Kelola undangan <ArrowRightIcon className="ml-2 size-3.5" /></Link></Button>
-                    <Button size="sm" variant="outline" asChild><Link href={`/dashboard/invitations/${invitation.id}/builder`}>Edit isi</Link></Button>
-                    {invitation.is_published ? <><Button size="sm" variant="outline" asChild><Link href={`/${invitation.slug}`} target="_blank" rel="noreferrer"><EyeIcon className="mr-2 size-3.5" />Lihat publik</Link></Button><PublicUrlActions slug={invitation.slug} /></> : null}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          }) : (
-            <BackendEmptyState icon={FileTextIcon} title="Belum ada undangan" description="Buat undangan pertama, pilih tema, lalu isi detail acara sebelum membagikannya." action={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat undangan pertama</Link></Button>} />
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)]">
+        <section className="min-w-0 space-y-4">
+          <BackendSectionHeader
+            title="Undangan Anda"
+            description="Status publikasi dan pintasan pengelolaan."
+            action={<Button variant="outline" size="sm" asChild><Link href="/dashboard/invitations">Semua undangan</Link></Button>}
+          />
+          {invitationList.length ? (
+            <Card className="overflow-hidden py-0 shadow-none">
+              <ul className="divide-y">
+                {invitationList.map((invitation) => {
+                  const theme = Array.isArray(invitation.themes) ? invitation.themes[0] : invitation.themes;
+                  const guestCount = invitation.guests?.[0]?.count ?? 0;
+                  const wishCount = invitation.wishes?.[0]?.count ?? 0;
+                  const eventDate = invitation.event_date || invitation.resepsi_date;
+                  return (
+                    <li key={invitation.id} className="space-y-3 p-4 transition-colors hover:bg-muted/40 sm:p-5">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
+                          <h3 className="truncate font-semibold">{coupleNames(invitation)}</h3>
+                          <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                            {theme?.name ?? "Tema belum dipilih"} · /{invitation.slug}
+                          </p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">
+                            {eventDate ? new Date(`${eventDate}T00:00:00`).toLocaleDateString("id-ID", { dateStyle: "long" }) : "Tanggal acara belum diatur"}
+                          </p>
+                        </div>
+                        <InvitationStatusBadge published={invitation.is_published} status={invitation.status} />
+                      </div>
+                      <p className="text-sm text-muted-foreground tabular-nums">
+                        {guestCount} tamu · {wishCount} ucapan · {invitation.view_count ?? 0} kunjungan
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" asChild><Link href={`/dashboard/invitations/${invitation.id}`}>Kelola</Link></Button>
+                        <Button size="sm" variant="outline" asChild><Link href={`/dashboard/invitations/${invitation.id}/builder`}>Edit isi</Link></Button>
+                        {invitation.is_published ? (
+                          <>
+                            <Button size="sm" variant="ghost" asChild>
+                              <Link href={`/${invitation.slug}`} target="_blank" rel="noreferrer"><ExternalLinkIcon className="size-3.5" />Lihat publik</Link>
+                            </Button>
+                            <PublicUrlActions slug={invitation.slug} />
+                          </>
+                        ) : null}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </Card>
+          ) : (
+            <BackendEmptyState
+              icon={FileTextIcon}
+              title="Belum ada undangan"
+              description="Buat undangan pertama, pilih tema, lalu isi detail acara sebelum membagikannya."
+              action={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat undangan pertama</Link></Button>}
+            />
           )}
         </section>
 
-        <aside className="space-y-4">
+        <aside className="min-w-0">
           <Card className="shadow-none">
-            <CardHeader><CardTitle className="text-base">Aksi cepat</CardTitle><CardDescription>Akses fitur yang paling sering dipakai.</CardDescription></CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start" asChild><Link href="/dashboard/invitations"><FileTextIcon className="mr-3 size-4" />Kelola undangan</Link></Button>
-              <Button variant="outline" className="w-full justify-start" asChild><Link href="/dashboard/guests"><UsersIcon className="mr-3 size-4" />Daftar tamu</Link></Button>
-              <Button variant="outline" className="w-full justify-start" asChild><Link href="/dashboard/rsvp"><CheckCircle2Icon className="mr-3 size-4" />Ringkasan RSVP</Link></Button>
-              <Button variant="outline" className="w-full justify-start" asChild><Link href="/dashboard/wishes"><MessageSquareHeartIcon className="mr-3 size-4" />Moderasi ucapan</Link></Button>
-              <Button variant="outline" className="w-full justify-start" asChild><Link href="/dashboard/settings">Pengaturan akun</Link></Button>
-            </CardContent>
-          </Card>
-          <Card className="shadow-none">
-            <CardHeader><CardTitle className="text-base">Ringkasan RSVP</CardTitle><CardDescription>Respons tamu dari seluruh undangan.</CardDescription></CardHeader>
+            <CardHeader>
+              <CardTitle className="text-base">Ringkasan RSVP</CardTitle>
+              <CardDescription>Respons tamu dari seluruh undangan.</CardDescription>
+            </CardHeader>
             <CardContent className="space-y-3">
-              {rsvpsError ? <p className="text-sm text-destructive">Ringkasan RSVP gagal dimuat. Buka halaman RSVP untuk memeriksa detailnya.</p> : <>
-              <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Hadir</span><strong>{attendingPeople}</strong></div>
-              <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Tidak hadir</span><strong>{(rsvps ?? []).filter((rsvp) => rsvp.status === "not_attending").length}</strong></div>
-              <div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Menunggu</span><strong>{(rsvps ?? []).filter((rsvp) => rsvp.status === "pending").length}</strong></div>
-              <div className="flex items-center justify-between border-t pt-3 text-sm"><span className="text-muted-foreground">Total ucapan</span><strong>{totalWishes}</strong></div>
-              </>}
-              <Button variant="link" className="h-auto px-0" asChild><Link href="/dashboard/rsvp">Lihat detail RSVP <ArrowRightIcon className="ml-2 size-3.5" /></Link></Button>
+              {rsvpsError ? (
+                <BackendErrorState title="Ringkasan RSVP gagal dimuat" description="Buka halaman RSVP untuk memeriksa detailnya." />
+              ) : (
+                <dl className="space-y-3 text-sm">
+                  {rsvpSummary.map((row) => (
+                    <div key={row.label} className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">{row.label}</dt>
+                      <dd className="font-semibold tabular-nums">{row.value.toLocaleString("id-ID")}</dd>
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between border-t pt-3">
+                    <dt className="text-muted-foreground">Total ucapan</dt>
+                    <dd className="font-semibold tabular-nums">{totalWishes.toLocaleString("id-ID")}</dd>
+                  </div>
+                </dl>
+              )}
+              <Button variant="outline" size="sm" className="w-full" asChild><Link href="/dashboard/rsvp">Lihat detail RSVP</Link></Button>
             </CardContent>
           </Card>
         </aside>

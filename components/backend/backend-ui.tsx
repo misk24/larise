@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { LucideIcon } from "lucide-react";
+import { TriangleAlertIcon, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 
@@ -102,7 +102,7 @@ export function BackendStatusBadge({
   className?: string;
 }) {
   return (
-    <Badge variant="outline" className={cn("gap-1.5 px-2.5 py-1 font-medium capitalize", statusToneClasses[tone], className)}>
+    <Badge variant="outline" className={cn("gap-1.5 px-2.5 py-1 font-medium", statusToneClasses[tone], className)}>
       {children}
     </Badge>
   );
@@ -119,10 +119,35 @@ interface BackendEmptyStateProps {
 export function BackendEmptyState({ title, description, icon: Icon, action, className }: BackendEmptyStateProps) {
   return (
     <div className={cn("flex min-h-48 flex-col items-center justify-center rounded-xl border border-dashed bg-card px-6 py-10 text-center", className)}>
-      {Icon ? <Icon aria-hidden="true" className="mb-3 size-9 text-muted-foreground/50" /> : null}
+      {Icon ? (
+        <span className="mb-4 flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <Icon aria-hidden="true" className="size-5" />
+        </span>
+      ) : null}
       <h3 className="font-semibold">{title}</h3>
-      {description ? <p className="mt-2 max-w-md text-sm text-muted-foreground">{description}</p> : null}
+      {description ? <p className="mt-1.5 max-w-md text-sm text-muted-foreground">{description}</p> : null}
       {action ? <div className="mt-5">{action}</div> : null}
+    </div>
+  );
+}
+
+interface BackendErrorStateProps {
+  title?: string;
+  description?: string;
+  action?: ReactNode;
+  className?: string;
+}
+
+/** Inline failure notice for a data block that could not load. */
+export function BackendErrorState({ title = "Data gagal dimuat", description, action, className }: BackendErrorStateProps) {
+  return (
+    <div role="alert" className={cn("flex flex-col gap-3 rounded-xl border border-destructive/20 bg-destructive-muted p-4 sm:flex-row sm:items-center", className)}>
+      <TriangleAlertIcon aria-hidden="true" className="size-5 shrink-0 text-destructive" />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium">{title}</p>
+        {description ? <p className="mt-0.5 text-sm text-muted-foreground">{description}</p> : null}
+      </div>
+      {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }

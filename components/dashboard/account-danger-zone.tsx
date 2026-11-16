@@ -13,14 +13,14 @@ export function AccountDangerZone({ provider, email }: AccountDangerZoneProps) {
   const isGoogleAccount = provider === "google";
 
   return (
-    <Card className="border-destructive/40 shadow-none">
-      <CardHeader className="border-b border-destructive/20 bg-destructive/[0.04] px-5 py-4 sm:px-6">
+    <Card className="border-destructive/30 shadow-none">
+      <CardHeader className="border-b border-destructive/20 bg-destructive-muted px-5 py-4 sm:px-6">
         <div className="flex items-start gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
-            <AlertTriangleIcon className="size-5" />
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+            <AlertTriangleIcon aria-hidden="true" className="size-5" />
           </div>
           <div className="space-y-1">
-            <CardTitle className="text-base text-destructive">Danger Zone</CardTitle>
+            <CardTitle className="text-base text-destructive">Zona Berbahaya</CardTitle>
             <CardDescription className="leading-5">
               Tindakan di bagian ini dapat berdampak permanen pada akun Anda.
             </CardDescription>

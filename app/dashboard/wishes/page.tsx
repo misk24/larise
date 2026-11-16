@@ -1,10 +1,11 @@
-import { BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader } from "@/components/backend/backend-ui";
 import { WishesManager } from "@/components/dashboard/wishes-manager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { MessageSquareHeartIcon } from "lucide-react";
 
 type WishesPageProps = { searchParams: Promise<{ invitation?: string }> };
 
@@ -24,19 +25,20 @@ export default async function WishesPage({ searchParams }: WishesPageProps) {
     <div className="backend-content space-y-6">
       <BackendPageHeader title="Ucapan & Doa" description="Moderasi ucapan dari tamu di setiap undangan Anda." />
       {invitationsError ? (
-        <Card className="shadow-none"><CardContent className="p-8 text-sm text-destructive">Daftar undangan gagal dimuat. Coba muat ulang halaman.</CardContent></Card>
+        <BackendErrorState title="Daftar undangan gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." />
       ) : !invitation ? (
-        <Card className="border-dashed shadow-none"><CardContent className="p-10 text-center">
-          <h2 className="font-semibold">Belum ada undangan</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Buat undangan terlebih dahulu untuk mengelola ucapan.</p>
-          <Button asChild className="mt-5"><Link href="/dashboard/invitations/create">Buat Undangan</Link></Button>
-        </CardContent></Card>
+        <BackendEmptyState
+          icon={MessageSquareHeartIcon}
+          title="Belum ada undangan"
+          description="Buat undangan terlebih dahulu untuk mengelola ucapan."
+          action={<Button asChild><Link href="/dashboard/invitations/create">Buat Undangan</Link></Button>}
+        />
       ) : (
         <>
           {invitationList.length > 1 ? (
             <form action="/dashboard/wishes" method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <label htmlFor="wishes-invitation" className="text-sm font-medium">Pilih undangan</label>
-              <select id="wishes-invitation" name="invitation" defaultValue={invitation.id} className="h-10 min-w-0 rounded-md border border-input bg-background px-3 text-sm sm:min-w-72">
+              <select id="wishes-invitation" name="invitation" defaultValue={invitation.id} className="h-9 min-w-0 rounded-md border border-input bg-card px-3 text-sm outline-hidden transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30 sm:min-w-72">
                 {invitationList.map((item) => <option key={item.id} value={item.id}>{item.name_order === "bride_first" ? item.bride_name : item.groom_name} & {item.name_order === "bride_first" ? item.groom_name : item.bride_name} · /{item.slug}</option>)}
               </select>
               <Button type="submit" variant="secondary">Tampilkan</Button>
@@ -55,6 +57,6 @@ export default async function WishesPage({ searchParams }: WishesPageProps) {
 async function WishesData({ invitationId }: { invitationId: string }) {
   const supabase = await createClient();
   const { data: wishes, error } = await supabase.from("wishes").select("*").eq("invitation_id", invitationId).order("created_at", { ascending: false });
-  if (error) return <p className="text-sm text-destructive">Ucapan gagal dimuat. Coba muat ulang halaman.</p>;
+  if (error) return <BackendErrorState title="Ucapan gagal dimuat" description="Muat ulang halaman untuk mencoba lagi." />;
   return <WishesManager initialWishes={wishes ?? []} />;
 }

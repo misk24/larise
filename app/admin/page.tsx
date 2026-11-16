@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BackendEmptyState, BackendPageHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendPageHeader, BackendStatCard } from "@/components/backend/backend-ui";
+import { InvitationStatusBadge } from "@/components/backend/invitation-meta";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
 import { FileTextIcon, PaletteIcon, UsersIcon } from "lucide-react";
@@ -135,7 +136,7 @@ export default async function AdminDashboardPage() {
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-3">
-                        <BackendStatusBadge tone={invitation.status === "published" ? "success" : invitation.status === "draft" ? "neutral" : invitation.status === "unpublished" ? "warning" : "info"}>{invitation.status}</BackendStatusBadge>
+                        <InvitationStatusBadge status={invitation.status} />
                         <time dateTime={invitation.created_at} className="text-xs text-muted-foreground">
                           {formatDate(invitation.created_at)}
                         </time>

@@ -3,9 +3,9 @@
 import { deleteWish, setWishVisibility } from "@/lib/actions/wishes";
 import type { Wish } from "@/types/database";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { BackendEmptyState, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, EyeOff, Loader2, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, MessageSquareHeartIcon, Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -48,26 +48,27 @@ export function WishesManager({ initialWishes }: { initialWishes: Wish[] }) {
 
   if (wishes.length === 0) {
     return (
-      <Card className="border-border/50">
-        <CardContent className="p-12 text-center">
-          <p className="text-muted-foreground">Belum ada ucapan. Ucapan dari tamu akan muncul di sini.</p>
-        </CardContent>
-      </Card>
+      <BackendEmptyState
+        icon={MessageSquareHeartIcon}
+        title="Belum ada ucapan"
+        description="Ucapan dari tamu akan muncul di sini setelah mereka mengirimnya dari undangan."
+        className="min-h-40 border-0 bg-transparent"
+      />
     );
   }
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {wishes.map((wish) => (
-        <Card key={wish.id} className="border-border/50">
+        <Card key={wish.id} className="shadow-none">
           <CardContent className="flex h-full flex-col p-4">
             <div className="mb-3 flex items-center justify-between gap-2">
               <p className="font-semibold text-sm">{wish.guest_name}</p>
-              <Badge variant={wish.visibility === "visible" ? "secondary" : "outline"}>
+              <BackendStatusBadge tone={wish.visibility === "visible" ? "success" : "neutral"}>
                 {wish.visibility === "visible" ? "Ditampilkan" : "Disembunyikan"}
-              </Badge>
+              </BackendStatusBadge>
             </div>
-            <p className="mb-4 flex-1 whitespace-pre-wrap text-foreground">“{wish.message}”</p>
+            <p className="mb-4 flex-1 whitespace-pre-wrap break-words text-sm leading-6 text-foreground">“{wish.message}”</p>
             <div className="mb-4 text-xs text-muted-foreground">
               {new Date(wish.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
             </div>

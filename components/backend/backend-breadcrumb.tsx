@@ -9,13 +9,17 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { adminNavs, subpageNavs, userNavs } from "@/config/navigation";
+import { adminNavs, adminSubpageNavs, subpageNavs, userNavs } from "@/config/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
 
 const themeNameCache = new Map<string, string>();
 const THEME_CACHE_KEY = "admin_theme_name_cache";
+
+// Numeric ids and UUIDs are not human labels.
+const isIdSegment = (segment: string) =>
+  /^[0-9]+$/.test(segment) || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(segment);
 
 interface BackendBreadcrumbProps {
   role: "user" | "admin";
@@ -106,9 +110,9 @@ export function BackendBreadcrumb({ role }: BackendBreadcrumbProps) {
           const label =
             dynamicLabels[currentPath] ||
             match?.label ||
-            (role === "user" ? subpageNavs[segment] : undefined) ||
-            (/^[0-9]+$/.test(segment)
-              ? `#${segment}`
+            (role === "user" ? subpageNavs : adminSubpageNavs)[segment] ||
+            (isIdSegment(segment)
+              ? "Detail"
               : segment.charAt(0).toUpperCase() + segment.slice(1));
           const isLoading = role === "admin" && loadingLabels[currentPath];
 
