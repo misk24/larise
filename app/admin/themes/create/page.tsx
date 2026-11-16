@@ -2,7 +2,9 @@
 
 import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -36,25 +38,29 @@ export default function CreateThemePage() {
   }
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Buat Tema" description="Beri nama tema sebelum mengatur section undangan." />
 
-      <form onSubmit={handleSubmit} className="backend-surface w-full max-w-2xl space-y-5 p-4 sm:p-6">
-        <div className="space-y-2">
-          <label htmlFor="theme-name" className="text-sm font-medium">Nama tema</label>
-          <Input
-            id="theme-name"
-            placeholder="Contoh: Minimalis Modern"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            maxLength={80}
-            minLength={2}
-            required
-          />
-        </div>
-        {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
-        <Button type="submit" disabled={busy}>{busy ? "Menyimpan..." : "Simpan dan Lanjutkan"}</Button>
-      </form>
+      <Card className="w-full max-w-2xl">
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="theme-name">Nama tema</Label>
+              <Input
+                id="theme-name"
+                placeholder="Contoh: Minimalis Modern"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                maxLength={80}
+                minLength={2}
+                required
+              />
+            </div>
+            {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
+            <Button type="submit" disabled={busy} className="w-full sm:w-auto">{busy ? "Menyimpan..." : "Simpan dan lanjutkan"}</Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

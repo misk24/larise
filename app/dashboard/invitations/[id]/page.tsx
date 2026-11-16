@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { EditInvitationForm } from "@/components/dashboard/edit-invitation-form";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
@@ -25,11 +26,8 @@ export default async function EditInvitationPage({ params }: { params: Promise<{
   if (!invitation) notFound();
 
   return (
-    <div className="backend-content mx-auto w-full max-w-4xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Edit Info Dasar</h1>
-        <p className="text-muted-foreground">Perbarui nama lengkap mempelai dan tema undangan.</p>
-      </div>
+    <div className="backend-content mx-auto w-full max-w-4xl space-y-8">
+      <BackendPageHeader title="Edit Info Dasar" description="Perbarui nama lengkap mempelai dan tema undangan." />
       <EditInvitationForm invitation={invitation} themes={themes ?? []} />
     </div>
   );

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
+import { BackendStatusBadge } from "@/components/backend/backend-ui";
 import { AdminDataTable, type AdminTableFilter } from "@/components/admin/data-table";
 
 type OrderOwner = { full_name: string | null; email: string | null };
@@ -49,17 +49,16 @@ function statusLabel(status: string) {
   }
 }
 
-function statusVariant(status: string) {
+function statusTone(status: string) {
   switch (status) {
     case "paid":
-      return "default" as const;
+      return "success" as const;
     case "pending":
-      return "secondary" as const;
-    case "expired":
+      return "warning" as const;
     case "refunded":
-      return "outline" as const;
+      return "info" as const;
     default:
-      return "outline" as const;
+      return "neutral" as const;
   }
 }
 
@@ -96,9 +95,9 @@ export function OrdersTable(props: Props) {
       header: "Status",
       enableSorting: true,
       cell: ({ row }) => (
-        <Badge variant={statusVariant(row.original.payment_status)}>
+        <BackendStatusBadge tone={statusTone(row.original.payment_status)}>
           {statusLabel(row.original.payment_status)}
-        </Badge>
+        </BackendStatusBadge>
       ),
     },
     {

@@ -1,4 +1,7 @@
+import { BackendErrorState, BackendPageHeader } from "@/components/backend/backend-ui";
+import { coupleNames } from "@/components/backend/invitation-meta";
 import { InvitationBuilder } from "@/components/dashboard/invitation-builder";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
@@ -62,25 +65,15 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
 
   return (
     <div className="backend-content mx-auto max-w-[1800px] space-y-5">
-      <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
-        <div>
-          <p className="text-sm text-muted-foreground">Builder</p>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            {invitation.name_order === "bride_first"
-              ? `${invitation.bride_name} & ${invitation.groom_name}`
-              : `${invitation.groom_name} & ${invitation.bride_name}`}
-          </h1>
-          <p className="text-muted-foreground">Edit konten, visibility, urutan, lalu preview sebelum publish.</p>
-        </div>
-        <a
-          href={`/${invitation.slug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
-        >
-          Buka undangan publik
-        </a>
-      </div>
+      <BackendPageHeader
+        title={coupleNames(invitation)}
+        description="Edit konten, visibilitas, dan urutan, lalu pratinjau sebelum publikasi."
+        actions={
+          <Button variant="outline" asChild>
+            <a href={`/${invitation.slug}`} target="_blank" rel="noreferrer">Buka undangan publik</a>
+          </Button>
+        }
+      />
       <InvitationBuilder
         invitation={invitation}
         initialSections={sectionsResult.data ?? []}
@@ -93,23 +86,21 @@ export default async function InvitationBuilderPage({ params }: { params: Promis
 
 function BuilderLoadError({ retryHref, resources }: { retryHref: string; resources?: string[] }) {
   return (
-    <div className="backend-content mx-auto max-w-2xl space-y-4">
-      <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 p-5">
-        <h1 className="text-lg font-semibold">Data builder gagal dimuat</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {resources?.length
+    <div className="backend-content mx-auto max-w-2xl space-y-8">
+      <BackendErrorState
+        title="Data builder gagal dimuat"
+        description={
+          resources?.length
             ? `Sebagian data (${resources.join(", ")}) tidak berhasil dimuat. Builder tidak dibuka agar data yang tampak kosong tidak menyesatkan.`
-            : "Data undangan tidak berhasil dimuat. Coba muat ulang halaman."}
-        </p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Link href={retryHref} className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-muted">
-            Muat ulang halaman
-          </Link>
-          <Link href="/dashboard/invitations" className="inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium hover:bg-muted">
-            Kembali ke undangan
-          </Link>
-        </div>
-      </div>
+            : "Data undangan tidak berhasil dimuat. Coba muat ulang halaman."
+        }
+        action={
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" asChild><Link href={retryHref}>Muat ulang</Link></Button>
+            <Button variant="ghost" size="sm" asChild><Link href="/dashboard/invitations">Kembali ke undangan</Link></Button>
+          </div>
+        }
+      />
     </div>
   );
 }

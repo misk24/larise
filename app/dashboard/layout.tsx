@@ -28,8 +28,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       defaultOpen={defaultOpen}
       variant="dashboard"
       sidebar={<BackendSidebar role="user" />}
-      header={<BackendHeader user={user} profile={profile} role="user" />}
-      breadcrumbs={<BackendBreadcrumb role="user" />}
+      header={<BackendHeader user={user} profile={profile} role="user" breadcrumbs={<BackendBreadcrumb role="user" />} />}
       footer={<Footer />}
     >
       {children}

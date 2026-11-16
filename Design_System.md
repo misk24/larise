@@ -48,6 +48,20 @@ Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`
 - Respect `prefers-reduced-motion`, clean up animations, and avoid motion that blocks interaction.
 - Check keyboard behavior, focus visibility, mobile layout, and loading/empty/error/success states for changed flows.
 
+## Backend page patterns
+
+- Page order: `BackendPageHeader`, optional key figures, then content. Breadcrumbs live in the header bar next to the sidebar toggle (hidden on phones, where the page title does the job).
+- Key figures use one connected `BackendStatGrid` of `BackendStatCard` cells, always four items. Do not render stat cards as separate bordered cards.
+- Data tables sit directly under the page header. Do not wrap a table in a Card that repeats the page title or the row count; the table footer already shows it.
+- Use a Card when a block has its own title and purpose (a form section, a recent-activity list). Give its `CardTitle` `role="heading" aria-level={2}` and `text-base`; use `CardAction` for the "see all" link.
+- Radius: containers (cards, tables, empty and error states) use `rounded-xl`; inner blocks `rounded-lg`; controls `rounded-md`.
+- Surfaces are flat in the backend (`.backend-shell [data-slot="card"]` removes the shadow). Shadow is for floating layers only.
+- Placeholder pages and "nothing here yet" blocks use `BackendEmptyState`; failed loads use `BackendErrorState` (or `AdminTableError` for tables). Status chips use `BackendStatusBadge` tones.
+- Group labels and table headers use sentence case, not all caps.
+- Page content stacks with `space-y-8`. The builder is the one exception: it stays denser (`space-y-6`) because the editor needs the room.
+- Pages that act on one invitation at a time (guests, RSVP, wishes, gallery) use `BackendInvitationPicker` when the user has two or more invitations. Do not build per-page selectors.
+- Do not hardcode palette colors (`bg-amber-100` and the like) in backend components; use tokens. Dates in tables use `{ dateStyle: "medium" }`.
+
 ## Change checklist
 
 1. Confirm whether the component belongs to frontend or backend.

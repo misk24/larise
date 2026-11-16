@@ -1,4 +1,4 @@
-import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendStatCard, BackendStatGrid, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { CheckCircle2Icon, Clock3Icon, UsersIcon, XCircleIcon } from "lucide-react";
@@ -15,7 +15,7 @@ export default async function RsvpDashboardPage() {
 
   if (invitationsError) {
     return (
-      <div className="backend-content space-y-6">
+      <div className="backend-content space-y-8">
         <BackendPageHeader title="Ringkasan RSVP" description="Pantau respons kehadiran dari semua undangan Anda." />
         <BackendErrorState title="Data undangan gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." />
       </div>
@@ -46,13 +46,13 @@ export default async function RsvpDashboardPage() {
   const invitationById = new Map(list.map((invitation) => [invitation.id, invitation]));
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Ringkasan RSVP" description="Pantau respons kehadiran dari semua undangan Anda." />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <BackendStatGrid aria-label="Ringkasan respons">
         {metrics.map((metric) => <BackendStatCard key={metric.label} label={metric.label} value={metric.value.toLocaleString("id-ID")} icon={metric.icon} />)}
-      </div>
-      <Card className="shadow-none">
-        <CardHeader><CardTitle>Respons terbaru</CardTitle><CardDescription>Respons tamu yang terkait dengan undangan milik Anda.</CardDescription></CardHeader>
+      </BackendStatGrid>
+      <Card>
+        <CardHeader><CardTitle role="heading" aria-level={2} className="text-base">Respons terbaru</CardTitle><CardDescription>Respons tamu yang terkait dengan undangan milik Anda.</CardDescription></CardHeader>
         <CardContent>
           {rsvpError ? <BackendErrorState title="Data RSVP gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." /> : guestsError ? <BackendErrorState title="Data tamu gagal dimuat" description="Respons RSVP tersedia, tetapi nama tamu belum bisa ditampilkan." /> : rows.length ? (
             <div className="space-y-0">
@@ -62,7 +62,7 @@ export default async function RsvpDashboardPage() {
                 const status = row.status === "attending" ? "Hadir" : row.status === "not_attending" ? "Tidak hadir" : "Menunggu";
                 return <div key={row.id} className="flex flex-col gap-2 border-b py-4 first:pt-0 last:border-0 last:pb-0 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0"><p className="font-medium">{guest?.name ?? "Tamu"}</p><p className="text-sm text-muted-foreground">{invitation ? `${invitation.groom_name || "Mempelai"} & ${invitation.bride_name || "Mempelai"}` : "Undangan"} · {guest?.phone ?? "Tanpa nomor telepon"}</p>{row.message ? <p className="mt-2 text-sm">{row.message}</p> : null}</div>
-                  <div className="flex shrink-0 items-center gap-3"><BackendStatusBadge tone={row.status === "attending" ? "success" : row.status === "not_attending" ? "danger" : "neutral"}>{status}{row.status === "attending" && row.attendee_count > 1 ? ` · ${row.attendee_count} orang` : ""}</BackendStatusBadge><span className="text-xs text-muted-foreground">{new Date(row.updated_at).toLocaleDateString("id-ID")}</span></div>
+                  <div className="flex shrink-0 items-center gap-3"><BackendStatusBadge tone={row.status === "attending" ? "success" : row.status === "not_attending" ? "danger" : "neutral"}>{status}{row.status === "attending" && row.attendee_count > 1 ? ` · ${row.attendee_count} orang` : ""}</BackendStatusBadge><span className="text-xs text-muted-foreground">{new Date(row.updated_at).toLocaleDateString("id-ID", { dateStyle: "medium" })}</span></div>
                 </div>;
               })}
             </div>

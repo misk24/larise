@@ -13,12 +13,12 @@ body:has(.backend-shell) {
   color-scheme: light;
 
   /* Surfaces */
-  --background: #f7f7f5;
-  --foreground: #232321;
+  --background: #f8f8f7;
+  --foreground: #252525;
   --card: #fff;
-  --card-foreground: #232321;
+  --card-foreground: #252525;
   --popover: #fff;
-  --popover-foreground: #232321;
+  --popover-foreground: #252525;
   --muted: #f0f0ee;
   --muted-foreground: #6b6b67;
   --border: #e6e5e2;

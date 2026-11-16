@@ -1,2 +1,11 @@
-import { AdminTableLoading } from "@/components/admin/table-states";
-export default function Loading() { return <div className="backend-content space-y-6"><div className="space-y-2"><div className="h-8 w-48 animate-pulse rounded-md bg-muted" /><div className="h-4 w-64 animate-pulse rounded-md bg-muted" /></div><div className="rounded-xl border bg-card p-6"><div className="mb-5 h-5 w-40 animate-pulse rounded-md bg-muted" /><AdminTableLoading /></div></div>; }
+import { HeaderSkeleton, LoadingPage, TableSkeleton } from "@/components/backend/backend-loading";
+
+// Undangan, Pemilik, Tema, Status, Dibuat. Search plus the status filter.
+export default function Loading() {
+  return (
+    <LoadingPage label="Memuat daftar undangan">
+      <HeaderSkeleton />
+      <TableSkeleton columns={["w-40", "w-32", "w-28", "w-20", "w-24"]} filters={1} />
+    </LoadingPage>
+  );
+}

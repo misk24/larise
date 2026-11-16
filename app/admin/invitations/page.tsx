@@ -1,6 +1,5 @@
 import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminTableError } from "@/components/admin/table-states";
 import { InvitationsTable, type AdminInvitationRow } from "@/components/admin/tables/invitations/invitations-table";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -66,29 +65,21 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
   }
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Kelola Undangan" description="Cari dan pantau undangan yang dibuat pengguna." />
-      <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>Daftar Undangan</CardTitle>
-          <CardDescription>{error ? "Jumlah undangan tidak dapat dimuat." : `${total.toLocaleString("id-ID")} undangan`}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {error ? (
-            <AdminTableError title="Undangan gagal dimuat" description="Periksa koneksi database dan migration pencarian admin." />
-          ) : (
-            <InvitationsTable
-              data={(data ?? []) as AdminInvitationRow[]}
-              page={page}
-              pageSize={pageSize}
-              rowCount={total}
-              sort={sort}
-              direction={direction}
-              filters={[{ key: "status", label: "Status", value: status, options: [{ label: "Draft", value: "draft" }, { label: "Published", value: "published" }, { label: "Unpublished", value: "unpublished" }] }]}
-            />
-          )}
-        </CardContent>
-      </Card>
+      {error ? (
+        <AdminTableError title="Undangan gagal dimuat" description="Periksa koneksi database dan migration pencarian admin." />
+      ) : (
+        <InvitationsTable
+          data={(data ?? []) as AdminInvitationRow[]}
+          page={page}
+          pageSize={pageSize}
+          rowCount={total}
+          sort={sort}
+          direction={direction}
+          filters={[{ key: "status", label: "Status", value: status, options: [{ label: "Draft", value: "draft" }, { label: "Published", value: "published" }, { label: "Unpublished", value: "unpublished" }] }]}
+        />
+      )}
     </div>
   );
 }

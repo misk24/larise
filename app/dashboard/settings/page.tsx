@@ -1,7 +1,8 @@
-import { BackendPageHeader } from "@/components/backend/backend-ui";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BackendPageHeader, BackendStatusBadge } from "@/components/backend/backend-ui";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowUpRightIcon, BellIcon, FileTextIcon, ShieldCheckIcon } from "lucide-react";
+import { BellIcon, FileTextIcon, ShieldCheckIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -38,32 +39,29 @@ export default async function SettingsPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
+    <div className="backend-content mx-auto w-full max-w-4xl space-y-8">
       <BackendPageHeader title="Pengaturan" description="Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing." />
 
-      <div className="grid gap-4">
-        {settingsItems.map((item) => (
-          <Card key={item.title} className="shadow-none">
-            <CardHeader className="flex flex-row items-start gap-4 space-y-0 p-5 sm:p-6">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
-                <item.icon aria-hidden="true" className="size-5 text-secondary-foreground" />
-              </div>
+      <Card className="gap-0 overflow-hidden py-0">
+        <ul className="divide-y">
+          {settingsItems.map((item) => (
+            <li key={item.title} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5">
+              <item.icon aria-hidden="true" className="hidden size-5 shrink-0 text-muted-foreground sm:block" />
               <div className="min-w-0 flex-1 space-y-1">
-                <CardTitle className="text-base">{item.title}</CardTitle>
-                <CardDescription className="text-sm leading-6">{item.description}</CardDescription>
-                {item.disabled ? (
-                  <span className="inline-flex pt-2 text-xs font-medium text-muted-foreground">{item.label}</span>
-                ) : (
-                  <Link href={item.href} className="inline-flex items-center gap-1 pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline">
-                    {item.label}
-                    <ArrowUpRightIcon className="size-3.5" />
-                  </Link>
-                )}
+                <h2 className="text-base font-medium">{item.title}</h2>
+                <p className="text-sm text-muted-foreground">{item.description}</p>
               </div>
-            </CardHeader>
-          </Card>
-        ))}
-      </div>
+              {item.disabled ? (
+                <BackendStatusBadge className="self-start sm:self-center">{item.label}</BackendStatusBadge>
+              ) : (
+                <Button variant="outline" size="sm" asChild className="self-start sm:self-center">
+                  <Link href={item.href}>{item.label}</Link>
+                </Button>
+              )}
+            </li>
+          ))}
+        </ul>
+      </Card>
     </div>
   );
 }

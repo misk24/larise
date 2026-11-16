@@ -1,8 +1,9 @@
-import { BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendInvitationPicker } from "@/components/backend/invitation-picker";
 import { GuestManager } from "@/components/dashboard/guest-manager";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
+import { PlusIcon, UsersIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -25,13 +26,9 @@ export default async function GuestsPage({ searchParams }: GuestsPageProps) {
 
   if (invitationsError) {
     return (
-      <div className="backend-content space-y-6">
+      <div className="backend-content space-y-8">
         <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
-        <Card className="shadow-none">
-          <CardContent className="p-8 text-sm text-destructive">
-            Daftar undangan gagal dimuat. Muat ulang halaman atau periksa koneksi database.
-          </CardContent>
-        </Card>
+        <BackendErrorState title="Daftar undangan gagal dimuat" description="Muat ulang halaman atau periksa koneksi database." />
       </div>
     );
   }
@@ -41,17 +38,14 @@ export default async function GuestsPage({ searchParams }: GuestsPageProps) {
 
   if (!invitation) {
     return (
-      <div className="backend-content space-y-6">
+      <div className="backend-content space-y-8">
         <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
-        <Card className="border-dashed shadow-none">
-          <CardContent className="p-10 text-center">
-            <h2 className="font-semibold">Belum ada undangan</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Buat undangan terlebih dahulu untuk mulai mengelola daftar tamu.</p>
-            <Button asChild className="mt-5">
-              <Link href="/dashboard/invitations/create">Buat Undangan</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <BackendEmptyState
+          icon={UsersIcon}
+          title="Belum ada undangan"
+          description="Buat undangan terlebih dahulu untuk mulai mengelola daftar tamu."
+          action={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>}
+        />
       </div>
     );
   }
@@ -63,45 +57,26 @@ export default async function GuestsPage({ searchParams }: GuestsPageProps) {
     .order("name");
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Daftar Tamu" description="Kelola kontak, tautan personal, dan konfirmasi kehadiran." />
 
-      {invitationList.length > 1 ? (
-        <form action="/dashboard/guests" method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <label htmlFor="guest-invitation" className="text-sm font-medium">Pilih undangan</label>
-          <select
-            id="guest-invitation"
-            name="invitation"
-            defaultValue={invitation.id}
-            className="h-10 min-w-0 rounded-md border border-input bg-background px-3 text-sm sm:min-w-72"
-          >
-            {invitationList.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name_order === "bride_first" ? item.bride_name : item.groom_name} &amp; {item.name_order === "bride_first" ? item.groom_name : item.bride_name} · /{item.slug}
-              </option>
-            ))}
-          </select>
-          <Button type="submit" variant="secondary">Tampilkan</Button>
-        </form>
+      <BackendInvitationPicker action="/dashboard/guests" invitations={invitationList} selectedId={invitation.id} />
+      {invitationList.length < 2 ? (
+        <p className="text-sm text-muted-foreground">
+          Undangan: <span className="font-medium text-foreground">/{invitation.slug}</span>
+        </p>
       ) : null}
 
-      <Card className="shadow-none">
-        <CardContent className="p-4 sm:p-6">
-          <p className="mb-4 text-sm text-muted-foreground">
-            Undangan: <span className="font-medium text-foreground">/{invitation.slug}</span>
-          </p>
-          {guestsError ? (
-            <p className="text-sm text-destructive">Daftar tamu gagal dimuat. Periksa kebijakan akses database dan coba lagi.</p>
-          ) : (
-            <GuestManager
-              key={invitation.id}
-              invitationId={invitation.id}
-              invitationSlug={invitation.slug}
-              initialGuests={guests ?? []}
-            />
-          )}
-        </CardContent>
-      </Card>
+      {guestsError ? (
+        <BackendErrorState title="Daftar tamu gagal dimuat" description="Periksa kebijakan akses database, lalu coba lagi." />
+      ) : (
+        <GuestManager
+          key={invitation.id}
+          invitationId={invitation.id}
+          invitationSlug={invitation.slug}
+          initialGuests={guests ?? []}
+        />
+      )}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { CreateInvitationForm } from "@/components/dashboard/create-invitation-form";
 import { createClient } from "@/lib/supabase/server";
 
@@ -12,11 +13,8 @@ export default async function CreateInvitationPage() {
   if (error) throw new Error("Gagal memuat tema.");
 
   return (
-    <div className="backend-content w-full space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Buat Undangan</h1>
-        <p className="text-muted-foreground">Mulai dari informasi dasar, lalu pilih tema yang sesuai.</p>
-      </div>
+    <div className="backend-content w-full space-y-8">
+      <BackendPageHeader title="Buat Undangan" description="Mulai dari informasi dasar, lalu pilih tema yang sesuai." />
       <CreateInvitationForm themes={themes ?? []} />
     </div>
   );

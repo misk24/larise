@@ -1,2 +1,12 @@
-import { AdminTableLoading } from "@/components/admin/table-states";
-export default function Loading() { return <div className="backend-content space-y-6"><div className="space-y-2"><div className="h-8 w-48 animate-pulse rounded-md bg-muted" /><div className="h-4 w-64 animate-pulse rounded-md bg-muted" /></div><div className="rounded-xl border bg-card p-6"><div className="mb-5 h-5 w-40 animate-pulse rounded-md bg-muted" /><AdminTableLoading /></div></div>; }
+import { HeaderSkeleton, LoadingPage } from "@/components/backend/backend-loading";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// The orders page is a placeholder block under its header, so the skeleton is one empty-state sized block.
+export default function Loading() {
+  return (
+    <LoadingPage label="Memuat pesanan">
+      <HeaderSkeleton />
+      <Skeleton className="h-56 rounded-xl" />
+    </LoadingPage>
+  );
+}

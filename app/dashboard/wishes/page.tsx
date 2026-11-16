@@ -1,7 +1,7 @@
 import { BackendEmptyState, BackendErrorState, BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendInvitationPicker } from "@/components/backend/invitation-picker";
 import { WishesManager } from "@/components/dashboard/wishes-manager";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -22,7 +22,7 @@ export default async function WishesPage({ searchParams }: WishesPageProps) {
   const invitation = invitationList.find((item) => item.id === params.invitation) ?? invitationList[0];
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Ucapan & Doa" description="Moderasi ucapan dari tamu di setiap undangan Anda." />
       {invitationsError ? (
         <BackendErrorState title="Daftar undangan gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." />
@@ -35,19 +35,13 @@ export default async function WishesPage({ searchParams }: WishesPageProps) {
         />
       ) : (
         <>
-          {invitationList.length > 1 ? (
-            <form action="/dashboard/wishes" method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <label htmlFor="wishes-invitation" className="text-sm font-medium">Pilih undangan</label>
-              <select id="wishes-invitation" name="invitation" defaultValue={invitation.id} className="h-9 min-w-0 rounded-md border border-input bg-card px-3 text-sm outline-hidden transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30 sm:min-w-72">
-                {invitationList.map((item) => <option key={item.id} value={item.id}>{item.name_order === "bride_first" ? item.bride_name : item.groom_name} & {item.name_order === "bride_first" ? item.groom_name : item.bride_name} · /{item.slug}</option>)}
-              </select>
-              <Button type="submit" variant="secondary">Tampilkan</Button>
-            </form>
+          <BackendInvitationPicker action="/dashboard/wishes" invitations={invitationList} selectedId={invitation.id} />
+          {invitationList.length < 2 ? (
+            <p className="text-sm text-muted-foreground">
+              Undangan: <span className="font-medium text-foreground">/{invitation.slug}</span>
+            </p>
           ) : null}
-          <Card className="shadow-none"><CardContent className="p-4 sm:p-6">
-            <p className="mb-4 text-sm text-muted-foreground">Undangan: <span className="font-medium text-foreground">/{invitation.slug}</span></p>
-            <WishesData invitationId={invitation.id} />
-          </CardContent></Card>
+          <WishesData invitationId={invitation.id} />
         </>
       )}
     </div>

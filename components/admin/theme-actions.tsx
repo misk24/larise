@@ -45,15 +45,15 @@ export function ThemeActions({ id, active, name }: { id: string; active: boolean
   }
 
   return (
-    <div className="flex flex-nowrap items-center gap-2 whitespace-nowrap">
-      <Button type="button" size="sm" variant="outline" disabled={busy} onClick={toggleStatus}>
+    <div className="relative flex flex-nowrap items-center gap-2 whitespace-nowrap">
+      <Button type="button" size="sm" variant="ghost" disabled={busy} onClick={toggleStatus}>
         {busy ? "Memproses..." : active ? "Nonaktifkan" : "Aktifkan"}
       </Button>
       <ConfirmDialog
         title={`Hapus tema "${name}"?`}
         description="Tindakan ini tidak dapat dibatalkan."
         onConfirm={deleteTheme}
-        trigger={<Button type="button" size="sm" variant="destructive" disabled={busy}>Hapus</Button>}
+        trigger={<Button type="button" size="sm" variant="ghost" className="text-destructive hover:bg-destructive-muted hover:text-destructive" disabled={busy}>Hapus</Button>}
       />
       {message ? <p role="alert" className="absolute left-0 top-full mt-1 w-56 whitespace-normal text-xs text-destructive">{message}</p> : null}
     </div>

@@ -1,8 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { TriangleAlertIcon, type LucideIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import Link from "next/link";
 
 interface BackendPageHeaderProps {
@@ -48,6 +47,20 @@ export function BackendSectionHeader({ title, description, action, className }: 
   );
 }
 
+/**
+ * One connected strip of key figures instead of four separate cards.
+ * The 1px gap over a border-coloured background draws the dividers, so it stays
+ * correct at 2 columns (phones) and 4 columns (desktop). Expects four children.
+ */
+export function BackendStatGrid({ className, ...props }: ComponentProps<"section">) {
+  return (
+    <section
+      className={cn("grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border xl:grid-cols-4", className)}
+      {...props}
+    />
+  );
+}
+
 interface BackendStatCardProps {
   label: string;
   value: string | number;
@@ -57,29 +70,30 @@ interface BackendStatCardProps {
   className?: string;
 }
 
+/** A single figure inside `BackendStatGrid`. The number leads; the icon is a quiet label marker. */
 export function BackendStatCard({ label, value, description, icon: Icon, href, className }: BackendStatCardProps) {
+  const cellClasses = cn("flex min-w-0 flex-col gap-2 bg-card p-4 sm:p-5", className);
   const content = (
-    <Card className={cn("h-full shadow-none transition-colors", href && "hover:border-primary/30 hover:bg-accent/50", className)}>
-      <CardContent className="flex items-start justify-between gap-4 p-5">
-        <div className="min-w-0 space-y-1">
-          <p className="text-sm font-medium text-muted-foreground">{label}</p>
-          <p className="text-2xl font-semibold tabular-nums tracking-tight">{value}</p>
-          {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
-        </div>
-        {Icon ? (
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
-            <Icon aria-hidden="true" className="size-5" />
-          </span>
-        ) : null}
-      </CardContent>
-    </Card>
+    <>
+      <p className="flex items-center gap-2 text-sm text-muted-foreground">
+        {Icon ? <Icon aria-hidden="true" className="size-4 shrink-0" /> : null}
+        <span className="truncate">{label}</span>
+      </p>
+      <p className="text-3xl font-semibold tabular-nums tracking-tight">{value}</p>
+      {description ? <p className="truncate text-xs text-muted-foreground">{description}</p> : null}
+    </>
   );
 
   return href ? (
-    <Link href={href} className="block rounded-xl outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+    <Link
+      href={href}
+      className={cn(cellClasses, "outline-hidden transition-colors hover:bg-accent/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring")}
+    >
       {content}
     </Link>
-  ) : content;
+  ) : (
+    <div className={cellClasses}>{content}</div>
+  );
 }
 
 type BackendStatusTone = "neutral" | "success" | "warning" | "danger" | "info";

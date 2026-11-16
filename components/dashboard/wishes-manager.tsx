@@ -52,7 +52,7 @@ export function WishesManager({ initialWishes }: { initialWishes: Wish[] }) {
         icon={MessageSquareHeartIcon}
         title="Belum ada ucapan"
         description="Ucapan dari tamu akan muncul di sini setelah mereka mengirimnya dari undangan."
-        className="min-h-40 border-0 bg-transparent"
+        className="min-h-40"
       />
     );
   }

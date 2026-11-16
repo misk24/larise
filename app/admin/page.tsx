@@ -1,9 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BackendEmptyState, BackendPageHeader, BackendStatCard } from "@/components/backend/backend-ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendStatCard, BackendStatGrid } from "@/components/backend/backend-ui";
 import { InvitationStatusBadge } from "@/components/backend/invitation-meta";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
-import { FileTextIcon, PaletteIcon, UsersIcon } from "lucide-react";
+import { EyeIcon, FileTextIcon, PaletteIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 
 function formatDate(value: string | null) {
@@ -54,7 +55,7 @@ export default async function AdminDashboardPage() {
       value: publishedResult.error ? null : publishedResult.count ?? 0,
       detail: "Status published",
       href: "/admin/invitations?status=published",
-      icon: FileTextIcon,
+      icon: EyeIcon,
     },
     {
       label: "Tema",
@@ -68,30 +69,34 @@ export default async function AdminDashboardPage() {
   const metricErrors = [usersResult.error, invitationsResult.error, publishedResult.error, themesResult.error].filter(Boolean);
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Ringkasan Admin" description="Pantau kondisi platform berdasarkan data database saat ini." />
 
       {metricErrors.length > 0 ? (
-        <p role="alert" className="text-sm text-destructive">
-          Sebagian statistik gagal dimuat. Nilai yang tidak tersedia tidak ditampilkan sebagai nol.
-        </p>
+        <BackendErrorState
+          title="Sebagian statistik gagal dimuat"
+          description="Nilai yang tidak tersedia ditampilkan sebagai tanda hubung, bukan nol."
+        />
       ) : null}
 
-      <section aria-label="Statistik platform" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <BackendStatGrid aria-label="Statistik platform">
         {metrics.map(({ label, value, detail, href, icon }) => (
           <BackendStatCard key={label} label={label} value={value === null ? "—" : value.toLocaleString("id-ID")} description={detail} href={href} icon={icon} />
         ))}
-      </section>
+      </BackendStatGrid>
 
-      <section className="grid gap-4 xl:grid-cols-2">
-        <Card className="shadow-none">
+      <section aria-label="Aktivitas terbaru" className="grid gap-6 xl:grid-cols-2">
+        <Card>
           <CardHeader>
-            <CardTitle>Pengguna terbaru</CardTitle>
+            <CardTitle role="heading" aria-level={2} className="text-base">Pengguna terbaru</CardTitle>
             <CardDescription>Lima akun pengguna yang terakhir terdaftar.</CardDescription>
+            <CardAction>
+              <Button variant="ghost" size="sm" asChild><Link href="/admin/users">Lihat semua</Link></Button>
+            </CardAction>
           </CardHeader>
           <CardContent>
             {recentUsersResult.error ? (
-              <p role="alert" className="py-6 text-sm text-destructive">Data pengguna gagal dimuat. Periksa izin akses database.</p>
+              <BackendErrorState title="Data pengguna gagal dimuat" description="Periksa izin akses database, lalu muat ulang halaman." />
             ) : recentUsersResult.data?.length ? (
               <ul className="divide-y divide-border">
                 {recentUsersResult.data.map((user) => (
@@ -109,20 +114,20 @@ export default async function AdminDashboardPage() {
             ) : (
               <BackendEmptyState title="Belum ada pengguna" description="Pengguna yang mendaftar akan muncul di sini." className="min-h-36 border-0 bg-transparent py-6" />
             )}
-            <Link href="/admin/users" className="mt-4 inline-flex text-sm font-medium text-primary hover:underline">
-              Lihat semua pengguna
-            </Link>
           </CardContent>
         </Card>
 
-        <Card className="shadow-none">
+        <Card>
           <CardHeader>
-            <CardTitle>Undangan terbaru</CardTitle>
+            <CardTitle role="heading" aria-level={2} className="text-base">Undangan terbaru</CardTitle>
             <CardDescription>Lima undangan yang terakhir dibuat.</CardDescription>
+            <CardAction>
+              <Button variant="ghost" size="sm" asChild><Link href="/admin/invitations">Lihat semua</Link></Button>
+            </CardAction>
           </CardHeader>
           <CardContent>
             {recentInvitationsResult.error ? (
-              <p role="alert" className="py-6 text-sm text-destructive">Data undangan gagal dimuat. Periksa izin akses database.</p>
+              <BackendErrorState title="Data undangan gagal dimuat" description="Periksa izin akses database, lalu muat ulang halaman." />
             ) : recentInvitationsResult.data?.length ? (
               <ul className="divide-y divide-border">
                 {recentInvitationsResult.data.map((invitation) => {
@@ -148,9 +153,6 @@ export default async function AdminDashboardPage() {
             ) : (
               <BackendEmptyState title="Belum ada undangan" description="Undangan yang dibuat pengguna akan muncul di sini." className="min-h-36 border-0 bg-transparent py-6" />
             )}
-            <Link href="/admin/invitations" className="mt-4 inline-flex text-sm font-medium text-primary hover:underline">
-              Lihat semua undangan
-            </Link>
           </CardContent>
         </Card>
       </section>

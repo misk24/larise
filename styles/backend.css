@@ -78,12 +78,6 @@
     color: var(--muted-foreground);
   }
 
-  .backend-surface {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-  }
-
   /* Shared wrapper for dense data tables. Keep wide tables scrollable on
    * small screens without forcing the entire backend page to overflow. */
   .backend-table-container {
@@ -91,7 +85,7 @@
     min-width: 0;
     overflow-x: auto;
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
   }
 
   .backend-table-container table {
@@ -127,7 +121,8 @@
   min-width: 0;
   overflow-x: auto;
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
+  background-color: var(--card);
 }
 .backend-shell [data-slot="table"] {
   min-width: 40rem;
@@ -156,6 +151,19 @@
 }
 .backend-shell [data-slot="table-body"] [data-slot="table-row"]:hover {
   background-color: color-mix(in srgb, var(--muted) 60%, transparent);
+}
+
+/* Flat surfaces: shadow is reserved for floating layers (menus, dialogs). The shared Card
+ * keeps its shadow for the public invitation pages, so the backend opts out here. */
+.backend-shell [data-slot="card"] {
+  box-shadow: none;
+}
+
+/* Buttons and switches only show a 50% ring halo, which is faint on the off-white surface.
+ * A solid outline keeps keyboard focus clearly visible, including inside portaled dialogs. */
+body:has(.backend-shell) :is([data-slot="button"], [data-slot="switch"]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 /* Keep motion functional: honour the OS reduced-motion setting everywhere in the backend,
