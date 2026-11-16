@@ -6,7 +6,7 @@ export default async function AdminOrdersPage() {
   await requireAdmin();
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Kelola Pesanan" description="Pantau pesanan dan status pembayaran pengguna." />
       <BackendEmptyState
         icon={ShoppingCartIcon}

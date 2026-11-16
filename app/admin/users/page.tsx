@@ -47,7 +47,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
   }
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Kelola Pengguna" description="Cari dan tinjau akun pengguna yang terdaftar di LARISÉ." />
       {error ? <AdminTableError title="Pengguna gagal dimuat" description="Periksa izin baca admin pada database." /> : (
         <UsersTable data={(data ?? []) as AdminUserRow[]} page={page} pageSize={pageSize} rowCount={total} sort={sort} direction={direction} />

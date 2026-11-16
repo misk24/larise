@@ -65,7 +65,7 @@ export default async function AdminInvitationsPage({ searchParams }: { searchPar
   }
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Kelola Undangan" description="Cari dan pantau undangan yang dibuat pengguna." />
       {error ? (
         <AdminTableError title="Undangan gagal dimuat" description="Periksa koneksi database dan migration pencarian admin." />

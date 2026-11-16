@@ -58,6 +58,9 @@ Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`
 - Surfaces are flat in the backend (`.backend-shell [data-slot="card"]` removes the shadow). Shadow is for floating layers only.
 - Placeholder pages and "nothing here yet" blocks use `BackendEmptyState`; failed loads use `BackendErrorState` (or `AdminTableError` for tables). Status chips use `BackendStatusBadge` tones.
 - Group labels and table headers use sentence case, not all caps.
+- Page content stacks with `space-y-8`. The builder is the one exception: it stays denser (`space-y-6`) because the editor needs the room.
+- Pages that act on one invitation at a time (guests, RSVP, wishes, gallery) use `BackendInvitationPicker` when the user has two or more invitations. Do not build per-page selectors.
+- Do not hardcode palette colors (`bg-amber-100` and the like) in backend components; use tokens. Dates in tables use `{ dateStyle: "medium" }`.
 
 ## Change checklist
 

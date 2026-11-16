@@ -1,9 +1,8 @@
 "use client";
 
 import { ConfirmDialog } from "@/components/backend/confirm-dialog";
-import { BackendEmptyState, BackendStatCard, BackendStatGrid, BackendStatusBadge } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendSectionHeader, BackendStatCard, BackendStatGrid, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -185,22 +184,18 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <BackendStatGrid aria-label="Ringkasan tamu">
         {statCards.map(({ label, value, icon }) => (
           <BackendStatCard key={label} label={label} value={value.toLocaleString("id-ID")} icon={icon} />
         ))}
       </BackendStatGrid>
 
-      <Card className="shadow-none">
-        <CardHeader>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <CardTitle>Daftar Tamu</CardTitle>
-              <CardDescription>
-                {stats.attendees} orang diperkirakan hadir berdasarkan RSVP yang masuk.
-              </CardDescription>
-            </div>
+      <section className="space-y-4">
+        <BackendSectionHeader
+          title="Daftar tamu"
+          description={`${stats.attendees} orang diperkirakan hadir berdasarkan RSVP yang masuk.`}
+          action={
             <Dialog open={isDialogOpen} onOpenChange={(open) => {
               setIsDialogOpen(open);
               if (!open) { setEditingGuest(null); setForm(emptyForm); }
@@ -238,10 +233,10 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
                 </form>
               </DialogContent>
             </Dialog>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-4 grid gap-3 sm:grid-cols-[1fr_220px]">
+          }
+        />
+
+        <div className="grid gap-3 sm:grid-cols-[1fr_220px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input aria-label="Cari tamu" placeholder="Cari nama, telepon, atau email..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
@@ -318,11 +313,10 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
               title={guests.length === 0 ? "Belum ada tamu" : "Tidak ada hasil"}
               description={guests.length === 0 ? "Tambahkan tamu pertama untuk mulai membagikan link undangan personal." : "Tidak ada tamu yang cocok dengan pencarian atau filter."}
               action={guests.length === 0 ? <Button onClick={openAddDialog}><Plus className="size-4" />Tambah tamu</Button> : undefined}
-              className="min-h-56 border-0 bg-transparent"
+              className="min-h-56"
             />
           )}
-        </CardContent>
-      </Card>
+      </section>
     </div>
   );
 }

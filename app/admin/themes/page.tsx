@@ -60,7 +60,7 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
   }
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Kelola Tema" description="Kelola tema undangan yang tersedia untuk pengguna." actions={<Button asChild><Link href="/admin/themes/create">Buat Tema</Link></Button>} />
       {error ? (
         <AdminTableError title="Tema gagal dimuat" description="Periksa izin baca admin pada database." />

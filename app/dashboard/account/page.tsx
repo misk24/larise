@@ -2,10 +2,8 @@ import { BackendErrorState, BackendPageHeader } from "@/components/backend/backe
 import { AccountForm } from "@/components/dashboard/account-form";
 import { LoginSecurityCard } from "@/components/dashboard/login-security-card";
 import { AccountDangerZone } from "@/components/dashboard/account-danger-zone";
-import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { CalendarDaysIcon } from "lucide-react";
 
 export default async function MyAccountPage() {
   const supabase = await createClient();
@@ -21,7 +19,7 @@ export default async function MyAccountPage() {
 
   if (error || !profile) {
     return (
-      <div className="backend-content mx-auto w-full max-w-4xl space-y-6">
+      <div className="backend-content mx-auto w-full max-w-4xl space-y-8">
         <BackendPageHeader title="Akun Saya" description="Kelola profil dan akses akun LARISÉ Anda." />
         <BackendErrorState title="Data profil gagal dimuat" description="Muat ulang halaman atau coba beberapa saat lagi." />
       </div>
@@ -35,29 +33,15 @@ export default async function MyAccountPage() {
   }).format(new Date(profile.created_at));
 
   return (
-    <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
-      <BackendPageHeader title="Akun Saya" description="Kelola informasi profil dan metode login yang digunakan untuk mengakses LARISÉ." />
+    <div className="backend-content mx-auto w-full max-w-4xl space-y-8">
+      <BackendPageHeader
+        title="Akun Saya"
+        description={`Kelola informasi profil dan metode login untuk mengakses LARISÉ. Bergabung sejak ${joinedAt}.`}
+      />
 
       <AccountForm user={user} profile={profile} />
 
       <LoginSecurityCard provider={profile.provider} email={user.email ?? profile.email} />
-
-      <div className="max-w-md">
-        <Card className="shadow-none">
-          <CardContent className="flex items-start gap-3 p-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
-              <CalendarDaysIcon aria-hidden="true" className="size-5 text-secondary-foreground" />
-            </div>
-            <div className="min-w-0 space-y-1">
-              <p className="text-sm font-medium">Bergabung sejak</p>
-              <p className="text-sm text-muted-foreground">{joinedAt}</p>
-              <p className="text-xs leading-5 text-muted-foreground">
-                Informasi ini berasal dari tanggal pembuatan akun.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       <AccountDangerZone provider={profile.provider} email={user.email ?? profile.email} />
     </div>

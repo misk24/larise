@@ -21,7 +21,7 @@ export default async function DashboardPage() {
 
   if (error) {
     return (
-      <div className="backend-content space-y-6">
+      <div className="backend-content space-y-8">
         <BackendPageHeader title="Dashboard" description="Ringkasan dan pintasan untuk semua undangan Anda." />
         <BackendErrorState title="Data undangan gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." />
       </div>

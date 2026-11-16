@@ -2,7 +2,7 @@ import { BackendEmptyState, BackendErrorState, BackendPageHeader } from "@/compo
 import { InvitationStatusBadge, coupleNames } from "@/components/backend/invitation-meta";
 import { InvitationActions } from "@/components/dashboard/invitation-actions";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { FileTextIcon, PlusIcon } from "lucide-react";
@@ -22,7 +22,7 @@ export default async function InvitationsPage() {
     .order("created_at", { ascending: false });
   if (error) {
     return (
-      <div className="backend-content space-y-6">
+      <div className="backend-content space-y-8">
         <BackendPageHeader title="Undangan Saya" description="Kelola draft, tema, duplikasi, dan status publikasi." />
         <BackendErrorState title="Daftar undangan gagal dimuat" description="Muat ulang halaman atau periksa koneksi Anda." />
       </div>
@@ -30,38 +30,37 @@ export default async function InvitationsPage() {
   }
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader
         title="Undangan Saya"
         description="Kelola draft, tema, duplikasi, dan status publikasi."
         actions={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>}
       />
       {invitations?.length ? (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {invitations.map((invitation) => {
-            const theme = Array.isArray(invitation.themes) ? invitation.themes[0] : invitation.themes;
-            return (
-              <Card key={invitation.id} className="gap-0 overflow-hidden py-0 shadow-none transition-colors hover:border-primary/30">
-                <div className="flex aspect-[16/9] items-center justify-center bg-muted/60 p-4 text-center">
-                  <p className="text-balance text-xl font-semibold tracking-tight">{coupleNames(invitation)}</p>
-                </div>
-                <CardContent className="space-y-4 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 text-sm">
-                      <p className="truncate font-medium">{theme?.name ?? "Tanpa tema"}</p>
-                      <p className="truncate text-muted-foreground">/{invitation.slug}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">
+        <Card className="gap-0 overflow-hidden py-0">
+          <ul className="divide-y">
+            {invitations.map((invitation) => {
+              const theme = Array.isArray(invitation.themes) ? invitation.themes[0] : invitation.themes;
+              return (
+                <li key={invitation.id} className="space-y-4 p-4 sm:p-5">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <h2 className="truncate text-base font-semibold">{coupleNames(invitation)}</h2>
+                      <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                        {theme?.name ?? "Tanpa tema"} · /{invitation.slug}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
                         Dibuat {new Date(invitation.created_at).toLocaleDateString("id-ID", { dateStyle: "medium" })}
                       </p>
                     </div>
                     <InvitationStatusBadge published={invitation.is_published} status={invitation.status} />
                   </div>
                   <InvitationActions invitationId={invitation.id} published={invitation.is_published} />
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                </li>
+              );
+            })}
+          </ul>
+        </Card>
       ) : (
         <BackendEmptyState
           icon={FileTextIcon}

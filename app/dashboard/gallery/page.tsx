@@ -1,9 +1,11 @@
-import { BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendInvitationPicker } from "@/components/backend/invitation-picker";
+import { coupleNames } from "@/components/backend/invitation-meta";
 import { InvitationMediaUploader } from "@/components/dashboard/invitation-media-uploader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { ImageIcon, ImagesIcon } from "lucide-react";
+import { ImageIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { InvitationMedia } from "@/types/database";
@@ -26,9 +28,9 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
 
   if (invitationsError) {
     return (
-      <div className="backend-content space-y-6">
+      <div className="backend-content space-y-8">
         <BackendPageHeader title="Galeri Foto" description="Kelola foto untuk setiap undangan Anda." />
-        <Card className="shadow-none"><CardContent className="p-6 text-sm text-destructive">Daftar undangan gagal dimuat. Coba muat ulang halaman.</CardContent></Card>
+        <BackendErrorState title="Daftar undangan gagal dimuat" description="Coba muat ulang halaman." />
       </div>
     );
   }
@@ -38,16 +40,14 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
 
   if (!selectedInvitation) {
     return (
-      <div className="backend-content space-y-6">
+      <div className="backend-content space-y-8">
         <BackendPageHeader title="Galeri Foto" description="Kelola foto untuk setiap undangan Anda." />
-        <Card className="border-dashed shadow-none">
-          <CardContent className="p-10 text-center">
-            <ImageIcon className="mx-auto mb-3 size-10 text-muted-foreground/50" />
-            <h2 className="font-semibold">Belum ada undangan</h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">Buat undangan terlebih dahulu. Setelah itu, Anda bisa mengunggah dan mengelola foto dari halaman ini.</p>
-            <Button asChild className="mt-5"><Link href="/dashboard/invitations/create">Buat Undangan</Link></Button>
-          </CardContent>
-        </Card>
+        <BackendEmptyState
+          icon={ImageIcon}
+          title="Belum ada undangan"
+          description="Buat undangan terlebih dahulu. Setelah itu, Anda bisa mengunggah dan mengelola foto dari halaman ini."
+          action={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>}
+        />
       </div>
     );
   }
@@ -58,41 +58,24 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
     .eq("invitation_id", selectedInvitation.id)
     .order("created_at", { ascending: true });
 
-  const coupleNames = selectedInvitation.name_order === "bride_first"
-    ? `${selectedInvitation.bride_name || "Mempelai wanita"} & ${selectedInvitation.groom_name || "Mempelai pria"}`
-    : `${selectedInvitation.groom_name || "Mempelai pria"} & ${selectedInvitation.bride_name || "Mempelai wanita"}`;
-
   return (
-    <div className="backend-content mx-auto w-full max-w-5xl space-y-6">
-      <BackendPageHeader title="Galeri Foto" description="Unggah dan kelola foto yang akan digunakan pada undangan Anda." actions={<Button variant="outline" asChild><Link href={`/dashboard/invitations/${selectedInvitation.id}/builder`}>Buka builder undangan</Link></Button>} />
+    <div className="backend-content mx-auto w-full max-w-5xl space-y-8">
+      <BackendPageHeader
+        title="Galeri Foto"
+        description="Unggah dan kelola foto yang akan digunakan pada undangan Anda."
+        actions={<Button variant="outline" asChild><Link href={`/dashboard/invitations/${selectedInvitation.id}/builder`}>Buka builder undangan</Link></Button>}
+      />
 
-      {invitationList.length > 1 ? (
-        <form action="/dashboard/gallery" method="get" className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <label htmlFor="gallery-invitation" className="text-sm font-medium">Pilih undangan</label>
-          <select id="gallery-invitation" name="invitation" defaultValue={selectedInvitation.id} className="h-10 min-w-0 rounded-md border border-input bg-background px-3 text-sm sm:min-w-72">
-            {invitationList.map((invitation) => (
-              <option key={invitation.id} value={invitation.id}>
-                {invitation.name_order === "bride_first" ? invitation.bride_name : invitation.groom_name} & {invitation.name_order === "bride_first" ? invitation.groom_name : invitation.bride_name} · /{invitation.slug}
-              </option>
-            ))}
-          </select>
-          <Button type="submit" variant="secondary">Tampilkan</Button>
-        </form>
-      ) : null}
+      <BackendInvitationPicker action="/dashboard/gallery" invitations={invitationList} selectedId={selectedInvitation.id} />
 
-      <Card className="shadow-none">
+      <Card>
         <CardHeader>
-          <div className="flex items-start gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><ImagesIcon className="size-5" /></div>
-            <div className="min-w-0">
-              <CardTitle className="text-base">{coupleNames}</CardTitle>
-              <CardDescription className="mt-1">/{selectedInvitation.slug} · {media?.length ?? 0} foto tersimpan</CardDescription>
-            </div>
-          </div>
+          <CardTitle role="heading" aria-level={2} className="text-base">{coupleNames(selectedInvitation)}</CardTitle>
+          <CardDescription>/{selectedInvitation.slug} · {media?.length ?? 0} foto tersimpan</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {mediaError ? (
-            <p className="text-sm text-destructive">Data galeri gagal dimuat. Periksa koneksi database dan kebijakan akses media.</p>
+            <BackendErrorState title="Data galeri gagal dimuat" description="Periksa koneksi database dan kebijakan akses media, lalu muat ulang." />
           ) : (
             <InvitationMediaUploader invitationId={selectedInvitation.id} initialMedia={(media ?? []) as InvitationMedia[]} />
           )}

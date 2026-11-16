@@ -72,7 +72,7 @@ export function ThemesTable(props: Props) {
       accessorKey: "created_at",
       header: "Dibuat",
       enableSorting: true,
-      cell: ({ row }) => new Date(row.original.created_at).toLocaleDateString("id-ID"),
+      cell: ({ row }) => new Date(row.original.created_at).toLocaleDateString("id-ID", { dateStyle: "medium" }),
     },
     {
       id: "actions",

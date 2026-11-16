@@ -42,27 +42,27 @@ export function InvitationActions({
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Button variant="outline" size="sm" asChild>
-        <Link href={`/dashboard/invitations/${invitationId}`}><Pencil className="mr-2 size-3" />Edit info dasar</Link>
-      </Button>
       <Button size="sm" asChild>
-        <Link href={`/dashboard/invitations/${invitationId}/builder`}><PanelsTopLeft className="mr-2 size-3" />Edit keseluruhan</Link>
+        <Link href={`/dashboard/invitations/${invitationId}/builder`}><PanelsTopLeft />Edit keseluruhan</Link>
       </Button>
-      <Button variant="outline" size="sm" disabled={loading !== null} onClick={() => run(() => duplicateInvitation(invitationId))}>
-        {loading ? <Loader2 className="mr-2 size-3 animate-spin" /> : <Copy className="mr-2 size-3" />}
-        Duplikat
+      <Button variant="outline" size="sm" asChild>
+        <Link href={`/dashboard/invitations/${invitationId}`}><Pencil />Edit info dasar</Link>
       </Button>
       <Button variant="outline" size="sm" disabled={loading !== null} onClick={() => run(() => setInvitationPublished(invitationId, !published))}>
-        <Eye className="mr-2 size-3" />
+        <Eye />
         {published ? "Unpublish" : "Publish"}
+      </Button>
+      <Button variant="ghost" size="sm" disabled={loading !== null} onClick={() => run(() => duplicateInvitation(invitationId))}>
+        {loading ? <Loader2 className="animate-spin" /> : <Copy />}
+        Duplikat
       </Button>
       <ConfirmDialog
         title="Hapus undangan ini?"
         description="Data turunannya (tamu, RSVP, ucapan) juga akan ikut terhapus."
         onConfirm={() => void run(() => deleteInvitation(invitationId))}
         trigger={
-          <Button variant="destructive" size="sm" disabled={loading !== null}>
-            <Trash2 className="mr-2 size-3" />
+          <Button variant="ghost" size="sm" disabled={loading !== null} className="text-destructive hover:bg-destructive-muted hover:text-destructive">
+            <Trash2 />
             Hapus
           </Button>
         }

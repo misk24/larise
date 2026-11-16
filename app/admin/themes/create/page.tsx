@@ -38,7 +38,7 @@ export default function CreateThemePage() {
   }
 
   return (
-    <div className="backend-content space-y-6">
+    <div className="backend-content space-y-8">
       <BackendPageHeader title="Buat Tema" description="Beri nama tema sebelum mengatur section undangan." />
 
       <Card className="w-full max-w-2xl">
