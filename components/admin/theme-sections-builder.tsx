@@ -1,4 +1,5 @@
 "use client";
+import { ConfirmDialog } from "@/components/backend/confirm-dialog";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowDown, ArrowUp, GripVertical, Plus, Save, Trash2 } from "lucide-react";
@@ -42,7 +43,6 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
     finally{setBusy(false);}
   }
   async function remove(section: Section) {
-    if(!window.confirm(`Hapus section "${section.section_key}"? Data konten pada template ini akan ikut dihapus.`))return;
     setBusy(true);setError("");
     try{const response=await fetch(`${base}/${section.id}`,{method:"DELETE"});const result=await response.json();if(!response.ok)throw new Error(result.error||"Section gagal dihapus.");setSections(current=>current.filter(item=>item.id!==section.id));router.refresh();}
     catch(cause){setError(cause instanceof Error?cause.message:"Terjadi kesalahan.");}finally{setBusy(false);}
@@ -69,7 +69,7 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
             <Button type="button" size="icon" variant="ghost" aria-label={`Naikkan ${section.section_key}`} disabled={busy||index===0} onClick={()=>move(index,-1)}><ArrowUp className="size-4"/></Button>
             <Button type="button" size="icon" variant="ghost" aria-label={`Turunkan ${section.section_key}`} disabled={busy||index===sections.length-1} onClick={()=>move(index,1)}><ArrowDown className="size-4"/></Button>
             <Button type="button" size="sm" variant="outline" disabled={busy} onClick={()=>edit(section)}>Edit</Button>
-            <Button type="button" size="icon" variant="ghost" aria-label={`Hapus ${section.section_key}`} disabled={busy} onClick={()=>remove(section)}><Trash2 className="size-4 text-destructive"/></Button>
+            <ConfirmDialog title={`Hapus section "${section.section_key}"?`} description="Data konten pada template ini akan ikut dihapus." onConfirm={()=>remove(section)} trigger={<Button type="button" size="icon" variant="ghost" aria-label={`Hapus ${section.section_key}`} disabled={busy}><Trash2 className="size-4 text-destructive"/></Button>}/>
           </div>
         </div>
         {expanded===section.id?<div className="border-t p-4"><EditorForm draft={draft} setDraft={setDraft} editing={editing} busy={busy} error={error} onSubmit={save} onCancel={()=>{setExpanded(null);setEditing(null);setError("");}}/></div>:null}

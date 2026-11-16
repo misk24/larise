@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfirmDialog } from "@/components/backend/confirm-dialog";
 import { BackendEmptyState, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -137,7 +138,6 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
   }
 
   async function handleDeleteGuest(guest: GuestWithRsvp) {
-    if (!window.confirm(`Hapus tamu “${guest.name}”? Data RSVP terkait juga bisa terpengaruh.`)) return;
     setIsLoading(true);
     try {
       const { error } = await supabase
@@ -294,9 +294,16 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
                             <Button type="button" variant="ghost" size="icon" aria-label={`Edit ${guest.name}`} onClick={() => openEditDialog(guest)}>
                               <Pencil className="size-4" />
                             </Button>
-                            <Button type="button" variant="ghost" size="icon" aria-label={`Hapus ${guest.name}`} disabled={isLoading} onClick={() => handleDeleteGuest(guest)} className="text-destructive hover:text-destructive">
-                              <Trash2 className="size-4" />
-                            </Button>
+                            <ConfirmDialog
+                              title={`Hapus tamu “${guest.name}”?`}
+                              description="Data RSVP terkait juga bisa terpengaruh."
+                              onConfirm={() => handleDeleteGuest(guest)}
+                              trigger={
+                                <Button type="button" variant="ghost" size="icon" aria-label={`Hapus ${guest.name}`} disabled={isLoading} className="text-destructive hover:text-destructive">
+                                  <Trash2 className="size-4" />
+                                </Button>
+                              }
+                            />
                           </div>
                         </TableCell>
                       </TableRow>

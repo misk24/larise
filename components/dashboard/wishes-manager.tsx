@@ -3,6 +3,7 @@
 import { deleteWish, setWishVisibility } from "@/lib/actions/wishes";
 import type { Wish } from "@/types/database";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/backend/confirm-dialog";
 import { BackendEmptyState, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2, MessageSquareHeartIcon, Trash2 } from "lucide-react";
@@ -31,7 +32,6 @@ export function WishesManager({ initialWishes }: { initialWishes: Wish[] }) {
   }
 
   function removeWish(wish: Wish) {
-    if (!window.confirm("Hapus ucapan ini secara permanen?")) return;
     setActiveId(wish.id);
     startTransition(async () => {
       const result = await deleteWish(wish.id);
@@ -77,9 +77,16 @@ export function WishesManager({ initialWishes }: { initialWishes: Wish[] }) {
                 {activeId === wish.id && isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : wish.visibility === "visible" ? <EyeOff className="mr-2 size-4" /> : <Eye className="mr-2 size-4" />}
                 {wish.visibility === "visible" ? "Sembunyikan" : "Tampilkan"}
               </Button>
-              <Button type="button" variant="ghost" size="icon" aria-label="Hapus ucapan" disabled={isPending} onClick={() => removeWish(wish)}>
-                <Trash2 className="size-4 text-destructive" />
-              </Button>
+              <ConfirmDialog
+                title="Hapus ucapan ini?"
+                description="Ucapan akan dihapus secara permanen."
+                onConfirm={() => removeWish(wish)}
+                trigger={
+                  <Button type="button" variant="ghost" size="icon" aria-label="Hapus ucapan" disabled={isPending}>
+                    <Trash2 className="size-4 text-destructive" />
+                  </Button>
+                }
+              />
             </div>
           </CardContent>
         </Card>

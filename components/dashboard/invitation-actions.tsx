@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfirmDialog } from "@/components/backend/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { duplicateInvitation, deleteInvitation, setInvitationPublished } from "@/lib/actions/invitations";
 import { Copy, Eye, Loader2, Pencil, PanelsTopLeft, Trash2 } from "lucide-react";
@@ -55,14 +56,17 @@ export function InvitationActions({
         <Eye className="mr-2 size-3" />
         {published ? "Unpublish" : "Publish"}
       </Button>
-      <Button variant="destructive" size="sm" disabled={loading !== null} onClick={() => {
-        if (window.confirm("Hapus undangan ini? Data turunannya juga akan ikut terhapus.")) {
-          void run(() => deleteInvitation(invitationId));
+      <ConfirmDialog
+        title="Hapus undangan ini?"
+        description="Data turunannya (tamu, RSVP, ucapan) juga akan ikut terhapus."
+        onConfirm={() => void run(() => deleteInvitation(invitationId))}
+        trigger={
+          <Button variant="destructive" size="sm" disabled={loading !== null}>
+            <Trash2 className="mr-2 size-3" />
+            Hapus
+          </Button>
         }
-      }}>
-        <Trash2 className="mr-2 size-3" />
-        Hapus
-      </Button>
+      />
     </div>
   );
 }
