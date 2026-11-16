@@ -60,6 +60,8 @@ Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`
 - Group labels and table headers use sentence case, not all caps.
 - Page content stacks with `space-y-8`. The builder is the one exception: it stays denser (`space-y-6`) because the editor needs the room.
 - Pages that act on one invitation at a time (guests, RSVP, wishes, gallery) use `BackendInvitationPicker` when the user has two or more invitations. Do not build per-page selectors.
+- Admin data tables use `Table className="admin-stack"`: below `sm` each row becomes a stacked card with labels taken from the column header string. Columns need a string `header` to get a label.
+- A row with more than three actions keeps the primary one and the toggle visible and moves the rest into a "Lainnya" menu, with the destructive item last. `ConfirmDialog` takes `open` and `onOpenChange` for use from a menu.
 - Do not hardcode palette colors (`bg-amber-100` and the like) in backend components; use tokens. Dates in tables use `{ dateStyle: "medium" }`.
 
 ## Change checklist
