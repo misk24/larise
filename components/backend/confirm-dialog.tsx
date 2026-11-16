@@ -16,8 +16,11 @@ import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 interface ConfirmDialogProps {
-  /** The element that opens the dialog; rendered as-is via asChild. */
-  trigger: ReactNode;
+  /** The element that opens the dialog; rendered as-is via asChild. Omit it when controlling `open` yourself,
+   *  for example when the dialog is opened from a menu item. */
+  trigger?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   title: string;
   description: string;
   confirmLabel?: string;
@@ -26,10 +29,10 @@ interface ConfirmDialogProps {
 }
 
 /** In-app replacement for window.confirm: accessible, themed, and keyboard friendly. */
-export function ConfirmDialog({ trigger, title, description, confirmLabel = "Hapus", destructive = true, onConfirm }: ConfirmDialogProps) {
+export function ConfirmDialog({ trigger, open, onOpenChange, title, description, confirmLabel = "Hapus", destructive = true, onConfirm }: ConfirmDialogProps) {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      {trigger ? <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> : null}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
