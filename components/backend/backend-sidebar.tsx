@@ -50,7 +50,7 @@ export function BackendSidebar({ role }: BackendSidebarProps) {
 
       <SidebarContent className="px-2 py-3">
         <SidebarGroup className="p-0">
-          <SidebarGroupLabel className="px-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+          <SidebarGroupLabel className="px-3 text-xs font-medium text-muted-foreground">
             {role === "admin" ? "Administrasi" : "Menu"}
           </SidebarGroupLabel>
           <SidebarGroupContent>

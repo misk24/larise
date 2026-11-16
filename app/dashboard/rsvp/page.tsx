@@ -1,4 +1,4 @@
-import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendStatCard, BackendStatGrid, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { CheckCircle2Icon, Clock3Icon, UsersIcon, XCircleIcon } from "lucide-react";
@@ -48,9 +48,9 @@ export default async function RsvpDashboardPage() {
   return (
     <div className="backend-content space-y-6">
       <BackendPageHeader title="Ringkasan RSVP" description="Pantau respons kehadiran dari semua undangan Anda." />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <BackendStatGrid aria-label="Ringkasan respons">
         {metrics.map((metric) => <BackendStatCard key={metric.label} label={metric.label} value={metric.value.toLocaleString("id-ID")} icon={metric.icon} />)}
-      </div>
+      </BackendStatGrid>
       <Card className="shadow-none">
         <CardHeader><CardTitle>Respons terbaru</CardTitle><CardDescription>Respons tamu yang terkait dengan undangan milik Anda.</CardDescription></CardHeader>
         <CardContent>

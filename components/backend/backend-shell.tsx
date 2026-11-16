@@ -7,7 +7,6 @@ import { useState, useSyncExternalStore, type ReactNode } from "react";
 interface BackendShellProps {
   sidebar: ReactNode;
   header: ReactNode;
-  breadcrumbs: ReactNode;
   footer: ReactNode;
   children: ReactNode;
   variant: "dashboard" | "admin";
@@ -29,7 +28,6 @@ function subscribeWide(onChange: () => void) {
 export function BackendShell({
   sidebar,
   header,
-  breadcrumbs,
   footer,
   children,
   defaultOpen = true,
@@ -52,10 +50,7 @@ export function BackendShell({
         {sidebar}
         <div className="flex min-w-0 flex-1 flex-col">
           {header}
-          <main className="backend-page">
-            <div className="mb-6 min-w-0">{breadcrumbs}</div>
-            {children}
-          </main>
+          <main className="backend-page">{children}</main>
           {footer}
         </div>
       </SidebarProvider>

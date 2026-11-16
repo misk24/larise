@@ -28,8 +28,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       defaultOpen={defaultOpen}
       variant="admin"
       sidebar={<BackendSidebar role="admin" />}
-      header={<BackendHeader user={user} profile={profile} role="admin" />}
-      breadcrumbs={<BackendBreadcrumb role="admin" />}
+      header={<BackendHeader user={user} profile={profile} role="admin" breadcrumbs={<BackendBreadcrumb role="admin" />} />}
       footer={<Footer />}
     >
       {children}

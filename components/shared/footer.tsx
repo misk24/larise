@@ -10,7 +10,7 @@ export function Footer() {
         </p>
         <div className="flex items-center gap-5">
           {footer.socials.map((social) => (
-            <a key={social.label} href={social.href}>
+            <a key={social.label} href={social.href} aria-label={social.label}>
               <Icon icon={`simple-icons:${social.icon}`} className="size-4" />
             </a>
           ))}

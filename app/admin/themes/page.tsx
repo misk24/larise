@@ -1,6 +1,5 @@
 import { BackendPageHeader } from "@/components/backend/backend-ui";
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminTableError } from "@/components/admin/table-states";
 import { ThemesTable, type AdminThemeRow } from "@/components/admin/tables/themes/themes-table";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -63,27 +62,18 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
   return (
     <div className="backend-content space-y-6">
       <BackendPageHeader title="Kelola Tema" description="Kelola tema undangan yang tersedia untuk pengguna." actions={<Button asChild><Link href="/admin/themes/create">Buat Tema</Link></Button>} />
-
-      <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>Daftar Tema</CardTitle>
-          <CardDescription>{error ? "Jumlah tema tidak dapat dimuat." : `Total ${total.toLocaleString("id-ID")} tema`}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {error ? (
-            <AdminTableError title="Tema gagal dimuat" description="Periksa izin baca admin pada database." />
-          ) : (
-            <ThemesTable
-              data={(data ?? []) as AdminThemeRow[]}
-              page={page}
-              pageSize={pageSize}
-              rowCount={total}
-              sort={sort}
-              direction={direction}
-            />
-          )}
-        </CardContent>
-      </Card>
+      {error ? (
+        <AdminTableError title="Tema gagal dimuat" description="Periksa izin baca admin pada database." />
+      ) : (
+        <ThemesTable
+          data={(data ?? []) as AdminThemeRow[]}
+          page={page}
+          pageSize={pageSize}
+          rowCount={total}
+          sort={sort}
+          direction={direction}
+        />
+      )}
     </div>
   );
 }

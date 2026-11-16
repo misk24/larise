@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/actions/auth";
 import { notFound } from "next/navigation";
 import { z } from "zod";
-import { BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendErrorState, BackendPageHeader } from "@/components/backend/backend-ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
@@ -19,12 +19,36 @@ export default async function ThemeDetailPage({ params }: { params: Promise<{ id
     supabase.from("theme_sections").select("id,section_key,section_type,position,default_content,is_required,is_visible").eq("theme_id",id).order("position"),
   ]);
   if (themeError || !theme) notFound();
-  return <div className="backend-content space-y-6">
-    <div className="space-y-3">
-      <Link href="/admin/themes" className="inline-flex items-center gap-1 rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><ChevronLeft className="size-4"/>Kembali ke daftar tema</Link>
-      <BackendPageHeader title={theme.name} description="Atur konfigurasi visual dan struktur konten tema undangan." />
+  return (
+    <div className="backend-content space-y-8">
+      <div className="space-y-3">
+        <Link href="/admin/themes" className="inline-flex items-center gap-1 rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <ChevronLeft aria-hidden="true" className="size-4" />Kembali ke daftar tema
+        </Link>
+        <BackendPageHeader title={theme.name} description="Atur konfigurasi visual dan struktur konten tema undangan." />
+      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle role="heading" aria-level={2} className="text-base">Konfigurasi tema</CardTitle>
+          <CardDescription>Informasi, harga, kategori, dan aset pratinjau tema.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ThemeSettingsForm theme={{ ...theme, features: Array.isArray(theme.features) ? theme.features as string[] : [] }} />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle role="heading" aria-level={2} className="text-base">Section tema</CardTitle>
+          <CardDescription>Kelola isi, visibilitas, dan urutan section. Perubahan di sini mengubah template default, bukan konten undangan yang sudah dibuat.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {sectionsError ? (
+            <BackendErrorState title="Section tema gagal dimuat" description="Muat ulang halaman untuk mencoba lagi." />
+          ) : (
+            <ThemeSectionsBuilder themeId={id} initialSections={(sections ?? []) as never} />
+          )}
+        </CardContent>
+      </Card>
     </div>
-    <Card className="shadow-none"><CardHeader><CardTitle>Konfigurasi tema</CardTitle><CardDescription>Informasi, harga, kategori, dan aset pratinjau tema.</CardDescription></CardHeader><CardContent><ThemeSettingsForm theme={{...theme,features:Array.isArray(theme.features)?theme.features as string[]:[]}}/></CardContent></Card>
-    <Card className="shadow-none"><CardHeader><CardTitle>Theme section builder</CardTitle><CardDescription>Kelola isi, visibilitas, dan urutan section. Perubahan di sini mengubah template default, bukan konten undangan yang sudah dibuat.</CardDescription></CardHeader><CardContent>{sectionsError?<p role="alert" className="text-sm text-destructive">Section tema gagal dimuat. Muat ulang halaman untuk mencoba lagi.</p>:<ThemeSectionsBuilder themeId={id} initialSections={(sections??[]) as never}/>}</CardContent></Card>
-  </div>;
+  );
 }

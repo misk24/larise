@@ -1,7 +1,7 @@
 "use client";
 
 import { ConfirmDialog } from "@/components/backend/confirm-dialog";
-import { BackendEmptyState, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendStatCard, BackendStatGrid, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -186,11 +186,11 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <BackendStatGrid aria-label="Ringkasan tamu">
         {statCards.map(({ label, value, icon }) => (
           <BackendStatCard key={label} label={label} value={value.toLocaleString("id-ID")} icon={icon} />
         ))}
-      </div>
+      </BackendStatGrid>
 
       <Card className="shadow-none">
         <CardHeader>

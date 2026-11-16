@@ -45,7 +45,7 @@ export function ThemeActions({ id, active, name }: { id: string; active: boolean
   }
 
   return (
-    <div className="flex flex-nowrap items-center gap-2 whitespace-nowrap">
+    <div className="relative flex flex-nowrap items-center gap-2 whitespace-nowrap">
       <Button type="button" size="sm" variant="outline" disabled={busy} onClick={toggleStatus}>
         {busy ? "Memproses..." : active ? "Nonaktifkan" : "Aktifkan"}
       </Button>

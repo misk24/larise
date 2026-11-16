@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendSectionHeader, BackendStatCard } from "@/components/backend/backend-ui";
+import { BackendEmptyState, BackendErrorState, BackendPageHeader, BackendSectionHeader, BackendStatCard, BackendStatGrid } from "@/components/backend/backend-ui";
 import { InvitationStatusBadge, coupleNames } from "@/components/backend/invitation-meta";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
@@ -61,11 +61,11 @@ export default async function DashboardPage() {
         actions={<Button asChild><Link href="/dashboard/invitations/create"><PlusIcon className="size-4" />Buat Undangan</Link></Button>}
       />
 
-      <section aria-label="Statistik" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <BackendStatGrid aria-label="Statistik">
         {stats.map((stat) => (
           <BackendStatCard key={stat.title} label={stat.title} value={stat.value.toLocaleString("id-ID")} icon={stat.icon} />
         ))}
-      </section>
+      </BackendStatGrid>
 
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)]">
         <section className="min-w-0 space-y-4">
