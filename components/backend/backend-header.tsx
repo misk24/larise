@@ -1,7 +1,8 @@
+import { BackendProfileMenu } from "@/components/backend/backend-profile-menu";
+import { BackendThemeToggle } from "@/components/backend/backend-theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { BackendProfileMenu } from "@/components/backend/backend-profile-menu";
 import type { Profile } from "@/types/database";
 import type { User } from "@supabase/supabase-js";
 
@@ -21,21 +22,20 @@ export function BackendHeader({ user, profile, role }: BackendHeaderProps) {
       .slice(0, 2) ||
     user.email?.[0].toUpperCase() ||
     (role === "admin" ? "A" : "U");
+  const name = profile?.full_name || (role === "admin" ? "Admin" : "User");
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-sidebar">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:gap-6 sm:px-6 lg:px-8">
-        <SidebarTrigger className="text-muted-foreground hover:bg-accent/10" />
-        <div className="flex shrink-0 items-center gap-4">
+    <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <SidebarTrigger className="size-9 text-muted-foreground" />
+        <div className="flex shrink-0 items-center gap-1">
+          <BackendThemeToggle />
           <BackendProfileMenu
             trigger={
-              <Button variant="ghost" size="icon" className="backend-profile-trigger size-9.5 rounded-full">
-                <Avatar className="size-9.5">
-                  <AvatarImage
-                    src={profile?.avatar_url || ""}
-                    alt={profile?.full_name || (role === "admin" ? "Admin" : "User")}
-                  />
-                  <AvatarFallback className="backend-profile-avatar">{initials}</AvatarFallback>
+              <Button variant="ghost" size="icon" className="size-9 rounded-full" aria-label={`Menu akun ${name}`}>
+                <Avatar className="size-8">
+                  <AvatarImage src={profile?.avatar_url || ""} alt={name} />
+                  <AvatarFallback className="bg-secondary text-xs font-medium text-secondary-foreground">{initials}</AvatarFallback>
                 </Avatar>
               </Button>
             }

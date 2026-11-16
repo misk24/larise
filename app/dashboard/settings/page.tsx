@@ -24,7 +24,7 @@ const settingsItems = [
   },
   {
     title: "Privasi & Keamanan",
-    description: "Kelola informasi profil dan metode login melalui halaman My Account.",
+    description: "Kelola informasi profil dan metode login melalui halaman Akun Saya.",
     href: "/dashboard/account",
     label: "Kelola akun",
     icon: ShieldCheckIcon,
@@ -39,14 +39,14 @@ export default async function SettingsPage() {
 
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
-      <BackendPageHeader title="Settings" description="Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing." />
+      <BackendPageHeader title="Pengaturan" description="Pengaturan aplikasi dan undangan Anda. Pengaturan yang spesifik untuk acara tetap dikelola dari halaman undangan masing-masing." />
 
       <div className="grid gap-4">
         {settingsItems.map((item) => (
           <Card key={item.title} className="shadow-none">
             <CardHeader className="flex flex-row items-start gap-4 space-y-0 p-5 sm:p-6">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
-                <item.icon className="size-5 text-muted-foreground" />
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
+                <item.icon aria-hidden="true" className="size-5 text-secondary-foreground" />
               </div>
               <div className="min-w-0 flex-1 space-y-1">
                 <CardTitle className="text-base">{item.title}</CardTitle>

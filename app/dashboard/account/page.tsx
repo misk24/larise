@@ -1,4 +1,4 @@
-import { BackendPageHeader } from "@/components/backend/backend-ui";
+import { BackendErrorState, BackendPageHeader } from "@/components/backend/backend-ui";
 import { AccountForm } from "@/components/dashboard/account-form";
 import { LoginSecurityCard } from "@/components/dashboard/login-security-card";
 import { AccountDangerZone } from "@/components/dashboard/account-danger-zone";
@@ -22,12 +22,8 @@ export default async function MyAccountPage() {
   if (error || !profile) {
     return (
       <div className="backend-content mx-auto w-full max-w-4xl space-y-6">
-        <BackendPageHeader title="My Account" description="Kelola profil dan akses akun LARISÉ Anda." />
-        <Card className="shadow-none">
-          <CardContent className="p-6 text-sm text-destructive">
-            Data profil belum dapat dimuat. Muat ulang halaman atau coba beberapa saat lagi.
-          </CardContent>
-        </Card>
+        <BackendPageHeader title="Akun Saya" description="Kelola profil dan akses akun LARISÉ Anda." />
+        <BackendErrorState title="Data profil gagal dimuat" description="Muat ulang halaman atau coba beberapa saat lagi." />
       </div>
     );
   }
@@ -40,7 +36,7 @@ export default async function MyAccountPage() {
 
   return (
     <div className="backend-content mx-auto w-full max-w-4xl space-y-7">
-      <BackendPageHeader title="My Account" description="Kelola informasi profil dan metode login yang digunakan untuk mengakses LARISÉ." />
+      <BackendPageHeader title="Akun Saya" description="Kelola informasi profil dan metode login yang digunakan untuk mengakses LARISÉ." />
 
       <AccountForm user={user} profile={profile} />
 
@@ -49,8 +45,8 @@ export default async function MyAccountPage() {
       <div className="max-w-md">
         <Card className="shadow-none">
           <CardContent className="flex items-start gap-3 p-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
-              <CalendarDaysIcon className="size-5 text-muted-foreground" />
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
+              <CalendarDaysIcon aria-hidden="true" className="size-5 text-secondary-foreground" />
             </div>
             <div className="min-w-0 space-y-1">
               <p className="text-sm font-medium">Bergabung sejak</p>

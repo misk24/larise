@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useMemo } from "react";
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
+import { BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Button } from "@/components/ui/button";
 import { AdminDataTable, type AdminTableFilter } from "@/components/admin/data-table";
 import { ThemeActions } from "@/components/admin/theme-actions";
@@ -56,16 +56,16 @@ export function ThemesTable(props: Props) {
       accessorKey: "price",
       header: "Harga",
       enableSorting: true,
-      cell: ({ row }) => row.original.price ? `Rp ${row.original.price.toLocaleString("id-ID")}` : "Gratis",
+      cell: ({ row }) => <span className="tabular-nums">{row.original.price ? `Rp ${row.original.price.toLocaleString("id-ID")}` : "Gratis"}</span>,
     },
     {
       accessorKey: "is_active",
       header: "Status",
       enableSorting: true,
       cell: ({ row }) => (
-        <Badge variant={row.original.is_active ? "default" : "secondary"}>
+        <BackendStatusBadge tone={row.original.is_active ? "success" : "neutral"}>
           {row.original.is_active ? "Aktif" : "Nonaktif"}
-        </Badge>
+        </BackendStatusBadge>
       ),
     },
     {

@@ -31,4 +31,10 @@ export const userNavs = [
 
 export const subpageNavs: Record<string, string> = {
   create: "Buat Undangan",
+  account: "Akun Saya",
+  builder: "Editor Undangan",
+};
+
+export const adminSubpageNavs: Record<string, string> = {
+  create: "Buat Tema",
 };

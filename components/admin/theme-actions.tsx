@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfirmDialog } from "@/components/backend/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -29,8 +30,6 @@ export function ThemeActions({ id, active, name }: { id: string; active: boolean
   }
 
   async function deleteTheme() {
-    if (!window.confirm(`Hapus tema "${name}"? Tindakan ini tidak dapat dibatalkan.`)) return;
-
     setBusy(true);
     setMessage("");
     try {
@@ -50,9 +49,12 @@ export function ThemeActions({ id, active, name }: { id: string; active: boolean
       <Button type="button" size="sm" variant="outline" disabled={busy} onClick={toggleStatus}>
         {busy ? "Memproses..." : active ? "Nonaktifkan" : "Aktifkan"}
       </Button>
-      <Button type="button" size="sm" variant="destructive" disabled={busy} onClick={deleteTheme}>
-        Hapus
-      </Button>
+      <ConfirmDialog
+        title={`Hapus tema "${name}"?`}
+        description="Tindakan ini tidak dapat dibatalkan."
+        onConfirm={deleteTheme}
+        trigger={<Button type="button" size="sm" variant="destructive" disabled={busy}>Hapus</Button>}
+      />
       {message ? <p role="alert" className="absolute left-0 top-full mt-1 w-56 whitespace-normal text-xs text-destructive">{message}</p> : null}
     </div>
   );

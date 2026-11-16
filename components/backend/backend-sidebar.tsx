@@ -13,14 +13,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { adminNavs, userNavs } from "@/config/navigation";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -30,72 +23,64 @@ interface BackendSidebarProps {
 
 export function BackendSidebar({ role }: BackendSidebarProps) {
   const pathname = usePathname();
-  const { state, isMobile, setOpenMobile } = useSidebar();
-  const collapsed = state === "collapsed";
+  const { isMobile, setOpenMobile } = useSidebar();
   const items = role === "admin" ? adminNavs : userNavs;
+  const home = role === "admin" ? "/admin" : "/dashboard";
 
   return (
-    <Sidebar collapsible="icon" className="backend-sidebar">
-      <SidebarContent className="bg-sidebar text-sidebar-foreground">
-        <SidebarHeader>
-          <div
-            className={cn(
-              "overflow-hidden p-2 transition-all duration-300",
-              collapsed ? "scale-90 opacity-0" : "scale-100 opacity-100",
-            )}
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="h-14 justify-center border-b border-sidebar-border px-4 group-data-[collapsible=icon]:px-2">
+        <Link
+          href={home}
+          aria-label="LARISÉ, ke halaman utama"
+          className="flex items-center rounded-md outline-hidden focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:justify-center"
+        >
+          <span className="group-data-[collapsible=icon]:hidden">
+            <Logo alt="" className="dark:hidden" />
+            <Logo alt="" variant="footer" className="hidden dark:block" />
+          </span>
+          <span
+            aria-hidden="true"
+            className="hidden size-8 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground group-data-[collapsible=icon]:flex"
           >
-            <Logo />
-          </div>
-        </SidebarHeader>
+            L
+          </span>
+        </Link>
+      </SidebarHeader>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground">
-            Menu
+      <SidebarContent className="px-2 py-3">
+        <SidebarGroup className="p-0">
+          <SidebarGroupLabel className="px-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            {role === "admin" ? "Administrasi" : "Menu"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-0.5">
               {items.map((item) => {
                 const isActive =
                   pathname === item.href ||
                   (item.href !== "/dashboard" &&
                     item.href !== "/admin" &&
                     pathname.startsWith(`${item.href}/`));
-                const menu = (
-                  <SidebarMenuButton
-                    isActive={isActive}
-                    className={cn(
-                      "rounded-md transition-colors",
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                    )}
-                    asChild
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={() => {
-                        if (isMobile) setOpenMobile(false);
-                      }}
-                      className="flex items-center gap-4 px-4 py-5"
-                    >
-                      <item.icon className="size-5" />
-                      <p>{item.label}</p>
-                    </Link>
-                  </SidebarMenuButton>
-                );
 
                 return (
                   <SidebarMenuItem key={item.href}>
-                    {collapsed ? (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>{menu}</TooltipTrigger>
-                          <TooltipContent side="right">{item.label}</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ) : (
-                      menu
-                    )}
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      tooltip={item.label}
+                      className="relative h-9 gap-3 px-3 text-sm text-sidebar-foreground before:absolute before:top-1/2 before:left-0 before:h-5 before:w-0.5 before:-translate-y-1/2 before:rounded-full before:bg-primary before:opacity-0 before:transition-opacity data-[active=true]:before:opacity-100 group-data-[collapsible=icon]:before:hidden"
+                    >
+                      <Link
+                        href={item.href}
+                        aria-current={isActive ? "page" : undefined}
+                        onClick={() => {
+                          if (isMobile) setOpenMobile(false);
+                        }}
+                      >
+                        <item.icon aria-hidden="true" />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
               })}

@@ -279,7 +279,7 @@ export function InvitationBuilder({
         <div className="text-sm">
           <span className="font-medium">Status:</span>{" "}
           <span className="text-muted-foreground">{published ? "Published" : "Draft"}</span>
-          {status !== "saved" && <span className="ml-2 text-amber-600">• Belum tersimpan</span>}
+          {status !== "saved" && <span className="ml-2 text-warning">• Belum tersimpan</span>}
         </div>
         <Button onClick={togglePublish} disabled={isPublishing || status !== "saved"} variant={published ? "outline" : "default"}>
           {isPublishing && <Loader2 className="size-4 animate-spin" />}

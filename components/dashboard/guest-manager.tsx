@@ -1,15 +1,17 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
+import { ConfirmDialog } from "@/components/backend/confirm-dialog";
+import { BackendEmptyState, BackendStatCard, BackendStatusBadge } from "@/components/backend/backend-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/client";
 import type { Guest, RSVP, RSVPStatus } from "@/types/database";
-import { Check, Copy, Loader2, Pencil, Plus, Search, Trash2, UserCheck, UserX, Users } from "lucide-react";
+import { Check, Clock3, Copy, Loader2, Pencil, Plus, Search, Trash2, UserCheck, UserX, Users } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -136,7 +138,6 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
   }
 
   async function handleDeleteGuest(guest: GuestWithRsvp) {
-    if (!window.confirm(`Hapus tamu “${guest.name}”? Data RSVP terkait juga bisa terpengaruh.`)) return;
     setIsLoading(true);
     try {
       const { error } = await supabase
@@ -171,37 +172,27 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
 
   function getRsvpBadge(guest: GuestWithRsvp) {
     const status = latestRsvp(guest)?.status;
-    if (status === "attending") return <Badge className="border-chart-3/30 bg-chart-3/20 text-chart-3">Hadir</Badge>;
-    if (status === "not_attending") return <Badge variant="destructive">Tidak hadir</Badge>;
-    return <Badge variant="secondary">Menunggu</Badge>;
+    if (status === "attending") return <BackendStatusBadge tone="success">Hadir</BackendStatusBadge>;
+    if (status === "not_attending") return <BackendStatusBadge tone="danger">Tidak hadir</BackendStatusBadge>;
+    return <BackendStatusBadge tone="neutral">Menunggu</BackendStatusBadge>;
   }
 
   const statCards = [
     { label: "Total tamu", value: stats.total, icon: Users },
     { label: "Konfirmasi hadir", value: stats.attending, icon: UserCheck },
     { label: "Tidak hadir", value: stats.notAttending, icon: UserX },
-    { label: "Menunggu RSVP", value: stats.pending, icon: Users },
+    { label: "Menunggu RSVP", value: stats.pending, icon: Clock3 },
   ];
 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {statCards.map(({ label, value, icon: Icon }) => (
-          <Card key={label} className="border-border/50">
-            <CardContent className="flex items-center gap-3 p-4">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                <Icon className="size-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-2xl font-semibold tabular-nums">{value}</p>
-                <p className="text-xs text-muted-foreground">{label}</p>
-              </div>
-            </CardContent>
-          </Card>
+        {statCards.map(({ label, value, icon }) => (
+          <BackendStatCard key={label} label={label} value={value.toLocaleString("id-ID")} icon={icon} />
         ))}
       </div>
 
-      <Card className="border-border/50">
+      <Card className="shadow-none">
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -255,21 +246,21 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input aria-label="Cari tamu" placeholder="Cari nama, telepon, atau email..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
             </div>
-            <select
-              aria-label="Filter status RSVP"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-              className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
-            >
-              <option value="all">Semua status RSVP</option>
-              <option value="pending">Menunggu</option>
-              <option value="attending">Hadir</option>
-              <option value="not_attending">Tidak hadir</option>
-            </select>
+            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as typeof statusFilter)}>
+              <SelectTrigger aria-label="Filter status RSVP" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua status RSVP</SelectItem>
+                <SelectItem value="pending">Menunggu</SelectItem>
+                <SelectItem value="attending">Hadir</SelectItem>
+                <SelectItem value="not_attending">Tidak hadir</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {filteredGuests.length > 0 ? (
-            <div className="overflow-hidden rounded-lg border">
+            <div>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -298,14 +289,21 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
                         <TableCell>
                           <div className="flex items-center justify-end gap-1">
                             <Button type="button" variant="ghost" size="icon" aria-label={`Salin link untuk ${guest.name}`} onClick={() => copyInvitationLink(guest.public_token)}>
-                              {copiedId === guest.public_token ? <Check className="size-4 text-chart-3" /> : <Copy className="size-4" />}
+                              {copiedId === guest.public_token ? <Check className="size-4 text-success" /> : <Copy className="size-4" />}
                             </Button>
                             <Button type="button" variant="ghost" size="icon" aria-label={`Edit ${guest.name}`} onClick={() => openEditDialog(guest)}>
                               <Pencil className="size-4" />
                             </Button>
-                            <Button type="button" variant="ghost" size="icon" aria-label={`Hapus ${guest.name}`} disabled={isLoading} onClick={() => handleDeleteGuest(guest)} className="text-destructive hover:text-destructive">
-                              <Trash2 className="size-4" />
-                            </Button>
+                            <ConfirmDialog
+                              title={`Hapus tamu “${guest.name}”?`}
+                              description="Data RSVP terkait juga bisa terpengaruh."
+                              onConfirm={() => handleDeleteGuest(guest)}
+                              trigger={
+                                <Button type="button" variant="ghost" size="icon" aria-label={`Hapus ${guest.name}`} disabled={isLoading} className="text-destructive hover:text-destructive">
+                                  <Trash2 className="size-4" />
+                                </Button>
+                              }
+                            />
                           </div>
                         </TableCell>
                       </TableRow>
@@ -315,12 +313,13 @@ export function GuestManager({ invitationId, initialGuests, invitationSlug }: Gu
               </Table>
             </div>
           ) : (
-            <div className="py-12 text-center">
-              <Users className="mx-auto mb-4 size-12 text-muted-foreground/50" />
-              <p className="text-muted-foreground">
-                {guests.length === 0 ? "Belum ada tamu. Tambahkan tamu pertama Anda." : "Tidak ada tamu yang cocok dengan pencarian atau filter."}
-              </p>
-            </div>
+            <BackendEmptyState
+              icon={Users}
+              title={guests.length === 0 ? "Belum ada tamu" : "Tidak ada hasil"}
+              description={guests.length === 0 ? "Tambahkan tamu pertama untuk mulai membagikan link undangan personal." : "Tidak ada tamu yang cocok dengan pencarian atau filter."}
+              action={guests.length === 0 ? <Button onClick={openAddDialog}><Plus className="size-4" />Tambah tamu</Button> : undefined}
+              className="min-h-56 border-0 bg-transparent"
+            />
           )}
         </CardContent>
       </Card>

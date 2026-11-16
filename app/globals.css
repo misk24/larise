@@ -4,7 +4,8 @@
 @import "../styles/backend.css";
 @import "../styles/backend-theme.css";
 
-@custom-variant dark (&:is(.dark *));
+/* Backend dark mode is driven by next-themes (data-theme); landing keeps its own scope. */
+@custom-variant dark (&:is(.dark *, [data-theme="dark"] body:has(.backend-shell) *));
 
 @theme inline {
   --color-background: var(--background);
@@ -23,6 +24,13 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-muted: var(--destructive-muted);
+  --color-success: var(--success);
+  --color-success-muted: var(--success-muted);
+  --color-warning: var(--warning);
+  --color-warning-muted: var(--warning-muted);
+  --color-info: var(--info);
+  --color-info-muted: var(--info-muted);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
