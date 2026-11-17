@@ -1,5 +1,6 @@
 "use client";
 
+import { useId, type ReactNode } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -40,66 +41,89 @@ function writeValue(json: string, group: DesignGroup, key: string, value: unknow
   }
 }
 
+const POSITIONS = [
+  { value: "top-left", label: "Atas kiri" },
+  { value: "top-right", label: "Atas kanan" },
+  { value: "bottom-left", label: "Bawah kiri" },
+  { value: "bottom-right", label: "Bawah kanan" },
+];
+const DIVIDER_STYLES = [
+  { value: "solid", label: "Solid" },
+  { value: "dashed", label: "Putus-putus" },
+  { value: "dotted", label: "Titik-titik" },
+];
+
 export function ThemeDecorationControls({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const uid = useId();
   const icon = readGroup(value, "icon");
   const divider = readGroup(value, "divider");
   const ornament = readGroup(value, "ornament");
   const layout = readGroup(value, "layout");
   const update = (group: DesignGroup, key: string, next: unknown) => onChange(writeValue(value, group, key, next));
+  const fieldId = (group: DesignGroup, key: string) => `${uid}-${group}-${key}`;
+
   const numberField = (label: string, group: DesignGroup, key: string, current: unknown, min: number, max: number, step = 1) => (
-    <div className="space-y-1">
-      <Label>{label}</Label>
-      <Input type="number" min={min} max={max} step={step} value={typeof current === "number" ? current : ""} onChange={(event) => update(group, key, event.target.value === "" ? undefined : Number(event.target.value))} />
+    <div className="space-y-1.5">
+      <Label htmlFor={fieldId(group, key)}>{label}</Label>
+      <Input id={fieldId(group, key)} type="number" inputMode="decimal" min={min} max={max} step={step} className="tabular-nums" value={typeof current === "number" ? current : ""} onChange={(event) => update(group, key, event.target.value === "" ? undefined : Number(event.target.value))} />
     </div>
   );
-  const colorField = (label: string, group: DesignGroup, key: string, current: unknown, placeholder = "#8b7565") => (
-    <div className="space-y-1">
-      <Label>{label}</Label>
-      <Input value={typeof current === "string" ? current : ""} placeholder={placeholder} maxLength={64} onChange={(event) => update(group, key, event.target.value)} />
+  const colorField = (label: string, group: DesignGroup, key: string, current: unknown, placeholder = "#8b7565") => {
+    const color = typeof current === "string" ? current : "";
+    return (
+      <div className="space-y-1.5">
+        <Label htmlFor={fieldId(group, key)}>{label}</Label>
+        <div className="relative">
+          {/* The swatch is a visual echo of the typed value; an invalid value simply paints nothing. */}
+          <span aria-hidden="true" className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 rounded-full border" style={{ backgroundColor: color || "transparent" }} />
+          <Input id={fieldId(group, key)} className="pl-9" value={color} placeholder={placeholder} maxLength={64} onChange={(event) => update(group, key, event.target.value)} />
+        </div>
+      </div>
+    );
+  };
+  const selectField = (label: string, group: DesignGroup, key: string, current: unknown, fallback: string, options: { value: string; label: string }[]) => (
+    <div className="space-y-1.5">
+      <Label htmlFor={fieldId(group, key)}>{label}</Label>
+      <Select value={typeof current === "string" ? current : fallback} onValueChange={(next) => update(group, key, next)}>
+        <SelectTrigger id={fieldId(group, key)} className="w-full"><SelectValue /></SelectTrigger>
+        <SelectContent>{options.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectContent>
+      </Select>
     </div>
   );
+  const group = (title: string, children: ReactNode) => (
+    <fieldset className="space-y-3 rounded-lg border bg-muted/20 p-4">
+      <legend className="px-1 text-sm font-medium">{title}</legend>
+      <div className="grid gap-3 sm:grid-cols-2">{children}</div>
+    </fieldset>
+  );
+
   return (
-    <section className="space-y-3 border-t pt-4" aria-labelledby="decoration-controls-title">
+    <section className="space-y-4 border-t pt-4" aria-labelledby={`${uid}-title`}>
       <div>
-        <h6 id="decoration-controls-title" className="text-sm font-semibold">Elemen dekoratif & jarak</h6>
-        <p className="text-xs text-muted-foreground">Pengaturan bersifat opsional dan hanya aktif pada elemen yang mendukungnya.</p>
+        <h6 id={`${uid}-title`} className="text-sm font-semibold">Elemen dekoratif dan jarak</h6>
+        <p className="text-xs text-muted-foreground">Semua kolom opsional. Kolom yang dikosongkan memakai nilai bawaan tema.</p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {colorField("Warna ikon", "icon", "color", icon.color)}
-        {numberField("Ukuran ikon (px)", "icon", "size", icon.size, 12, 96)}
-        {numberField("Ketebalan garis ikon", "icon", "strokeWidth", icon.strokeWidth, 1, 4, 0.25)}
-        {colorField("Warna divider", "divider", "color", divider.color)}
-        {numberField("Ketebalan divider (px)", "divider", "thickness", divider.thickness, 1, 8)}
-        {numberField("Lebar divider (%)", "divider", "width", divider.width, 10, 100)}
-        <div className="space-y-1">
-          <Label>Gaya divider</Label>
-          <Select value={typeof divider.style === "string" ? divider.style : "solid"} onValueChange={(next) => update("divider", "style", next)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="solid">Solid</SelectItem>
-              <SelectItem value="dashed">Dashed</SelectItem>
-              <SelectItem value="dotted">Dotted</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        {numberField("Jarak divider (px)", "divider", "spacing", divider.spacing, 0, 160)}
-        {colorField("Warna ornament", "ornament", "color", ornament.color)}
-        {numberField("Ukuran ornament (px)", "ornament", "size", ornament.size, 8, 160)}
-        {numberField("Opacity ornament (0–1)", "ornament", "opacity", ornament.opacity, 0, 1, 0.05)}
-        <div className="space-y-1">
-          <Label>Posisi ornament</Label>
-          <Select value={typeof ornament.position === "string" ? ornament.position : "top-right"} onValueChange={(next) => update("ornament", "position", next)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="top-left">Atas kiri</SelectItem>
-              <SelectItem value="top-right">Atas kanan</SelectItem>
-              <SelectItem value="bottom-left">Bawah kiri</SelectItem>
-              <SelectItem value="bottom-right">Bawah kanan</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      {group("Ikon", <>
+        {colorField("Warna", "icon", "color", icon.color)}
+        {numberField("Ukuran (px)", "icon", "size", icon.size, 12, 96)}
+        {numberField("Ketebalan garis", "icon", "strokeWidth", icon.strokeWidth, 1, 4, 0.25)}
+      </>)}
+      {group("Divider", <>
+        {colorField("Warna", "divider", "color", divider.color)}
+        {selectField("Gaya", "divider", "style", divider.style, "solid", DIVIDER_STYLES)}
+        {numberField("Ketebalan (px)", "divider", "thickness", divider.thickness, 1, 8)}
+        {numberField("Lebar (%)", "divider", "width", divider.width, 10, 100)}
+        {numberField("Jarak (px)", "divider", "spacing", divider.spacing, 0, 160)}
+      </>)}
+      {group("Ornamen", <>
+        {colorField("Warna", "ornament", "color", ornament.color)}
+        {selectField("Posisi", "ornament", "position", ornament.position, "top-right", POSITIONS)}
+        {numberField("Ukuran (px)", "ornament", "size", ornament.size, 8, 160)}
+        {numberField("Opacity (0 sampai 1)", "ornament", "opacity", ornament.opacity, 0, 1, 0.05)}
+      </>)}
+      {group("Tata letak", <>
         {numberField("Jarak antar-elemen (px)", "layout", "elementGap", layout.elementGap, 0, 96)}
-      </div>
+      </>)}
     </section>
   );
 }
