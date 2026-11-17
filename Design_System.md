@@ -17,7 +17,7 @@ LARISÉ uses a minimal editorial + modern luxe direction: intimate, calm, contem
 
 The repository intentionally separates brand-facing and application UI typography:
 
-- **Marketing/frontend and editorial authentication surfaces:** Rosehot for display/headline use and Satoshi for body text.
+- **Marketing/frontend and authentication surfaces:** Rosehot for display/headline use and Satoshi for body text, loaded with `next/font/local` in `app/fonts.ts`.
 - **Dashboard and admin/backend:** Geist Sans for interface text and headings; Geist Mono for code and other monospaced content.
 - **Published invitations:** typography is controlled by the selected invitation theme, not forced to inherit the marketing or dashboard font stack.
 
@@ -27,6 +27,9 @@ Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`
 
 - **Frontend:** use original LARISÉ reusable components that match the brand system. Do not introduce shadcn/ui components into brand-facing frontend/landing-page UI.
 - **Backend:** shadcn/ui is the standard component foundation for dashboard and admin application UI.
+- Frontend building blocks live in `components/landing/ui`: `Container`, `Button` (`landingButtonStyles`), `Accordion`, `BrandLogo`, `ThemeToggle`, `AuthHeading`, `Field` and `PasswordField`, `OAuthButton`. Landing navigation data is in `config/landing-navigation.ts`; `config/navigation.ts` belongs to the backend.
+- Each landing section has its own layout. Do not bring back shared section scaffolding (the old `Eyebrow`, `SectionHeader`, and `NumberedColumns` were removed because they made sections look identical).
+- Auth pages (`app/(auth)`) use the `.frontend-shell` grid: form column plus a `hero.jpg` panel from `lg` up. Fields show inline errors with `noValidate`, and focus moves to the first invalid field.
 - Prefer existing project components and variants within the appropriate boundary. Avoid duplicated one-off primitives.
 - Keep component APIs focused and reusable without turning every small visual element into an abstraction.
 - Use semantic HTML, associated form labels, visible keyboard focus, accessible names for icon-only controls, and appropriate disabled/loading/error states.
@@ -37,6 +40,30 @@ Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`
 - Backend palette variables are scoped to `.backend-shell` in `styles/backend-theme.css`; they must not alter marketing/frontend or published invitation theme colors.
 - Reuse semantic CSS variables and Tailwind mappings rather than scattering hardcoded colors.
 - Preserve readability in supported light/dark themes.
+
+### Landing and auth palette
+
+Tokens live in `styles/frontend.css`, scoped to `.frontend-shell`, and map to Tailwind through `@theme inline` (`bg-paper`, `text-fg`, and so on). Do not use raw hex values in landing or auth components.
+
+| Token | Use | Dark mode |
+| --- | --- | --- |
+| `paper`, `paper-deep` | Page and alternate section backgrounds | Flips |
+| `surface` | Card and input surfaces | Flips |
+| `fg` | Text and strokes on page surfaces | Flips |
+| `danger` | Form errors | Flips |
+| `ink`, `ink-soft`, `ink-hover` | Dark sections (value, CTA, footer) | `ink` darkens, stays a dark section |
+| `ivory` | Text on `ink` | Fixed light |
+| `gold-deep` | Accent text on light surfaces | Lightens |
+| `gold-soft` | Accent text on `ink` | Fixed |
+| `gold` | Decoration only (3:1 on paper, too low for small text) | Fixed |
+
+Check WCAG contrast for every new pairing: 4.5:1 for text, 3:1 for input borders and other UI strokes.
+
+### Theme (light, dark, system)
+
+- `next-themes` runs with `attribute="data-theme"`, `defaultTheme="system"` and `storageKey="larise-theme"`. It does not use the `.dark` class, so dark mode applies only to `html[data-theme="dark"] .frontend-shell`. The dashboard, admin, and published invitations never read it.
+- `ThemeToggle` (`components/landing/ui/theme-toggle.tsx`) is the only switch. It sits in the navbar and the mobile menu.
+- Sections that are dark in both themes use `ink` with `ivory` text. Do not use `fg` or `paper` inside them.
 - Use consistent spacing, container widths, radii, and subtle borders. Not every section needs a card.
 - Design mobile first. Long names, URLs, and Indonesian text must wrap without causing page-wide horizontal overflow.
 - Keep interactive targets comfortable to tap and maintain a clear primary action.
@@ -44,7 +71,8 @@ Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`
 ## Motion and accessibility
 
 - Motion should support hierarchy and feedback, not delay access to content.
-- Use the existing motion approach in the affected area; dependencies include Framer Motion and GSAP, but do not mix them in a component without a concrete reason.
+- Framer Motion is the only animation library (GSAP and `motion` were removed). `MotionProvider` wraps the app with `reducedMotion="user"`.
+- On the landing, animate only the hero and the collection. Other sections stay static so one moment carries the page.
 - Respect `prefers-reduced-motion`, clean up animations, and avoid motion that blocks interaction.
 - Check keyboard behavior, focus visibility, mobile layout, and loading/empty/error/success states for changed flows.
 
