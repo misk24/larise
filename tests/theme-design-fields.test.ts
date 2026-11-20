@@ -3,6 +3,7 @@ import { validateSectionDesign } from "@/lib/validation/section-design";
 import {
   DESIGN_PANELS,
   SECTION_TYPES,
+  STARTER_SECTION_TYPES,
   clearDesign,
   countDesignValues,
   nextSectionKey,
@@ -37,6 +38,13 @@ describe("theme design fields", () => {
     expect(SECTION_TYPES.map((type) => type.value)).toEqual(
       ["cover", "opening", "quote", "couple", "event", "location", "gallery", "rsvp", "gift", "closing"],
     );
+  });
+
+  it("starts new themes from unique, allowed section types with cover first", () => {
+    const allowed = SECTION_TYPES.map((type) => type.value) as string[];
+    expect(new Set(STARTER_SECTION_TYPES).size).toBe(STARTER_SECTION_TYPES.length);
+    expect(STARTER_SECTION_TYPES.every((type) => allowed.includes(type))).toBe(true);
+    expect(STARTER_SECTION_TYPES[0]).toBe("cover");
   });
 
   it("sets and reads one value without touching the rest of the content", () => {

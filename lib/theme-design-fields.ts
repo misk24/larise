@@ -157,6 +157,9 @@ export const SECTION_TYPES = [
   { value: "closing", label: "Penutup", description: "Ucapan terima kasih." },
 ] as const;
 
+/** Urutan awal untuk tema baru yang masih kosong. Konten default dibiarkan kosong; renderer memakai bawaannya. */
+export const STARTER_SECTION_TYPES = ["cover", "opening", "couple", "event", "location", "gallery", "rsvp", "closing"] as const;
+
 export function sectionTypeLabel(type: string): string {
   return SECTION_TYPES.find((item) => item.value === type)?.label ?? type;
 }

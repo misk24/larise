@@ -17,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { SECTION_TYPES, nextSectionKey, parseContent, sectionTypeLabel, type SectionContent } from "@/lib/theme-design-fields";
+import { SECTION_TYPES, STARTER_SECTION_TYPES, nextSectionKey, parseContent, sectionTypeLabel, type SectionContent } from "@/lib/theme-design-fields";
 
 type Section = {
   id: string;
@@ -144,6 +144,34 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
     }
   }
 
+  /** Membuat set section standar satu per satu agar urutan posisi dari server tetap benar. */
+  async function seedStarter() {
+    if (sections.length || busy) return;
+    setBusy(true);
+    setError("");
+    const created: Section[] = [];
+    try {
+      for (const type of STARTER_SECTION_TYPES) {
+        const result: Section = await request(base, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ section_key: type, section_type: type, default_content: {}, is_required: false, is_visible: true }),
+        }, "Set section standar gagal dibuat.");
+        created.push(result);
+      }
+    } catch (cause) {
+      setError(created.length ? `${messageOf(cause)} ${created.length} dari ${STARTER_SECTION_TYPES.length} section sudah dibuat.` : messageOf(cause));
+    } finally {
+      if (created.length) {
+        setSections(created);
+        setSelectedId(created[0].id);
+        setDraft(draftFromSection(created[0]));
+        router.refresh();
+      }
+      setBusy(false);
+    }
+  }
+
   async function remove() {
     if (!saved) return;
     setBusy(true);
@@ -244,7 +272,14 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
               ) : null}
             </ol>
           ) : (
-            <BackendEmptyState icon={LayoutTemplate} title="Belum ada section" description="Tambahkan section pertama untuk membangun struktur tema." className="min-h-40" />
+            <BackendEmptyState icon={LayoutTemplate} title="Belum ada section" className="min-h-40"
+              description="Mulai dari set standar (cover sampai penutup) lalu sesuaikan, atau tambahkan section satu per satu."
+              action={
+                <Button type="button" size="sm" onClick={seedStarter} disabled={busy}>
+                  {busy ? <Loader2 aria-hidden="true" className="animate-spin" /> : <LayoutTemplate aria-hidden="true" />}
+                  {busy ? "Membuat section..." : "Gunakan set standar"}
+                </Button>
+              } />
           )}
         </aside>
 
