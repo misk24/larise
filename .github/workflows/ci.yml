@@ -33,7 +33,8 @@ jobs:
 
   database:
     # Builds a throwaway Postgres from supabase/ci + all migrations and runs supabase/tests.
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest (26.04) has no postgresql-16 / postgresql-16-pgtap apt packages.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install PostgreSQL 16 and pgTAP
