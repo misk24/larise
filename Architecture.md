@@ -62,6 +62,7 @@ This section records observable source behavior, not a guarantee that all migrat
 - Resolve design settings through `components/invitation/sections/section-design.ts` and apply them on a wrapper around the registered section renderer. Missing or invalid values must leave the renderer's defaults intact.
 - Keep CSS selectors scoped to `.section-design-scope` and opt-in data attributes. Button controls must target explicit action elements, not every anchor or button in a section.
 - Validate the design object at both admin section create and update API boundaries using `lib/validation/section-design.ts`; retain the existing 64 KB section-content limit.
+- Theme Builder design controls are defined in `lib/theme-design-fields.ts` and must stay in sync with `lib/validation/section-design.ts`; `tests/theme-design-fields.test.ts` checks that every offered field passes the server schema.
 - The Theme Builder preview uses the real `sectionRegistry` renderer with sample invitation data. RSVP and Gift remain disabled in preview to avoid real submissions or exposing private data.
 - Decorative settings cover icon styling, heading dividers, a lightweight ornament, and spacing between section-level elements. They are opt-in and do not add content fields to invitation data.
 

@@ -8,17 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { CheckCircle2Icon, Loader2Icon } from "lucide-react";
+import { THEME_CATEGORIES } from "@/lib/theme-categories";
 
 type Theme = {
   id: string; name: string; slug: string; description: string | null;
   thumbnail_url: string | null; preview_url: string | null; price: number;
   category: string; features: string[] | null; is_premium: boolean;
 };
-const categories = [
-  { value: "elegant", label: "Elegan" }, { value: "minimalist", label: "Minimalis" },
-  { value: "traditional", label: "Tradisional" }, { value: "modern", label: "Modern" },
-  { value: "rustic", label: "Rustic" }, { value: "floral", label: "Floral" },
-];
+const categories = THEME_CATEGORIES;
 export default function ThemeSettingsForm({ theme }: { theme: Theme }) {
   const router = useRouter();
   const [form, setForm] = useState({

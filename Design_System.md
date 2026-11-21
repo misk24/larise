@@ -64,6 +64,13 @@ Use the established CSS scopes in `styles/frontend.css` and `styles/backend.css`
 - A row with more than three actions keeps the primary one and the toggle visible and moves the rest into a "Lainnya" menu, with the destructive item last. `ConfirmDialog` takes `open` and `onOpenChange` for use from a menu.
 - Do not hardcode palette colors (`bg-amber-100` and the like) in backend components; use tokens. Dates in tables use `{ dateStyle: "medium" }`.
 
+## Theme Builder pattern
+
+- The theme detail page uses two tabs, "Section dan desain" and "Info dan katalog". Both stay mounted so unsaved edits survive switching tabs.
+- The section builder is a three-pane workspace on `xl` screens: section list, sticky live preview, and an inspector with Desain, Konten, and Pengaturan tabs. Below `xl` the preview and inspector are switched with tabs.
+- Design fields are data-driven from `lib/theme-design-fields.ts` and rendered by `ThemeDesignInspector`; add a field there, not as one-off JSX. Empty values remove the key so the section falls back to its default styling.
+- Edits are a draft until "Simpan section". Leaving a section with unsaved changes asks for confirmation.
+
 ## Change checklist
 
 1. Confirm whether the component belongs to frontend or backend.
