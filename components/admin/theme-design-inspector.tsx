@@ -98,7 +98,7 @@ export function ThemeDesignInspector({ content, onChange }: { content: SectionCo
                 <span className="flex min-w-0 flex-col items-start gap-0.5 text-left">
                   <span className="flex items-center gap-2 text-sm font-medium">
                     {panel.title}
-                    {count ? <Badge variant="secondary" className="tabular-nums">{count}</Badge> : null}
+                    {count ? <Badge variant="secondary" className="tabular-nums">{count}<span className="sr-only"> nilai diatur</span></Badge> : null}
                   </span>
                   <span className="text-xs font-normal text-muted-foreground">{panel.description}</span>
                 </span>

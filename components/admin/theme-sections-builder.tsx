@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowDown, ArrowUp, Eye, EyeOff, LayoutTemplate, Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { BackendEmptyState, BackendErrorState } from "@/components/backend/backend-ui";
@@ -73,7 +73,12 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
   const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("mobile");
   const [pane, setPane] = useState<"preview" | "edit">("edit");
   const [pending, setPending] = useState<Target | null>(null);
+  const [announcement, setAnnouncement] = useState("");
+  const [justSaved, setJustSaved] = useState(false);
+  const listRef = useRef<HTMLOListElement>(null);
   const base = `/api/admin/themes/${themeId}/sections`;
+  // Tombol yang sedang fokus bisa hilang dari DOM (hapus, set standar). Kembalikan fokus ke section terpilih.
+  const focusSelected = () => requestAnimationFrame(() => listRef.current?.querySelector<HTMLElement>("button[aria-current]")?.focus());
 
   const saved = selectedId && selectedId !== "new" ? sections.find((item) => item.id === selectedId) : undefined;
   const dirty = !!draft && (selectedId === "new" || !saved || snapshot(draftFromSection(saved)) !== snapshot(draft));
@@ -96,7 +101,10 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
     else open(target);
   };
 
-  const patch = (changes: Partial<Draft>) => setDraft((current) => (current ? { ...current, ...changes } : current));
+  const patch = (changes: Partial<Draft>) => {
+    setJustSaved(false);
+    setDraft((current) => (current ? { ...current, ...changes } : current));
+  };
   const setContent = (content: SectionContent) => patch({ content, json: stringify(content), jsonError: "" });
   function setJson(json: string) {
     const content = parseContent(json);
@@ -136,6 +144,8 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
       setSections((current) => (creating ? [...current, result] : current.map((item) => (item.id === result.id ? result : item))).sort((a, b) => a.position - b.position));
       setSelectedId(result.id);
       setDraft(draftFromSection(result));
+      setJustSaved(true);
+      setAnnouncement(creating ? "Section baru disimpan." : "Section disimpan.");
       router.refresh();
     } catch (cause) {
       setError(messageOf(cause));
@@ -166,6 +176,8 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
         setSections(created);
         setSelectedId(created[0].id);
         setDraft(draftFromSection(created[0]));
+        setAnnouncement(`${created.length} section standar dibuat.`);
+        focusSelected();
         router.refresh();
       }
       setBusy(false);
@@ -184,6 +196,8 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
       setSections(rest);
       setSelectedId(next?.id ?? null);
       setDraft(next ? draftFromSection(next) : null);
+      setAnnouncement(`Section "${saved.section_key}" dihapus.`);
+      focusSelected();
       router.refresh();
     } catch (cause) {
       setError(messageOf(cause));
@@ -206,6 +220,7 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
         body: JSON.stringify({ section_ids: next.map((item) => item.id) }),
       }, "Urutan section gagal disimpan.");
       setSections(next.map((item, position) => ({ ...item, position })));
+      setAnnouncement(`${sectionTypeLabel(next[target].section_type)} dipindah ke posisi ${target + 1} dari ${next.length}.`);
       router.refresh();
     } catch (cause) {
       setError(messageOf(cause));
@@ -216,6 +231,7 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
 
   return (
     <div className="space-y-4">
+      <p role="status" aria-live="polite" className="sr-only">{announcement}</p>
       <div className="grid gap-4 xl:grid-cols-[16rem_minmax(0,1fr)_23rem] xl:items-start">
         <aside aria-label="Daftar section" className="space-y-3">
           <div className="flex items-center justify-between gap-2">
@@ -238,7 +254,7 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
           {error && !draft ? <BackendErrorState title={error} /> : null}
 
           {sections.length || selectedId === "new" ? (
-            <ol className="space-y-1.5">
+            <ol ref={listRef} className="space-y-1.5">
               {sections.map((section, index) => {
                 const active = section.id === selectedId;
                 return (
@@ -285,12 +301,14 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
 
         {draft ? (
           <>
-            <Tabs value={pane} onValueChange={(value) => setPane(value as "preview" | "edit")} className="xl:hidden">
-              <TabsList className="w-full">
-                <TabsTrigger value="edit">Edit</TabsTrigger>
-                <TabsTrigger value="preview">Pratinjau</TabsTrigger>
-              </TabsList>
-            </Tabs>
+            {/* Tombol, bukan tab: panel yang dikendalikan tidak berada di dalam satu komponen Tabs. */}
+            <div className="grid grid-cols-2 gap-1 xl:hidden" role="group" aria-label="Tampilan panel">
+              {(["edit", "preview"] as const).map((value) => (
+                <Button key={value} type="button" variant={pane === value ? "default" : "outline"} aria-pressed={pane === value} onClick={() => setPane(value)}>
+                  {value === "edit" ? "Edit" : "Pratinjau"}
+                </Button>
+              ))}
+            </div>
 
             <section aria-label="Pratinjau section" className={cn("space-y-3 xl:sticky xl:top-4 xl:block", pane !== "preview" && "hidden xl:block")}>
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -303,7 +321,7 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
                   ))}
                 </div>
               </div>
-              <div className="max-h-[calc(100vh-10rem)] overflow-auto rounded-xl border bg-muted/30 p-3">
+              <div role="region" aria-label="Area pratinjau" tabIndex={0} className="max-h-[calc(100vh-10rem)] overflow-auto rounded-xl border bg-muted/30 p-3 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50">
                 <div className={previewMode === "mobile" ? "mx-auto w-[390px] max-w-full overflow-hidden rounded-xl border-4 border-border bg-background shadow-inner" : "w-full overflow-hidden rounded-md border bg-background"}>
                   <ThemeSectionLivePreview sectionKey={draft.section_key || "preview"} sectionType={draft.section_type} content={draft.content} visible={draft.is_visible} />
                 </div>
@@ -316,7 +334,8 @@ export default function ThemeSectionsBuilder({ themeId, initialSections }: { the
                   <h3 className="truncate text-sm font-semibold">{selectedId === "new" ? "Section baru" : sectionTypeLabel(draft.section_type)}</h3>
                   <p className="truncate text-xs text-muted-foreground">{draft.section_key}</p>
                 </div>
-                {dirty ? <Badge variant="outline" className="shrink-0 border-warning/30 bg-warning-muted text-warning">Belum disimpan</Badge> : null}
+                {dirty ? <Badge variant="outline" className="shrink-0 border-warning/30 bg-warning-muted text-warning">Belum disimpan</Badge>
+                  : justSaved ? <Badge variant="outline" className="shrink-0 border-success/30 bg-success-muted text-success">Tersimpan</Badge> : null}
               </div>
 
               <Tabs defaultValue="design" className="gap-0">
